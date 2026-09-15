@@ -1,0 +1,82 @@
+﻿project_name: "Open Edu Video Generator 12GB"
+
+output_resolution:
+  width: 1920
+  height: 1080
+
+fps: 30
+visual_mode: "hybrid"
+
+ffmpeg_path: "C:\\Users\\User\\Documents\\Codex\\Tools\\Transcribe\\ffmpeg\\ffmpeg-9.0.1-essentials_build\\bin\\ffmpeg.exe"
+ffprobe_path: "C:\\Users\\User\\Documents\\Codex\\Tools\\Transcribe\\ffmpeg\\ffmpeg-9.0.1-essentials_build\\bin\\ffprobe.exe"
+
+ollama_url: "http://localhost:11434"
+ollama_model: "llama3.1:8b"
+use_ollama: true
+
+tts_provider: "edge"
+edge_tts:
+  voice: "en-IN-NeerjaNeural"
+  rate: "-20%"
+
+piper_path: "C:/piper/piper.exe"
+piper_model: "C:/piper/voices/en_US-lessac-medium.onnx"
+piper_config: "C:/piper/voices/en_US-lessac-medium.onnx.json"
+
+voice:
+  sentence_gap_seconds: 0.25
+  scene_gap_seconds: 0.7
+
+render:
+  layout: modern
+  burn_captions: true
+  embed_subtitles: false
+  background: "#F7F8F3"
+  ink: "#182026"
+  accent: "#2E7D63"
+  second_accent: "#D18B32"
+  subtitle_bg: "#FFFFFF"
+  subtitle_fg: "#000000"
+  seconds_per_segment_without_audio: 5.0
+  video_crf: 17
+  video_preset: "slow"
+  # Optional reviewed diagrams/photos, named scene_02_segment_02.png etc.
+  reviewed_assets_dir: "assets/reviewed"
+  font_path: ""
+
+comfyui:
+  api_url: "http://127.0.0.1:8188"
+  enabled: true
+  workflow_path: "workflows/sdxl_txt2img_api.json"
+  checkpoint: "sd_xl_base_1.0.safetensors"
+  width: 1344
+  height: 768
+  steps: 30
+  cfg: 5.5
+  sampler_name: "dpmpp_2m"
+  scheduler: "karras"
+  seed: -1
+  timeout_seconds: 900
+  fallback_to_slideshow: false
+  rewrite_prompts: true
+  prompt_prefix: "high resolution educational documentary photograph, realistic biology, clear subject, fine natural detail, soft daylight,"
+  prompt_suffix: "single realistic scene, accurate biology, text-free image, no labels"
+  negative_prompt: "text, letters, typography, labels, captions, watermark, logo, signature, diagram, infographic, chart, collage, grid, panels, border, blurry, distorted anatomy, duplicate parts, oversaturated"
+  video_enabled: true
+  # Export the ComfyUI Wan2.2 5B API workflow to this file before rendering video shots.
+  video_workflow_path: "workflows/wan2_2_5b_video_api.json"
+  video_width: 832
+  video_height: 480
+  video_frames: 81
+  video_fps: 16
+  video_steps: 20
+  video_cfg: 5.0
+  video_sampler_name: "uni_pc"
+  video_scheduler: "simple"
+  # Automatically send the best cinematic storyboard segments to Wan.
+  # Diagrams such as classification/protandry/protogyny stay as clean vector-style teaching frames.
+  real_image_auto_promote: true
+  video_auto_promote: true
+  video_max_segments: 1
+  video_prompt_prefix: "realistic macro nature video, gentle camera motion, stable subject,"
+  video_prompt_suffix: "natural motion, coherent anatomy, no text, no subtitles, no watermark"

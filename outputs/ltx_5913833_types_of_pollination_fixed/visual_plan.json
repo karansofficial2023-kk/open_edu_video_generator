@@ -1,0 +1,93 @@
+[
+  {
+    "scene": 1,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up macro shot of a sunflower in natural light, showing detailed petals and center. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up macro shot of a sunflower in natural light, with detailed petals and center visible, set against a soft background to emphasize the subject, captured in documentary style with sharp detail and accurate representation.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 1,
+    "segment": 4,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up macro shot of a sunflower in natural light, showing detailed petals and center. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up macro shot of a sunflower in natural light, its detailed petals and center visible, set against a soft background, captured in documentary style with sharp detail and accurate representation of the subject.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up photo of Xanthium flower with anther and stigma labeled. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up, documentary-style photograph of a Xanthium flower, set in natural lighting, with sharp detail, highlighting the mature anther and stigma, illustrating the concept of homogamy in plants like Xanthium, where self-pollination is facilitated by simultaneous maturation of reproductive parts.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Photo of wood sorrel flowers in late summer. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of wood sorrel flowers in late summer, set against a soft, natural background, with warm sunlight casting gentle shadows, capturing the delicate details of the small, inconspicuous blooms, in a documentary-style, realistic and accurate representation.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 4,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up photo of stigma with pollen positioned for self-pollination. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up, documentary-style photo of a stigma with pollen positioned for self-pollination, set against a natural, soft-focus background, with natural lighting and sharp detail to highlight the intricate details of the plant's reproductive structure.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Side-by-side comparison of two papaya plants: one with male flowers, one with female flowers. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "Two papaya plants stand side by side in a lush garden, one with vibrant male flowers and the other with delicate female flowers, bathed in warm natural sunlight, with a documentary-style camera positioned at a slight angle to capture the intricate details of the plants' reproductive structures.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up of sunflower flower with labeled anther and stigma. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of a sunflower flower in natural sunlight, with the anther and stigma labeled, showcasing the pro-tandry process in a documentary-style educational visual with sharp detail and accurate representation.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 3,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up of custard apple flower with labeled stigma and anther. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of a custard apple flower, with natural light illuminating its delicate petals and highlighting the stigma and anther in sharp detail, set against a neutral background, in a documentary-style image.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up of pansy flower with hooded stigma. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of a pansy flower with a hood covering its stigma, set against a soft, natural background, with gentle natural lighting and sharp detail, capturing the flower's structural adaptation in a documentary-style image.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Orchid flower showing pollen on anther and stigma. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of an orchid flower in natural light, with sharp detail, showing pollen on the anther and stigma, in a documentary style, highlighting the structural adaptations for cross-pollination.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 3,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Primrose flower with stigma and anther at different heights. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of a primrose flower in natural sunlight, with the stigma positioned higher than the anther, set against a soft focus blurred background, shot from directly above, showcasing the flower's structural adaptations for cross-pollination in a documentary style.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 1,
+    "original_prompt": "Macro documentary photograph of a bee orchid flower that resembles a female bee, with a male bee nearby, realistic botanical detail, natural daylight, no text, no labels.",
+    "image_prompt": "Macro documentary photograph of a bee orchid flower that resembles a female bee, with a male bee nearby, realistic botanical detail, natural daylight, no text, no labels.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Educational infographic with icons of pollinators and flowers. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of a sunflower in a garden, with a few bees and butterflies pollinating its bright yellow petals, surrounded by lush green leaves, shot from directly above with natural soft morning light, highlighting the intricate details of the flower and its visitors.",
+    "scientific_review_recommended": true
+  }
+]

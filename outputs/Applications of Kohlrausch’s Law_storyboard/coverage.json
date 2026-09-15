@@ -1,0 +1,19 @@
+{
+  "notice": "Coverage lint for Types of Pollination; verify against teacher/curriculum source.",
+  "covered_topics": [],
+  "missing_topics": [
+    "definition",
+    "self pollination",
+    "cross pollination",
+    "classification",
+    "wind pollination",
+    "water pollination",
+    "insect pollination",
+    "bird pollination",
+    "bat pollination",
+    "animal pollination",
+    "self advantages",
+    "cross advantages"
+  ],
+  "coverage_ratio": 0.0
+}

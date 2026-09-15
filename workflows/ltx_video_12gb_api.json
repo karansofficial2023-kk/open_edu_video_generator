@@ -1,0 +1,152 @@
+{
+  "69": {
+    "class_type": "LTXVConditioning",
+    "inputs": {
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "frame_rate": 16
+    }
+  },
+  "71": {
+    "class_type": "LTXVScheduler",
+    "inputs": {
+      "latent": [
+        "70",
+        0
+      ],
+      "steps": 8,
+      "max_shift": 2.05,
+      "base_shift": 0.95,
+      "stretch": true,
+      "terminal": 0.1
+    }
+  },
+  "44": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "ltxv-2b-0.9.8-distilled-fp8.safetensors"
+    }
+  },
+  "38": {
+    "class_type": "CLIPLoader",
+    "inputs": {
+      "clip_name": "t5xxl_fp16.safetensors",
+      "type": "ltxv",
+      "device": "default"
+    }
+  },
+  "72": {
+    "class_type": "SamplerCustom",
+    "inputs": {
+      "model": [
+        "44",
+        0
+      ],
+      "positive": [
+        "69",
+        0
+      ],
+      "negative": [
+        "69",
+        1
+      ],
+      "sampler": [
+        "73",
+        0
+      ],
+      "sigmas": [
+        "71",
+        0
+      ],
+      "latent_image": [
+        "70",
+        0
+      ],
+      "add_noise": true,
+      "noise_seed": 552872474466407,
+      "control_after_generate": "randomize",
+      "cfg": 1.0
+    }
+  },
+  "8": {
+    "class_type": "VAEDecode",
+    "inputs": {
+      "samples": [
+        "72",
+        0
+      ],
+      "vae": [
+        "44",
+        2
+      ]
+    }
+  },
+  "77": {
+    "class_type": "SaveWEBM",
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "filename_prefix": "video/ltx_12gb",
+      "codec": "vp9",
+      "fps": 16,
+      "crf": 18
+    }
+  },
+  "7": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "38",
+        0
+      ],
+      "text": "text, letters, typography, labels, captions, watermark, logo, signature, diagram, infographic, chart, collage, grid, panels, border, blurry, distorted anatomy, duplicate parts, oversaturated, bad motion, flicker, low quality, worst quality, deformed, distorted, disfigured, motion artifacts"
+    }
+  },
+  "41": {
+    "class_type": "SaveAnimatedWEBP",
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "filename_prefix": "video/ltx_12gb",
+      "fps": 16,
+      "lossless": false,
+      "quality": 95,
+      "method": "default"
+    }
+  },
+  "73": {
+    "class_type": "KSamplerSelect",
+    "inputs": {
+      "sampler_name": "res_multistep"
+    }
+  },
+  "70": {
+    "class_type": "EmptyLTXVLatentVideo",
+    "inputs": {
+      "width": 768,
+      "height": 512,
+      "length": 81,
+      "batch_size": 1
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "clip": [
+        "38",
+        0
+      ],
+      "text": "realistic educational nature video, stable camera, gentle natural motion, coherent subject, a bee slowly visiting a bright flower, pollen visible on the bee body, realistic petals and anthers, soft daylight, shallow depth of field, no text, no subtitles, no watermark"
+    }
+  }
+}

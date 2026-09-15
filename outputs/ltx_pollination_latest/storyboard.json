@@ -1,0 +1,2971 @@
+{
+  "title": "Storyboard: Sunflowers are among my favorite flowers",
+  "source": "Sunflowers are among my favorite flowers. At this size, we can observe their structure in detail. While bees are the primary pollinators, sunflowers have an ingenious mechanism for self-pollination when bees are absent. The male reproductive parts, called anthers, curl inward to transfer pollen to the sticky female stigma. This process is known as self-pollination.\nIn plants like *Ixora*, the anther and stigma mature simultaneously, facilitating self-pollination. This synchronized development is termed **homogamy**.\nSome species, such as **wood sorrel** (which produces small, inconspicuous flowers in late summer that lack fragrance), have bisexual flowers that never open. This enables self-pollination and fertilization without flower opening, a process called **cleistogamy** (not *gynostegium*, which refers to the structural feature). In such plants, pollen grains are positioned on the stigma to ensure self-pollination.\nCross-pollination is encouraged in plants like **papaya**, which are unisexual and dioecious (male and female flowers on separate plants).\nSunflowers, however, have bisexual flowers where the anthers mature first, followed by the stigma. This sequential maturation is termed **pro-tandry**. In contrast, **custard apple** exhibits **pro-togeny**, where the stigma matures first.\nSome flowers, like those of **papaya**, have a hood-like structure covering the stigma, a structural adaptation called **hercogamy**.\nIn **orchids**, pollen from the anther fails to germinate on the stigma of the same flower, preventing self-fertilization. **Primrose** displays **heterostyle**, where the stigma is positioned at a different height compared to the anther, promoting cross-pollination.\nThe **bee orchid** mimics a female bee to attract male bees, which inadvertently transfer pollen. While the original transcript mentions \"water tracks the pollinator\" (likely a transcription error), the intended concept aligns with the role of **scent** and **nectar** in attracting pollinators.\nTo summarize, self-pollination occurs in plants like *Ixora* through **homogamy**, while **wood sorrel** relies on **cleistogamy** for self-pollination in closed flowers. Cross-pollination is facilitated in papaya through separate male and female flowers, and in sunflowers via **pro-tandry**. Structural adaptations like **hercogamy** in papaya and **heterostyle** in primrose further enhance cross-pollination. The bee orchid’s mimicry of a female bee exemplifies evolutionary strategies to ensure pollination.\nKeep them **biving** (likely \"believing\" due to transcription error). We believe in you.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Sunflower Pollination Mechanism",
+      "narration": "Sunflowers are among my favorite flowers. At this size, we can observe their structure in detail. While bees are the primary pollinators, sunflowers have an ingenious mechanism for self-pollination when bees are absent. The male reproductive parts, called anthers, curl inward to transfer pollen to the sticky female stigma. This process is known as self-pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Sunflowers are among my favorite flowers.",
+          "visual": "Real HD educational visual: A wide-angle photo of a sunflower field with vibrant yellow blooms. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A wide-angle photo of a sunflower field with vibrant yellow blooms, set against a clear blue sky with natural sunlight casting a warm glow, capturing the sharp details of the sunflowers and their surroundings in a documentary style.",
+          "keywords": [
+            "sunflowers",
+            "among",
+            "favorite",
+            "flowers",
+            "real",
+            "educational",
+            "visual",
+            "wide-angle"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_01_segment_01.wav",
+          "start": 0.0,
+          "end": 5.002,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual wide-angle photo sunflower field",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Sunflowers",
+              "start": 0.1,
+              "end": 1.25625
+            },
+            {
+              "text": "are",
+              "start": 1.271875,
+              "end": 1.475
+            },
+            {
+              "text": "among",
+              "start": 1.490625,
+              "end": 1.975
+            },
+            {
+              "text": "my",
+              "start": 1.990625,
+              "end": 2.19375
+            },
+            {
+              "text": "favorite",
+              "start": 2.209375,
+              "end": 2.803125
+            },
+            {
+              "text": "flowers",
+              "start": 2.81875,
+              "end": 3.6
+            }
+          ],
+          "speech_duration": 4.752,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "At this size, we can observe their structure in detail.",
+          "visual": "Topic-specific educational visual directly matching the sentence: At this size, we can observe their structure in detail.",
+          "image_prompt": "A close-up of a sunflower's large, bright yellow petals and dark center, with a slight shadow on the stem, photographed from directly above, in soft natural outdoor light, highlighting the intricate details of the flower's structure.",
+          "keywords": [
+            "observe",
+            "structure",
+            "detail"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_01_segment_02.wav",
+          "start": 5.002,
+          "end": 10.867999999999999,
+          "shot": {
+            "template": "photo",
+            "heading": "Topic-specific educational visual directly matching the sentence",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "At",
+              "start": 0.1,
+              "end": 0.44375
+            },
+            {
+              "text": "this",
+              "start": 0.459375,
+              "end": 0.725
+            },
+            {
+              "text": "size",
+              "start": 0.740625,
+              "end": 1.365625
+            },
+            {
+              "text": "we",
+              "start": 1.521875,
+              "end": 1.725
+            },
+            {
+              "text": "can",
+              "start": 1.740625,
+              "end": 1.94375
+            },
+            {
+              "text": "observe",
+              "start": 1.959375,
+              "end": 2.615625
+            },
+            {
+              "text": "their",
+              "start": 2.63125,
+              "end": 2.865625
+            },
+            {
+              "text": "structure",
+              "start": 2.88125,
+              "end": 3.63125
+            },
+            {
+              "text": "in",
+              "start": 3.646875,
+              "end": 3.803125
+            },
+            {
+              "text": "detail",
+              "start": 3.81875,
+              "end": 4.50625
+            }
+          ],
+          "speech_duration": 5.616,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "While bees are the primary pollinators, sunflowers have an ingenious mechanism for self-pollination when bees are absent.",
+          "visual": "Real HD educational visual: A diagram comparing bee pollination with sunflower self-pollination. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: A diagram comparing bee pollination with sunflower self-pollination\nduration: 8.0 sec\nclip duration: 0.0 sec\nclip count: 0\njoin: \nprompt: Realistic HD educational Wan video, A diagram comparing bee pollination with sunflower self-pollination, natural motion, documentary style, sharp detail, accurate subject, seamless continuation, no blank cards, no slide layout\nnegative: incorrect anatomy, wrong labels, unreadable text, watermark, blurry, distorted, fantasy, irrelevant objects",
+          "keywords": [
+            "bee pollination",
+            "self-pollination"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_01_segment_03.wav",
+          "start": 10.867999999999999,
+          "end": 21.798,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual diagram comparing bee pollination",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "While",
+              "start": 0.1,
+              "end": 0.521875
+            },
+            {
+              "text": "bees",
+              "start": 0.5375,
+              "end": 0.959375
+            },
+            {
+              "text": "are",
+              "start": 0.975,
+              "end": 1.146875
+            },
+            {
+              "text": "the",
+              "start": 1.1625,
+              "end": 1.271875
+            },
+            {
+              "text": "primary",
+              "start": 1.2875,
+              "end": 1.9125
+            },
+            {
+              "text": "pollinators",
+              "start": 1.928125,
+              "end": 2.975
+            },
+            {
+              "text": "sunflowers",
+              "start": 3.25625,
+              "end": 4.2875
+            },
+            {
+              "text": "have",
+              "start": 4.303125,
+              "end": 4.553125
+            },
+            {
+              "text": "an",
+              "start": 4.56875,
+              "end": 4.709375
+            },
+            {
+              "text": "ingenious",
+              "start": 4.725,
+              "end": 5.4125
+            },
+            {
+              "text": "mechanism",
+              "start": 5.428125,
+              "end": 6.240625
+            },
+            {
+              "text": "for",
+              "start": 6.25625,
+              "end": 6.475
+            },
+            {
+              "text": "self-pollination",
+              "start": 6.490625,
+              "end": 7.803125
+            },
+            {
+              "text": "when",
+              "start": 7.81875,
+              "end": 8.06875
+            },
+            {
+              "text": "bees",
+              "start": 8.084375,
+              "end": 8.490625
+            },
+            {
+              "text": "are",
+              "start": 8.50625,
+              "end": 8.75625
+            },
+            {
+              "text": "absent",
+              "start": 8.771875,
+              "end": 9.5375
+            }
+          ],
+          "speech_duration": 10.68,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "The male reproductive parts, called anthers, curl inward to transfer pollen to the sticky female stigma.",
+          "visual": "Real HD educational visual: An animated diagram of anther curling motion. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up of a sunflower's anthers curling inward, surrounded by delicate yellow petals, in a bright garden on a sunny day, with a documentary-style camera positioned directly above, capturing sharp details of the intricate mechanism.",
+          "keywords": [
+            "anther",
+            "stigma",
+            "pollen transfer"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_01_segment_04.wav",
+          "start": 21.798,
+          "end": 31.455999999999996,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual anther curling motion Avoid",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.334375
+            },
+            {
+              "text": "male",
+              "start": 0.35,
+              "end": 0.771875
+            },
+            {
+              "text": "reproductive",
+              "start": 0.7875,
+              "end": 1.678125
+            },
+            {
+              "text": "parts",
+              "start": 1.69375,
+              "end": 2.2875
+            },
+            {
+              "text": "called",
+              "start": 2.428125,
+              "end": 2.88125
+            },
+            {
+              "text": "anthers",
+              "start": 2.896875,
+              "end": 3.678125
+            },
+            {
+              "text": "curl",
+              "start": 3.834375,
+              "end": 4.19375
+            },
+            {
+              "text": "inward",
+              "start": 4.209375,
+              "end": 4.75625
+            },
+            {
+              "text": "to",
+              "start": 4.771875,
+              "end": 4.9125
+            },
+            {
+              "text": "transfer",
+              "start": 4.928125,
+              "end": 5.615625
+            },
+            {
+              "text": "pollen",
+              "start": 5.63125,
+              "end": 6.146875
+            },
+            {
+              "text": "to",
+              "start": 6.1625,
+              "end": 6.2875
+            },
+            {
+              "text": "the",
+              "start": 6.303125,
+              "end": 6.428125
+            },
+            {
+              "text": "sticky",
+              "start": 6.44375,
+              "end": 6.94375
+            },
+            {
+              "text": "female",
+              "start": 6.959375,
+              "end": 7.553125
+            },
+            {
+              "text": "stigma",
+              "start": 7.56875,
+              "end": 8.31875
+            }
+          ],
+          "speech_duration": 9.408,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 5,
+          "narration": "This process is known as self-pollination.",
+          "visual": "Real HD educational visual: A close-up photo showing the completed self-pollination process. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up photo of a sunflower with completed self-pollination, set against a soft focus blurred background of a sunny field, natural lighting, sharp detail, documentary style, accurate subject",
+          "keywords": [
+            "process",
+            "known",
+            "self-pollination",
+            "real",
+            "educational",
+            "visual",
+            "close-up",
+            "photo"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_01_segment_05.wav",
+          "start": 31.455999999999996,
+          "end": 36.763999999999996,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual close-up photo showing the",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "This",
+              "start": 0.1,
+              "end": 0.56875
+            },
+            {
+              "text": "process",
+              "start": 0.584375,
+              "end": 1.240625
+            },
+            {
+              "text": "is",
+              "start": 1.25625,
+              "end": 1.44375
+            },
+            {
+              "text": "known",
+              "start": 1.459375,
+              "end": 1.865625
+            },
+            {
+              "text": "as",
+              "start": 1.88125,
+              "end": 2.115625
+            },
+            {
+              "text": "self-pollination",
+              "start": 2.13125,
+              "end": 3.50625
+            }
+          ],
+          "speech_duration": 4.608,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "Homogamy in Ixora",
+      "narration": "In plants like *Ixora*, the anther and stigma mature simultaneously, facilitating self-pollination. This synchronized development is termed **homogamy**.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "In plants like *Ixora*, the anther and stigma mature simultaneously, facilitating self-pollination.",
+          "visual": "Real HD educational visual: Close-up of *Ixora* plant showing both anther and stigma at full maturity. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up of an *Ixora* plant, bathed in natural sunlight, with the anther and stigma at full maturity, set against a blurred background of lush green foliage, captured in sharp documentary detail, highlighting the plant's homogamous reproductive strategy.",
+          "keywords": [
+            "anther",
+            "stigma"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_02_segment_01.wav",
+          "start": 36.763999999999996,
+          "end": 48.437999999999995,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Close-up Ixora plant showing",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.4125
+            },
+            {
+              "text": "plants",
+              "start": 0.428125,
+              "end": 0.990625
+            },
+            {
+              "text": "like",
+              "start": 1.00625,
+              "end": 1.365625
+            },
+            {
+              "text": "*",
+              "start": 1.38125,
+              "end": 2.115625
+            },
+            {
+              "text": "Ixora",
+              "start": 2.13125,
+              "end": 2.81875
+            },
+            {
+              "text": "*",
+              "start": 2.834375,
+              "end": 3.725
+            },
+            {
+              "text": "the",
+              "start": 3.865625,
+              "end": 4.084375
+            },
+            {
+              "text": "anther",
+              "start": 4.1,
+              "end": 4.7875
+            },
+            {
+              "text": "and",
+              "start": 4.803125,
+              "end": 5.053125
+            },
+            {
+              "text": "stigma",
+              "start": 5.06875,
+              "end": 5.678125
+            },
+            {
+              "text": "mature",
+              "start": 5.69375,
+              "end": 6.225
+            },
+            {
+              "text": "simultaneously",
+              "start": 6.240625,
+              "end": 7.6625
+            },
+            {
+              "text": "facilitating",
+              "start": 7.865625,
+              "end": 8.959375
+            },
+            {
+              "text": "self-pollination",
+              "start": 8.975,
+              "end": 10.31875
+            }
+          ],
+          "speech_duration": 11.424,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "This synchronized development is termed **homogamy**.",
+          "visual": "Topic-specific educational visual directly matching the sentence: This synchronized development is termed **homogamy**.",
+          "image_prompt": "A close-up of two Ixora flowers in full bloom, side by side, with their petals and sepals in perfect synchrony, against a soft, natural light background, with a slight depth of field to emphasize the flowers' details.",
+          "keywords": [
+            "synchronized",
+            "development",
+            "termed"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_02_segment_02.wav",
+          "start": 48.437999999999995,
+          "end": 57.153999999999996,
+          "shot": {
+            "template": "photo",
+            "heading": "Topic-specific educational visual directly matching the sentence",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "This",
+              "start": 0.1,
+              "end": 0.521875
+            },
+            {
+              "text": "synchronized",
+              "start": 0.5375,
+              "end": 1.50625
+            },
+            {
+              "text": "development",
+              "start": 1.521875,
+              "end": 2.50625
+            },
+            {
+              "text": "is",
+              "start": 2.521875,
+              "end": 2.725
+            },
+            {
+              "text": "termed",
+              "start": 2.740625,
+              "end": 3.209375
+            },
+            {
+              "text": "*",
+              "start": 3.225,
+              "end": 3.990625
+            },
+            {
+              "text": "*",
+              "start": 4.00625,
+              "end": 4.725
+            },
+            {
+              "text": "homogamy",
+              "start": 4.740625,
+              "end": 5.490625
+            },
+            {
+              "text": "*",
+              "start": 5.50625,
+              "end": 6.2875
+            },
+            {
+              "text": "*",
+              "start": 6.303125,
+              "end": 6.9125
+            }
+          ],
+          "speech_duration": 8.016,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "title": "Cleistogamy in Wood Sorrel",
+      "narration": "Some species, such as **wood sorrel** (which produces small, inconspicuous flowers in late summer that lack fragrance), have bisexual flowers that never open. This enables self-pollination and fertilization without flower opening, a process called **cleistogamy** (not *gynostegium*, which refers to the structural feature). In such plants, pollen grains are positioned on the stigma to ensure self-pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Some species, such as **wood sorrel** (which produces small, inconspicuous flowers in late summer that lack fragrance), have bisexual flowers that never open.",
+          "visual": "Real HD educational visual: Close-up photograph of a wood sorrel plant showing its small, inconspicuous flowers. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up photograph of a wood sorrel plant showing its small, inconspicuous flowers. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+          "keywords": [
+            "wood sorrel",
+            "small",
+            "inconspicuous flowers"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_03_segment_01.wav",
+          "start": 57.153999999999996,
+          "end": 74.89999999999999,
+          "shot": {
+            "template": "process",
+            "heading": "Cleistogamy",
+            "learning_objective": "Show self-pollination inside a closed flower.",
+            "asset_path": null,
+            "steps": [
+              "Flower remains closed",
+              "Self-pollination occurs inside"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [
+            {
+              "text": "Some",
+              "start": 0.1,
+              "end": 0.63125
+            },
+            {
+              "text": "species",
+              "start": 0.646875,
+              "end": 1.56875
+            },
+            {
+              "text": "such",
+              "start": 1.75625,
+              "end": 2.146875
+            },
+            {
+              "text": "as",
+              "start": 2.1625,
+              "end": 2.475
+            },
+            {
+              "text": "*",
+              "start": 2.490625,
+              "end": 3.178125
+            },
+            {
+              "text": "*",
+              "start": 3.19375,
+              "end": 3.88125
+            },
+            {
+              "text": "wood",
+              "start": 3.896875,
+              "end": 4.146875
+            },
+            {
+              "text": "sorrel",
+              "start": 4.1625,
+              "end": 4.709375
+            },
+            {
+              "text": "*",
+              "start": 4.725,
+              "end": 5.4125
+            },
+            {
+              "text": "*",
+              "start": 5.428125,
+              "end": 6.25625
+            },
+            {
+              "text": "which",
+              "start": 6.584375,
+              "end": 6.85
+            },
+            {
+              "text": "produces",
+              "start": 6.865625,
+              "end": 7.6625
+            },
+            {
+              "text": "small",
+              "start": 7.678125,
+              "end": 8.31875
+            },
+            {
+              "text": "inconspicuous",
+              "start": 8.6625,
+              "end": 9.6625
+            },
+            {
+              "text": "flowers",
+              "start": 9.678125,
+              "end": 10.334375
+            },
+            {
+              "text": "in",
+              "start": 10.35,
+              "end": 10.5375
+            },
+            {
+              "text": "late",
+              "start": 10.553125,
+              "end": 10.928125
+            },
+            {
+              "text": "summer",
+              "start": 10.94375,
+              "end": 11.38125
+            },
+            {
+              "text": "that",
+              "start": 11.396875,
+              "end": 11.6625
+            },
+            {
+              "text": "lack",
+              "start": 11.678125,
+              "end": 12.00625
+            },
+            {
+              "text": "fragrance",
+              "start": 12.021875,
+              "end": 12.88125
+            },
+            {
+              "text": "have",
+              "start": 13.06875,
+              "end": 13.31875
+            },
+            {
+              "text": "bisexual",
+              "start": 13.334375,
+              "end": 14.209375
+            },
+            {
+              "text": "flowers",
+              "start": 14.225,
+              "end": 14.9125
+            },
+            {
+              "text": "that",
+              "start": 14.928125,
+              "end": 15.271875
+            },
+            {
+              "text": "never",
+              "start": 15.2875,
+              "end": 15.81875
+            },
+            {
+              "text": "open",
+              "start": 15.834375,
+              "end": 16.396875
+            }
+          ],
+          "speech_duration": 17.496,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "This enables self-pollination and fertilization without flower opening, a process called **cleistogamy** (not *gynostegium*, which refers to the structural feature).",
+          "visual": "Real HD educational visual: Diagram of a flower showing pollen grains on the stigma. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Diagram of a flower showing pollen grains on the stigma\nduration: 8.0 sec\nclip duration: 0.0 sec\nclip count: 0\njoin: \nprompt: Realistic HD educational Wan video, Diagram of a flower showing pollen grains on the stigma, natural motion, documentary style, sharp detail, accurate subject, seamless continuation, no blank cards, no slide layout\nnegative: incorrect anatomy, wrong labels, unreadable text, watermark, blurry, distorted, fantasy, irrelevant objects",
+          "keywords": [
+            "cleistogamy",
+            "pollen grains",
+            "stigma"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_03_segment_02.wav",
+          "start": 74.89999999999999,
+          "end": 93.86999999999999,
+          "shot": {
+            "template": "process",
+            "heading": "Cleistogamy",
+            "learning_objective": "Show self-pollination inside a closed flower.",
+            "asset_path": null,
+            "steps": [
+              "Flower remains closed",
+              "Self-pollination occurs inside"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [
+            {
+              "text": "This",
+              "start": 0.1,
+              "end": 0.584375
+            },
+            {
+              "text": "enables",
+              "start": 0.6,
+              "end": 1.225
+            },
+            {
+              "text": "self-pollination",
+              "start": 1.240625,
+              "end": 2.521875
+            },
+            {
+              "text": "and",
+              "start": 2.5375,
+              "end": 2.803125
+            },
+            {
+              "text": "fertilization",
+              "start": 2.81875,
+              "end": 3.975
+            },
+            {
+              "text": "without",
+              "start": 3.990625,
+              "end": 4.459375
+            },
+            {
+              "text": "flower",
+              "start": 4.475,
+              "end": 5.06875
+            },
+            {
+              "text": "opening",
+              "start": 5.084375,
+              "end": 5.75625
+            },
+            {
+              "text": "a",
+              "start": 5.990625,
+              "end": 6.13125
+            },
+            {
+              "text": "process",
+              "start": 6.146875,
+              "end": 6.834375
+            },
+            {
+              "text": "called",
+              "start": 6.85,
+              "end": 7.35
+            },
+            {
+              "text": "*",
+              "start": 7.365625,
+              "end": 8.1
+            },
+            {
+              "text": "*",
+              "start": 8.115625,
+              "end": 8.75625
+            },
+            {
+              "text": "cleistogamy",
+              "start": 8.771875,
+              "end": 9.81875
+            },
+            {
+              "text": "*",
+              "start": 9.834375,
+              "end": 10.584375
+            },
+            {
+              "text": "*",
+              "start": 10.6,
+              "end": 11.44375
+            },
+            {
+              "text": "not",
+              "start": 11.75625,
+              "end": 12.1625
+            },
+            {
+              "text": "*",
+              "start": 12.178125,
+              "end": 12.803125
+            },
+            {
+              "text": "gynostegium",
+              "start": 12.81875,
+              "end": 13.865625
+            },
+            {
+              "text": "*",
+              "start": 13.88125,
+              "end": 14.740625
+            },
+            {
+              "text": "which",
+              "start": 14.896875,
+              "end": 15.178125
+            },
+            {
+              "text": "refers",
+              "start": 15.19375,
+              "end": 15.803125
+            },
+            {
+              "text": "to",
+              "start": 15.81875,
+              "end": 15.959375
+            },
+            {
+              "text": "the",
+              "start": 15.975,
+              "end": 16.115625
+            },
+            {
+              "text": "structural",
+              "start": 16.13125,
+              "end": 16.88125
+            },
+            {
+              "text": "feature",
+              "start": 16.896875,
+              "end": 17.6
+            }
+          ],
+          "speech_duration": 18.72,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "In such plants, pollen grains are positioned on the stigma to ensure self-pollination.",
+          "visual": "Real HD educational visual: Close-up photograph of a flower showing pollen grains on the stigma. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up photograph of a flower showing pollen grains on the stigma. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+          "keywords": [
+            "self-pollination"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_03_segment_03.wav",
+          "start": 93.86999999999999,
+          "end": 102.56199999999998,
+          "shot": {
+            "template": "process",
+            "heading": "Cleistogamy",
+            "learning_objective": "Show self-pollination inside a closed flower.",
+            "asset_path": null,
+            "steps": [
+              "Flower remains closed",
+              "Self-pollination occurs inside"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.38125
+            },
+            {
+              "text": "such",
+              "start": 0.396875,
+              "end": 0.834375
+            },
+            {
+              "text": "plants",
+              "start": 0.85,
+              "end": 1.50625
+            },
+            {
+              "text": "pollen",
+              "start": 1.678125,
+              "end": 2.115625
+            },
+            {
+              "text": "grains",
+              "start": 2.13125,
+              "end": 2.646875
+            },
+            {
+              "text": "are",
+              "start": 2.6625,
+              "end": 2.81875
+            },
+            {
+              "text": "positioned",
+              "start": 2.834375,
+              "end": 3.553125
+            },
+            {
+              "text": "on",
+              "start": 3.56875,
+              "end": 3.75625
+            },
+            {
+              "text": "the",
+              "start": 3.771875,
+              "end": 3.88125
+            },
+            {
+              "text": "stigma",
+              "start": 3.896875,
+              "end": 4.553125
+            },
+            {
+              "text": "to",
+              "start": 4.56875,
+              "end": 4.834375
+            },
+            {
+              "text": "ensure",
+              "start": 4.85,
+              "end": 5.50625
+            },
+            {
+              "text": "self-pollination",
+              "start": 5.521875,
+              "end": 6.865625
+            }
+          ],
+          "speech_duration": 7.992,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 4,
+      "title": "Cross-Pollination in Papaya",
+      "narration": "Cross-pollination is encouraged in plants like **papaya**, which are unisexual and dioecious (male and female flowers on separate plants).",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Cross-pollination is encouraged in plants like **papaya**, which are unisexual and dioecious (male and female flowers on separate plants).",
+          "visual": "Real HD educational visual: A papaya plant with clearly labeled male and female flowers on separate plants, showing cross-pollination process. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A papaya plant with male and female flowers on separate plants, surrounded by lush green leaves, in a warm tropical environment, with natural sunlight filtering through the leaves, camera positioned at a 45-degree angle to showcase the cross-pollination process, sharp focus on the flowers and leaves, documentary-style realism.",
+          "keywords": [
+            "male flowers",
+            "female flowers",
+            "cross-pollination"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_04_segment_01.wav",
+          "start": 102.56199999999998,
+          "end": 118.59799999999998,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual papaya plant with clearly",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Cross-pollination",
+              "start": 0.1,
+              "end": 1.475
+            },
+            {
+              "text": "is",
+              "start": 1.490625,
+              "end": 1.725
+            },
+            {
+              "text": "encouraged",
+              "start": 1.740625,
+              "end": 2.5375
+            },
+            {
+              "text": "in",
+              "start": 2.553125,
+              "end": 2.709375
+            },
+            {
+              "text": "plants",
+              "start": 2.725,
+              "end": 3.2875
+            },
+            {
+              "text": "like",
+              "start": 3.303125,
+              "end": 3.6625
+            },
+            {
+              "text": "*",
+              "start": 3.678125,
+              "end": 4.38125
+            },
+            {
+              "text": "*",
+              "start": 4.396875,
+              "end": 5.13125
+            },
+            {
+              "text": "papaya",
+              "start": 5.146875,
+              "end": 5.834375
+            },
+            {
+              "text": "*",
+              "start": 5.85,
+              "end": 6.6
+            },
+            {
+              "text": "*",
+              "start": 6.615625,
+              "end": 7.475
+            },
+            {
+              "text": "which",
+              "start": 7.75625,
+              "end": 8.00625
+            },
+            {
+              "text": "are",
+              "start": 8.021875,
+              "end": 8.178125
+            },
+            {
+              "text": "unisexual",
+              "start": 8.19375,
+              "end": 9.209375
+            },
+            {
+              "text": "and",
+              "start": 9.225,
+              "end": 9.490625
+            },
+            {
+              "text": "dioecious",
+              "start": 9.50625,
+              "end": 10.35
+            },
+            {
+              "text": "male",
+              "start": 10.584375,
+              "end": 11.1
+            },
+            {
+              "text": "and",
+              "start": 11.115625,
+              "end": 11.31875
+            },
+            {
+              "text": "female",
+              "start": 11.334375,
+              "end": 11.865625
+            },
+            {
+              "text": "flowers",
+              "start": 11.88125,
+              "end": 12.63125
+            },
+            {
+              "text": "on",
+              "start": 12.646875,
+              "end": 12.865625
+            },
+            {
+              "text": "separate",
+              "start": 12.88125,
+              "end": 13.475
+            },
+            {
+              "text": "plants",
+              "start": 13.490625,
+              "end": 14.225
+            }
+          ],
+          "speech_duration": 15.336,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 5,
+      "title": "Pro-Tandry and Pro-Togeny",
+      "narration": "Sunflowers, however, have bisexual flowers where the anthers mature first, followed by the stigma. This sequential maturation is termed **pro-tandry**. In contrast, **custard apple** exhibits **pro-togeny**, where the stigma matures first.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Sunflowers, however, have bisexual flowers where the anthers mature first, followed by the stigma.",
+          "visual": "Real HD educational visual: A high-resolution photo of a sunflower with a close-up view of its bisexual flower, showing the mature anthers at the center and the developing stigma.. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A high-resolution photo of a sunflower with a close-up view of its bisexual flower, showing mature anthers at the center and developing stigma, in natural lighting, with sharp detail and a documentary style.",
+          "keywords": [
+            "anthers",
+            "stigma"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_05_segment_01.wav",
+          "start": 118.59799999999998,
+          "end": 128.736,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual high-resolution photo sunflower with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Sunflowers",
+              "start": 0.1,
+              "end": 1.396875
+            },
+            {
+              "text": "however",
+              "start": 1.553125,
+              "end": 2.38125
+            },
+            {
+              "text": "have",
+              "start": 2.584375,
+              "end": 2.85
+            },
+            {
+              "text": "bisexual",
+              "start": 2.865625,
+              "end": 3.740625
+            },
+            {
+              "text": "flowers",
+              "start": 3.75625,
+              "end": 4.459375
+            },
+            {
+              "text": "where",
+              "start": 4.475,
+              "end": 4.725
+            },
+            {
+              "text": "the",
+              "start": 4.740625,
+              "end": 4.896875
+            },
+            {
+              "text": "anthers",
+              "start": 4.9125,
+              "end": 5.646875
+            },
+            {
+              "text": "mature",
+              "start": 5.6625,
+              "end": 6.146875
+            },
+            {
+              "text": "first",
+              "start": 6.1625,
+              "end": 6.771875
+            },
+            {
+              "text": "followed",
+              "start": 6.959375,
+              "end": 7.615625
+            },
+            {
+              "text": "by",
+              "start": 7.63125,
+              "end": 7.865625
+            },
+            {
+              "text": "the",
+              "start": 7.88125,
+              "end": 8.00625
+            },
+            {
+              "text": "stigma",
+              "start": 8.021875,
+              "end": 8.771875
+            }
+          ],
+          "speech_duration": 9.888,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "This sequential maturation is termed **pro-tandry**.",
+          "visual": "Topic-specific educational visual directly matching the sentence: This sequential maturation is termed **pro-tandry**.",
+          "image_prompt": "A close-up of a sunflower stem with two sets of leaves, one at the base and one near the top, in a field with other sunflowers in the background, shot from directly above with soft natural light.",
+          "keywords": [
+            "sequential",
+            "maturation",
+            "termed"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_05_segment_02.wav",
+          "start": 128.736,
+          "end": 136.97799999999998,
+          "shot": {
+            "template": "photo",
+            "heading": "Topic-specific educational visual directly matching the sentence",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "This",
+              "start": 0.1,
+              "end": 0.50625
+            },
+            {
+              "text": "sequential",
+              "start": 0.521875,
+              "end": 1.35
+            },
+            {
+              "text": "maturation",
+              "start": 1.365625,
+              "end": 2.334375
+            },
+            {
+              "text": "is",
+              "start": 2.35,
+              "end": 2.584375
+            },
+            {
+              "text": "termed",
+              "start": 2.6,
+              "end": 3.053125
+            },
+            {
+              "text": "*",
+              "start": 3.06875,
+              "end": 3.81875
+            },
+            {
+              "text": "*",
+              "start": 3.834375,
+              "end": 4.553125
+            },
+            {
+              "text": "pro-tandry",
+              "start": 4.56875,
+              "end": 5.428125
+            },
+            {
+              "text": "*",
+              "start": 5.44375,
+              "end": 6.271875
+            },
+            {
+              "text": "*",
+              "start": 6.2875,
+              "end": 6.88125
+            }
+          ],
+          "speech_duration": 7.992,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "In contrast, **custard apple** exhibits **pro-togeny**, where the stigma matures first.",
+          "visual": "Real HD educational visual: A close-up photo of a custard apple flower with labeled stigma and anthers, showing the stigma maturing first.. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "Realistic HD educational visual, Real HD educational visual: A close-up photo of a custard apple flower with labeled stigma and anthers, showing the stigma maturing first.. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+          "keywords": [
+            "stigma",
+            "pro-togeny"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_05_segment_03.wav",
+          "start": 136.97799999999998,
+          "end": 152.10199999999998,
+          "shot": {
+            "template": "protogyny",
+            "heading": "Protogyny",
+            "learning_objective": "Show that the stigma becomes receptive before anthers release pollen.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.4125
+            },
+            {
+              "text": "contrast",
+              "start": 0.428125,
+              "end": 1.35
+            },
+            {
+              "text": "*",
+              "start": 1.50625,
+              "end": 2.2875
+            },
+            {
+              "text": "*",
+              "start": 2.303125,
+              "end": 2.990625
+            },
+            {
+              "text": "custard",
+              "start": 3.00625,
+              "end": 3.709375
+            },
+            {
+              "text": "apple",
+              "start": 3.725,
+              "end": 4.271875
+            },
+            {
+              "text": "*",
+              "start": 4.2875,
+              "end": 5.06875
+            },
+            {
+              "text": "*",
+              "start": 5.084375,
+              "end": 5.865625
+            },
+            {
+              "text": "exhibits",
+              "start": 5.88125,
+              "end": 6.63125
+            },
+            {
+              "text": "*",
+              "start": 6.646875,
+              "end": 7.428125
+            },
+            {
+              "text": "*",
+              "start": 7.44375,
+              "end": 8.1625
+            },
+            {
+              "text": "pro-togeny",
+              "start": 8.178125,
+              "end": 8.959375
+            },
+            {
+              "text": "*",
+              "start": 8.975,
+              "end": 9.771875
+            },
+            {
+              "text": "*",
+              "start": 9.7875,
+              "end": 10.615625
+            },
+            {
+              "text": "where",
+              "start": 10.88125,
+              "end": 11.1625
+            },
+            {
+              "text": "the",
+              "start": 11.178125,
+              "end": 11.2875
+            },
+            {
+              "text": "stigma",
+              "start": 11.303125,
+              "end": 11.928125
+            },
+            {
+              "text": "matures",
+              "start": 11.94375,
+              "end": 12.646875
+            },
+            {
+              "text": "first",
+              "start": 12.6625,
+              "end": 13.31875
+            }
+          ],
+          "speech_duration": 14.424,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 6,
+      "title": "Structural Adaptations in Papaya",
+      "narration": "Some flowers, like those of **papaya**, have a hood-like structure covering the stigma, a structural adaptation called **hercogamy**.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Some flowers, like those of **papaya**, have a hood-like structure covering the stigma, a structural adaptation called **hercogamy**.",
+          "visual": "Real HD educational visual: Close-up photograph of a papaya flower showing the hood-like structure over the stigma. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up photograph of a papaya flower in natural lighting, showcasing the hood-like structure covering the stigma, a hercogamy adaptation, with sharp detail and a documentary style.",
+          "keywords": [
+            "hercogamy"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_06_segment_01.wav",
+          "start": 152.10199999999998,
+          "end": 170.41799999999998,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Close-up photograph papaya flower",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Some",
+              "start": 0.1,
+              "end": 0.615625
+            },
+            {
+              "text": "flowers",
+              "start": 0.63125,
+              "end": 1.459375
+            },
+            {
+              "text": "like",
+              "start": 1.615625,
+              "end": 1.990625
+            },
+            {
+              "text": "those",
+              "start": 2.00625,
+              "end": 2.396875
+            },
+            {
+              "text": "of",
+              "start": 2.4125,
+              "end": 2.6
+            },
+            {
+              "text": "*",
+              "start": 2.615625,
+              "end": 3.31875
+            },
+            {
+              "text": "*",
+              "start": 3.334375,
+              "end": 4.084375
+            },
+            {
+              "text": "papaya",
+              "start": 4.1,
+              "end": 4.803125
+            },
+            {
+              "text": "*",
+              "start": 4.81875,
+              "end": 5.553125
+            },
+            {
+              "text": "*",
+              "start": 5.56875,
+              "end": 6.38125
+            },
+            {
+              "text": "have",
+              "start": 6.69375,
+              "end": 6.959375
+            },
+            {
+              "text": "a",
+              "start": 6.975,
+              "end": 7.021875
+            },
+            {
+              "text": "hood-like",
+              "start": 7.0375,
+              "end": 7.615625
+            },
+            {
+              "text": "structure",
+              "start": 7.63125,
+              "end": 8.334375
+            },
+            {
+              "text": "covering",
+              "start": 8.35,
+              "end": 8.896875
+            },
+            {
+              "text": "the",
+              "start": 8.9125,
+              "end": 9.021875
+            },
+            {
+              "text": "stigma",
+              "start": 9.0375,
+              "end": 9.803125
+            },
+            {
+              "text": "a",
+              "start": 10.115625,
+              "end": 10.240625
+            },
+            {
+              "text": "structural",
+              "start": 10.25625,
+              "end": 11.178125
+            },
+            {
+              "text": "adaptation",
+              "start": 11.19375,
+              "end": 12.1625
+            },
+            {
+              "text": "called",
+              "start": 12.178125,
+              "end": 12.678125
+            },
+            {
+              "text": "*",
+              "start": 12.69375,
+              "end": 13.475
+            },
+            {
+              "text": "*",
+              "start": 13.490625,
+              "end": 14.240625
+            },
+            {
+              "text": "hercogamy",
+              "start": 14.25625,
+              "end": 15.146875
+            },
+            {
+              "text": "*",
+              "start": 15.1625,
+              "end": 15.9125
+            },
+            {
+              "text": "*",
+              "start": 15.928125,
+              "end": 16.521875
+            }
+          ],
+          "speech_duration": 17.616,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 7,
+      "title": "Pollination Strategies in Orchids and Primrose",
+      "narration": "In **orchids**, pollen from the anther fails to germinate on the stigma of the same flower, preventing self-fertilization. **Primrose** displays **heterostyle**, where the stigma is positioned at a different height compared to the anther, promoting cross-pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "In **orchids**, pollen from the anther fails to germinate on the stigma of the same flower, preventing self-fertilization.",
+          "visual": "Real HD educational visual: Close-up photo of an orchid flower showing the anther and stigma positions. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up photo of an orchid flower, set in natural lighting, with sharp detail, showing the anther and stigma positions in a documentary style, highlighting the unique pollination strategy of orchids where pollen from the anther fails to germinate on the stigma of the same flower, preventing self-fertilization.",
+          "keywords": [
+            "anther",
+            "stigma",
+            "self-fertilization prevention"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_07_segment_01.wav",
+          "start": 170.41799999999998,
+          "end": 184.03599999999997,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Close-up photo orchid flower",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.38125
+            },
+            {
+              "text": "*",
+              "start": 0.396875,
+              "end": 1.115625
+            },
+            {
+              "text": "*",
+              "start": 1.13125,
+              "end": 1.85
+            },
+            {
+              "text": "orchids",
+              "start": 1.865625,
+              "end": 2.459375
+            },
+            {
+              "text": "*",
+              "start": 2.475,
+              "end": 3.209375
+            },
+            {
+              "text": "*",
+              "start": 3.225,
+              "end": 4.053125
+            },
+            {
+              "text": "pollen",
+              "start": 4.209375,
+              "end": 4.69375
+            },
+            {
+              "text": "from",
+              "start": 4.709375,
+              "end": 5.00625
+            },
+            {
+              "text": "the",
+              "start": 5.021875,
+              "end": 5.178125
+            },
+            {
+              "text": "anther",
+              "start": 5.19375,
+              "end": 5.725
+            },
+            {
+              "text": "fails",
+              "start": 5.740625,
+              "end": 6.225
+            },
+            {
+              "text": "to",
+              "start": 6.240625,
+              "end": 6.38125
+            },
+            {
+              "text": "germinate",
+              "start": 6.396875,
+              "end": 7.115625
+            },
+            {
+              "text": "on",
+              "start": 7.13125,
+              "end": 7.303125
+            },
+            {
+              "text": "the",
+              "start": 7.31875,
+              "end": 7.428125
+            },
+            {
+              "text": "stigma",
+              "start": 7.44375,
+              "end": 8.1
+            },
+            {
+              "text": "of",
+              "start": 8.115625,
+              "end": 8.303125
+            },
+            {
+              "text": "the",
+              "start": 8.31875,
+              "end": 8.44375
+            },
+            {
+              "text": "same",
+              "start": 8.459375,
+              "end": 8.88125
+            },
+            {
+              "text": "flower",
+              "start": 8.896875,
+              "end": 9.6
+            },
+            {
+              "text": "preventing",
+              "start": 9.81875,
+              "end": 10.584375
+            },
+            {
+              "text": "self-fertilization",
+              "start": 10.6,
+              "end": 12.25625
+            }
+          ],
+          "speech_duration": 13.368,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "**Primrose** displays **heterostyle**, where the stigma is positioned at a different height compared to the anther, promoting cross-pollination.",
+          "visual": "Real HD educational visual: Close-up photo of a primrose flower showing the anther and stigma positions. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up, documentary-style photo of a primrose flower in natural lighting, showcasing the anther and stigma positions, with sharp detail and accurate representation of the subject.",
+          "keywords": [
+            "anther",
+            "stigma",
+            "cross-pollination promotion"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_07_segment_02.wav",
+          "start": 184.03599999999997,
+          "end": 202.20799999999997,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Close-up photo primrose flower",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "*",
+              "start": 0.1,
+              "end": 0.9125
+            },
+            {
+              "text": "*",
+              "start": 0.928125,
+              "end": 1.615625
+            },
+            {
+              "text": "Primrose",
+              "start": 1.63125,
+              "end": 2.334375
+            },
+            {
+              "text": "*",
+              "start": 2.35,
+              "end": 3.1
+            },
+            {
+              "text": "*",
+              "start": 3.115625,
+              "end": 3.7875
+            },
+            {
+              "text": "displays",
+              "start": 3.803125,
+              "end": 4.5375
+            },
+            {
+              "text": "*",
+              "start": 4.553125,
+              "end": 5.271875
+            },
+            {
+              "text": "*",
+              "start": 5.2875,
+              "end": 5.990625
+            },
+            {
+              "text": "heterostyle",
+              "start": 6.00625,
+              "end": 6.975
+            },
+            {
+              "text": "*",
+              "start": 6.990625,
+              "end": 7.69375
+            },
+            {
+              "text": "*",
+              "start": 7.709375,
+              "end": 8.521875
+            },
+            {
+              "text": "where",
+              "start": 8.678125,
+              "end": 8.959375
+            },
+            {
+              "text": "the",
+              "start": 8.975,
+              "end": 9.084375
+            },
+            {
+              "text": "stigma",
+              "start": 9.1,
+              "end": 9.75625
+            },
+            {
+              "text": "is",
+              "start": 9.771875,
+              "end": 9.990625
+            },
+            {
+              "text": "positioned",
+              "start": 10.00625,
+              "end": 10.85
+            },
+            {
+              "text": "at",
+              "start": 10.865625,
+              "end": 11.146875
+            },
+            {
+              "text": "a",
+              "start": 11.1625,
+              "end": 11.225
+            },
+            {
+              "text": "different",
+              "start": 11.240625,
+              "end": 11.834375
+            },
+            {
+              "text": "height",
+              "start": 11.85,
+              "end": 12.2875
+            },
+            {
+              "text": "compared",
+              "start": 12.303125,
+              "end": 12.928125
+            },
+            {
+              "text": "to",
+              "start": 12.94375,
+              "end": 13.06875
+            },
+            {
+              "text": "the",
+              "start": 13.084375,
+              "end": 13.271875
+            },
+            {
+              "text": "anther",
+              "start": 13.2875,
+              "end": 13.959375
+            },
+            {
+              "text": "promoting",
+              "start": 14.209375,
+              "end": 14.94375
+            },
+            {
+              "text": "cross-pollination",
+              "start": 14.959375,
+              "end": 16.35
+            }
+          ],
+          "speech_duration": 17.472,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 8,
+      "title": "Bee Orchid Mimicry",
+      "narration": "The **bee orchid** mimics a female bee to attract male bees, which inadvertently transfer pollen. While the original transcript mentions \"water tracks the pollinator\" (likely a transcription error), the intended concept aligns with the role of **scent** and **nectar** in attracting pollinators.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "The bee orchid mimics a female bee to attract male bees, which inadvertently transfer pollen.",
+          "visual": "Real HD educational visual: Close-up of bee orchid flower with visible bee-like markings. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "Macro documentary photograph of a bee orchid flower resembling a female bee, with a nearby male bee, realistic botanical detail, natural daylight, no text, no labels.",
+          "keywords": [
+            "female bee mimicry",
+            "pollen transfer"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_08_segment_01.wav",
+          "start": 202.20799999999997,
+          "end": 211.21799999999996,
+          "shot": {
+            "template": "photo",
+            "heading": "Bee Orchid Mimicry",
+            "learning_objective": "Show how deceptive mimicry can attract a pollinator.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.35
+            },
+            {
+              "text": "bee",
+              "start": 0.365625,
+              "end": 0.6
+            },
+            {
+              "text": "orchid",
+              "start": 0.615625,
+              "end": 1.19375
+            },
+            {
+              "text": "mimics",
+              "start": 1.209375,
+              "end": 1.709375
+            },
+            {
+              "text": "a",
+              "start": 1.725,
+              "end": 1.803125
+            },
+            {
+              "text": "female",
+              "start": 1.81875,
+              "end": 2.428125
+            },
+            {
+              "text": "bee",
+              "start": 2.44375,
+              "end": 2.6625
+            },
+            {
+              "text": "to",
+              "start": 2.678125,
+              "end": 2.928125
+            },
+            {
+              "text": "attract",
+              "start": 2.94375,
+              "end": 3.56875
+            },
+            {
+              "text": "male",
+              "start": 3.584375,
+              "end": 3.896875
+            },
+            {
+              "text": "bees",
+              "start": 3.9125,
+              "end": 4.44375
+            },
+            {
+              "text": "which",
+              "start": 4.740625,
+              "end": 5.0375
+            },
+            {
+              "text": "inadvertently",
+              "start": 5.053125,
+              "end": 6.240625
+            },
+            {
+              "text": "transfer",
+              "start": 6.25625,
+              "end": 6.975
+            },
+            {
+              "text": "pollen",
+              "start": 6.990625,
+              "end": 7.646875
+            }
+          ],
+          "speech_duration": 8.76,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "While the original transcript mentions 'water tracks the pollinator' (likely a transcription error), the intended concept aligns with the role of scent and nectar in attracting pollinators.",
+          "visual": "Real HD educational visual: Close-up of bee orchid flower with visible scent glands and nectar droplets. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "Macro documentary photograph of a bee orchid flower resembling a female bee, with a nearby male bee, showcasing realistic botanical detail, in natural daylight, without any text or labels.",
+          "keywords": [
+            "attractant scent",
+            "nectar reward"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_08_segment_02.wav",
+          "start": 211.21799999999996,
+          "end": 227.46999999999997,
+          "shot": {
+            "template": "photo",
+            "heading": "Bee Orchid Mimicry",
+            "learning_objective": "Show how deceptive mimicry can attract a pollinator.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "While",
+              "start": 0.1,
+              "end": 0.56875
+            },
+            {
+              "text": "the",
+              "start": 0.584375,
+              "end": 0.725
+            },
+            {
+              "text": "original",
+              "start": 0.740625,
+              "end": 1.365625
+            },
+            {
+              "text": "transcript",
+              "start": 1.38125,
+              "end": 2.178125
+            },
+            {
+              "text": "mentions",
+              "start": 2.19375,
+              "end": 2.928125
+            },
+            {
+              "text": "water",
+              "start": 3.053125,
+              "end": 3.56875
+            },
+            {
+              "text": "tracks",
+              "start": 3.584375,
+              "end": 4.1
+            },
+            {
+              "text": "the",
+              "start": 4.115625,
+              "end": 4.240625
+            },
+            {
+              "text": "pollinator",
+              "start": 4.25625,
+              "end": 5.178125
+            },
+            {
+              "text": "likely",
+              "start": 5.35,
+              "end": 5.990625
+            },
+            {
+              "text": "a",
+              "start": 6.00625,
+              "end": 6.084375
+            },
+            {
+              "text": "transcription",
+              "start": 6.1,
+              "end": 7.19375
+            },
+            {
+              "text": "error",
+              "start": 7.209375,
+              "end": 7.709375
+            },
+            {
+              "text": "the",
+              "start": 7.928125,
+              "end": 8.13125
+            },
+            {
+              "text": "intended",
+              "start": 8.146875,
+              "end": 8.834375
+            },
+            {
+              "text": "concept",
+              "start": 8.85,
+              "end": 9.459375
+            },
+            {
+              "text": "aligns",
+              "start": 9.475,
+              "end": 10.1
+            },
+            {
+              "text": "with",
+              "start": 10.115625,
+              "end": 10.2875
+            },
+            {
+              "text": "the",
+              "start": 10.303125,
+              "end": 10.4125
+            },
+            {
+              "text": "role",
+              "start": 10.428125,
+              "end": 10.7875
+            },
+            {
+              "text": "of",
+              "start": 10.803125,
+              "end": 10.959375
+            },
+            {
+              "text": "scent",
+              "start": 10.975,
+              "end": 11.490625
+            },
+            {
+              "text": "and",
+              "start": 11.50625,
+              "end": 11.75625
+            },
+            {
+              "text": "nectar",
+              "start": 11.771875,
+              "end": 12.4125
+            },
+            {
+              "text": "in",
+              "start": 12.428125,
+              "end": 12.56875
+            },
+            {
+              "text": "attracting",
+              "start": 12.584375,
+              "end": 13.35
+            },
+            {
+              "text": "pollinators",
+              "start": 13.365625,
+              "end": 14.459375
+            }
+          ],
+          "speech_duration": 15.552,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 9,
+      "title": "Summary of Pollination Strategies",
+      "narration": "To summarize, self-pollination occurs in plants like *Ixora* through **homogamy**, while **wood sorrel** relies on **cleistogamy** for self-pollination in closed flowers. Cross-pollination is facilitated in papaya through separate male and female flowers, and in sunflowers via **pro-tandry**. Structural adaptations like **hercogamy** in papaya and **heterostyle** in primrose further enhance cross-pollination. The bee orchid’s mimicry of a female bee exemplifies evolutionary strategies to ensure pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "To summarize, self-pollination occurs in plants like *Ixora* through **homogamy**, while **wood sorrel** relies on **cleistogamy** for self-pollination in closed flowers.",
+          "visual": "Real HD educational visual: Close-up photo of *Ixora* flower with labeled structures showing homogamy (self-pollination mechanism) and wood sorrel flower with cleistogamy (closed flower self-pollination structure). Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up photo of *Ixora* flower with labeled structures showing homogamy (self-pollination mechanism) and wood sorrel flower with cleistogamy (closed flower self-pollination structure). Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+          "keywords": [
+            "homogamy",
+            "cleistogamy"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_09_segment_01.wav",
+          "start": 227.46999999999997,
+          "end": 252.41599999999997,
+          "shot": {
+            "template": "process",
+            "heading": "Cleistogamy",
+            "learning_objective": "Show self-pollination inside a closed flower.",
+            "asset_path": null,
+            "steps": [
+              "Flower remains closed",
+              "Self-pollination occurs inside"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [
+            {
+              "text": "To",
+              "start": 0.1,
+              "end": 0.31875
+            },
+            {
+              "text": "summarize",
+              "start": 0.334375,
+              "end": 1.35
+            },
+            {
+              "text": "self-pollination",
+              "start": 1.50625,
+              "end": 2.865625
+            },
+            {
+              "text": "occurs",
+              "start": 2.88125,
+              "end": 3.4125
+            },
+            {
+              "text": "in",
+              "start": 3.428125,
+              "end": 3.6
+            },
+            {
+              "text": "plants",
+              "start": 3.615625,
+              "end": 4.1625
+            },
+            {
+              "text": "like",
+              "start": 4.178125,
+              "end": 4.5375
+            },
+            {
+              "text": "*",
+              "start": 4.553125,
+              "end": 5.271875
+            },
+            {
+              "text": "Ixora",
+              "start": 5.2875,
+              "end": 6.00625
+            },
+            {
+              "text": "*",
+              "start": 6.021875,
+              "end": 6.771875
+            },
+            {
+              "text": "through",
+              "start": 6.7875,
+              "end": 7.1
+            },
+            {
+              "text": "*",
+              "start": 7.115625,
+              "end": 7.896875
+            },
+            {
+              "text": "*",
+              "start": 7.9125,
+              "end": 8.615625
+            },
+            {
+              "text": "homogamy",
+              "start": 8.63125,
+              "end": 9.4125
+            },
+            {
+              "text": "*",
+              "start": 9.428125,
+              "end": 10.1625
+            },
+            {
+              "text": "*",
+              "start": 10.178125,
+              "end": 11.00625
+            },
+            {
+              "text": "while",
+              "start": 11.271875,
+              "end": 11.6
+            },
+            {
+              "text": "*",
+              "start": 11.615625,
+              "end": 12.334375
+            },
+            {
+              "text": "*",
+              "start": 12.35,
+              "end": 13.084375
+            },
+            {
+              "text": "wood",
+              "start": 13.1,
+              "end": 13.334375
+            },
+            {
+              "text": "sorrel",
+              "start": 13.35,
+              "end": 13.88125
+            },
+            {
+              "text": "*",
+              "start": 13.896875,
+              "end": 14.6
+            },
+            {
+              "text": "*",
+              "start": 14.615625,
+              "end": 15.334375
+            },
+            {
+              "text": "relies",
+              "start": 15.35,
+              "end": 15.990625
+            },
+            {
+              "text": "on",
+              "start": 16.00625,
+              "end": 16.240625
+            },
+            {
+              "text": "*",
+              "start": 16.25625,
+              "end": 17.00625
+            },
+            {
+              "text": "*",
+              "start": 17.021875,
+              "end": 17.709375
+            },
+            {
+              "text": "cleistogamy",
+              "start": 17.725,
+              "end": 18.803125
+            },
+            {
+              "text": "*",
+              "start": 18.81875,
+              "end": 19.584375
+            },
+            {
+              "text": "*",
+              "start": 19.6,
+              "end": 20.31875
+            },
+            {
+              "text": "for",
+              "start": 20.334375,
+              "end": 20.56875
+            },
+            {
+              "text": "self-pollination",
+              "start": 20.584375,
+              "end": 21.94375
+            },
+            {
+              "text": "in",
+              "start": 21.959375,
+              "end": 22.19375
+            },
+            {
+              "text": "closed",
+              "start": 22.209375,
+              "end": 22.725
+            },
+            {
+              "text": "flowers",
+              "start": 22.740625,
+              "end": 23.56875
+            }
+          ],
+          "speech_duration": 24.696,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Cross-pollination is facilitated in papaya through separate male and female flowers, and in sunflowers via **pro-tandry**.",
+          "visual": "Real HD educational visual: Side-by-side comparison of papaya flowers (male and female separated) and sunflower with labeled pro-tandry structure (male and female parts at different heights). Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style image of a sunflower in a field, with a papaya plant in the background, under natural lighting. The sunflower has a labeled pro-tandry structure, with male and female parts at different heights, while the papaya plant has separate male and female flowers. The camera is positioned for a side-by-side comparison, with sharp detail and accurate representation of the subject.",
+          "keywords": [
+            "male flower",
+            "female flower",
+            "pro-tandry"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_09_segment_02.wav",
+          "start": 252.41599999999997,
+          "end": 266.27399999999994,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Side-by-side comparison papaya flowers",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Cross-pollination",
+              "start": 0.1,
+              "end": 1.44375
+            },
+            {
+              "text": "is",
+              "start": 1.459375,
+              "end": 1.6625
+            },
+            {
+              "text": "facilitated",
+              "start": 1.678125,
+              "end": 2.678125
+            },
+            {
+              "text": "in",
+              "start": 2.69375,
+              "end": 2.865625
+            },
+            {
+              "text": "papaya",
+              "start": 2.88125,
+              "end": 3.490625
+            },
+            {
+              "text": "through",
+              "start": 3.50625,
+              "end": 3.834375
+            },
+            {
+              "text": "separate",
+              "start": 3.85,
+              "end": 4.490625
+            },
+            {
+              "text": "male",
+              "start": 4.50625,
+              "end": 4.928125
+            },
+            {
+              "text": "and",
+              "start": 4.94375,
+              "end": 5.19375
+            },
+            {
+              "text": "female",
+              "start": 5.209375,
+              "end": 5.709375
+            },
+            {
+              "text": "flowers",
+              "start": 5.725,
+              "end": 6.50625
+            },
+            {
+              "text": "and",
+              "start": 6.6625,
+              "end": 6.990625
+            },
+            {
+              "text": "in",
+              "start": 7.00625,
+              "end": 7.146875
+            },
+            {
+              "text": "sunflowers",
+              "start": 7.1625,
+              "end": 8.225
+            },
+            {
+              "text": "via",
+              "start": 8.240625,
+              "end": 8.771875
+            },
+            {
+              "text": "*",
+              "start": 8.7875,
+              "end": 9.5375
+            },
+            {
+              "text": "*",
+              "start": 9.553125,
+              "end": 10.240625
+            },
+            {
+              "text": "pro-tandry",
+              "start": 10.25625,
+              "end": 11.06875
+            },
+            {
+              "text": "*",
+              "start": 11.084375,
+              "end": 11.88125
+            },
+            {
+              "text": "*",
+              "start": 11.896875,
+              "end": 12.50625
+            }
+          ],
+          "speech_duration": 13.608,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "Structural adaptations like **hercogamy** in papaya and **heterostyle** in primrose further enhance cross-pollination.",
+          "visual": "Real HD educational visual: Papaya flower with labeled hercogamy (male and female parts at different heights) and primrose flower with labeled heterostyle (stamen and pistil at different heights). Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style image of a papaya flower with hercogamy, where the male and female parts are at different heights, and a primrose flower with heterostyle, where the stamen and pistil are at different heights, in a natural setting with sharp detail and soft natural lighting.",
+          "keywords": [
+            "hercogamy",
+            "heterostyle"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_09_segment_03.wav",
+          "start": 266.27399999999994,
+          "end": 282.84399999999994,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Papaya flower with labeled",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Structural",
+              "start": 0.1,
+              "end": 1.053125
+            },
+            {
+              "text": "adaptations",
+              "start": 1.06875,
+              "end": 2.13125
+            },
+            {
+              "text": "like",
+              "start": 2.146875,
+              "end": 2.490625
+            },
+            {
+              "text": "*",
+              "start": 2.50625,
+              "end": 3.209375
+            },
+            {
+              "text": "*",
+              "start": 3.225,
+              "end": 3.9125
+            },
+            {
+              "text": "hercogamy",
+              "start": 3.928125,
+              "end": 4.803125
+            },
+            {
+              "text": "*",
+              "start": 4.81875,
+              "end": 5.553125
+            },
+            {
+              "text": "*",
+              "start": 5.56875,
+              "end": 6.35
+            },
+            {
+              "text": "in",
+              "start": 6.365625,
+              "end": 6.56875
+            },
+            {
+              "text": "papaya",
+              "start": 6.584375,
+              "end": 7.303125
+            },
+            {
+              "text": "and",
+              "start": 7.31875,
+              "end": 7.6
+            },
+            {
+              "text": "*",
+              "start": 7.615625,
+              "end": 8.303125
+            },
+            {
+              "text": "*",
+              "start": 8.31875,
+              "end": 9.0375
+            },
+            {
+              "text": "heterostyle",
+              "start": 9.053125,
+              "end": 10.0375
+            },
+            {
+              "text": "*",
+              "start": 10.053125,
+              "end": 10.81875
+            },
+            {
+              "text": "*",
+              "start": 10.834375,
+              "end": 11.6
+            },
+            {
+              "text": "in",
+              "start": 11.615625,
+              "end": 11.81875
+            },
+            {
+              "text": "primrose",
+              "start": 11.834375,
+              "end": 12.5375
+            },
+            {
+              "text": "further",
+              "start": 12.553125,
+              "end": 13.13125
+            },
+            {
+              "text": "enhance",
+              "start": 13.146875,
+              "end": 13.740625
+            },
+            {
+              "text": "cross-pollination",
+              "start": 13.75625,
+              "end": 15.19375
+            }
+          ],
+          "speech_duration": 16.32,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "The bee orchid’s mimicry of a female bee exemplifies evolutionary strategies to ensure pollination.",
+          "visual": "Real HD educational visual: Close-up of bee orchid flower mimicking a female bee, with labeled mimicry structures and evolutionary adaptation explanation. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up of a sunflower in a field, with a few bees buzzing around it, warm sunlight casting a glow on the yellow petals, a slight breeze rustling the leaves, a neutral background, no text or labels.",
+          "keywords": [
+            "mimicry of female bee",
+            "evolutionary strategy"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_09_segment_04.wav",
+          "start": 282.84399999999994,
+          "end": 292.5919999999999,
+          "shot": {
+            "template": "photo",
+            "heading": "Bee Orchid Mimicry",
+            "learning_objective": "Show how deceptive mimicry can attract a pollinator.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.35
+            },
+            {
+              "text": "bee",
+              "start": 0.365625,
+              "end": 0.56875
+            },
+            {
+              "text": "orchid’s",
+              "start": 0.584375,
+              "end": 1.19375
+            },
+            {
+              "text": "mimicry",
+              "start": 1.209375,
+              "end": 1.865625
+            },
+            {
+              "text": "of",
+              "start": 1.88125,
+              "end": 2.06875
+            },
+            {
+              "text": "a",
+              "start": 2.084375,
+              "end": 2.146875
+            },
+            {
+              "text": "female",
+              "start": 2.1625,
+              "end": 2.771875
+            },
+            {
+              "text": "bee",
+              "start": 2.7875,
+              "end": 2.990625
+            },
+            {
+              "text": "exemplifies",
+              "start": 3.00625,
+              "end": 4.271875
+            },
+            {
+              "text": "evolutionary",
+              "start": 4.2875,
+              "end": 5.209375
+            },
+            {
+              "text": "strategies",
+              "start": 5.225,
+              "end": 6.115625
+            },
+            {
+              "text": "to",
+              "start": 6.13125,
+              "end": 6.365625
+            },
+            {
+              "text": "ensure",
+              "start": 6.38125,
+              "end": 7.00625
+            },
+            {
+              "text": "pollination",
+              "start": 7.021875,
+              "end": 7.94375
+            }
+          ],
+          "speech_duration": 9.048,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 10,
+      "title": "Final Thoughts on Pollination",
+      "narration": "Keep them **biving** (likely \"believing\" due to transcription error). We believe in you.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Keep them biving (likely \"believing\" due to transcription error).",
+          "visual": "Real HD educational visual: A group of people holding hands in a circle, forming a supportive community. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A group of people in a sunny garden, holding hands in a circle, surrounded by tall sunflowers, with a documentary-style camera positioned slightly above, capturing the warm natural light and the supportive community's gentle gestures.",
+          "keywords": [
+            "believing"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_10_segment_01.wav",
+          "start": 292.5919999999999,
+          "end": 299.6099999999999,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual group people holding hands",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Keep",
+              "start": 0.1,
+              "end": 0.490625
+            },
+            {
+              "text": "them",
+              "start": 0.50625,
+              "end": 0.803125
+            },
+            {
+              "text": "biving",
+              "start": 0.81875,
+              "end": 1.50625
+            },
+            {
+              "text": "likely",
+              "start": 1.678125,
+              "end": 2.50625
+            },
+            {
+              "text": "believing",
+              "start": 2.63125,
+              "end": 3.490625
+            },
+            {
+              "text": "due",
+              "start": 3.6,
+              "end": 3.94375
+            },
+            {
+              "text": "to",
+              "start": 3.959375,
+              "end": 4.13125
+            },
+            {
+              "text": "transcription",
+              "start": 4.146875,
+              "end": 5.146875
+            },
+            {
+              "text": "error",
+              "start": 5.1625,
+              "end": 5.63125
+            }
+          ],
+          "speech_duration": 6.768,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "We believe in you.",
+          "visual": "Real HD educational visual: A teacher and student looking at each other with a supportive expression. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A teacher and student sit together, looking at each other with supportive expressions, in a well-lit classroom with a wooden desk and a few books, capturing a moment of genuine connection and trust, in a documentary-style, high-definition educational visual.",
+          "keywords": [
+            "believing"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_LTX\\outputs\\ltx_pollination_latest\\audio\\scene_10_segment_02.wav",
+          "start": 299.6099999999999,
+          "end": 302.1299999999999,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual teacher and student looking",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "We",
+              "start": 0.1,
+              "end": 0.38125
+            },
+            {
+              "text": "believe",
+              "start": 0.396875,
+              "end": 0.88125
+            },
+            {
+              "text": "in",
+              "start": 0.896875,
+              "end": 1.0375
+            },
+            {
+              "text": "you",
+              "start": 1.053125,
+              "end": 1.428125
+            }
+          ],
+          "speech_duration": 2.52,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    }
+  ]
+}

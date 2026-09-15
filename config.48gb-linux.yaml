@@ -1,0 +1,41 @@
+project_name: "Open Edu Video Generator 48GB Linux"
+
+output_resolution:
+  width: 1920
+  height: 1080
+
+fps: 30
+visual_mode: "comfyui-video"
+
+ffmpeg_path: "/usr/bin/ffmpeg"
+ffprobe_path: "/usr/bin/ffprobe"
+
+ollama_url: "http://localhost:11434"
+ollama_model: "qwen2.5:14b"
+use_ollama: true
+
+tts_provider: "edge"
+edge_tts:
+  voice: "en-IN-NeerjaNeural"
+  rate: "-20%"
+
+piper_path: "/usr/local/bin/piper"
+piper_model: "/opt/piper/voices/en_US-lessac-medium.onnx"
+piper_config: "/opt/piper/voices/en_US-lessac-medium.onnx.json"
+
+voice:
+  sentence_gap_seconds: 0.25
+  scene_gap_seconds: 0.7
+
+render:
+  background: "#F7F8F3"
+  ink: "#182026"
+  accent: "#2E7D63"
+  second_accent: "#D18B32"
+  subtitle_bg: "#101820"
+  subtitle_fg: "#FFFFFF"
+  seconds_per_segment_without_audio: 5.0
+
+comfyui:
+  api_url: "http://127.0.0.1:8188"
+  enabled: true

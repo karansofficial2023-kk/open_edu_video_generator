@@ -1,0 +1,57 @@
+project_name: "Open Edu Video Generator"
+
+output_resolution:
+  width: 1280
+  height: 720
+
+fps: 30
+visual_mode: "slideshow"
+
+ffmpeg_path: "ffmpeg"
+ffprobe_path: "ffprobe"
+
+ollama_url: "http://localhost:11434"
+ollama_model: "llama3.2:3b"
+use_ollama: true
+
+tts_provider: "edge"
+edge_tts:
+  voice: "en-IN-NeerjaNeural"
+  rate: "-20%"
+
+piper_path: "piper"
+piper_model: "C:/piper/voices/en_US-lessac-medium.onnx"
+piper_config: "C:/piper/voices/en_US-lessac-medium.onnx.json"
+
+voice:
+  sentence_gap_seconds: 0.25
+  scene_gap_seconds: 0.7
+
+render:
+  background: "#F7F8F3"
+  ink: "#182026"
+  accent: "#2E7D63"
+  second_accent: "#D18B32"
+  subtitle_bg: "#101820"
+  subtitle_fg: "#FFFFFF"
+  seconds_per_segment_without_audio: 5.0
+  video_crf: 18
+  video_preset: "slow"
+
+comfyui:
+  api_url: "http://127.0.0.1:8188"
+  enabled: false
+  workflow_path: "workflows/sdxl_txt2img_api.json"
+  checkpoint: "sdxl_lightning_4step.safetensors"
+  width: 1024
+  height: 576
+  steps: 4
+  cfg: 1.0
+  sampler_name: "euler"
+  scheduler: "sgm_uniform"
+  seed: -1
+  timeout_seconds: 900
+  fallback_to_slideshow: true
+  prompt_prefix: "high quality educational documentary still, clean scientific visual, cinematic lighting, detailed, accurate, natural colors,"
+  prompt_suffix: "no watermark, no logo, no extra text, no distorted anatomy, no blurry image"
+  negative_prompt: "low quality, blurry, watermark, logo, extra text, misspelled text, deformed, distorted, noisy, oversaturated, cartoonish"

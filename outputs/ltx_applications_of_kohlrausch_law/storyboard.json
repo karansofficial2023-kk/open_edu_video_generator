@@ -1,0 +1,2198 @@
+{
+  "title": "Storyboard: One of the key uses of electrolytes is their role in conducting electricity during electrolysis",
+  "source": "One of the key uses of electrolytes is their role in conducting electricity during electrolysis. This process is widely applied in fields such as metallurgy, electrorefining, and electroplating. In electroplating, the selection of an electrolyte and its precise molar conductivity significantly impact the outcome.\nCan you determine whether strong or weak electrolytes exhibit optimal molar conductivity? Weak acids and bases are categorized as weak electrolytes due to their low molar conductivities. Recall the graph illustrating the challenge of determining the limiting molar conductivity of a weak electrolyte like acetic acid.\nAs concentrations decrease, the graph approaches an asymptote, making it impossible to measure molar conductivity as concentration approaches zero. However, an alternative method exists through Kohlrausch's law. Experimental observations revealed that an electrolyte's limiting molar conductivity equals the sum of the limiting molar conductivities of its individual ions.\nFor instance, to calculate the limiting molar conductivity of acetic acid, we only need the values for its constituent ions. Kohlrausch formulated the law of independent ion migration, stating that an electrolyte's limiting molar conductivity is the sum of its cation and anion contributions. This law aids in determining limiting molar conductivities for weak electrolytes like acetic acid.\nBy extrapolating the molar conductivity vs. square root of concentration graph for strong electrolytes such as sodium acetate, hydrochloric acid, and sodium chloride, their limiting molar conductivities can be derived. The limiting molar conductivity of acetic acid is calculated as the sum of sodium acetate and hydrochloric acid's values minus sodium chloride's.\nSimplifying this expression yields the limiting molar conductivity of acetic acid. Thus, Kohlrausch's law enables determining weak electrolytes' limiting molar conductivities using strong electrolytes. This video exemplifies the adage: 'When one door closes, another opens.' Kohlrausch's law has proven invaluable in calculating limiting molar conductivities for weak electrolytes like acetic acid and ammonium hydroxide.\nDo you believe Kohlrausch's law has other applications? Stay tuned for our upcoming videos to explore further.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Introduction to Electrolytes and Their Role",
+      "narration": "One of the key uses of electrolytes is their role in conducting electricity during electrolysis. This process is widely applied in fields such as metallurgy, electrorefining, and electroplating. In electroplating, the selection of an electrolyte and its precise molar conductivity significantly impact the outcome.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "One of the key uses of electrolytes is their role in conducting electricity during electrolysis.",
+          "visual": "Real HD educational visual: Labeled diagram of an electrolytic cell showing electrodes, power source, and ion movement. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A realistic, high-definition educational visual of an electrolytic cell, with electrodes and a power source, set against a neutral background, under natural lighting, with sharp detail and a documentary style, accurately depicting the movement of ions.",
+          "keywords": [
+            "anode",
+            "cathode",
+            "electrolyte",
+            "electric current",
+            "ion movement"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_01_segment_01.wav",
+          "start": 0.0,
+          "end": 9.346,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual electrolytic cell showing electrodes",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "One",
+              "start": 0.1,
+              "end": 0.50625
+            },
+            {
+              "text": "of",
+              "start": 0.521875,
+              "end": 0.63125
+            },
+            {
+              "text": "the",
+              "start": 0.646875,
+              "end": 0.771875
+            },
+            {
+              "text": "key",
+              "start": 0.7875,
+              "end": 1.13125
+            },
+            {
+              "text": "uses",
+              "start": 1.146875,
+              "end": 1.69375
+            },
+            {
+              "text": "of",
+              "start": 1.709375,
+              "end": 1.9125
+            },
+            {
+              "text": "electrolytes",
+              "start": 1.928125,
+              "end": 3.021875
+            },
+            {
+              "text": "is",
+              "start": 3.0375,
+              "end": 3.225
+            },
+            {
+              "text": "their",
+              "start": 3.240625,
+              "end": 3.44375
+            },
+            {
+              "text": "role",
+              "start": 3.459375,
+              "end": 3.865625
+            },
+            {
+              "text": "in",
+              "start": 3.88125,
+              "end": 4.084375
+            },
+            {
+              "text": "conducting",
+              "start": 4.1,
+              "end": 4.94375
+            },
+            {
+              "text": "electricity",
+              "start": 4.959375,
+              "end": 5.959375
+            },
+            {
+              "text": "during",
+              "start": 5.975,
+              "end": 6.584375
+            },
+            {
+              "text": "electrolysis",
+              "start": 6.6,
+              "end": 8.021875
+            }
+          ],
+          "speech_duration": 9.096,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "This process is widely applied in fields such as metallurgy, electrorefining, and electroplating.",
+          "visual": "Real HD educational visual: Industrial electrolysis setup with metal purification and plating processes. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "Industrial electrolysis setup with metal purification and plating processes, set in a large, well-lit factory room with metal pipes and machinery, camera positioned at a 45-degree angle to show the equipment and workers in the background, natural light pouring in through large windows, highlighting the details of the machinery and the metal being purified and plated.",
+          "keywords": [
+            "metallurgy",
+            "electrorefining",
+            "electroplating"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_01_segment_02.wav",
+          "start": 9.346,
+          "end": 18.740000000000002,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Industrial electrolysis setup with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "This",
+              "start": 0.1,
+              "end": 0.50625
+            },
+            {
+              "text": "process",
+              "start": 0.521875,
+              "end": 1.19375
+            },
+            {
+              "text": "is",
+              "start": 1.209375,
+              "end": 1.396875
+            },
+            {
+              "text": "widely",
+              "start": 1.4125,
+              "end": 1.959375
+            },
+            {
+              "text": "applied",
+              "start": 1.975,
+              "end": 2.553125
+            },
+            {
+              "text": "in",
+              "start": 2.56875,
+              "end": 2.725
+            },
+            {
+              "text": "fields",
+              "start": 2.740625,
+              "end": 3.2875
+            },
+            {
+              "text": "such",
+              "start": 3.303125,
+              "end": 3.63125
+            },
+            {
+              "text": "as",
+              "start": 3.646875,
+              "end": 3.94375
+            },
+            {
+              "text": "metallurgy",
+              "start": 3.959375,
+              "end": 4.85
+            },
+            {
+              "text": "electrorefining",
+              "start": 5.0375,
+              "end": 6.2875
+            },
+            {
+              "text": "and",
+              "start": 6.44375,
+              "end": 6.740625
+            },
+            {
+              "text": "electroplating",
+              "start": 6.75625,
+              "end": 8.021875
+            }
+          ],
+          "speech_duration": 9.144,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "In electroplating, the selection of an electrolyte and its precise molar conductivity significantly impact the outcome.",
+          "visual": "Real HD educational visual: Close-up of electroplating process with metal deposition on a surface. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Electroplating process\nduration: 8.0 sec\nprompt: Cinematic macro video of electroplating process, visible metal ions depositing on a surface, natural daylight, realistic industrial detail, clean background, high clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "electrolyte solution",
+            "molar conductivity",
+            "metal deposition"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_01_segment_03.wav",
+          "start": 18.740000000000002,
+          "end": 30.504,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Close-up electroplating process with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.38125
+            },
+            {
+              "text": "electroplating",
+              "start": 0.396875,
+              "end": 1.6625
+            },
+            {
+              "text": "the",
+              "start": 1.85,
+              "end": 2.00625
+            },
+            {
+              "text": "selection",
+              "start": 2.021875,
+              "end": 2.709375
+            },
+            {
+              "text": "of",
+              "start": 2.725,
+              "end": 2.896875
+            },
+            {
+              "text": "an",
+              "start": 2.9125,
+              "end": 3.053125
+            },
+            {
+              "text": "electrolyte",
+              "start": 3.06875,
+              "end": 4.1625
+            },
+            {
+              "text": "and",
+              "start": 4.178125,
+              "end": 4.4125
+            },
+            {
+              "text": "its",
+              "start": 4.428125,
+              "end": 4.646875
+            },
+            {
+              "text": "precise",
+              "start": 4.6625,
+              "end": 5.428125
+            },
+            {
+              "text": "molar",
+              "start": 5.44375,
+              "end": 5.94375
+            },
+            {
+              "text": "conductivity",
+              "start": 5.959375,
+              "end": 6.975
+            },
+            {
+              "text": "significantly",
+              "start": 6.990625,
+              "end": 8.240625
+            },
+            {
+              "text": "impact",
+              "start": 8.25625,
+              "end": 8.94375
+            },
+            {
+              "text": "the",
+              "start": 8.959375,
+              "end": 9.1625
+            },
+            {
+              "text": "outcome",
+              "start": 9.178125,
+              "end": 9.94375
+            }
+          ],
+          "speech_duration": 11.064,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "Strong vs. Weak Electrolytes",
+      "narration": "Can you determine whether strong or weak electrolytes exhibit optimal molar conductivity? Weak acids and bases are categorized as weak electrolytes due to their low molar conductivities. Recall the graph illustrating the challenge of determining the limiting molar conductivity of a weak electrolyte like acetic acid.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Can you determine whether strong or weak electrolytes exhibit optimal molar conductivity?",
+          "visual": "Real HD educational visual: Photo of a lab setup with electrodes and solutions showing strong and weak electrolytes. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style photo of a lab setup with electrodes and solutions, showcasing strong and weak electrolytes under natural lighting, with sharp detail and accurate representation of the subject, without blank cards, slide layout, or text-heavy graphic panels.",
+          "keywords": [
+            "strong electrolyte",
+            "weak electrolyte",
+            "electrodes"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_02_segment_01.wav",
+          "start": 30.504,
+          "end": 38.914,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Photo lab setup with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Can",
+              "start": 0.1,
+              "end": 0.475
+            },
+            {
+              "text": "you",
+              "start": 0.490625,
+              "end": 0.646875
+            },
+            {
+              "text": "determine",
+              "start": 0.6625,
+              "end": 1.4125
+            },
+            {
+              "text": "whether",
+              "start": 1.428125,
+              "end": 1.803125
+            },
+            {
+              "text": "strong",
+              "start": 1.81875,
+              "end": 2.459375
+            },
+            {
+              "text": "or",
+              "start": 2.475,
+              "end": 2.725
+            },
+            {
+              "text": "weak",
+              "start": 2.740625,
+              "end": 3.021875
+            },
+            {
+              "text": "electrolytes",
+              "start": 3.0375,
+              "end": 4.115625
+            },
+            {
+              "text": "exhibit",
+              "start": 4.13125,
+              "end": 4.803125
+            },
+            {
+              "text": "optimal",
+              "start": 4.81875,
+              "end": 5.44375
+            },
+            {
+              "text": "molar",
+              "start": 5.459375,
+              "end": 5.9125
+            },
+            {
+              "text": "conductivity",
+              "start": 5.928125,
+              "end": 7.021875
+            }
+          ],
+          "speech_duration": 8.16,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Weak acids and bases are categorized as weak electrolytes due to their low molar conductivities.",
+          "visual": "Real HD educational visual: Photo of a weak acid and base solution with labeled molar conductivity values. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A weak acid and base solution in a laboratory beaker, with a background of a chemistry lab, natural light streaming through a window, a camera positioned directly above the beaker, highlighting the labeled molar conductivity values on the beaker's side, with sharp detail and a documentary style.",
+          "keywords": [
+            "weak acid",
+            "weak base",
+            "low molar conductivity"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_02_segment_02.wav",
+          "start": 38.914,
+          "end": 48.308,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Photo weak acid and",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Weak",
+              "start": 0.1,
+              "end": 0.584375
+            },
+            {
+              "text": "acids",
+              "start": 0.6,
+              "end": 1.178125
+            },
+            {
+              "text": "and",
+              "start": 1.19375,
+              "end": 1.4125
+            },
+            {
+              "text": "bases",
+              "start": 1.428125,
+              "end": 2.053125
+            },
+            {
+              "text": "are",
+              "start": 2.06875,
+              "end": 2.271875
+            },
+            {
+              "text": "categorized",
+              "start": 2.2875,
+              "end": 3.365625
+            },
+            {
+              "text": "as",
+              "start": 3.38125,
+              "end": 3.6625
+            },
+            {
+              "text": "weak",
+              "start": 3.678125,
+              "end": 4.00625
+            },
+            {
+              "text": "electrolytes",
+              "start": 4.021875,
+              "end": 5.1625
+            },
+            {
+              "text": "due",
+              "start": 5.178125,
+              "end": 5.521875
+            },
+            {
+              "text": "to",
+              "start": 5.5375,
+              "end": 5.678125
+            },
+            {
+              "text": "their",
+              "start": 5.69375,
+              "end": 5.896875
+            },
+            {
+              "text": "low",
+              "start": 5.9125,
+              "end": 6.209375
+            },
+            {
+              "text": "molar",
+              "start": 6.225,
+              "end": 6.725
+            },
+            {
+              "text": "conductivities",
+              "start": 6.740625,
+              "end": 8.053125
+            }
+          ],
+          "speech_duration": 9.144,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "Recall the graph illustrating the challenge of determining the limiting molar conductivity of a weak electrolyte like acetic acid.",
+          "visual": "Real HD educational visual: Graph showing the limiting molar conductivity of acetic acid with labeled points. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Limiting Conductivity Graph\nduration: 7.0 sec\nprompt: Cinematic macro video of a graph showing the limiting molar conductivity of acetic acid with smooth motion, natural lighting, educational clarity, designed for 7.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy elements, text artifacts, watermark, blurry, extra limbs, distorted graph, inaccurate labels",
+          "keywords": [
+            "limiting molar conductivity",
+            "acetic acid",
+            "concentration"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_02_segment_03.wav",
+          "start": 48.308,
+          "end": 60.336,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Graph showing the limiting",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Recall",
+              "start": 0.1,
+              "end": 0.85
+            },
+            {
+              "text": "the",
+              "start": 0.865625,
+              "end": 0.975
+            },
+            {
+              "text": "graph",
+              "start": 0.990625,
+              "end": 1.553125
+            },
+            {
+              "text": "illustrating",
+              "start": 1.56875,
+              "end": 2.5375
+            },
+            {
+              "text": "the",
+              "start": 2.553125,
+              "end": 2.6625
+            },
+            {
+              "text": "challenge",
+              "start": 2.678125,
+              "end": 3.31875
+            },
+            {
+              "text": "of",
+              "start": 3.334375,
+              "end": 3.50625
+            },
+            {
+              "text": "determining",
+              "start": 3.521875,
+              "end": 4.303125
+            },
+            {
+              "text": "the",
+              "start": 4.31875,
+              "end": 4.4125
+            },
+            {
+              "text": "limiting",
+              "start": 4.428125,
+              "end": 5.053125
+            },
+            {
+              "text": "molar",
+              "start": 5.06875,
+              "end": 5.5375
+            },
+            {
+              "text": "conductivity",
+              "start": 5.553125,
+              "end": 6.646875
+            },
+            {
+              "text": "of",
+              "start": 6.6625,
+              "end": 6.9125
+            },
+            {
+              "text": "a",
+              "start": 6.928125,
+              "end": 7.00625
+            },
+            {
+              "text": "weak",
+              "start": 7.021875,
+              "end": 7.428125
+            },
+            {
+              "text": "electrolyte",
+              "start": 7.44375,
+              "end": 8.553125
+            },
+            {
+              "text": "like",
+              "start": 8.56875,
+              "end": 8.928125
+            },
+            {
+              "text": "acetic",
+              "start": 8.94375,
+              "end": 9.6
+            },
+            {
+              "text": "acid",
+              "start": 9.615625,
+              "end": 10.240625
+            }
+          ],
+          "speech_duration": 11.328,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "title": "Limiting Molar Conductivity of Weak Electrolytes",
+      "narration": "As concentrations decrease, the graph approaches an asymptote, making it impossible to measure molar conductivity as concentration approaches zero. However, an alternative method exists through Kohlrausch's law. Experimental observations revealed that an electrolyte's limiting molar conductivity equals the sum of the limiting molar conductivities of its individual ions.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "As concentrations decrease, the graph approaches an asymptote, making it impossible to measure molar conductivity as concentration approaches zero.",
+          "visual": "Real HD educational visual: Graph of molar conductivity vs concentration with asymptote. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A graph of molar conductivity vs concentration with an asymptote in the background, set in a laboratory with natural lighting, sharp detail, and a documentary style, featuring a realistic and accurate representation of the subject, with no blank cards, slide layout, or text-heavy graphic panels.",
+          "keywords": [
+            "asymptote",
+            "concentration",
+            "molar conductivity"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_03_segment_01.wav",
+          "start": 60.336,
+          "end": 73.786,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Graph molar conductivity concentration",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "As",
+              "start": 0.1,
+              "end": 0.521875
+            },
+            {
+              "text": "concentrations",
+              "start": 0.5375,
+              "end": 1.709375
+            },
+            {
+              "text": "decrease",
+              "start": 1.725,
+              "end": 2.475
+            },
+            {
+              "text": "the",
+              "start": 2.646875,
+              "end": 2.81875
+            },
+            {
+              "text": "graph",
+              "start": 2.834375,
+              "end": 3.31875
+            },
+            {
+              "text": "approaches",
+              "start": 3.334375,
+              "end": 4.06875
+            },
+            {
+              "text": "an",
+              "start": 4.084375,
+              "end": 4.240625
+            },
+            {
+              "text": "asymptote",
+              "start": 4.25625,
+              "end": 5.146875
+            },
+            {
+              "text": "making",
+              "start": 5.334375,
+              "end": 5.865625
+            },
+            {
+              "text": "it",
+              "start": 5.88125,
+              "end": 6.0375
+            },
+            {
+              "text": "impossible",
+              "start": 6.053125,
+              "end": 6.928125
+            },
+            {
+              "text": "to",
+              "start": 6.94375,
+              "end": 7.115625
+            },
+            {
+              "text": "measure",
+              "start": 7.13125,
+              "end": 7.6625
+            },
+            {
+              "text": "molar",
+              "start": 7.678125,
+              "end": 8.146875
+            },
+            {
+              "text": "conductivity",
+              "start": 8.1625,
+              "end": 9.240625
+            },
+            {
+              "text": "as",
+              "start": 9.25625,
+              "end": 9.615625
+            },
+            {
+              "text": "concentration",
+              "start": 9.63125,
+              "end": 10.75625
+            },
+            {
+              "text": "approaches",
+              "start": 10.771875,
+              "end": 11.521875
+            },
+            {
+              "text": "zero",
+              "start": 11.5375,
+              "end": 12.084375
+            }
+          ],
+          "speech_duration": 13.2,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "However, an alternative method exists through Kohlrausch's law.",
+          "visual": "Real HD educational visual: Image of Kohlrausch's law formula. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style image of a blackboard with a mathematical formula, Kohlrausch's law, written in sharp detail under natural lighting, with a subtle background of a laboratory setting, highlighting the accurate representation of the subject matter.",
+          "keywords": [
+            "kohlrausch's law",
+            "formula"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_03_segment_02.wav",
+          "start": 73.786,
+          "end": 80.348,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Image Kohlrausch law formula",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "However",
+              "start": 0.1,
+              "end": 0.975
+            },
+            {
+              "text": "an",
+              "start": 1.178125,
+              "end": 1.4125
+            },
+            {
+              "text": "alternative",
+              "start": 1.428125,
+              "end": 2.225
+            },
+            {
+              "text": "method",
+              "start": 2.240625,
+              "end": 2.865625
+            },
+            {
+              "text": "exists",
+              "start": 2.88125,
+              "end": 3.63125
+            },
+            {
+              "text": "through",
+              "start": 3.646875,
+              "end": 3.959375
+            },
+            {
+              "text": "Kohlrausch's",
+              "start": 3.975,
+              "end": 4.865625
+            },
+            {
+              "text": "law",
+              "start": 4.88125,
+              "end": 5.209375
+            }
+          ],
+          "speech_duration": 6.312,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "Experimental observations revealed that an electrolyte's limiting molar conductivity equals the sum of the limiting molar conductivities of its individual ions.",
+          "visual": "Real HD educational visual: Diagram showing electrolyte dissociation into ions. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A beaker filled with a clear, colorless liquid electrolyte sits on a laboratory bench, under natural light, with a subtle gradient of brightness to emphasize the subject. The camera is positioned directly above the beaker, capturing the electrolyte's surface in sharp detail, as if seen through a microscope. In the background, a blurred laboratory setup with various equipment and chemicals adds context to the scene, without distracting from the main subject.",
+          "keywords": [
+            "electrolyte",
+            "ions",
+            "limiting molar conductivity"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_03_segment_03.wav",
+          "start": 80.348,
+          "end": 94.464,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual electrolyte dissociation into ions",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Experimental",
+              "start": 0.1,
+              "end": 1.2875
+            },
+            {
+              "text": "observations",
+              "start": 1.303125,
+              "end": 2.31875
+            },
+            {
+              "text": "revealed",
+              "start": 2.334375,
+              "end": 2.975
+            },
+            {
+              "text": "that",
+              "start": 2.990625,
+              "end": 3.25625
+            },
+            {
+              "text": "an",
+              "start": 3.271875,
+              "end": 3.396875
+            },
+            {
+              "text": "electrolyte's",
+              "start": 3.4125,
+              "end": 4.396875
+            },
+            {
+              "text": "limiting",
+              "start": 4.4125,
+              "end": 4.990625
+            },
+            {
+              "text": "molar",
+              "start": 5.00625,
+              "end": 5.459375
+            },
+            {
+              "text": "conductivity",
+              "start": 5.475,
+              "end": 6.521875
+            },
+            {
+              "text": "equals",
+              "start": 6.5375,
+              "end": 7.240625
+            },
+            {
+              "text": "the",
+              "start": 7.25625,
+              "end": 7.4125
+            },
+            {
+              "text": "sum",
+              "start": 7.428125,
+              "end": 7.771875
+            },
+            {
+              "text": "of",
+              "start": 7.7875,
+              "end": 7.928125
+            },
+            {
+              "text": "the",
+              "start": 7.94375,
+              "end": 8.053125
+            },
+            {
+              "text": "limiting",
+              "start": 8.06875,
+              "end": 8.678125
+            },
+            {
+              "text": "molar",
+              "start": 8.69375,
+              "end": 9.1625
+            },
+            {
+              "text": "conductivities",
+              "start": 9.178125,
+              "end": 10.365625
+            },
+            {
+              "text": "of",
+              "start": 10.38125,
+              "end": 10.584375
+            },
+            {
+              "text": "its",
+              "start": 10.6,
+              "end": 10.834375
+            },
+            {
+              "text": "individual",
+              "start": 10.85,
+              "end": 11.6
+            },
+            {
+              "text": "ions",
+              "start": 11.615625,
+              "end": 12.31875
+            }
+          ],
+          "speech_duration": 13.416,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 4,
+      "title": "Kohlrausch's Law and Its Application",
+      "narration": "For instance, to calculate the limiting molar conductivity of acetic acid, we only need the values for its constituent ions. Kohlrausch formulated the law of independent ion migration, stating that an electrolyte's limiting molar conductivity is the sum of its cation and anion contributions. This law aids in determining limiting molar conductivities for weak electrolytes like acetic acid.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "For instance, to calculate the limiting molar conductivity of acetic acid, we only need the values for its constituent ions.",
+          "visual": "Real HD educational visual: Photo of lab equipment with labeled ions. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style photo of a lab bench with a beaker of acetic acid solution, a conductivity meter, and a diagram of its constituent ions on a whiteboard, under natural lighting with sharp detail, highlighting the equipment and ions in a realistic educational setting.",
+          "keywords": [
+            "ch3coo-",
+            "h+"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_04_segment_01.wav",
+          "start": 94.464,
+          "end": 106.282,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Photo lab equipment with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "For",
+              "start": 0.1,
+              "end": 0.4125
+            },
+            {
+              "text": "instance",
+              "start": 0.428125,
+              "end": 1.209375
+            },
+            {
+              "text": "to",
+              "start": 1.365625,
+              "end": 1.50625
+            },
+            {
+              "text": "calculate",
+              "start": 1.521875,
+              "end": 2.35
+            },
+            {
+              "text": "the",
+              "start": 2.365625,
+              "end": 2.50625
+            },
+            {
+              "text": "limiting",
+              "start": 2.521875,
+              "end": 3.115625
+            },
+            {
+              "text": "molar",
+              "start": 3.13125,
+              "end": 3.6
+            },
+            {
+              "text": "conductivity",
+              "start": 3.615625,
+              "end": 4.646875
+            },
+            {
+              "text": "of",
+              "start": 4.6625,
+              "end": 4.94375
+            },
+            {
+              "text": "acetic",
+              "start": 4.959375,
+              "end": 5.584375
+            },
+            {
+              "text": "acid",
+              "start": 5.6,
+              "end": 6.146875
+            },
+            {
+              "text": "we",
+              "start": 6.31875,
+              "end": 6.56875
+            },
+            {
+              "text": "only",
+              "start": 6.584375,
+              "end": 7.00625
+            },
+            {
+              "text": "need",
+              "start": 7.021875,
+              "end": 7.38125
+            },
+            {
+              "text": "the",
+              "start": 7.396875,
+              "end": 7.50625
+            },
+            {
+              "text": "values",
+              "start": 7.521875,
+              "end": 8.225
+            },
+            {
+              "text": "for",
+              "start": 8.240625,
+              "end": 8.475
+            },
+            {
+              "text": "its",
+              "start": 8.490625,
+              "end": 8.69375
+            },
+            {
+              "text": "constituent",
+              "start": 8.709375,
+              "end": 9.69375
+            },
+            {
+              "text": "ions",
+              "start": 9.709375,
+              "end": 10.475
+            }
+          ],
+          "speech_duration": 11.568,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Kohlrausch formulated the law of independent ion migration, stating that an electrolyte's limiting molar conductivity is the sum of its cation and anion contributions.",
+          "visual": "Real HD educational visual: Photo of ion migration in electrolyte solution. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style photo of ion migration in a clear electrolyte solution, with natural lighting illuminating the tiny particles in motion, surrounded by a simple laboratory setup, with a sharp focus on the subject, capturing the accurate representation of Kohlrausch's Law in action.",
+          "keywords": [
+            "cation",
+            "anion"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_04_segment_02.wav",
+          "start": 106.282,
+          "end": 120.66799999999999,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Photo ion migration electrolyte",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Kohlrausch",
+              "start": 0.1,
+              "end": 0.85
+            },
+            {
+              "text": "formulated",
+              "start": 0.865625,
+              "end": 1.678125
+            },
+            {
+              "text": "the",
+              "start": 1.69375,
+              "end": 1.803125
+            },
+            {
+              "text": "law",
+              "start": 1.81875,
+              "end": 2.146875
+            },
+            {
+              "text": "of",
+              "start": 2.1625,
+              "end": 2.365625
+            },
+            {
+              "text": "independent",
+              "start": 2.38125,
+              "end": 3.31875
+            },
+            {
+              "text": "ion",
+              "start": 3.334375,
+              "end": 3.7875
+            },
+            {
+              "text": "migration",
+              "start": 3.803125,
+              "end": 4.75625
+            },
+            {
+              "text": "stating",
+              "start": 4.94375,
+              "end": 5.6625
+            },
+            {
+              "text": "that",
+              "start": 5.678125,
+              "end": 5.9125
+            },
+            {
+              "text": "an",
+              "start": 5.928125,
+              "end": 6.053125
+            },
+            {
+              "text": "electrolyte's",
+              "start": 6.06875,
+              "end": 7.021875
+            },
+            {
+              "text": "limiting",
+              "start": 7.0375,
+              "end": 7.6
+            },
+            {
+              "text": "molar",
+              "start": 7.615625,
+              "end": 8.053125
+            },
+            {
+              "text": "conductivity",
+              "start": 8.06875,
+              "end": 9.178125
+            },
+            {
+              "text": "is",
+              "start": 9.19375,
+              "end": 9.428125
+            },
+            {
+              "text": "the",
+              "start": 9.44375,
+              "end": 9.56875
+            },
+            {
+              "text": "sum",
+              "start": 9.584375,
+              "end": 9.9125
+            },
+            {
+              "text": "of",
+              "start": 9.928125,
+              "end": 10.115625
+            },
+            {
+              "text": "its",
+              "start": 10.13125,
+              "end": 10.334375
+            },
+            {
+              "text": "cation",
+              "start": 10.35,
+              "end": 10.990625
+            },
+            {
+              "text": "and",
+              "start": 11.00625,
+              "end": 11.2875
+            },
+            {
+              "text": "anion",
+              "start": 11.303125,
+              "end": 11.803125
+            },
+            {
+              "text": "contributions",
+              "start": 11.81875,
+              "end": 13.0375
+            }
+          ],
+          "speech_duration": 14.136,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "This law aids in determining limiting molar conductivities for weak electrolytes like acetic acid.",
+          "visual": "Real HD educational visual: Photo of acetic acid solution with conductivity measurement. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up photo of a beaker containing a clear acetic acid solution, with a conductivity meter placed nearby, under natural light, with sharp focus on the solution and the meter, in a documentary-style setting, capturing the accurate representation of the weak electrolyte and its measurement.",
+          "keywords": [
+            "limiting molar conductivity measurement"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_04_segment_03.wav",
+          "start": 120.66799999999999,
+          "end": 130.44,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Photo acetic acid solution",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "This",
+              "start": 0.1,
+              "end": 0.63125
+            },
+            {
+              "text": "law",
+              "start": 0.646875,
+              "end": 0.928125
+            },
+            {
+              "text": "aids",
+              "start": 0.94375,
+              "end": 1.38125
+            },
+            {
+              "text": "in",
+              "start": 1.396875,
+              "end": 1.5375
+            },
+            {
+              "text": "determining",
+              "start": 1.553125,
+              "end": 2.303125
+            },
+            {
+              "text": "limiting",
+              "start": 2.31875,
+              "end": 2.896875
+            },
+            {
+              "text": "molar",
+              "start": 2.9125,
+              "end": 3.365625
+            },
+            {
+              "text": "conductivities",
+              "start": 3.38125,
+              "end": 4.584375
+            },
+            {
+              "text": "for",
+              "start": 4.6,
+              "end": 4.88125
+            },
+            {
+              "text": "weak",
+              "start": 4.896875,
+              "end": 5.209375
+            },
+            {
+              "text": "electrolytes",
+              "start": 5.225,
+              "end": 6.334375
+            },
+            {
+              "text": "like",
+              "start": 6.35,
+              "end": 6.709375
+            },
+            {
+              "text": "acetic",
+              "start": 6.725,
+              "end": 7.365625
+            },
+            {
+              "text": "acid",
+              "start": 7.38125,
+              "end": 7.990625
+            }
+          ],
+          "speech_duration": 9.072,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 5,
+      "title": "Calculating Limiting Molar Conductivity",
+      "narration": "By extrapolating the molar conductivity vs. square root of concentration graph for strong electrolytes such as sodium acetate, hydrochloric acid, and sodium chloride, their limiting molar conductivities can be derived. The limiting molar conductivity of acetic acid is calculated as the sum of sodium acetate and hydrochloric acid's values minus sodium chloride's.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "By extrapolating the molar conductivity vs. square root of concentration graph for strong electrolytes such as sodium acetate, hydrochloric acid, and sodium chloride, their limiting molar conductivities can be derived.",
+          "visual": "Real HD educational visual: Graph showing molar conductivity vs. square root of concentration for strong electrolytes. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style graph of molar conductivity vs. square root of concentration for sodium acetate, hydrochloric acid, and sodium chloride, set against a subtle background, with natural lighting illuminating the sharp details of the graph, capturing the accurate representation of strong electrolytes' behavior.",
+          "keywords": [
+            "molar conductivity",
+            "square root of concentration",
+            "sodium acetate",
+            "hydrochloric acid",
+            "sodium chloride"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_05_segment_01.wav",
+          "start": 130.44,
+          "end": 150.082,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Graph showing molar conductivity",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "By",
+              "start": 0.1,
+              "end": 0.521875
+            },
+            {
+              "text": "extrapolating",
+              "start": 0.5375,
+              "end": 1.725
+            },
+            {
+              "text": "the",
+              "start": 1.740625,
+              "end": 1.81875
+            },
+            {
+              "text": "molar",
+              "start": 1.834375,
+              "end": 2.365625
+            },
+            {
+              "text": "conductivity",
+              "start": 2.38125,
+              "end": 3.4125
+            },
+            {
+              "text": "vs.",
+              "start": 3.428125,
+              "end": 4.084375
+            },
+            {
+              "text": "square",
+              "start": 4.1,
+              "end": 4.50625
+            },
+            {
+              "text": "root",
+              "start": 4.521875,
+              "end": 4.85
+            },
+            {
+              "text": "of",
+              "start": 4.865625,
+              "end": 5.053125
+            },
+            {
+              "text": "concentration",
+              "start": 5.06875,
+              "end": 6.115625
+            },
+            {
+              "text": "graph",
+              "start": 6.13125,
+              "end": 6.6
+            },
+            {
+              "text": "for",
+              "start": 6.615625,
+              "end": 6.81875
+            },
+            {
+              "text": "strong",
+              "start": 6.834375,
+              "end": 7.4125
+            },
+            {
+              "text": "electrolytes",
+              "start": 7.428125,
+              "end": 8.475
+            },
+            {
+              "text": "such",
+              "start": 8.490625,
+              "end": 8.85
+            },
+            {
+              "text": "as",
+              "start": 8.865625,
+              "end": 9.146875
+            },
+            {
+              "text": "sodium",
+              "start": 9.1625,
+              "end": 9.740625
+            },
+            {
+              "text": "acetate",
+              "start": 9.75625,
+              "end": 10.553125
+            },
+            {
+              "text": "hydrochloric",
+              "start": 10.75625,
+              "end": 11.81875
+            },
+            {
+              "text": "acid",
+              "start": 11.834375,
+              "end": 12.396875
+            },
+            {
+              "text": "and",
+              "start": 12.615625,
+              "end": 12.975
+            },
+            {
+              "text": "sodium",
+              "start": 12.990625,
+              "end": 13.56875
+            },
+            {
+              "text": "chloride",
+              "start": 13.584375,
+              "end": 14.365625
+            },
+            {
+              "text": "their",
+              "start": 14.521875,
+              "end": 14.7875
+            },
+            {
+              "text": "limiting",
+              "start": 14.803125,
+              "end": 15.428125
+            },
+            {
+              "text": "molar",
+              "start": 15.44375,
+              "end": 15.9125
+            },
+            {
+              "text": "conductivities",
+              "start": 15.928125,
+              "end": 17.06875
+            },
+            {
+              "text": "can",
+              "start": 17.084375,
+              "end": 17.365625
+            },
+            {
+              "text": "be",
+              "start": 17.38125,
+              "end": 17.553125
+            },
+            {
+              "text": "derived",
+              "start": 17.56875,
+              "end": 18.303125
+            }
+          ],
+          "speech_duration": 19.392,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "The limiting molar conductivity of acetic acid is calculated as the sum of sodium acetate and hydrochloric acid's values minus sodium chloride's.",
+          "visual": "Real HD educational visual: Mathematical equation showing the calculation of limiting molar conductivity for acetic acid. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style image of a chemistry lab bench, with a whiteboard in the center, featuring a complex mathematical equation for calculating limiting molar conductivity, surrounded by beakers, test tubes, and other lab equipment, under natural lighting with sharp detail.",
+          "keywords": [
+            "acetic acid",
+            "sodium acetate",
+            "hydrochloric acid",
+            "sodium chloride",
+            "limiting molar conductivity"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_05_segment_02.wav",
+          "start": 150.082,
+          "end": 164.15,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Mathematical equation showing the",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.35
+            },
+            {
+              "text": "limiting",
+              "start": 0.365625,
+              "end": 0.990625
+            },
+            {
+              "text": "molar",
+              "start": 1.00625,
+              "end": 1.475
+            },
+            {
+              "text": "conductivity",
+              "start": 1.490625,
+              "end": 2.553125
+            },
+            {
+              "text": "of",
+              "start": 2.56875,
+              "end": 2.803125
+            },
+            {
+              "text": "acetic",
+              "start": 2.81875,
+              "end": 3.428125
+            },
+            {
+              "text": "acid",
+              "start": 3.44375,
+              "end": 3.94375
+            },
+            {
+              "text": "is",
+              "start": 3.959375,
+              "end": 4.146875
+            },
+            {
+              "text": "calculated",
+              "start": 4.1625,
+              "end": 5.1625
+            },
+            {
+              "text": "as",
+              "start": 5.178125,
+              "end": 5.50625
+            },
+            {
+              "text": "the",
+              "start": 5.521875,
+              "end": 5.646875
+            },
+            {
+              "text": "sum",
+              "start": 5.6625,
+              "end": 6.00625
+            },
+            {
+              "text": "of",
+              "start": 6.021875,
+              "end": 6.19375
+            },
+            {
+              "text": "sodium",
+              "start": 6.209375,
+              "end": 6.81875
+            },
+            {
+              "text": "acetate",
+              "start": 6.834375,
+              "end": 7.6
+            },
+            {
+              "text": "and",
+              "start": 7.615625,
+              "end": 7.896875
+            },
+            {
+              "text": "hydrochloric",
+              "start": 7.9125,
+              "end": 8.959375
+            },
+            {
+              "text": "acid's",
+              "start": 8.975,
+              "end": 9.50625
+            },
+            {
+              "text": "values",
+              "start": 9.521875,
+              "end": 10.1625
+            },
+            {
+              "text": "minus",
+              "start": 10.178125,
+              "end": 10.75625
+            },
+            {
+              "text": "sodium",
+              "start": 10.771875,
+              "end": 11.334375
+            },
+            {
+              "text": "chloride's",
+              "start": 11.35,
+              "end": 12.271875
+            }
+          ],
+          "speech_duration": 13.368,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 6,
+      "title": "Kohlrausch's Law in Practice",
+      "narration": "Simplifying this expression yields the limiting molar conductivity of acetic acid. Thus, Kohlrausch's law enables determining weak electrolytes' limiting molar conductivities using strong electrolytes. This video exemplifies the adage: 'When one door closes, another opens.' Kohlrausch's law has proven invaluable in calculating limiting molar conductivities for weak electrolytes like acetic acid and ammonium hydroxide.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Simplifying this expression yields the limiting molar conductivity of acetic acid.",
+          "visual": "Real HD educational visual: Mathematical equation on a whiteboard with acetic acid label. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A whiteboard in a chemistry lab, illuminated by natural light, with a mathematical equation written in sharp detail, surrounded by acetic acid labels and other chemistry equipment, in a documentary-style educational visual.",
+          "keywords": [
+            "limiting molar conductivity"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_06_segment_01.wav",
+          "start": 164.15,
+          "end": 172.344,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Mathematical equation whiteboard with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Simplifying",
+              "start": 0.1,
+              "end": 1.25625
+            },
+            {
+              "text": "this",
+              "start": 1.271875,
+              "end": 1.5375
+            },
+            {
+              "text": "expression",
+              "start": 1.553125,
+              "end": 2.38125
+            },
+            {
+              "text": "yields",
+              "start": 2.396875,
+              "end": 2.896875
+            },
+            {
+              "text": "the",
+              "start": 2.9125,
+              "end": 3.0375
+            },
+            {
+              "text": "limiting",
+              "start": 3.053125,
+              "end": 3.678125
+            },
+            {
+              "text": "molar",
+              "start": 3.69375,
+              "end": 4.1625
+            },
+            {
+              "text": "conductivity",
+              "start": 4.178125,
+              "end": 5.271875
+            },
+            {
+              "text": "of",
+              "start": 5.2875,
+              "end": 5.584375
+            },
+            {
+              "text": "acetic",
+              "start": 5.6,
+              "end": 6.225
+            },
+            {
+              "text": "acid",
+              "start": 6.240625,
+              "end": 6.834375
+            }
+          ],
+          "speech_duration": 7.944,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Thus, Kohlrausch's law enables determining weak electrolytes' limiting molar conductivities using strong electrolytes.",
+          "visual": "Real HD educational visual: Lab setup with strong and weak electrolytes. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A lab bench with a strong electrolyte solution and a weak electrolyte solution in separate beakers, placed on a clutter-free wooden surface under natural light, with a camera positioned at a 45-degree angle to capture the solutions and the surrounding equipment in sharp detail, documentary style.",
+          "keywords": [
+            "strong electrolyte",
+            "weak electrolyte"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_06_segment_02.wav",
+          "start": 172.344,
+          "end": 183.634,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Lab setup with strong",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Thus",
+              "start": 0.1,
+              "end": 0.7875
+            },
+            {
+              "text": "Kohlrausch's",
+              "start": 0.959375,
+              "end": 1.88125
+            },
+            {
+              "text": "law",
+              "start": 1.896875,
+              "end": 2.240625
+            },
+            {
+              "text": "enables",
+              "start": 2.25625,
+              "end": 2.959375
+            },
+            {
+              "text": "determining",
+              "start": 2.975,
+              "end": 3.7875
+            },
+            {
+              "text": "weak",
+              "start": 3.803125,
+              "end": 4.13125
+            },
+            {
+              "text": "electrolytes'",
+              "start": 4.146875,
+              "end": 5.225
+            },
+            {
+              "text": "limiting",
+              "start": 5.240625,
+              "end": 5.834375
+            },
+            {
+              "text": "molar",
+              "start": 5.85,
+              "end": 6.31875
+            },
+            {
+              "text": "conductivities",
+              "start": 6.334375,
+              "end": 7.553125
+            },
+            {
+              "text": "using",
+              "start": 7.56875,
+              "end": 8.146875
+            },
+            {
+              "text": "strong",
+              "start": 8.1625,
+              "end": 8.709375
+            },
+            {
+              "text": "electrolytes",
+              "start": 8.725,
+              "end": 9.94375
+            }
+          ],
+          "speech_duration": 11.04,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "This video exemplifies the adage: 'When one door closes, another opens.'",
+          "visual": "Real HD educational visual: Natural video: bee moves from one flower to another. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Bee visiting a flower\nduration: 6.0 sec\nprompt: Cinematic macro video of a bee naturally moving onto a flower, pollen visible on anthers and bee legs, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "bee",
+            "flower",
+            "pollen"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_06_segment_03.wav",
+          "start": 183.634,
+          "end": 191.77999999999997,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video bee moves",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "This",
+              "start": 0.1,
+              "end": 0.6
+            },
+            {
+              "text": "video",
+              "start": 0.615625,
+              "end": 1.1
+            },
+            {
+              "text": "exemplifies",
+              "start": 1.115625,
+              "end": 2.271875
+            },
+            {
+              "text": "the",
+              "start": 2.2875,
+              "end": 2.459375
+            },
+            {
+              "text": "adage",
+              "start": 2.475,
+              "end": 3.053125
+            },
+            {
+              "text": "When",
+              "start": 3.303125,
+              "end": 3.6
+            },
+            {
+              "text": "one",
+              "start": 3.615625,
+              "end": 3.959375
+            },
+            {
+              "text": "door",
+              "start": 3.975,
+              "end": 4.303125
+            },
+            {
+              "text": "closes",
+              "start": 4.31875,
+              "end": 5.115625
+            },
+            {
+              "text": "another",
+              "start": 5.334375,
+              "end": 6.0375
+            },
+            {
+              "text": "opens",
+              "start": 6.053125,
+              "end": 6.803125
+            }
+          ],
+          "speech_duration": 7.896,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "Kohlrausch's law has proven invaluable in calculating limiting molar conductivities for weak electrolytes like acetic acid and ammonium hydroxide.",
+          "visual": "Real HD educational visual: Chemical formulas for acetic acid and ammonium hydroxide. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style image of two beakers on a laboratory bench, with chemical formulas for acetic acid and ammonium hydroxide written on whiteboards behind them, under natural lighting with sharp detail, showcasing the accurate representation of these weak electrolytes.",
+          "keywords": [
+            "acetic acid",
+            "ammonium hydroxide"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_06_segment_04.wav",
+          "start": 191.77999999999997,
+          "end": 205.84799999999998,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Chemical formulas for acetic",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Kohlrausch's",
+              "start": 0.1,
+              "end": 1.084375
+            },
+            {
+              "text": "law",
+              "start": 1.1,
+              "end": 1.396875
+            },
+            {
+              "text": "has",
+              "start": 1.4125,
+              "end": 1.709375
+            },
+            {
+              "text": "proven",
+              "start": 1.725,
+              "end": 2.225
+            },
+            {
+              "text": "invaluable",
+              "start": 2.240625,
+              "end": 3.209375
+            },
+            {
+              "text": "in",
+              "start": 3.225,
+              "end": 3.459375
+            },
+            {
+              "text": "calculating",
+              "start": 3.475,
+              "end": 4.4125
+            },
+            {
+              "text": "limiting",
+              "start": 4.428125,
+              "end": 5.00625
+            },
+            {
+              "text": "molar",
+              "start": 5.021875,
+              "end": 5.490625
+            },
+            {
+              "text": "conductivities",
+              "start": 5.50625,
+              "end": 6.69375
+            },
+            {
+              "text": "for",
+              "start": 6.709375,
+              "end": 6.990625
+            },
+            {
+              "text": "weak",
+              "start": 7.00625,
+              "end": 7.334375
+            },
+            {
+              "text": "electrolytes",
+              "start": 7.35,
+              "end": 8.396875
+            },
+            {
+              "text": "like",
+              "start": 8.4125,
+              "end": 8.740625
+            },
+            {
+              "text": "acetic",
+              "start": 8.75625,
+              "end": 9.396875
+            },
+            {
+              "text": "acid",
+              "start": 9.4125,
+              "end": 10.021875
+            },
+            {
+              "text": "and",
+              "start": 10.0375,
+              "end": 10.35
+            },
+            {
+              "text": "ammonium",
+              "start": 10.365625,
+              "end": 11.021875
+            },
+            {
+              "text": "hydroxide",
+              "start": 11.0375,
+              "end": 12.271875
+            }
+          ],
+          "speech_duration": 13.368,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 7,
+      "title": "Further Applications of Kohlrausch's Law",
+      "narration": "Do you believe Kohlrausch's law has other applications? Stay tuned for our upcoming videos to explore further.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Do you believe Kohlrausch's law has other applications? Stay tuned for our upcoming videos to explore further.",
+          "visual": "Real HD educational visual: Natural video: researcher in lab setting, focusing on electrochemical cell. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Researcher in lab setting\nduration: 7.5 sec\nprompt: Cinematic macro video of a researcher in a lab, focusing on an electrochemical cell with visible electrodes and electrolyte solution, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity, designed for 7.5 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "electrochemical cell",
+            "electrodes",
+            "solution"
+          ],
+          "audio_path": "outputs\\ltx_applications_of_kohlrausch_law\\audio\\scene_07_segment_01.wav",
+          "start": 205.84799999999998,
+          "end": 216.48,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video researcher lab",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Do",
+              "start": 0.1,
+              "end": 0.4125
+            },
+            {
+              "text": "you",
+              "start": 0.428125,
+              "end": 0.63125
+            },
+            {
+              "text": "believe",
+              "start": 0.646875,
+              "end": 1.1625
+            },
+            {
+              "text": "Kohlrausch's",
+              "start": 1.178125,
+              "end": 2.021875
+            },
+            {
+              "text": "law",
+              "start": 2.0375,
+              "end": 2.31875
+            },
+            {
+              "text": "has",
+              "start": 2.334375,
+              "end": 2.69375
+            },
+            {
+              "text": "other",
+              "start": 2.709375,
+              "end": 3.06875
+            },
+            {
+              "text": "applications",
+              "start": 3.084375,
+              "end": 4.19375
+            },
+            {
+              "text": "Stay",
+              "start": 5.284375,
+              "end": 5.815625
+            },
+            {
+              "text": "tuned",
+              "start": 5.83125,
+              "end": 6.2375
+            },
+            {
+              "text": "for",
+              "start": 6.253125,
+              "end": 6.471875
+            },
+            {
+              "text": "our",
+              "start": 6.4875,
+              "end": 6.753125
+            },
+            {
+              "text": "upcoming",
+              "start": 6.76875,
+              "end": 7.45625
+            },
+            {
+              "text": "videos",
+              "start": 7.471875,
+              "end": 8.05
+            },
+            {
+              "text": "to",
+              "start": 8.065625,
+              "end": 8.2375
+            },
+            {
+              "text": "explore",
+              "start": 8.253125,
+              "end": 8.878125
+            },
+            {
+              "text": "further",
+              "start": 8.89375,
+              "end": 9.534375
+            }
+          ],
+          "speech_duration": 10.632,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "scene": 1,
+    "segment": 3,
+    "original_prompt": "Photorealistic image of silver-plated keychain on birthday gift box with birthday decorations, clean background, product photography style",
+    "image_prompt": "A close-up photograph of a silver-plated keychain on a colorful birthday gift box, surrounded by balloons and streamers, with a clean background and soft natural light illuminating the keychain from the side.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 1,
+    "segment": 5,
+    "original_prompt": "Educational documentary style video of Anita electroplating keychain, natural lighting, professional lab environment, cinematic handheld motion",
+    "image_prompt": "A close-up shot of Anita's hands electroplating a keychain in a well-lit, professional laboratory setting, with natural light pouring in through a nearby window, capturing the subtle motion of her fingers as she works",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 2,
+    "segment": 1,
+    "original_prompt": "Detailed scientific lab photo of an electrolytic cell with silver nitrate solution, clear labels on electrodes and container, neutral lab background, high resolution, educational clarity",
+    "image_prompt": "A close-up photograph of an electrolytic cell in a well-lit laboratory, with a silver nitrate solution inside, surrounded by a neutral-colored background, and the electrodes and container clearly labeled, shot from directly above with a shallow depth of field to emphasize the cell's components.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 4,
+    "original_prompt": "Detailed photo of an electroplating setup with keychain and silver rod, clear labels on terminals, neutral lab background, high resolution, educational clarity",
+    "image_prompt": "A close-up shot of an electroplating setup in a neutral laboratory background, with a keychain attached to the negative terminal and a pure silver rod connected to the positive terminal, clear labels on the terminals for educational clarity.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 2,
+    "original_prompt": "Interactive educational image with labeled boxes for drag-and-drop activity, simple background, clean layout, professional educational style",
+    "image_prompt": "A close-up photo of a workbench with labeled boxes and a few electroplating tools, taken from directly above with soft, natural light illuminating the scene, conveying a sense of hands-on learning and interactive engagement.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 2,
+    "original_prompt": "Educational photo of a classroom with a teacher and students, labeled with 'Teacher', 'Students', and 'Question Board', clean background, high clarity",
+    "image_prompt": "A teacher stands at the front of a classroom, surrounded by students seated at desks, with a question board on the wall behind them, natural light streaming through the window, capturing the scene with a slight angle from the side, emphasizing the interaction between the teacher and students.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 4,
+    "original_prompt": "Educational photo of a lab setup with electroplating equipment, labeled with 'Current', 'Time', and 'Voltage', clean background, high clarity",
+    "image_prompt": "A lab technician stands beside a workbench with electroplating equipment, including a tank, wires, and a control panel, in a well-lit room with a clean background, focusing on the equipment with a neutral camera angle and high natural lighting.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 8,
+    "segment": 2,
+    "original_prompt": "Educational photo of electroplated metal object with artistic application examples, clean background, high clarity, labeled industries",
+    "image_prompt": "A close-up photo of an electroplated metal sculpture in a minimalist gallery setting, with artistic application examples such as jewelry and decorative accents displayed nearby, natural light pouring in through a large window, high camera angle to emphasize the object's texture and details.",
+    "scientific_review_recommended": true
+  }
+]

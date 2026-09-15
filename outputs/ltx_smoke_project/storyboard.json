@@ -1,0 +1,37 @@
+{
+  "title": "How pollination works",
+  "source": "A short schematic lesson; review against your curriculum before publication.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "From anther to stigma",
+      "narration": "Anthers produce pollen. During pollination, pollen is transferred to a stigma.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Anthers produce pollen. During pollination, pollen is transferred to a stigma.",
+          "visual": "Schematic transfer between two flowers. Keep source and destination visible.",
+          "image_prompt": "Realistic macro nature video of a flower with subtle natural movement, soft daylight, stable camera, accurate plant details, no text.",
+          "keywords": [],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 5.0,
+          "shot": {
+            "template": "video",
+            "heading": "Pollination: from anther to stigma",
+            "learning_objective": "Identify the source and destination of pollen.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [],
+          "speech_duration": 5.0,
+          "source_references": [
+            "https://sathee.iitk.ac.in/ncert-books/neet-ncert-books/neet-nb-bio-12/bio-12-chapter-2-sexual-reproduction-in-flowering-plants/"
+          ]
+        }
+      ]
+    }
+  ]
+}

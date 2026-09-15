@@ -1,0 +1,86 @@
+[
+  {
+    "scene": 1,
+    "segment": 1,
+    "original_prompt": "Image 1: A lush meadow with a mix of colorful wildflowers, including daisies and cosmos.\nImage 2: A close-up of a flower bud opening into a bloom.. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A lush meadow with a mix of colorful wildflowers, including daisies and cosmos, with a single sunflower bloom in the center, surrounded by a few bees and butterflies, shot from a low aerial perspective with warm natural sunlight",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 1,
+    "segment": 2,
+    "original_prompt": "Image 1: A tall sunflower stem with a large yellow bloom and dark green leaves, set against a blue sky.\nImage 2: A close-up of a sunflower face, with large yellow petals and a dark center.. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A tall sunflower stem with a large yellow bloom and dark green leaves, set against a blue sky, with a close-up of the sunflower face in the foreground, featuring large yellow petals and a dark center, in a high resolution realistic educational biology photograph, with accurate natural flower structures, a single clear scene, and no additional elements.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 1,
+    "original_prompt": "A sunflower with a blurred background, showcasing its large, bright yellow petals.\nA botanical illustration of a sunflower with intricate details of its petals and center.. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up of a sunflower with a blurred background, showcasing its large, bright yellow petals as they gently sway in the soft morning sunlight, with a subtle camera pan to emphasize its unique characteristics.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 2,
+    "original_prompt": "macro documentary photograph of a bee visiting a bright flower, pollen grains visible on its body, realistic petals and anthers. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up, macro documentary photograph of a sunflower with its bright yellow petals and dark centers, showing the anthers and pollen grains, set against a soft, natural background, with subtle natural lighting, realistic and high resolution, no labels, no text, no arrows, no diagram, no collage.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 3,
+    "original_prompt": "An anatomical illustration of a sunflower's reproductive parts, highlighting the male anther and female stigma.\nA microscopic photograph of a sunflower's anther and stigma, showcasing their unique structures.. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up of a sunflower's reproductive parts, with the male anther curling in towards the female stigma, set against a soft focus of a sunny garden background, with warm natural light illuminating the delicate structures.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 1,
+    "original_prompt": "realistic educational photograph of two flowering plants of the same species, pollinator moving between flowers, pollen transfer implied. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A high-resolution photograph of two papaya plants, one with male flowers and the other with female flowers, in a natural outdoor setting with warm sunlight, a pollinator such as a bee or butterfly moving between the flowers, and pollen transfer implied, with a clear and unobstructed view of the flowers and their structures.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 2,
+    "original_prompt": "realistic educational photograph of two flowering plants of the same species, pollinator moving between flowers, pollen transfer implied. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A realistic educational photograph of a protogynous plant, with a heterostylous flower in the foreground, a pollinator such as a bee or butterfly in mid-air, moving between the two flowers, with pollen transfer implied, set against a soft focus natural background, with natural lighting from the side, highlighting the intricate details of the flowers and the pollinator's movement.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 2,
+    "original_prompt": "macro documentary photograph of aquatic flowering plants at the water surface, small pollen grains floating across calm water toward another flower. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "macro documentary photograph of aquatic flowering plants at the water surface, small pollen grains floating across calm water toward another flower, with a bee flying towards a nearby flower, releasing a fragrance as water droplets on the petals glisten in the soft natural light.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 3,
+    "original_prompt": "macro documentary photograph of aquatic flowering plants at the water surface, small pollen grains floating across calm water toward another flower. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "macro documentary photograph of a bee feeding on nectar from a water lily flower at the water surface, small pollen grains floating across calm water toward another flower, with a subtle focus on the intricate details of the flower's petals and the bee's tongue extending to reach the nectar.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 7,
+    "segment": 1,
+    "original_prompt": "macro documentary photograph of a bee visiting a bright flower, pollen grains visible on its body, realistic petals and anthers. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up, high-resolution photograph of a bee orchid, with a bee visiting its bright, realistic flower, pollen grains visible on the bee's body, amidst a blurred background of various flowers, taken from a slightly above perspective, with natural, soft lighting.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 7,
+    "segment": 2,
+    "original_prompt": "macro documentary photograph of a bee visiting a bright flower, pollen grains visible on its body, realistic petals and anthers. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up, macro documentary photograph of a bee orchid's bright flower, with a bee visiting, pollen grains visible on its body, realistic petals and anthers, in a natural setting with soft, indirect sunlight.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 7,
+    "segment": 3,
+    "original_prompt": "macro documentary photograph of a bee visiting a bright flower, pollen grains visible on its body, realistic petals and anthers. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up, macro documentary photograph of a bee visiting a bright bee orchid, with pollen grains visible on its body, realistic petals and anthers, set against a soft, natural background, with the camera positioned directly above the flower, capturing the warm, natural light of a sunny day.",
+    "scientific_review_recommended": true
+  }
+]

@@ -1,0 +1,905 @@
+{
+  "title": "Storyboard: Flowers are one of the most fascinating subjects in the natural world",
+  "source": "Flowers are one of the most fascinating subjects in the natural world. Let's take a closer look at the sunflower, a flower that has captivated botanists for centuries.\nOne of the most intriguing aspects of the sunflower is its unique method of pollination. When bees are not present, the sunflower relies on self-pollination, a process where pollen grains from the anther are transferred to the receptive stigma.\nThis is made possible by the simultaneous maturation of the anther and stigma in plants like Ixora, a phenomenon known as homogamy. In other plants, such as wood sorrel, the flowers are small and inconspicuous, lacking fragrance and remaining closed. This rare occurrence is known as cleistogamy.\nSome plants, like papaya, have evolved to be unisexual, with male and female flowers growing on separate plants to encourage cross-pollination. However, sunflowers, as well as custard apples, have a different strategy. In these plants, the anther matures first, followed by the stigma, a process known as protandry.\nOn the other hand, custard apples exhibit protogynous characteristics, where the stigma matures first. Plants have developed various adaptations to facilitate cross-pollination, such as flowers like pansies having a hood that covers the stigma, or others, like primrose, having a stigma situated at a different height than the anther, a phenomenon known as heterostyly.\nWater plays a crucial role in pollination, often guiding pollinators to flowers through its scent and promise of nutritious nectar.\nHowever, some flowers have evolved to use trickery to attract pollinators. The bee orchid, for example, mimics the appearance of a female bee, luring male bees into pollinating it.\nThis fascinating phenomenon highlights the complexity and diversity of the natural world, encouraging us to continue exploring and learning.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Introduction to Sunflowers and Pollination",
+      "narration": "Flowers are one of the most fascinating subjects in the natural world. Let's take a closer look at the sunflower, a flower that has captivated botanists for centuries.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Flowers are one of the most fascinating subjects in the natural world.",
+          "visual": "Aerial shot of a diverse garden or meadow with various flowers in bloom, slowly zooming in on a single bloom.",
+          "image_prompt": "Image 1: A lush meadow with a mix of colorful wildflowers, including daisies and cosmos.\nImage 2: A close-up of a flower bud opening into a bloom.",
+          "keywords": [
+            "flowers",
+            "most",
+            "fascinating",
+            "subjects",
+            "natural",
+            "world",
+            "aerial",
+            "shot"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Let's take a closer look at the sunflower, a flower that has captivated botanists for centuries.",
+          "visual": "A close-up of a sunflower stem with leaves and flowers, slowly rotating to reveal the face of the flower.",
+          "image_prompt": "Image 1: A tall sunflower stem with a large yellow bloom and dark green leaves, set against a blue sky.\nImage 2: A close-up of a sunflower face, with large yellow petals and a dark center.",
+          "keywords": [
+            "take",
+            "closer",
+            "look",
+            "sunflower",
+            "flower",
+            "captivated",
+            "botanists",
+            "centuries"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "Unique Pollination Methods: Self-Pollination",
+      "narration": "One of the most intriguing aspects of the sunflower is its unique method of pollination. When bees are not present, the sunflower relies on self-pollination, a process where pollen grains from the anther are transferred to the receptive stigma.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "One of the most intriguing aspects of the sunflower is its unique method of pollination.",
+          "visual": "A close-up shot of a sunflower with a gentle, cinematic camera pan to emphasize its unique characteristics.",
+          "image_prompt": "A sunflower with a blurred background, showcasing its large, bright yellow petals.\nA botanical illustration of a sunflower with intricate details of its petals and center.",
+          "keywords": [
+            "most",
+            "intriguing",
+            "aspects",
+            "sunflower",
+            "unique",
+            "method",
+            "pollination",
+            "close-up"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "When bees are not present, the sunflower relies on self-pollination,",
+          "visual": "A split-screen comparison of a sunflower with a bee flying around it, then a sunflower alone with a subtle fade-out of the bee.",
+          "image_prompt": "A photograph of a sunflower with a bee hovering around its center, highlighting their interaction.\nA sunflower isolated on a plain background, with a faint outline of a bee in the distance.",
+          "keywords": [
+            "when",
+            "bees",
+            "present",
+            "sunflower",
+            "relies",
+            "self-pollination",
+            "split-screen",
+            "comparison"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "insect",
+            "heading": "Entomophily",
+            "learning_objective": "Show insect attraction and pollen attachment.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "a process where pollen grains from the anther are transferred to the receptive stigma.",
+          "visual": "A 3D animation or stop-motion of the sunflower's reproductive parts moving, focusing on the anther curling in.",
+          "image_prompt": "An anatomical illustration of a sunflower's reproductive parts, highlighting the male anther and female stigma.\nA microscopic photograph of a sunflower's anther and stigma, showcasing their unique structures.",
+          "keywords": [
+            "process",
+            "male",
+            "anther",
+            "curls",
+            "itself",
+            "deposit",
+            "pollen",
+            "sticky"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "title": "Homogamy and Cleistogamy: Rare Occurrences",
+      "narration": "This is made possible by the simultaneous maturation of the anther and stigma in plants like Ixora, a phenomenon known as homogamy. In other plants, such as wood sorrel, the flowers are small and inconspicuous, lacking fragrance and remaining closed. This rare occurrence is known as cleistogamy.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "This is made possible by the simultaneous maturation of the anther and stigma in plants like Ixora, a phenomenon known as homogamy.",
+          "visual": "Zoom in on a 3D animation of a plant anther and stigma maturing simultaneously, with labels 'anther' and 'stigma' appearing on screen.",
+          "image_prompt": "A botanical illustration of a plant with mature anthers and stigma, with labels highlighting the structures.\nA microscopic image of plant anthers and stigma in close-up, showcasing their maturity.",
+          "keywords": [
+            "made",
+            "possible",
+            "simultaneous",
+            "maturation",
+            "anther",
+            "stigma",
+            "plants",
+            "like"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "In other plants, such as wood sorrel, the flowers are small and inconspicuous, lacking fragrance and remaining closed.",
+          "visual": "Cut to a time-lapse animation of a wood sorrel plant growing, with flowers emerging but remaining closed, and no visible fragrance emanating from them.",
+          "image_prompt": "A photo of a wood sorrel plant with small, closed flowers, taken from a botanical garden or a similar setting.\nA close-up of a wood sorrel flower, showcasing its small size and closed petals.",
+          "keywords": [
+            "plants",
+            "wood",
+            "sorrel",
+            "flowers",
+            "small",
+            "inconspicuous",
+            "lacking",
+            "fragrance"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "process",
+            "heading": "Cleistogamy",
+            "learning_objective": "Show self-pollination inside a closed flower.",
+            "asset_path": null,
+            "steps": [
+              "Flower remains closed",
+              "Self-pollination occurs inside"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "This rare occurrence is known as cleistogamy.",
+          "visual": "Zoom in on a text overlay reading 'Cleistogamy' as a definition, with a faint animation of a plant cell in the background.",
+          "image_prompt": "A microscopic image of a plant cell, with a text overlay defining cleistogamy.\nA botanical illustration of a plant with a bold, highlighted label reading 'Cleistogamy', showcasing the rare occurrence.",
+          "keywords": [
+            "rare",
+            "occurrence",
+            "known",
+            "cleistogamy",
+            "zoom",
+            "text",
+            "overlay",
+            "reading"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "process",
+            "heading": "Cleistogamy",
+            "learning_objective": "Show self-pollination inside a closed flower.",
+            "asset_path": null,
+            "steps": [
+              "Flower remains closed",
+              "Self-pollination occurs inside"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 4,
+      "title": "Unisexual and Protandrous Plants",
+      "narration": "Some plants, like papaya, have evolved to be unisexual, with male and female flowers growing on separate plants to encourage cross-pollination. However, sunflowers, as well as custard apples, have a different strategy. In these plants, the anther matures first, followed by the stigma, a process known as protandry.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Some plants, like papaya, have evolved to be unisexual, with male and female flowers growing on separate plants to encourage cross-pollination.",
+          "visual": "Animated 3D model of a papaya plant with male and female flowers growing separately, with a zoom effect to highlight the separation.",
+          "image_prompt": "Image 1: A close-up of a papaya plant with a separate male and female flower, with a subtle green background.\nImage 2: An illustration of a papaya plant with a simple diagram showing male and female flowers growing separately.",
+          "keywords": [
+            "plants",
+            "like",
+            "papaya",
+            "evolved",
+            "unisexual",
+            "male",
+            "female",
+            "flowers"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "However, sunflowers, as well as custard apples, have a different strategy.",
+          "visual": "A split-screen comparison of a papaya plant (unisexual) with a sunflower or custard apple plant (protandrous) on the right, with a gentle transition effect between the two.",
+          "image_prompt": "Image 1: A side-by-side comparison of a papaya plant and a sunflower plant in a sunny field, with a subtle gradient background.\nImage 2: An illustration of a sunflower or custard apple plant with a simple diagram showing the protandrous strategy.",
+          "keywords": [
+            "however",
+            "sunflowers",
+            "well",
+            "custard",
+            "apples",
+            "strategy",
+            "split-screen",
+            "comparison"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "comparison",
+            "heading": "Flower Types",
+            "learning_objective": "Compare male and female flower roles.",
+            "asset_path": null,
+            "steps": [
+              "Male flower produces pollen",
+              "Female flower bears stigma and ovary"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.5
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "In these plants, the anther matures first, followed by the stigma, a process known as protandry.",
+          "visual": "Animated 3D model of a sunflower or custard apple anther maturing, followed by the stigma, with a zoom effect to highlight the sequential process.",
+          "image_prompt": "Image 1: A close-up of a sunflower or custard apple anther maturing, with a subtle background texture.\nImage 2: An illustration of a sunflower or custard apple plant with a detailed diagram showing the protandrous process.",
+          "keywords": [
+            "plants",
+            "anther",
+            "matures",
+            "followed",
+            "stigma",
+            "process",
+            "known",
+            "protandry"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "protandry",
+            "heading": "Protandry",
+            "learning_objective": "Show that the male part matures before the female part.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 5,
+      "title": "Protogynous Plants and Heterostyly",
+      "narration": "On the other hand, custard apples exhibit protogynous characteristics, where the stigma matures first. Plants have developed various adaptations to facilitate cross-pollination, such as flowers like pansies having a hood that covers the stigma, or others, like primrose, having a stigma situated at a different height than the anther, a phenomenon known as heterostyly.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "On the other hand, custard apples exhibit protogynous characteristics, where the stigma matures first.",
+          "visual": "A split-screen animation of a custard apple flower, with the stigma and anther labeled for clarity. The stigma is highlighted to show its maturity.",
+          "image_prompt": "Image 1: A close-up of a custard apple flower with a prominent stigma, with a slight focus on the anther in the background.\nImage 2: A diagram or illustration of a custard apple flower, labeling the stigma and anther for educational purposes.",
+          "keywords": [
+            "hand",
+            "custard",
+            "apples",
+            "exhibit",
+            "protogynous",
+            "characteristics",
+            "stigma",
+            "matures"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "protogyny",
+            "heading": "Protogyny",
+            "learning_objective": "Show that the female part matures before the male part.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Plants have developed various adaptations to facilitate cross-pollination,",
+          "visual": "A montage of different plant species, with animations highlighting their unique adaptations for cross-pollination.",
+          "image_prompt": "Image 1: A group of various plant species, with illustrations or animations of their unique adaptations (e.g. pansy hood, primrose stigma height).\nImage 2: An illustration or diagram of a general plant structure, with arrows or animations indicating the adaptations for cross-pollination.",
+          "keywords": [
+            "plants",
+            "developed",
+            "various",
+            "adaptations",
+            "facilitate",
+            "cross-pollination",
+            "montage",
+            "plant"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "such as flowers like pansies having a hood that covers the stigma,",
+          "visual": "A close-up animation of a pansy flower, with the hood covering the stigma, and the anther visible in the background.",
+          "image_prompt": "Image 1: A close-up of a pansy flower, with the hood covering the stigma and the anther in the background.\nImage 2: An illustration or diagram of a pansy flower, labeling the hood, stigma, and anther for educational purposes.",
+          "keywords": [
+            "flowers",
+            "like",
+            "pansies",
+            "having",
+            "hood",
+            "covers",
+            "stigma",
+            "close-up"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "protogyny",
+            "heading": "Protogyny",
+            "learning_objective": "Show that the female part matures before the male part.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "or others, like primrose, having a stigma situated at a different height than the anther, a phenomenon known as heterostyly.",
+          "visual": "A side-by-side animation of a primrose flower, with the stigma and anther labeled for clarity, highlighting their different heights.",
+          "image_prompt": "Image 1: A close-up of a primrose flower, with the stigma and anther labeled and highlighted for their different heights.\nImage 2: An illustration or diagram of a primrose flower, labeling the stigma and anther and explaining heterostyly.",
+          "keywords": [
+            "others",
+            "like",
+            "primrose",
+            "having",
+            "stigma",
+            "situated",
+            "height",
+            "anther"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "protogyny",
+            "heading": "Protogyny",
+            "learning_objective": "Show that the female part matures before the male part.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 6,
+      "title": "The Role of Water in Pollination",
+      "narration": "Water plays a crucial role in pollination, often guiding pollinators to flowers through its scent and promise of nutritious nectar.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Water plays a crucial role in pollination",
+          "visual": "A 3D animation of a water droplet being released from a plant, with a subtle animation of bees and other pollinators in the background, symbolizing the connection between water and pollination.",
+          "image_prompt": "A close-up shot of a dew-covered flower, with water droplets on the petals and a hint of a bee in the background.\nAn illustration of a water droplet surrounded by various plant species, with bees and butterflies pollinating them.",
+          "keywords": [
+            "water",
+            "plays",
+            "crucial",
+            "role",
+            "pollination",
+            "animation",
+            "droplet",
+            "released"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "water",
+            "heading": "Hydrophily",
+            "learning_objective": "Show pollen transfer through water in aquatic plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "often guiding pollinators to flowers through its scent",
+          "visual": "A zoom-in on a plant's petals, with a subtle animation of a bee flying towards it, as a gentle animation of water droplets on the petals release a fragrance.",
+          "image_prompt": "A macro shot of a flower's scent-emitting glands, with a few water droplets nearby.\nAn animation of a bee flying towards a flower, with a scent trail of water droplets leading the way.",
+          "keywords": [
+            "often",
+            "guiding",
+            "pollinators",
+            "flowers",
+            "scent",
+            "zoom-in",
+            "plant",
+            "petals"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "water",
+            "heading": "Hydrophily",
+            "learning_objective": "Show pollen transfer through water in aquatic plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "and promise of nutritious nectar",
+          "visual": "A close-up of a bee feeding on nectar from a flower, with a gentle animation of water droplets on the petals and a subtle animation of the bee's tongue extending to reach the nectar.",
+          "image_prompt": "A close-up shot of a bee feeding on nectar from a flower, with a few water droplets on the petals.\nAn illustration of a bee's tongue extending to reach nectar from a flower, with water droplets on the petals and a subtle animation of the bee's tongue in action.",
+          "keywords": [
+            "promise",
+            "nutritious",
+            "nectar",
+            "close-up",
+            "feeding",
+            "flower",
+            "gentle",
+            "animation"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "water",
+            "heading": "Hydrophily",
+            "learning_objective": "Show pollen transfer through water in aquatic plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 7,
+      "title": "Trickery in Pollination: The Bee Orchid",
+      "narration": "However, some flowers have evolved to use trickery to attract pollinators. The bee orchid, for example, mimics the appearance of a female bee, luring male bees into pollinating it.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "However, some flowers have evolved to use trickery to attract pollinators.",
+          "visual": "Aerial shot of various flowers with a subtle, pulsing effect to indicate their unique characteristics.",
+          "image_prompt": "Image 1: Close-up of a flower with an unusual shape or color, with a blurred background.\nImage 2: A cluster of flowers with varying sizes and shapes, with a shallow depth of field.",
+          "keywords": [
+            "however",
+            "flowers",
+            "evolved",
+            "trickery",
+            "attract",
+            "pollinators",
+            "aerial",
+            "shot"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "insect",
+            "heading": "Entomophily",
+            "learning_objective": "Show insect attraction and pollen attachment.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "The bee orchid, for example, mimics the appearance of a female bee,",
+          "visual": "A zoom-in on a bee orchid, with a highlighted focus on its flowers and petals.",
+          "image_prompt": "Image 1: A single bee orchid with a bright, sunny background, showcasing its unique flowers.\nImage 2: A close-up of a bee orchid's flowers, with a subtle animation to highlight their texture and patterns.",
+          "keywords": [
+            "orchid",
+            "example",
+            "mimics",
+            "appearance",
+            "female",
+            "zoom-in",
+            "highlighted",
+            "focus"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "insect",
+            "heading": "Entomophily",
+            "learning_objective": "Show insect attraction and pollen attachment.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "luring male bees into pollinating it.",
+          "visual": "A time-lapse animation of a male bee approaching the bee orchid, with a red 'target' or 'bullseye' effect to emphasize the pollination process.",
+          "image_prompt": "Image 1: A male bee hovering near a bee orchid, with a blurred background to emphasize the interaction.\nImage 2: A split-screen image of a male bee and a bee orchid, with a subtle animation to illustrate the pollination process.",
+          "keywords": [
+            "luring",
+            "male",
+            "bees",
+            "pollinating",
+            "time-lapse",
+            "animation",
+            "approaching",
+            "orchid"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "insect",
+            "heading": "Entomophily",
+            "learning_objective": "Show insect attraction and pollen attachment.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 8,
+      "title": "Conclusion: Diversity and Complexity",
+      "narration": "This fascinating phenomenon highlights the complexity and diversity of the natural world, encouraging us to continue exploring and learning.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "This fascinating phenomenon highlights the complexity and diversity of the natural world",
+          "visual": "Aerial shot of a lush, vibrant forest with diverse flora and fauna, animated with gentle, flowing lines and colors to convey a sense of wonder",
+          "image_prompt": "Image 1: A dense rainforest with a waterfall in the background, with a variety of exotic plants and trees\nImage 2: A sprawling savannah with acacia trees and diverse wildlife, such as giraffes and lions",
+          "keywords": [
+            "fascinating",
+            "phenomenon",
+            "highlights",
+            "complexity",
+            "diversity",
+            "natural",
+            "world",
+            "aerial"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "process",
+            "heading": "This fascinating phenomenon highlights",
+            "learning_objective": "Explain the key idea in this segment.",
+            "asset_path": null,
+            "steps": [
+              "This fascinating phenomenon highlights the complexity",
+              "diversity of the natural world"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "encouraging us to continue exploring and learning",
+          "visual": "A gentle zoom-in on a child's curious face, looking at a microscope or telescope, with animated rays of light and curiosity sparks surrounding them",
+          "image_prompt": "Image 1: A young child looking through a magnifying glass at a small insect, with a look of wonder on their face\nImage 2: A student or scientist working in a laboratory, surrounded by various scientific instruments and experiments, with a sense of discovery",
+          "keywords": [
+            "encouraging",
+            "continue",
+            "exploring",
+            "learning",
+            "gentle",
+            "zoom-in",
+            "child",
+            "curious"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "process",
+            "heading": "encouraging continue exploring and",
+            "learning_objective": "Explain the key idea in this segment.",
+            "asset_path": null,
+            "steps": [
+              "encouraging us to continue exploring",
+              "learning"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    }
+  ]
+}

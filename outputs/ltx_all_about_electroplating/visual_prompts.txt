@@ -1,0 +1,193 @@
+Scene 1.1: Introduction to Electroplating
+template: video
+heading: Anita electroplating keychain
+duration: 8.0 sec
+prompt: Cinematic macro video of a woman in lab coat electroplating a copper keychain, silver solution in beaker, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong lab equipment, text artifacts, watermark, blurry, extra limbs, distorted human, inaccurate lab setup
+
+Scene 1.2: Introduction to Electroplating
+template: video
+heading: Silver ion deposition
+duration: 6.0 sec
+prompt: Cinematic macro video of silver ions depositing on copper electrode in electroplating, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong electrochemical processes, text artifacts, watermark, blurry, extra limbs, distorted ions, inaccurate electroplating setup
+
+Scene 2.1: Setting Up the Electroplating Setup
+A family of four smiling together in a living room, surrounded by colorful birthday decorations and gifts, with natural light pouring in through a window, capturing a joyful and intimate moment.
+
+Scene 2.2: Setting Up the Electroplating Setup
+A close-up shot of a keychain with a silver plating, placed on a workbench in a well-lit workshop, with a neutral background, natural lighting, sharp detail, and a documentary-style camera position.
+
+Scene 2.3: Setting Up the Electroplating Setup
+A close-up shot of an antique copper keychain placed on a workbench, surrounded by electroplating equipment, with natural light illuminating the scene from the side, capturing sharp details of the keychain and the setup.
+
+Scene 2.4: Setting Up the Electroplating Setup
+Anita stands in a well-lit workshop, surrounded by electroplating equipment, with a focused expression as she carefully connects wires to a metal object, the camera positioned directly in front of her, capturing sharp details of her hands and the machinery.
+
+Scene 2.5: Setting Up the Electroplating Setup
+template: video
+heading: A diagram of the electroplating setup
+duration: 6.0 sec
+prompt: Realistic HD educational Wan video, A diagram of the electroplating setup, natural motion, documentary style, sharp detail, accurate subject, seamless continuation, no blank cards, no slide layout
+negative: incorrect anatomy, wrong labels, unreadable text, watermark, blurry, distorted, fantasy, irrelevant objects
+
+Scene 2.6: Setting Up the Electroplating Setup
+A close-up of an electroplating machine in a well-lit workshop, with the camera positioned directly above the machine, capturing the initial stages of the electroplating process with sharp detail and natural lighting.
+
+Scene 3.1: Electrolytic Cell Components
+A documentary-style photograph of an electrolytic cell in a well-lit laboratory, with a silver nitrate solution prominently displayed, showcasing sharp detail and accurate representation of the subject.
+
+Scene 3.2: Electrolytic Cell Components
+A close-up of an electrolytic cell's components, such as the anode and cathode, sit on a workbench under natural light, with a documentary-style camera capturing sharp details of the apparatus, ready for assembly and electroplating.
+
+Scene 3.3: Electrolytic Cell Components
+A documentary-style diagram of an electrolytic cell, with a battery in the center, surrounded by a red wire connected to the positive terminal and a blue wire connected to the negative terminal via a switch, under natural lighting with sharp detail.
+
+Scene 3.4: Electrolytic Cell Components
+A close-up of a keychain attached to the negative terminal of an electrolytic cell, with a pure silver rod connected to the positive terminal, set against a neutral background, lit by natural light, in a documentary style, with sharp detail and accurate representation.
+
+Scene 3.5: Electrolytic Cell Components
+template: video
+heading: Electroplating process
+duration: 4.0 sec
+prompt: Cinematic macro video of electroplating process with silver deposition on keychain, natural lighting, educational clarity, shallow depth of field
+negative: cartoon, fantasy equipment, wrong chemical labels, text artifacts, blurry, extra parts, inaccurate lab setup
+
+Scene 4.1: Understanding Electrochemical Terms
+A chemistry lab setup with a beaker, test tubes, and a Bunsen burner on a wooden workbench, under natural light, with a slight angle from the side, capturing sharp details of the equipment and surroundings.
+
+Scene 4.2: Understanding Electrochemical Terms
+A close-up of a chemistry textbook open on a wooden desk, with a diagram of an electrochemical cell in the center, surrounded by labeled boxes with draggable label placeholders, under natural light with sharp detail, in a documentary style, with accurate subject matter.
+
+Scene 4.3: Understanding Electrochemical Terms
+template: video
+heading: Battery and Electrochemical Cell Setup
+duration: 7.0 sec
+prompt: Cinematic macro video of a battery and electrochemical cell setup, visible terminals, natural daylight, realistic electrochemistry detail, clean background, educational clarity, designed for 7.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, text artifacts, watermark, blurry, extra limbs, distorted equipment, inaccurate cell setup
+
+Scene 4.4: Understanding Electrochemical Terms
+A documentary-style photograph of an electrolytic cell, with the solution labeled, set in a well-lit laboratory environment, showcasing sharp detail and accurate representation of the subject.
+
+Scene 5.1: Electrochemical Reactions
+template: video
+heading: Lab setup with electrolyte solution
+duration: 6.0 sec
+prompt: Cinematic macro video of a lab setup showing a beaker with electrolyte solution, silver electrodes, and visible ions, realistic colors, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 5.2: Electrochemical Reactions
+A documentary-style photo of an electrolyte solution in a beaker, with positively charged silver ions and negatively charged chloride ions visible, under natural lighting, with sharp detail, and a neutral background.
+
+Scene 5.3: Electrochemical Reactions
+template: video
+heading: Switch turning on with current flow
+duration: 4.0 sec
+prompt: Cinematic macro video of an electrical switch turning on, showing visible current flow with glowing effect, realistic colors, shallow depth of field, educational clarity
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 5.4: Electrochemical Reactions
+template: video
+heading: Electron flow from battery to cathode
+duration: 8.0 sec
+prompt: Cinematic macro video of electrons moving from battery to keychain cathode, showing negative charge buildup, realistic colors, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 5.5: Electrochemical Reactions
+template: video
+heading: Silver ion movement toward cathode
+duration: 6.0 sec
+prompt: Cinematic macro video of silver ions (Ag+) moving toward cathode under electric field, realistic colors, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 5.6: Electrochemical Reactions
+A silver ion in a beaker, surrounded by a laboratory setup, with a gentle light source above, illuminating its vacant outer shell, as an electron approaches to fill it, in a documentary-style, high-definition image with sharp detail.
+
+Scene 5.7: Electrochemical Reactions
+template: video
+heading: Silver atom deposition onto keychain
+duration: 6.0 sec
+prompt: Cinematic macro video of silver atom depositing onto keychain, showing deposition process, realistic colors, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 6.1: Cathode and Anode Reactions
+A documentary-style electrochemical cell diagram with a realistic, detailed cathode and anode, set against a subtle background, with natural lighting and sharp focus, highlighting the cathode's reaction where electrons are gained, illustrating the concept of reduction.
+
+Scene 6.2: Cathode and Anode Reactions
+template: video
+heading: Silver ion migration
+duration: 8.0 sec
+prompt: Cinematic macro video of silver ions naturally moving from solution to keychain, realistic chemistry detail, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 6.3: Cathode and Anode Reactions
+template: video
+heading: Silver atom migration
+duration: 6.0 sec
+prompt: Cinematic macro video of silver atoms naturally moving from anode into solution, realistic chemistry detail, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 6.4: Cathode and Anode Reactions
+A silver atom, surrounded by a simple, darkened laboratory background, is shown in close-up, with a subtle beam of light illuminating its surface, as it loses an electron to form a Ag⁺ ion, in a documentary-style, high-definition image with sharp detail and natural lighting.
+
+Scene 6.5: Cathode and Anode Reactions
+A realistic, high-definition educational visual of an electrochemical cell, with a labeled anode, set in a documentary style, under natural lighting, showcasing sharp detail and an accurate representation of the subject.
+
+Scene 6.6: Cathode and Anode Reactions
+template: video
+heading: Electron flow in circuit
+duration: 8.0 sec
+prompt: Cinematic macro video of electrons naturally flowing through circuit components, realistic chemistry detail, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 7.1: Overall Electroplating Reaction
+A close-up of a keychain in a well-lit workshop, with silver atoms visibly depositing onto its surface, surrounded by tools and equipment, captured in sharp detail with a documentary-style camera angle.
+
+Scene 7.2: Overall Electroplating Reaction
+A documentary-style electroplating cell with labeled components, set in a well-lit laboratory with sharp detail, surrounded by equipment and workbenches, viewed from a neutral angle with natural lighting.
+
+Scene 7.3: Overall Electroplating Reaction
+template: video
+heading: Redox reaction in electroplating
+duration: 8.0 sec
+prompt: Cinematic macro video of an electroplating setup with visible electron flow and ion movement in the electrolyte, lab environment, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 7.4: Overall Electroplating Reaction
+A documentary-style educational diagram of an electroplating process, set in a well-lit industrial workshop with sharp detail, showing variables such as temperature, current, and electrolyte concentration affecting the reaction.
+
+Scene 8.1: Factors Affecting Electroplating
+A documentary-style graph in a well-lit laboratory setting, with a sharp focus on the X-axis representing time and the Y-axis representing silver mass, showing a clear increasing trend as the current is applied.
+
+Scene 8.2: Factors Affecting Electroplating
+template: video
+heading: Current Flow in Electroplating
+duration: 6.0 sec
+prompt: Cinematic macro video of battery connected to electroplating cell with glowing current flow, professional lab setup, natural daylight, realistic detail, clean background, high clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 8.3: Factors Affecting Electroplating
+A documentary-style graph in a well-lit laboratory setting, showing a silver mass deposited over time with two data points: one with original time and another with time halved, featuring sharp detail and accurate representation.
+
+Scene 8.4: Factors Affecting Electroplating
+A documentary-style diagram of silver, gold, and copper metals in a laboratory setting, with each metal having a timer next to it, showcasing their respective deposition times, under natural lighting with sharp detail.
+
+Scene 8.5: Factors Affecting Electroplating
+template: video
+heading: Gold Deposition Comparison
+duration: 6.0 sec
+prompt: Cinematic macro video of a graph showing gold mass deposited over time with time slider adjustment, professional lab setup, natural daylight, realistic detail, clean background, high clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 8.6: Factors Affecting Electroplating
+A documentary-style diagram of an electroplating process, with a metal object submerged in a solution under a bright light, surrounded by a few tools and a background of a laboratory, with a camera positioned at a 45-degree angle to show the metal, current intensity gauge, and timer in sharp detail.
+
+Scene 9.1: Summary of Electroplating Concepts
+A documentary-style, high-definition image of an electrolytic cell with a labeled anode and cathode, surrounded by a clutter-free workspace with natural light illuminating the metal components, showcasing the electron flow in sharp detail.
+
+Scene 9.2: Summary of Electroplating Concepts
+template: video
+heading: Electroplating process
+duration: 6.0 sec
+prompt: Cinematic macro video of electroplating process showing metal ions in solution, visible deposition on object, natural motion, realistic industrial setting, high clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon style, fantasy elements, incorrect chemical symbols, text artifacts, watermark, blurry, distorted components

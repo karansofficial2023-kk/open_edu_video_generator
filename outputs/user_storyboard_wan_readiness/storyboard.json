@@ -1,0 +1,838 @@
+{
+  "title": "Storyboard: Sunflowers hold a special place in my heart, and a...",
+  "source": "Sunflowers hold a special place in my heart, and at this size, we can appreciate their unique features.\nOne of the fascinating aspects of sunflowers is their ability to adapt when bees are scarce. In the absence of pollinators, they employ a clever mechanism to ensure pollination. This is achieved through self-pollination, where the male anther curls inwards to deposit pollen on the sticky female stigma.\nPlants like Xorra exhibit simultaneous maturation of the anther and stigma, a phenomenon known as homogamy, which facilitates self-pollination. Conversely, some plants like wood sorrel have inconspicuous flowers that lack fragrance, and these bisexual flowers never open. This process is referred to as glystogomy, where the pollen grain is distributed on the stigma of the same flower, enabling self-pollination.\nOn the other hand, cross-pollination is a crucial process that relies on various adaptations in flowers. Papaya, for instance, is a unisexual dioecious plant, where male and female flowers are borne on separate plants to encourage cross-pollination. In contrast, sunflowers display bisexual flowers, where the anther matures first, followed by the stigma, a process known as pro-tandry.\nInterestingly, various flowers have evolved unique structural adaptations to facilitate cross-pollination. For example, pansies have a hood covering the stigma, known as hercogomy, while orchids and primrose exhibit distinct characteristics that hinder self-pollination, promoting cross-pollination instead.\nThese examples illustrate the diverse strategies employed by flowers to ensure successful pollination. In some cases, like the custard apple, it is the stigma that matures first, referred to as pro-togeny.\nIn summary, self-pollination is a vital process that occurs in plants like Ixora, where the anther and stigma mature simultaneously. In contrast, cross-pollination relies on various adaptations, such as the ones observed in papaya, sunflowers, and other plants.\nAs we explore the intricate world of flowers, we begin to appreciate the complexity and beauty of these adaptations.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Introduction to Sunflowers",
+      "narration": "Sunflowers hold a special place in my heart, and at this size, we can appreciate their unique features.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Sunflowers hold a special place in my heart",
+          "visual": "Static image",
+          "image_prompt": "A beautiful, sun-drenched field with sunflowers swaying gently in the wind",
+          "keywords": [
+            "sunflowers",
+            "hold",
+            "special",
+            "place",
+            "heart",
+            "static",
+            "image",
+            "beautiful"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "process",
+            "heading": "Sunflowers hold special place",
+            "learning_objective": "Explain the key idea in this segment.",
+            "asset_path": null,
+            "steps": [
+              "Sunflowers hold special place in my heart",
+              "Connect it to the main concept"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "and at this size, we can appreciate their unique features",
+          "visual": "Local animation",
+          "image_prompt": "The camera zooms in on a single sunflower, showing its details",
+          "keywords": [
+            "size",
+            "appreciate",
+            "unique",
+            "features",
+            "local",
+            "animation",
+            "camera",
+            "zooms"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "process",
+            "heading": "and this size can",
+            "learning_objective": "Explain the key idea in this segment.",
+            "asset_path": null,
+            "steps": [
+              "at this size",
+              "we can appreciate their unique features"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "Self-Pollination in Sunflowers",
+      "narration": "One of the fascinating aspects of sunflowers is their ability to adapt when bees are scarce. In the absence of pollinators, they employ a clever mechanism to ensure pollination. This is achieved through self-pollination, where the male anther curls inwards to deposit pollen on the sticky female stigma.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "One of the fascinating aspects of sunflowers is their ability to adapt when bees are scarce.",
+          "visual": "Static image",
+          "image_prompt": "A photo of a sunflower field with a few bees flying around",
+          "keywords": [
+            "fascinating",
+            "aspects",
+            "sunflowers",
+            "ability",
+            "adapt",
+            "when",
+            "bees",
+            "scarce"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "insect",
+            "heading": "Entomophily",
+            "learning_objective": "Show insect attraction and pollen attachment.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "In the absence of pollinators, they employ a clever mechanism to ensure pollination.",
+          "visual": "Local animation",
+          "image_prompt": "A close-up of a sunflower with a bee on it",
+          "keywords": [
+            "absence",
+            "pollinators",
+            "they",
+            "employ",
+            "clever",
+            "mechanism",
+            "ensure",
+            "pollination"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "This is achieved through self-pollination, where the male anther curls inwards to deposit pollen on the sticky female stigma.",
+          "visual": "Local animation",
+          "image_prompt": "A close-up of a sunflower's reproductive parts",
+          "keywords": [
+            "achieved",
+            "self-pollination",
+            "male",
+            "anther",
+            "curls",
+            "inwards",
+            "deposit",
+            "pollen"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "title": "Types of Plants with Self-Pollination",
+      "narration": "Plants like Xorra exhibit simultaneous maturation of the anther and stigma, a phenomenon known as homogamy, which facilitates self-pollination. Conversely, some plants like wood sorrel have inconspicuous flowers that lack fragrance, and these bisexual flowers never open. This process is referred to as glystogomy, where the pollen grain is distributed on the stigma of the same flower, enabling self-pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Plants like Xorra exhibit simultaneous maturation of the anther and stigma, a phenomenon known as homogamy, which facilitates self-pollination.",
+          "visual": "Wan video",
+          "image_prompt": "Natural video: close-up of a Xorra plant with flowers, showing anther and stigma maturation",
+          "keywords": [
+            "plants",
+            "like",
+            "xorra",
+            "exhibit",
+            "simultaneous",
+            "maturation",
+            "anther",
+            "stigma"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Conversely, some plants like wood sorrel have inconspicuous flowers that lack fragrance, and these bisexual flowers never open.",
+          "visual": "Static image",
+          "image_prompt": "Illustration of a wood sorrel plant with inconspicuous flowers",
+          "keywords": [
+            "conversely",
+            "plants",
+            "like",
+            "wood",
+            "sorrel",
+            "inconspicuous",
+            "flowers",
+            "lack"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "This process is referred to as glystogomy, where the pollen grain is distributed on the stigma of the same flower, enabling self-pollination.",
+          "visual": "Local animation",
+          "image_prompt": "Cutaway diagram showing pollen grain distribution on stigma",
+          "keywords": [
+            "process",
+            "referred",
+            "glystogomy",
+            "pollen",
+            "grain",
+            "distributed",
+            "stigma",
+            "flower"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "classification",
+            "heading": "Self-Pollination",
+            "learning_objective": "Compare autogamy and geitonogamy.",
+            "asset_path": null,
+            "steps": [
+              "Autogamy: same flower",
+              "Geitonogamy: same plant"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.5
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 4,
+      "title": "Cross-Pollination in Different Plants",
+      "narration": "On the other hand, cross-pollination is a crucial process that relies on various adaptations in flowers. Papaya, for instance, is a unisexual dioecious plant, where male and female flowers are borne on separate plants to encourage cross-pollination. In contrast, sunflowers display bisexual flowers, where the anther matures first, followed by the stigma, a process known as pro-tandry.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "On the other hand, cross-pollination is a crucial process that relies on various adaptations in flowers.",
+          "visual": "Static image",
+          "image_prompt": "Image of different flowers, with various colors and shapes",
+          "keywords": [
+            "hand",
+            "cross-pollination",
+            "crucial",
+            "process",
+            "relies",
+            "various",
+            "adaptations",
+            "flowers"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Papaya, for instance, is a unisexual dioecious plant, where male and female flowers are borne on separate plants to encourage cross-pollination.",
+          "visual": "Local animation",
+          "image_prompt": "Image of a papaya plant with male and female flowers, and a bee flying in between",
+          "keywords": [
+            "papaya",
+            "instance",
+            "unisexual",
+            "dioecious",
+            "plant",
+            "male",
+            "female",
+            "flowers"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "In contrast, sunflowers display bisexual flowers, where the anther matures first, followed by the stigma, a process known as pro-tandry.",
+          "visual": "Local animation",
+          "image_prompt": "Image of a sunflower with anther and stigma, and a bee visiting the flower",
+          "keywords": [
+            "contrast",
+            "sunflowers",
+            "display",
+            "bisexual",
+            "flowers",
+            "anther",
+            "matures",
+            "followed"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 5,
+      "title": "Unique Adaptations for Cross-Pollination",
+      "narration": "Interestingly, various flowers have evolved unique structural adaptations to facilitate cross-pollination. For example, pansies have a hood covering the stigma, known as hercogomy, while orchids and primrose exhibit distinct characteristics that hinder self-pollination, promoting cross-pollination instead.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Interestingly, various flowers have evolved unique structural adaptations to facilitate cross-pollination.",
+          "visual": "Static image",
+          "image_prompt": "A still image of various flowers with a soft focus effect",
+          "keywords": [
+            "interestingly",
+            "various",
+            "flowers",
+            "evolved",
+            "unique",
+            "structural",
+            "adaptations",
+            "facilitate"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "For example, pansies have a hood covering the stigma, known as hercogomy,",
+          "visual": "Local animation",
+          "image_prompt": "A still image of a pansy flower with a highlighted hood",
+          "keywords": [
+            "example",
+            "pansies",
+            "hood",
+            "covering",
+            "stigma",
+            "known",
+            "hercogomy",
+            "local"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "while orchids and primrose exhibit distinct characteristics that hinder self-pollination, promoting cross-pollination instead.",
+          "visual": "Local animation",
+          "image_prompt": "A still image of an orchid and primrose flower side by side",
+          "keywords": [
+            "orchids",
+            "primrose",
+            "exhibit",
+            "distinct",
+            "characteristics",
+            "hinder",
+            "self-pollination",
+            "promoting"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "classification",
+            "heading": "Types Of Pollination",
+            "learning_objective": "Separate self-pollination from cross-pollination.",
+            "asset_path": null,
+            "steps": [
+              "Self-pollination",
+              "Cross-pollination"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.5
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 6,
+      "title": "Examples of Cross-Pollination",
+      "narration": "These examples illustrate the diverse strategies employed by flowers to ensure successful pollination. In some cases, like the custard apple, it is the stigma that matures first, referred to as pro-togeny.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "These examples illustrate the diverse strategies employed by flowers to ensure successful pollination.",
+          "visual": "Static image",
+          "image_prompt": "Still photo of various flowers in a garden",
+          "keywords": [
+            "examples",
+            "illustrate",
+            "diverse",
+            "strategies",
+            "employed",
+            "flowers",
+            "ensure",
+            "successful"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "In some cases, like the custard apple, it is the stigma that matures first, referred to as pro-togeny.",
+          "visual": "Local animation",
+          "image_prompt": "An illustration of a custard apple flower with its stigma highlighted",
+          "keywords": [
+            "cases",
+            "like",
+            "custard",
+            "apple",
+            "stigma",
+            "matures",
+            "referred",
+            "pro-togeny"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 7,
+      "title": "Summary of Pollination Methods",
+      "narration": "In summary, self-pollination is a vital process that occurs in plants like Ixora, where the anther and stigma mature simultaneously. In contrast, cross-pollination relies on various adaptations, such as the ones observed in papaya, sunflowers, and other plants.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "In summary, self-pollination is a vital process that occurs in plants like Ixora, where the anther and stigma mature simultaneously.",
+          "visual": "Static image",
+          "image_prompt": "Illustration of a plant with anther and stigma labeled",
+          "keywords": [
+            "summary",
+            "self-pollination",
+            "vital",
+            "process",
+            "occurs",
+            "plants",
+            "like",
+            "xora"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "In contrast, cross-pollination relies on various adaptations, such as the ones observed in papaya, sunflowers, and other plants.",
+          "visual": "Local animation",
+          "image_prompt": "Comparison panel with self-pollination on one side and cross-pollination on the other",
+          "keywords": [
+            "contrast",
+            "cross-pollination",
+            "relies",
+            "various",
+            "adaptations",
+            "ones",
+            "observed",
+            "papaya"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "pollination",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 8,
+      "title": "Conclusion",
+      "narration": "As we explore the intricate world of flowers, we begin to appreciate the complexity and beauty of these adaptations.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "As we explore the intricate world of flowers,",
+          "visual": "Static image",
+          "image_prompt": "Close-up of a variety of flowers",
+          "keywords": [
+            "explore",
+            "intricate",
+            "world",
+            "flowers",
+            "static",
+            "image",
+            "close-up",
+            "variety"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "process",
+            "heading": "explore the intricate world",
+            "learning_objective": "Explain the key idea in this segment.",
+            "asset_path": null,
+            "steps": [
+              "As we explore the intricate world of flowers",
+              "Connect it to the main concept"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "we begin to appreciate the complexity",
+          "visual": "Local animation",
+          "image_prompt": "Infographic illustrating complexity with interconnected elements",
+          "keywords": [
+            "begin",
+            "appreciate",
+            "complexity",
+            "local",
+            "animation",
+            "infographic",
+            "illustrating",
+            "interconnected"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "process",
+            "heading": "begin appreciate the complexity",
+            "learning_objective": "Explain the key idea in this segment.",
+            "asset_path": null,
+            "steps": [
+              "we begin to appreciate the complexity",
+              "Connect it to the main concept"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "and beauty of these adaptations.",
+          "visual": "Wan video",
+          "image_prompt": "Natural video: flower blooming in a garden",
+          "keywords": [
+            "beauty",
+            "adaptations",
+            "video",
+            "natural",
+            "flower",
+            "blooming",
+            "garden"
+          ],
+          "audio_path": null,
+          "start": 0.0,
+          "end": 0.0,
+          "shot": {
+            "template": "process",
+            "heading": "and beauty these adaptations",
+            "learning_objective": "Explain the key idea in this segment.",
+            "asset_path": null,
+            "steps": [
+              "and beauty of these adaptations",
+              "Connect it to the main concept"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.52
+            ]
+          },
+          "captions": [],
+          "speech_duration": 0.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    }
+  ]
+}

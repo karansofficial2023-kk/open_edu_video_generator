@@ -1,0 +1,72 @@
+Scene 1.1: Introduction to Electrolytes and Their Role
+A realistic, high-definition educational visual of an electrolytic cell, with electrodes and a power source, set against a neutral background, under natural lighting, with sharp detail and a documentary style, showcasing the movement of ions accurately.
+
+Scene 1.2: Introduction to Electrolytes and Their Role
+A documentary-style image of an industrial electrolysis setup, with metal purification and plating processes in action, under natural lighting, showcasing sharp detail and accurate representation of the subject, with a focus on the electrolysis equipment and processes, set against a neutral background, without any distracting elements or text-heavy graphics.
+
+Scene 1.3: Introduction to Electrolytes and Their Role
+template: video
+heading: Electroplating process
+duration: 8.0 sec
+prompt: Cinematic macro video of electroplating process, visible metal ions depositing on a surface, natural daylight, realistic industrial detail, clean background, high clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 2.1: Strong vs. Weak Electrolytes
+A documentary-style photo of a lab setup with electrodes and solutions, showcasing strong and weak electrolytes under natural lighting, with sharp detail and accurate representation of the subject, focusing on the lab equipment and solutions without any text-heavy graphics or slide layouts.
+
+Scene 2.2: Strong vs. Weak Electrolytes
+A weak acid and base solution in a laboratory beaker, with a background of a clutter-free workbench, under natural light, with a camera positioned directly above the beaker, showcasing the solution's labeled molar conductivity values with sharp detail, in a documentary-style educational visual.
+
+Scene 2.3: Strong vs. Weak Electrolytes
+template: video
+heading: Limiting Conductivity Graph
+duration: 7.0 sec
+prompt: Cinematic macro video of a graph showing the limiting molar conductivity of acetic acid with smooth motion, natural lighting, educational clarity, designed for 7.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy elements, text artifacts, watermark, blurry, extra limbs, distorted graph, inaccurate labels
+
+Scene 3.1: Limiting Molar Conductivity of Weak Electrolytes
+A graph of molar conductivity vs concentration in a documentary-style illustration, with a gentle natural light source illuminating a sharp, detailed representation of the asymptote as concentrations decrease, making it impossible to measure molar conductivity as concentration approaches zero.
+
+Scene 3.2: Limiting Molar Conductivity of Weak Electrolytes
+A documentary-style image of a blackboard or chalkboard with a clear, hand-written formula of Kohlrausch's law, surrounded by a dimly lit, old-fashioned classroom with wooden desks and chairs, natural light pouring in through a window, highlighting the formula in sharp detail.
+
+Scene 3.3: Limiting Molar Conductivity of Weak Electrolytes
+A realistic diagram of an electrolyte solution in a beaker, with ions dissociating from the molecules under natural light, surrounded by a simple laboratory background, camera positioned directly above the beaker, sharp focus on the ions and solution, documentary-style lighting, accurately representing the concept of electrolyte dissociation into ions.
+
+Scene 4.1: Kohlrausch's Law and Its Application
+A documentary-style photo of a lab bench with a beaker of acetic acid solution, a conductivity meter, and labeled ions on a nearby whiteboard, under natural lighting with sharp detail.
+
+Scene 4.2: Kohlrausch's Law and Its Application
+A documentary-style photo of ion migration in an electrolyte solution, with natural lighting and sharp detail, showing a clear representation of Kohlrausch's Law, where ions move independently in a solution, with a focus on the accurate depiction of the electrolyte's properties and behavior.
+
+Scene 4.3: Kohlrausch's Law and Its Application
+A close-up, documentary-style photo of a beaker containing a clear acetic acid solution, with a conductivity meter submerged in the liquid, placed on a clutter-free laboratory bench under natural light, with sharp focus on the solution and the meter, capturing the subtle ripples on the surface of the liquid.
+
+Scene 5.1: Calculating Limiting Molar Conductivity
+A documentary-style graph showing molar conductivity vs. square root of concentration for strong electrolytes like sodium acetate, hydrochloric acid, and sodium chloride, set against a subtle background with natural lighting, capturing sharp details of the graph's lines and axes.
+
+Scene 5.2: Calculating Limiting Molar Conductivity
+A documentary-style image of a laboratory table with a mathematical equation written on a whiteboard in the background, surrounded by beakers and test tubes containing acetic acid, sodium acetate, and hydrochloric acid, with a subtle natural light source illuminating the scene, capturing sharp details of the chemicals and equipment.
+
+Scene 6.1: Kohlrausch's Law in Practice
+A close-up shot of a whiteboard in a laboratory setting, with a mathematical equation written in sharp detail, surrounded by natural lighting, with a label of acetic acid on the side, in a documentary style, capturing the accurate representation of Kohlrausch's Law in Practice.
+
+Scene 6.2: Kohlrausch's Law in Practice
+A documentary-style lab setup with strong and weak electrolytes, under natural lighting, with sharp detail, featuring a scientist measuring and comparing the conductivity of solutions, with a background of beakers, test tubes, and equipment, capturing the accurate process of determining weak electrolytes' limiting molar conductivities using strong electrolytes.
+
+Scene 6.3: Kohlrausch's Law in Practice
+template: video
+heading: Bee visiting a flower
+duration: 6.0 sec
+prompt: Cinematic macro video of a bee naturally moving onto a flower, pollen visible on anthers and bee legs, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 6.4: Kohlrausch's Law in Practice
+A documentary-style image of two beakers on a laboratory bench, with chemical formulas for acetic acid and ammonium hydroxide written on whiteboard in the background, under natural lighting with sharp detail, highlighting the accurate representation of these weak electrolytes.
+
+Scene 7.1: Further Applications of Kohlrausch's Law
+template: video
+heading: Researcher in lab setting
+duration: 7.5 sec
+prompt: Cinematic macro video of a researcher in a lab, focusing on an electrochemical cell with visible electrodes and electrolyte solution, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity, designed for 7.5 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure

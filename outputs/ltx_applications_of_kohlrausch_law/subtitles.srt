@@ -1,0 +1,183 @@
+1
+00:00:00,100 --> 00:00:03,444
+One of the key uses of electrolytes is their
+
+2
+00:00:03,459 --> 00:00:08,022
+role in conducting electricity during electrolysis
+
+3
+00:00:09,446 --> 00:00:13,290
+This process is widely applied in fields such as
+
+4
+00:00:13,305 --> 00:00:17,368
+metallurgy electrorefining and electroplating
+
+5
+00:00:18,840 --> 00:00:23,387
+In electroplating the selection of an electrolyte and its
+
+6
+00:00:23,403 --> 00:00:28,684
+precise molar conductivity significantly impact the outcome
+
+7
+00:00:30,604 --> 00:00:35,307
+Can you determine whether strong or weak electrolytes exhibit
+
+8
+00:00:35,323 --> 00:00:37,526
+optimal molar conductivity
+
+9
+00:00:39,014 --> 00:00:44,076
+Weak acids and bases are categorized as weak electrolytes
+
+10
+00:00:44,092 --> 00:00:46,967
+due to their low molar conductivities
+
+11
+00:00:48,408 --> 00:00:52,720
+Recall the graph illustrating the challenge of determining the
+
+12
+00:00:52,736 --> 00:00:57,908
+limiting molar conductivity of a weak electrolyte like acetic
+
+13
+00:00:57,924 --> 00:00:58,549
+acid
+
+14
+00:01:00,436 --> 00:01:05,483
+As concentrations decrease the graph approaches an asymptote
+
+15
+00:01:05,670 --> 00:01:09,952
+making it impossible to measure molar conductivity as
+
+16
+00:01:09,967 --> 00:01:12,420
+concentration approaches zero
+
+17
+00:01:13,886 --> 00:01:18,995
+However an alternative method exists through Kohlrausch's law
+
+18
+00:01:20,448 --> 00:01:24,745
+Experimental observations revealed that an electrolyte's
+
+19
+00:01:24,760 --> 00:01:29,026
+limiting molar conductivity equals the sum of the limiting
+
+20
+00:01:29,042 --> 00:01:32,667
+molar conductivities of its individual ions
+
+21
+00:01:34,564 --> 00:01:39,408
+For instance to calculate the limiting molar conductivity of
+
+22
+00:01:39,423 --> 00:01:43,158
+acetic acid we only need the values for its
+
+23
+00:01:43,173 --> 00:01:44,939
+constituent ions
+
+24
+00:01:46,382 --> 00:01:51,038
+Kohlrausch formulated the law of independent ion migration
+
+25
+00:01:51,226 --> 00:01:55,851
+stating that an electrolyte's limiting molar conductivity is the
+
+26
+00:01:55,866 --> 00:01:59,319
+sum of its cation and anion contributions
+
+27
+00:02:00,768 --> 00:02:05,549
+This law aids in determining limiting molar conductivities for
+
+28
+00:02:05,565 --> 00:02:08,659
+weak electrolytes like acetic acid
+
+29
+00:02:10,540 --> 00:02:14,524
+By extrapolating the molar conductivity vs.
+
+30
+00:02:14,540 --> 00:02:19,290
+square root of concentration graph for strong electrolytes such
+
+31
+00:02:19,306 --> 00:02:25,228
+as sodium acetate hydrochloric acid and sodium chloride their
+
+32
+00:02:25,243 --> 00:02:28,743
+limiting molar conductivities can be derived
+
+33
+00:02:30,182 --> 00:02:35,244
+The limiting molar conductivity of acetic acid is calculated
+
+34
+00:02:35,260 --> 00:02:39,588
+as the sum of sodium acetate and hydrochloric acid's
+
+35
+00:02:39,604 --> 00:02:42,354
+values minus sodium chloride's
+
+36
+00:02:44,250 --> 00:02:48,312
+Simplifying this expression yields the limiting molar
+
+37
+00:02:48,328 --> 00:02:50,984
+conductivity of acetic acid
+
+38
+00:02:52,444 --> 00:02:57,569
+Thus Kohlrausch's law enables determining weak electrolytes'
+
+39
+00:02:57,585 --> 00:03:02,288
+limiting molar conductivities using strong electrolytes
+
+40
+00:03:03,734 --> 00:03:08,750
+This video exemplifies the adage When one door closes
+
+41
+00:03:08,968 --> 00:03:10,437
+another opens
+
+42
+00:03:11,880 --> 00:03:16,786
+Kohlrausch's law has proven invaluable in calculating limiting
+
+43
+00:03:16,802 --> 00:03:22,130
+molar conductivities for weak electrolytes like acetic acid and
+
+44
+00:03:22,146 --> 00:03:24,052
+ammonium hydroxide
+
+45
+00:03:25,948 --> 00:03:31,664
+Do you believe Kohlrausch's law has other applications Stay
+
+46
+00:03:31,679 --> 00:03:35,382
+tuned for our upcoming videos to explore further

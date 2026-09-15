@@ -1,0 +1,163 @@
+[
+  {
+    "scene": 1,
+    "segment": 1,
+    "original_prompt": "Image 1: A lush meadow with a mix of colorful wildflowers, including daisies and cosmos.\nImage 2: A close-up of a flower bud opening into a bloom.",
+    "image_prompt": "A lush meadow with a mix of colorful wildflowers, including daisies and cosmos, with a single sunflower bloom slowly opening in the center, surrounded by gentle greenery, captured from a gentle aerial perspective with soft natural light filtering through the foliage.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 1,
+    "segment": 2,
+    "original_prompt": "Image 1: A tall sunflower stem with a large yellow bloom and dark green leaves, set against a blue sky.\nImage 2: A close-up of a sunflower face, with large yellow petals and a dark center.",
+    "image_prompt": "A tall sunflower stem with large yellow bloom and dark green leaves stands against a clear blue sky with a few puffy white clouds, with the sun shining down from a slight angle to the left, illuminating the flower's bright yellow petals and dark center.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 2,
+    "segment": 1,
+    "original_prompt": "A sunflower with a blurred background, showcasing its large, bright yellow petals.\nA botanical illustration of a sunflower with intricate details of its petals and center.",
+    "image_prompt": "A close-up of a sunflower with a blurred background, showcasing its large, bright yellow petals as a gentle, cinematic camera pan emphasizes its unique characteristics in soft, natural sunlight.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 2,
+    "segment": 2,
+    "original_prompt": "A photograph of a sunflower with a bee hovering around its center, highlighting their interaction.\nA sunflower isolated on a plain background, with a faint outline of a bee in the distance.",
+    "image_prompt": "A sunflower stands tall in a field, its bright yellow petals shining in the warm sunlight as a bee lands on its center, collecting pollen, with a subtle fade-out of the bee in the distance, highlighting the sunflower's unique self-pollination method.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 2,
+    "segment": 3,
+    "original_prompt": "An anatomical illustration of a sunflower's reproductive parts, highlighting the male anther and female stigma.\nA microscopic photograph of a sunflower's anther and stigma, showcasing their unique structures.",
+    "image_prompt": "A close-up of a sunflower's reproductive parts, with the male anther curled in on itself, depositing pollen on the sticky female stigma, set against a soft focus of a sunny meadow, with the camera positioned directly above the flower, and natural light casting a warm glow.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 1,
+    "original_prompt": "A botanical illustration of a plant with mature anthers and stigma, with labels highlighting the structures.\nA microscopic image of plant anthers and stigma in close-up, showcasing their maturity.",
+    "image_prompt": "A botanical illustration of a Xora plant with mature anthers and stigma, set against a soft focus background of green leaves, with warm natural light casting a gentle glow from the top left, camera positioned directly above the plant to highlight the anthers and stigma.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 2,
+    "original_prompt": "A photo of a wood sorrel plant with small, closed flowers, taken from a botanical garden or a similar setting.\nA close-up of a wood sorrel flower, showcasing its small size and closed petals.",
+    "image_prompt": "A close-up of a wood sorrel plant in a botanical garden, with small, closed flowers and no visible fragrance, taken from directly above with soft natural light.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 3,
+    "segment": 3,
+    "original_prompt": "A microscopic image of a plant cell, with a text overlay defining glystogamy.\nA botanical illustration of a plant with a bold, highlighted label reading 'Glystogamy', showcasing the rare occurrence.",
+    "image_prompt": "A microscopic view of a plant cell with a faint animation of pollen tubes in the background, surrounded by a botanical illustration of a plant with a bold, highlighted label reading 'Glystogamy' and a text overlay defining the rare occurrence of glystogamy in a natural, outdoor setting with soft, natural lighting.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 1,
+    "original_prompt": "Image 1: A close-up of a papaya plant with a separate male and female flower, with a subtle green background.\nImage 2: An illustration of a papaya plant with a simple diagram showing male and female flowers growing separately.",
+    "image_prompt": "A close-up of a papaya plant with a separate male flower on one branch and a female flower on another, set against a soft green background with subtle natural light filtering through the leaves.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 2,
+    "original_prompt": "Image 1: A side-by-side comparison of a papaya plant and a sunflower plant in a sunny field, with a subtle gradient background.\nImage 2: An illustration of a sunflower or custard apple plant with a simple diagram showing the protandrous strategy.",
+    "image_prompt": "A sunny field with a papaya plant on the left and a sunflower plant on the right, both with vibrant green leaves and colorful flowers, set against a subtle gradient background.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 3,
+    "original_prompt": "Image 1: A close-up of a sunflower or custard apple anther maturing, with a subtle background texture.\nImage 2: An illustration of a sunflower or custard apple plant with a detailed diagram showing the protandrous process.",
+    "image_prompt": "A close-up of a sunflower anther maturing in a field of tall sunflowers, with warm sunlight casting a gentle glow on the delicate yellow petals and a subtle background texture, as the stigma begins to emerge in the background.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 1,
+    "original_prompt": "Image 1: A close-up of a custard apple flower with a prominent stigma, with a slight focus on the anther in the background.\nImage 2: A diagram or illustration of a custard apple flower, labeling the stigma and anther for educational purposes.",
+    "image_prompt": "A close-up of a custard apple flower with a prominent stigma, with a slight focus on the anther in the background, set against a soft, natural light background with a blurred green leaf in the foreground, camera positioned directly above the flower.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 2,
+    "original_prompt": "Image 1: A group of various plant species, with illustrations or animations of their unique adaptations (e.g. pansy hood, primrose stigma height).\nImage 2: An illustration or diagram of a general plant structure, with arrows or animations indicating the adaptations for cross-pollination.",
+    "image_prompt": "A group of various flowers, including pansies and primroses, bloom in a sunny meadow with a subtle gradient of natural light, from the top-left corner to the bottom-right, with a slight shadow under the flowers, as if the sun is shining from above, highlighting their unique adaptations for cross-pollination.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 3,
+    "original_prompt": "Image 1: A close-up of a pansy flower, with the hood covering the stigma and the anther in the background.\nImage 2: An illustration or diagram of a pansy flower, labeling the hood, stigma, and anther for educational purposes.",
+    "image_prompt": "A close-up of a pansy flower with its hood covering the stigma, set against a soft green background, with gentle natural light illuminating the delicate petals and the anther visible in the background, from a slightly above camera angle.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 4,
+    "original_prompt": "Image 1: A close-up of a primrose flower, with the stigma and anther labeled and highlighted for their different heights.\nImage 2: An illustration or diagram of a primrose flower, labeling the stigma and anther and explaining hetrostyle.",
+    "image_prompt": "A close-up of a primrose flower with its stigma and anther labeled and highlighted, showcasing the phenomenon of hetrostyle where the stigma is situated at a different height than the anther in a natural garden setting, shot from directly above with soft morning sunlight.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 1,
+    "original_prompt": "A close-up shot of a dew-covered flower, with water droplets on the petals and a hint of a bee in the background.\nAn illustration of a water droplet surrounded by various plant species, with bees and butterflies pollinating them.",
+    "image_prompt": "A close-up shot of a dew-covered flower, with water droplets on the petals and a hint of a bee in the background, surrounded by lush greenery with subtle animation of bees and butterflies pollinating nearby flowers under soft natural morning light.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 6,
+    "segment": 2,
+    "original_prompt": "A macro shot of a flower's scent-emitting glands, with a few water droplets nearby.\nAn animation of a bee flying towards a flower, with a scent trail of water droplets leading the way.",
+    "image_prompt": "A macro shot of a flower's scent-emitting glands, with a few water droplets nearby, situated on a green stem in a garden setting, captured from a slightly above angle with soft natural light filtering through the leaves.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 6,
+    "segment": 3,
+    "original_prompt": "A close-up shot of a bee feeding on nectar from a flower, with a few water droplets on the petals.\nAn illustration of a bee's tongue extending to reach nectar from a flower, with water droplets on the petals and a subtle animation of the bee's tongue in action.",
+    "image_prompt": "A close-up shot of a bee feeding on nectar from a flower, with a few water droplets on the petals, set against a soft focus background of lush green foliage, with warm natural light casting a gentle glow on the scene, capturing the intricate details of the flower's texture and the bee's busy activity.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 7,
+    "segment": 1,
+    "original_prompt": "Image 1: Close-up of a flower with an unusual shape or color, with a blurred background.\nImage 2: A cluster of flowers with varying sizes and shapes, with a shallow depth of field.",
+    "image_prompt": "A close-up of the Bee Orchid, its unique shape and color standing out against a blurred background of lush green foliage, with a subtle, pulsing effect to indicate its clever trickery in attracting pollinators.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 7,
+    "segment": 2,
+    "original_prompt": "Image 1: A single bee orchid with a bright, sunny background, showcasing its unique flowers.\nImage 2: A close-up of a bee orchid's flowers, with a subtle animation to highlight their texture and patterns.",
+    "image_prompt": "A single bee orchid with bright, sunny background, showcasing its unique flowers, with a close-up of its flowers in the foreground, highlighting their texture and patterns, in a natural, outdoor setting with soft, natural lighting.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 7,
+    "segment": 3,
+    "original_prompt": "Image 1: A male bee hovering near a bee orchid, with a blurred background to emphasize the interaction.\nImage 2: A split-screen image of a male bee and a bee orchid, with a subtle animation to illustrate the pollination process.",
+    "image_prompt": "A male bee hovers near a bee orchid in a sunny meadow, surrounded by tall grasses and wildflowers, with the camera positioned directly above the orchid to emphasize the pollination process.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 8,
+    "segment": 1,
+    "original_prompt": "Image 1: A dense rainforest with a waterfall in the background, with a variety of exotic plants and trees\nImage 2: A sprawling savannah with acacia trees and diverse wildlife, such as giraffes and lions",
+    "image_prompt": "A lush, vibrant forest with a waterfall in the background, featuring a variety of exotic plants and trees, with a giraffe and lion roaming in the distance, captured from a high aerial perspective with soft, natural lighting filtering through the foliage",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 8,
+    "segment": 2,
+    "original_prompt": "Image 1: A young child looking through a magnifying glass at a small insect, with a look of wonder on their face\nImage 2: A student or scientist working in a laboratory, surrounded by various scientific instruments and experiments, with a sense of discovery",
+    "image_prompt": "A young child looks at a microscope with a look of wonder, surrounded by flowers in a garden, with warm sunlight filtering through the leaves and gentle focus on the child's face",
+    "scientific_review_recommended": false
+  }
+]

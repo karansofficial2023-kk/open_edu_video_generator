@@ -1,0 +1,63 @@
+Scene 1.1: The Importance of Pollination in Sunflowers
+A close-up of a sunflower with visible details, its large yellow petals and dark center standing out against a soft, blurred background of green leaves, shot from directly above with natural light illuminating the flower's intricate details.
+
+Scene 1.2: The Importance of Pollination in Sunflowers
+template: video
+heading: Bee visiting a sunflower
+
+Scene 1.3: The Importance of Pollination in Sunflowers
+Image 1: Anatomy diagram of a sunflower with anthers and stigma labeled
+Image 2: Pollen transfer diagram with arrows
+
+Scene 2.1: Self-Pollination Mechanisms in Plants
+template: video
+heading: Xorra plant with mature anthers and stigmas
+
+Scene 2.2: Self-Pollination Mechanisms in Plants
+Image 1: Photo of wood sorrel flowers in late summer
+Image 2: Illustration of small, inconspicuous flowers
+
+Scene 2.3: Self-Pollination Mechanisms in Plants
+Image 1: Illustration of unopened bisexual flower
+Image 2: Diagram of pollen transfer within the flower
+
+Scene 3.1: Cross-Pollination Strategies
+template: video
+heading: Papaya plant with separate male and female flowers
+
+Scene 3.2: Cross-Pollination Strategies
+template: video
+heading: Sunflower with bisexual flowers
+
+Scene 3.3: Cross-Pollination Strategies
+template: video
+heading: Custard apple plant with stigma maturing
+
+Scene 4.1: Unique Adaptations for Cross-Pollination
+A close-up documentary photograph of a bee collecting pollen from a bright yellow sunflower in a lush garden, with visible pollen grains on its body, surrounded by realistic green leaves and stems, taken from a slightly above eye-level camera position on a sunny day with soft natural light.
+
+Scene 4.2: Unique Adaptations for Cross-Pollination
+Image 1: Close-up of a pine cone with a hood-like structure
+Image 2: Illustration of an orchid with labeled anther and stigma
+
+Scene 4.3: Unique Adaptations for Cross-Pollination
+A close-up documentary photograph of a bee transferring pollen from a bright sunflower to another, with visible pollen grains on its body, realistic petals and anthers, in a high resolution realistic educational biology style, with accurate natural flower structures, a single clear scene, and natural outdoor lighting.
+
+Scene 5.1: Conclusion and Future Exploration
+Image 1: Illustration of a plant with self-pollinating mechanism
+Image 2: Illustration of a plant with cross-pollinating mechanism
+
+Scene 5.2: Conclusion and Future Exploration
+Macro nature video of a bee slowly visiting a single bright flower, pollen dust visible on the bee body, realistic petals and anthers, shallow depth of field, gentle natural movement, no text.
+
+Scene 5.3: Conclusion and Future Exploration
+template: video
+heading: Adaptation and Survival
+
+Scene 6.1: The Role of Water in Pollination
+template: video
+heading: Bees flying towards flowers
+
+Scene 6.2: The Role of Water in Pollination
+Image 1: Bee orchid with male bee in close proximity
+Image 2: Close-up of a bee orchid's flower

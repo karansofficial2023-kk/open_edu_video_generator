@@ -1,0 +1,135 @@
+[
+  {
+    "scene": 1,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: A wide-angle photo of a sunflower field with vibrant yellow blooms. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A wide-angle photo of a sunflower field with vibrant yellow blooms, set against a clear blue sky with natural sunlight casting a warm glow, capturing the sharp details of the sunflowers and their surroundings in a documentary style.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 1,
+    "segment": 2,
+    "original_prompt": "High-quality educational visual directly matching this sentence: At this size, we can observe their structure in detail., accurate subject matter, no bee, no flower, no pollen, no pollination imagery, no unrelated biology content",
+    "image_prompt": "A close-up of a sunflower's large, bright yellow petals and dark center, with a slight shadow on the stem, photographed from directly above, in soft natural outdoor light, highlighting the intricate details of the flower's structure.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 1,
+    "segment": 4,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: An animated diagram of anther curling motion. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of a sunflower's anthers curling inward, surrounded by delicate yellow petals, in a bright garden on a sunny day, with a documentary-style camera positioned directly above, capturing sharp details of the intricate mechanism.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 1,
+    "segment": 5,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: A close-up photo showing the completed self-pollination process. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up photo of a sunflower with completed self-pollination, set against a soft focus blurred background of a sunny field, natural lighting, sharp detail, documentary style, accurate subject",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up of *Ixora* plant showing both anther and stigma at full maturity. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of an *Ixora* plant, bathed in natural sunlight, with the anther and stigma at full maturity, set against a blurred background of lush green foliage, captured in sharp documentary detail, highlighting the plant's homogamous reproductive strategy.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 2,
+    "original_prompt": "High-quality educational visual directly matching this sentence: This synchronized development is termed **homogamy**., accurate subject matter, no bee, no flower, no pollen, no pollination imagery, no unrelated biology content",
+    "image_prompt": "A close-up of two Ixora flowers in full bloom, side by side, with their petals and sepals in perfect synchrony, against a soft, natural light background, with a slight depth of field to emphasize the flowers' details.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 4,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: A papaya plant with clearly labeled male and female flowers on separate plants, showing cross-pollination process. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A papaya plant with male and female flowers on separate plants, surrounded by lush green leaves, in a warm tropical environment, with natural sunlight filtering through the leaves, camera positioned at a 45-degree angle to showcase the cross-pollination process, sharp focus on the flowers and leaves, documentary-style realism.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: A high-resolution photo of a sunflower with a close-up view of its bisexual flower, showing the mature anthers at the center and the developing stigma.. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A high-resolution photo of a sunflower with a close-up view of its bisexual flower, showing mature anthers at the center and developing stigma, in natural lighting, with sharp detail and a documentary style.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 2,
+    "original_prompt": "High-quality educational visual directly matching this sentence: This sequential maturation is termed **pro-tandry**., accurate subject matter, no bee, no flower, no pollen, no pollination imagery, no unrelated biology content",
+    "image_prompt": "A close-up of a sunflower stem with two sets of leaves, one at the base and one near the top, in a field with other sunflowers in the background, shot from directly above with soft natural light.",
+    "scientific_review_recommended": false
+  },
+  {
+    "scene": 6,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up photograph of a papaya flower showing the hood-like structure over the stigma. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up photograph of a papaya flower in natural lighting, showcasing the hood-like structure covering the stigma, a hercogamy adaptation, with sharp detail and a documentary style.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 7,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up photo of an orchid flower showing the anther and stigma positions. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up photo of an orchid flower, set in natural lighting, with sharp detail, showing the anther and stigma positions in a documentary style, highlighting the unique pollination strategy of orchids where pollen from the anther fails to germinate on the stigma of the same flower, preventing self-fertilization.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 7,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up photo of a primrose flower showing the anther and stigma positions. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up, documentary-style photo of a primrose flower in natural lighting, showcasing the anther and stigma positions, with sharp detail and accurate representation of the subject.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 8,
+    "segment": 1,
+    "original_prompt": "Macro documentary photograph of a bee orchid flower that resembles a female bee, with a male bee nearby, realistic botanical detail, natural daylight, no text, no labels.",
+    "image_prompt": "Macro documentary photograph of a bee orchid flower resembling a female bee, with a nearby male bee, realistic botanical detail, natural daylight, no text, no labels.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 8,
+    "segment": 2,
+    "original_prompt": "Macro documentary photograph of a bee orchid flower that resembles a female bee, with a male bee nearby, realistic botanical detail, natural daylight, no text, no labels.",
+    "image_prompt": "Macro documentary photograph of a bee orchid flower resembling a female bee, with a nearby male bee, showcasing realistic botanical detail, in natural daylight, without any text or labels.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 9,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Side-by-side comparison of papaya flowers (male and female separated) and sunflower with labeled pro-tandry structure (male and female parts at different heights). Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style image of a sunflower in a field, with a papaya plant in the background, under natural lighting. The sunflower has a labeled pro-tandry structure, with male and female parts at different heights, while the papaya plant has separate male and female flowers. The camera is positioned for a side-by-side comparison, with sharp detail and accurate representation of the subject.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 9,
+    "segment": 3,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Papaya flower with labeled hercogamy (male and female parts at different heights) and primrose flower with labeled heterostyle (stamen and pistil at different heights). Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style image of a papaya flower with hercogamy, where the male and female parts are at different heights, and a primrose flower with heterostyle, where the stamen and pistil are at different heights, in a natural setting with sharp detail and soft natural lighting.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 9,
+    "segment": 4,
+    "original_prompt": "Macro documentary photograph of a bee orchid flower that resembles a female bee, with a male bee nearby, realistic botanical detail, natural daylight, no text, no labels.",
+    "image_prompt": "A close-up of a sunflower in a field, with a few bees buzzing around it, warm sunlight casting a glow on the yellow petals, a slight breeze rustling the leaves, a neutral background, no text or labels.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 10,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: A group of people holding hands in a circle, forming a supportive community. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A group of people in a sunny garden, holding hands in a circle, surrounded by tall sunflowers, with a documentary-style camera positioned slightly above, capturing the warm natural light and the supportive community's gentle gestures.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 10,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: A teacher and student looking at each other with a supportive expression. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A teacher and student sit together, looking at each other with supportive expressions, in a well-lit classroom with a wooden desk and a few books, capturing a moment of genuine connection and trust, in a documentary-style, high-definition educational visual.",
+    "scientific_review_recommended": true
+  }
+]

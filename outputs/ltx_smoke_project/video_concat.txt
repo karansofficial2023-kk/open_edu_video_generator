@@ -1,0 +1,1 @@
+file 'D:/Python/open_edu_video_generator_LTX/outputs/ltx_smoke_project/clips/clip_0001.mp4'

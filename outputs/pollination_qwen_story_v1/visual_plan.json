@@ -1,0 +1,23 @@
+[
+  {
+    "scene": 1,
+    "segment": 1,
+    "original_prompt": "Image 1: Close-up of a sunflower with visible details\nImage 2: A sunflower with its different parts labeled. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up of a sunflower with visible details, its large yellow petals and dark center standing out against a soft, blurred background of green leaves, shot from directly above with natural light illuminating the flower's intricate details.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 1,
+    "original_prompt": "macro documentary photograph of a bee visiting a bright flower, pollen grains visible on its body, realistic petals and anthers. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up documentary photograph of a bee collecting pollen from a bright yellow sunflower in a lush garden, with visible pollen grains on its body, surrounded by realistic green leaves and stems, taken from a slightly above eye-level camera position on a sunny day with soft natural light.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 3,
+    "original_prompt": "macro documentary photograph of a bee visiting a bright flower, pollen grains visible on its body, realistic petals and anthers. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up documentary photograph of a bee transferring pollen from a bright sunflower to another, with visible pollen grains on its body, realistic petals and anthers, in a high resolution realistic educational biology style, with accurate natural flower structures, a single clear scene, and natural outdoor lighting.",
+    "scientific_review_recommended": true
+  }
+]

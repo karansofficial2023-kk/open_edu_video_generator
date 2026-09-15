@@ -1,0 +1,78 @@
+{
+  "title": "How pollination works",
+  "source": "A short schematic lesson; review against your curriculum before publication.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "From anther to stigma",
+      "narration": "Pollination is the transfer of pollen from an anther to a stigma.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Anthers produce pollen. During pollination, pollen is transferred to a stigma.",
+          "visual": "Schematic transfer between two flowers. Keep source and destination visible.",
+          "image_prompt": "",
+          "source_references": ["https://sathee.iitk.ac.in/ncert-books/neet-ncert-books/neet-nb-bio-12/bio-12-chapter-2-sexual-reproduction-in-flowering-plants/"],
+          "shot": {
+            "template": "pollination",
+            "heading": "Pollination: from anther to stigma",
+            "learning_objective": "Identify the source and destination of pollen.",
+            "cues": ["Anthers produce pollen", "During pollination"]
+          }
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "The order matters",
+      "narration": "Compare two sequences of reproductive timing.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "In protandry, anthers release pollen first. Later, the stigma becomes receptive.",
+          "visual": "Keep one schematic flower visible while highlighting the two stages.",
+          "image_prompt": "",
+          "source_references": ["https://sathee.iitk.ac.in/ncert-books/neet-ncert-books/neet-nb-bio-12/bio-12-chapter-2-sexual-reproduction-in-flowering-plants/"],
+          "shot": {
+            "template": "protandry",
+            "heading": "Protandry: pollen first",
+            "learning_objective": "Recognize pollen release before stigma receptivity.",
+            "cues": ["In protandry", "Later"]
+          }
+        },
+        {
+          "segment_number": 2,
+          "narration": "In protogyny, the stigma becomes receptive first. Later, anthers release pollen.",
+          "visual": "Reverse the two stages on the same schematic flower.",
+          "image_prompt": "",
+          "source_references": ["https://sathee.iitk.ac.in/ncert-books/neet-ncert-books/neet-nb-bio-12/bio-12-chapter-2-sexual-reproduction-in-flowering-plants/"],
+          "shot": {
+            "template": "protogyny",
+            "heading": "Protogyny: receptive stigma first",
+            "learning_objective": "Recognize stigma receptivity before pollen release.",
+            "cues": ["In protogyny", "Later"]
+          }
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "title": "Compare the sequences",
+      "narration": "Compare protandry and protogyny.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Protandry means pollen is released first. Protogyny means the stigma becomes receptive first.",
+          "visual": "Two comparison cards highlight in narration order.",
+          "image_prompt": "",
+          "shot": {
+            "template": "comparison",
+            "heading": "Which stage happens first?",
+            "steps": ["Protandry: pollen release first", "Protogyny: stigma receptivity first"],
+            "cues": ["Protandry", "Protogyny"]
+          }
+        }
+      ]
+    }
+  ]
+}

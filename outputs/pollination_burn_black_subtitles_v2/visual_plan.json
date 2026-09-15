@@ -1,0 +1,93 @@
+[
+  {
+    "scene": 1,
+    "segment": 1,
+    "original_prompt": "Image of a sunflower with intricate details. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up of a tall sunflower with bright yellow petals and dark center, growing in a field with green grass and blue sky, shot from directly above with natural sunlight illuminating its delicate details.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 1,
+    "segment": 2,
+    "original_prompt": "macro documentary photograph of a bee visiting a bright flower, pollen grains visible on its body, realistic petals and anthers. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up documentary photograph of a bee landing on a bright sunflower, pollen grains visible on its body, surrounded by realistic petals and anthers in a natural outdoor setting, with soft natural light casting a warm glow on the scene.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 1,
+    "segment": 3,
+    "original_prompt": "Anatomy diagram of a sunflower with anthers and stigma labeled. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up of a sunflower's reproductive parts, with the anthers curled inward, releasing pollen onto the sticky stigma, set against a soft focus blurred background of green leaves, shot from directly above, with natural daylight illuminating the delicate flower anatomy.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 1,
+    "original_prompt": "Natural video: Xorra plants with mature anthers and stigmas. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up, high-resolution photograph of Xorra plants in a natural setting, with mature anthers and stigmas visible, showcasing the simultaneous maturation of reproductive parts that facilitates self-pollination and homogamy, under soft natural light from above, with a shallow depth of field to emphasize the flowers.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 2,
+    "original_prompt": "Static image: wood sorrel flowers in late summer. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up, high-resolution photograph of wood sorrel flowers in late summer, with accurate natural flower structures, set against a soft, natural background, shot from directly above, with gentle, diffused natural light illuminating the delicate petals and leaves.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 3,
+    "original_prompt": "Illustration of unopened bisexual flower. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A close-up, high-resolution photograph of an unopened, bisexual sunflower, with its petals tightly closed, set against a soft, natural light background, showcasing the intricate details of its reproductive structures.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 1,
+    "original_prompt": "realistic educational photograph of two flowering plants of the same species, pollinator moving between flowers, pollen transfer implied. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A realistic educational photograph of two sunflowers of the same species, a pollinator moving between their large yellow flowers, pollen transfer implied, set against a clear blue sky with a few white puffy clouds, taken from a slightly elevated angle to show the flowers in detail.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 2,
+    "original_prompt": "realistic educational photograph of two flowering plants of the same species, pollinator moving between flowers, pollen transfer implied. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A realistic educational photograph of two mature sunflowers of the same species, a pollinator such as a bee moving between their large yellow flowers, pollen transfer implied, set against a clear blue sky with a few puffy white clouds, shot from a slightly elevated angle to emphasize the flowers' height and the pollinator's movement.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 3,
+    "original_prompt": "realistic educational photograph of two flowering plants of the same species, pollinator moving between flowers, pollen transfer implied. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A realistic educational photograph of a sunflower field, a bee flying between two mature sunflowers, pollen transfer implied, high resolution, accurate natural flower structures, single clear scene, natural sunlight, camera positioned above the flowers, capturing the sun's reflection on the petals.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 1,
+    "original_prompt": "realistic educational photograph of two flowering plants of the same species, pollinator moving between flowers, pollen transfer implied. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A realistic educational photograph of a sunflower field, with two tall sunflowers of the same species standing side by side, a busy bee moving between their bright yellow petals, pollen transfer implied as the bee lands on the second flower, set against a clear blue sky with a few puffy white clouds, taken from a slight angle to emphasize the sunflowers' height and the bee's movement, with natural soft sunlight casting a warm glow on the scene.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 2,
+    "original_prompt": "realistic educational photograph of two flowering plants of the same species, pollinator moving between flowers, pollen transfer implied. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "A realistic educational photograph of a sunflower field, with a bee moving between two identical sunflowers, pollen transfer implied, high resolution, accurate natural flower structures, single clear scene, natural sunlight, camera positioned above the flowers, showcasing the unique adaptation for cross-pollination.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 3,
+    "original_prompt": "macro documentary photograph of a bee visiting a bright flower, pollen grains visible on its body, realistic petals and anthers. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "macro documentary photograph of a bee visiting a bright sunflower, pollen grains visible on its body, realistic petals and anthers, set against a soft focus blurred green stem and leaves, realistic natural lighting from the side, high resolution educational biology photograph, accurate natural flower structures, single clear scene",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 2,
+    "original_prompt": "macro documentary photograph of aquatic flowering plants at the water surface, small pollen grains floating across calm water toward another flower. High resolution realistic educational biology photograph, accurate natural flower structures, single clear scene, no labels, no text, no arrows, no diagram, no collage.",
+    "image_prompt": "macro documentary photograph of a sunflower at the base of a watering can, a single drop of water falling onto its petals, a blurred background of a garden with other flowers and a sunny sky above, camera positioned directly above the sunflower, natural soft morning light illuminating the scene.",
+    "scientific_review_recommended": true
+  }
+]

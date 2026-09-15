@@ -1,0 +1,177 @@
+[
+  {
+    "scene": 2,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: A family celebrating a birthday with decorations and gifts. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A family of four smiling together in a living room, surrounded by colorful birthday decorations and gifts, with natural light pouring in through a window, capturing a joyful and intimate moment.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: A keychain with a silver plating. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up shot of a keychain with a silver plating, placed on a workbench in a well-lit workshop, with a neutral background, natural lighting, sharp detail, and a documentary-style camera position.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 3,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: An antique copper keychain with electroplating setup. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up shot of an antique copper keychain placed on a workbench, surrounded by electroplating equipment, with natural light illuminating the scene from the side, capturing sharp details of the keychain and the setup.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 4,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Anita helping with the electroplating process. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "Anita stands in a well-lit workshop, surrounded by electroplating equipment, with a focused expression as she carefully connects wires to a metal object, the camera positioned directly in front of her, capturing sharp details of her hands and the machinery.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 6,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: A close-up of the electroplating process starting. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of an electroplating machine in a well-lit workshop, with the camera positioned directly above the machine, capturing the initial stages of the electroplating process with sharp detail and natural lighting.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Clear lab setup photo of an electrolytic cell with silver nitrate solution. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style photograph of an electrolytic cell in a well-lit laboratory, with a silver nitrate solution prominently displayed, showcasing sharp detail and accurate representation of the subject.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up of highlighted apparatus components for assembly. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of an electrolytic cell's components, such as the anode and cathode, sit on a workbench under natural light, with a documentary-style camera capturing sharp details of the apparatus, ready for assembly and electroplating.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 3,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Diagram showing wire connections to battery terminals. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style diagram of an electrolytic cell, with a battery in the center, surrounded by a red wire connected to the positive terminal and a blue wire connected to the negative terminal via a switch, under natural lighting with sharp detail.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 4,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up of keychain and silver rod connections. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of a keychain attached to the negative terminal of an electrolytic cell, with a pure silver rod connected to the positive terminal, set against a neutral background, lit by natural light, in a documentary style, with sharp detail and accurate representation.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Educational photo of a chemistry lab setup with labeled equipment. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A chemistry lab setup with a beaker, test tubes, and a Bunsen burner on a wooden workbench, under natural light, with a slight angle from the side, capturing sharp details of the equipment and surroundings.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Interactive diagram with labeled boxes and draggable label placeholders. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of a chemistry textbook open on a wooden desk, with a diagram of an electrochemical cell in the center, surrounded by labeled boxes with draggable label placeholders, under natural light with sharp detail, in a documentary style, with accurate subject matter.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 4,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Photograph of an electrolytic cell with labeled solution. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style photograph of an electrolytic cell, with the solution labeled, set in a well-lit laboratory environment, showcasing sharp detail and accurate representation of the subject.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Photo of electrolyte solution with labeled ions. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style photo of an electrolyte solution in a beaker, with positively charged silver ions and negatively charged chloride ions visible, under natural lighting, with sharp detail, and a neutral background.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 6,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Photo of silver ion with electron gain. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A silver ion in a beaker, surrounded by a laboratory setup, with a gentle light source above, illuminating its vacant outer shell, as an electron approaches to fill it, in a documentary-style, high-definition image with sharp detail.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Electrochemical cell diagram with labeled cathode and anode. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style electrochemical cell diagram with a realistic, detailed cathode and anode, set against a subtle background, with natural lighting and sharp focus, highlighting the cathode's reaction where electrons are gained, illustrating the concept of reduction.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 4,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Silver atom losing electron to form Ag\u207a ion. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A silver atom, surrounded by a simple, darkened laboratory background, is shown in close-up, with a subtle beam of light illuminating its surface, as it loses an electron to form a Ag\u207a ion, in a documentary-style, high-definition image with sharp detail and natural lighting.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 5,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Electrochemical cell diagram with labeled anode. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A realistic, high-definition educational visual of an electrochemical cell, with a labeled anode, set in a documentary style, under natural lighting, showcasing sharp detail and an accurate representation of the subject.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 7,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Close-up of a keychain with silver atoms depositing onto its surface. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up of a keychain in a well-lit workshop, with silver atoms visibly depositing onto its surface, surrounded by tools and equipment, captured in sharp detail with a documentary-style camera angle.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 7,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Educational diagram of an electroplating cell with labeled components. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style electroplating cell with labeled components, set in a well-lit laboratory with sharp detail, surrounded by equipment and workbenches, viewed from a neutral angle with natural lighting.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 7,
+    "segment": 4,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Educational diagram showing variables affecting electroplating. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style educational diagram of an electroplating process, set in a well-lit industrial workshop with sharp detail, showing variables such as temperature, current, and electrolyte concentration affecting the reaction.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 8,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Graph with X-axis as time and Y-axis as silver mass, showing increasing trend. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style graph in a well-lit laboratory setting, with a sharp focus on the X-axis representing time and the Y-axis representing silver mass, showing a clear increasing trend as the current is applied.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 8,
+    "segment": 3,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Graph showing silver mass deposited over time with two data points: original and halved time. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style graph in a well-lit laboratory setting, showing a silver mass deposited over time with two data points: one with original time and another with time halved, featuring sharp detail and accurate representation.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 8,
+    "segment": 4,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Diagram showing different metals (silver, gold, copper) with their respective deposition times. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style diagram of silver, gold, and copper metals in a laboratory setting, with each metal having a timer next to it, showcasing their respective deposition times, under natural lighting with sharp detail.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 8,
+    "segment": 6,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Summary diagram showing current intensity, duration, and metal type as factors in electroplating. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style diagram of an electroplating process, with a metal object submerged in a solution under a bright light, surrounded by a few tools and a background of a laboratory, with a camera positioned at a 45-degree angle to show the metal, current intensity gauge, and timer in sharp detail.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 9,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Electrolytic cell diagram with labeled anode, cathode, and electron flow. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style, high-definition image of an electrolytic cell with a labeled anode and cathode, surrounded by a clutter-free workspace with natural light illuminating the metal components, showcasing the electron flow in sharp detail.",
+    "scientific_review_recommended": true
+  }
+]

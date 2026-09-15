@@ -1,0 +1,327 @@
+1
+00:00:00,100 --> 00:00:06,066
+Hello everyone Join Anita on an exciting journey as
+
+2
+00:00:06,081 --> 00:00:10,253
+she sets out to electroplate an antique copper keychain
+
+3
+00:00:10,269 --> 00:00:14,909
+with silver creating a special gift for Vivant's birthday
+
+4
+00:00:16,358 --> 00:00:21,467
+Together we'll explore the intriguing process of electroplating
+
+5
+00:00:21,483 --> 00:00:24,249
+and uncover the science behind it
+
+6
+00:00:26,154 --> 00:00:28,466
+Today is Vivant's birthday
+
+7
+00:00:29,908 --> 00:00:33,783
+Anita wants to gift him a silver-plated keychain
+
+8
+00:00:35,222 --> 00:00:39,503
+She already has an antique copper keychain she's decided
+
+9
+00:00:39,519 --> 00:00:42,769
+to electroplate with silver on her own
+
+10
+00:00:44,232 --> 00:00:47,341
+Let's help Anita complete this task
+
+11
+00:00:48,802 --> 00:00:52,052
+The goal of this simulation is to study the
+
+12
+00:00:52,068 --> 00:00:54,068
+electroplating process
+
+13
+00:00:55,508 --> 00:00:56,633
+Let's begin
+
+14
+00:00:58,536 --> 00:01:02,724
+This is an electrolytic cell containing a silver nitrate
+
+15
+00:01:02,739 --> 00:01:03,552
+solution
+
+16
+00:01:05,026 --> 00:01:08,417
+Tap on the highlighted apparatus one at a time
+
+17
+00:01:08,432 --> 00:01:12,385
+to assemble the setup and perform the electroplating
+
+18
+00:01:13,844 --> 00:01:17,516
+The red wire is connected to the battery's positive
+
+19
+00:01:17,532 --> 00:01:20,844
+terminal while the blue wire is linked to the
+
+20
+00:01:20,860 --> 00:01:23,547
+negative terminal via a switch
+
+21
+00:01:24,990 --> 00:01:28,615
+The keychain to be electroplated is attached to the
+
+22
+00:01:28,631 --> 00:01:32,584
+negative terminal and a pure silver rod is connected
+
+23
+00:01:32,599 --> 00:01:34,162
+to the positive terminal
+
+24
+00:01:35,608 --> 00:01:40,449
+We're ready to start the process Let's proceed
+
+25
+00:01:42,332 --> 00:01:46,551
+As chemistry students we must also learn the correct
+
+26
+00:01:46,566 --> 00:01:50,051
+terminology for the process and equipment
+
+27
+00:01:51,534 --> 00:01:55,206
+Drag the labels into the designated boxes
+
+28
+00:01:56,656 --> 00:02:00,484
+The terminal linked to the battery's positive terminal is
+
+29
+00:02:00,500 --> 00:02:03,781
+the anode while the one connected to the negative
+
+30
+00:02:03,797 --> 00:02:05,640
+terminal is the cathode
+
+31
+00:02:07,082 --> 00:02:11,004
+The solution in the electrolytic cell is called the
+
+32
+00:02:11,020 --> 00:02:12,160
+electrolyte
+
+33
+00:02:14,070 --> 00:02:18,867
+Now let's simulate the reactions occurring within the solution
+
+34
+00:02:20,320 --> 00:02:25,961
+Remember the electrolyte contains positively charged silver ions
+
+35
+00:02:25,976 --> 00:02:29,101
+and negatively charged chloride ions
+
+36
+00:02:30,530 --> 00:02:32,686
+Switch on the current supply
+
+37
+00:02:34,164 --> 00:02:37,914
+You can observe electrons moving from the battery to
+
+38
+00:02:37,930 --> 00:02:42,211
+the cathode which is the keychain making it negatively
+
+39
+00:02:42,226 --> 00:02:42,914
+charged
+
+40
+00:02:44,374 --> 00:02:49,171
+Positive silver ions are attracted to the negative electrode
+
+41
+00:02:50,648 --> 00:02:54,242
+Notice the silver ion has a vacant spot in
+
+42
+00:02:54,257 --> 00:02:57,695
+its outer shell so it gains an electron to
+
+43
+00:02:57,710 --> 00:02:58,382
+fill it
+
+44
+00:02:59,826 --> 00:03:04,138
+The neutral silver atom then deposits onto the keychain
+
+45
+00:03:06,046 --> 00:03:11,215
+Can you identify the reaction at the cathode Gaining
+
+46
+00:03:11,230 --> 00:03:13,137
+electrons is reduction
+
+47
+00:03:14,576 --> 00:03:18,404
+Does this reduce the silver ion concentration in the
+
+48
+00:03:18,420 --> 00:03:24,667
+solution Yes as more ions deposit onto the keychain
+
+49
+00:03:26,106 --> 00:03:29,950
+The solution will draw silver atoms from the pure
+
+50
+00:03:29,965 --> 00:03:32,372
+silver anode into itself
+
+51
+00:03:33,820 --> 00:03:38,632
+During this process each silver atom loses an electron
+
+52
+00:03:38,648 --> 00:03:40,601
+to form a Ag⁺ ion
+
+53
+00:03:42,062 --> 00:03:47,450
+Which reaction occurs at the anode Losing electrons is
+
+54
+00:03:47,465 --> 00:03:48,465
+oxidation
+
+55
+00:03:49,896 --> 00:03:53,677
+These extra electrons travel through the rod into the
+
+56
+00:03:53,693 --> 00:03:57,787
+wire and back to the battery completing the circuit
+
+57
+00:03:59,692 --> 00:04:03,895
+The process summarizes as silver atoms from the pure
+
+58
+00:04:03,911 --> 00:04:06,770
+silver rod deposit onto the keychain
+
+59
+00:04:08,246 --> 00:04:10,152
+Let's answer the question
+
+60
+00:04:11,616 --> 00:04:15,913
+Since reduction occurs at the cathode and oxidation at
+
+61
+00:04:15,928 --> 00:04:20,428
+the anode the overall reaction is a redox reaction
+
+62
+00:04:21,898 --> 00:04:25,601
+Let's explore more about process variables
+
+63
+00:04:27,494 --> 00:04:32,135
+Observe a graph showing silver mass deposited versus time
+
+64
+00:04:33,225 --> 00:04:37,944
+As current is applied the silver mass deposited increases
+
+65
+00:04:37,960 --> 00:04:38,866
+over time
+
+66
+00:04:40,296 --> 00:04:44,343
+Now double the battery's current and observe the effect
+
+67
+00:04:44,359 --> 00:04:45,812
+on deposition time
+
+68
+00:04:47,266 --> 00:04:50,110
+The graph shows it takes half the time
+
+69
+00:04:51,572 --> 00:04:55,119
+Next do all metals take the same time to
+
+70
+00:04:55,135 --> 00:04:59,056
+deposit a specific mass and does it depend on
+
+71
+00:04:59,072 --> 00:04:59,728
+the metal
+
+72
+00:05:01,182 --> 00:05:05,198
+If we were depositing gold instead of silver adjust
+
+73
+00:05:05,213 --> 00:05:10,398
+the time slider and observe More gold deposits in
+
+74
+00:05:10,413 --> 00:05:11,491
+the same time
+
+75
+00:05:12,928 --> 00:05:18,834
+In summary electroplating depends on current intensity duration
+
+76
+00:05:18,991 --> 00:05:20,522
+and the metal chosen
+
+77
+00:05:22,412 --> 00:05:27,162
+As we explore electroplating we've learned about anode and
+
+78
+00:05:27,178 --> 00:05:32,318
+cathode roles reduction oxidation dynamics and factors
+
+79
+00:05:32,334 --> 00:05:34,693
+influencing metal deposition
+
+80
+00:05:36,150 --> 00:05:40,400
+The story continues stay tuned for the next chapter
+
+81
+00:05:40,416 --> 00:05:45,322
+exploring electroplating's practical applications and artistic
+
+82
+00:05:45,338 --> 00:05:46,259
+potential

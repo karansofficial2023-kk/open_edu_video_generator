@@ -1,0 +1,2209 @@
+{
+  "title": "Storyboard: Sunflowers hold a special place in my heart, and a...",
+  "source": "Sunflowers hold a special place in my heart, and at this size, we can observe their intricate details. These vibrant flowers often rely on bees for pollination, but when bees are scarce, they have a clever mechanism to ensure pollination. The male reproductive parts, or anthers, curl inward, depositing pollen onto the sticky female stigma, a process known as self-pollination.\nSome plants, such as Xorra, exhibit simultaneous maturation of their anthers and stigmas, facilitating self-pollination and a phenomenon called homogamy. Certain species, like wood sorrel, produce small, inconspicuous flowers lacking fragrance in late summer. These bisexual flowers never open, and the process of self-pollination and fertilization within an unopened flower is termed as glystogomy.\nIn contrast, plants like papaya have evolved to encourage cross-pollination by having separate male and female flowers on different plants. Sunflowers, on the other hand, bear bisexual flowers, where the anthers mature before the stigma, a process known as pro-tandry. Other plants, like the custard apple, exhibit the opposite pattern, where the stigma matures first, a phenomenon called pro-gynous.\nSome flowers have developed unique adaptations to facilitate cross-pollination. For instance, pines and orchids have evolved distinct structural features, such as a hood covering the stigma or a specific arrangement of the anther and stigma, to attract pollinators. These adaptations enable cross-pollination, which is essential for the reproduction of many plant species.\nIn summary, plants have developed various mechanisms to ensure pollination, including self-pollination and cross-pollination. By understanding these mechanisms, we can gain a deeper appreciation for the intricate relationships between plants and pollinators. As we explore the natural world, we often stumble upon fascinating examples of adaptation and survival.\nWater plays a crucial role in guiding pollinators to flowers, whether it's through the scent of nectar or the promise of a nutritious reward. Sometimes, it's a matter of trickery, as seen in the case of the bee orchid, which mimics the appearance of a female bee to attract male bees for pollination.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "The Importance of Pollination in Sunflowers",
+      "narration": "Sunflowers hold a special place in my heart, and at this size, we can observe their intricate details. These vibrant flowers often rely on bees for pollination, but when bees are scarce, they have a clever mechanism to ensure pollination. The male reproductive parts, or anthers, curl inward, depositing pollen onto the sticky female stigma, a process known as self-pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Sunflowers hold a special place in my heart, and at this size, we can observe their intricate details.",
+          "visual": "Image of a sunflower with intricate details",
+          "image_prompt": "A close-up of a sunflower with visible details, its large yellow petals and dark center standing out against a soft, blurred background of green leaves, shot from directly above with natural light illuminating the flower's intricate details.",
+          "keywords": [
+            "sunflower"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_01_segment_01.wav",
+          "start": 0.0,
+          "end": 9.706,
+          "shot": {
+            "template": "photo",
+            "heading": "Pollination",
+            "learning_objective": "Show pollen transfer to a receptive stigma.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Sunflowers",
+              "start": 0.1,
+              "end": 1.19375
+            },
+            {
+              "text": "hold",
+              "start": 1.209375,
+              "end": 1.615625
+            },
+            {
+              "text": "a",
+              "start": 1.63125,
+              "end": 1.709375
+            },
+            {
+              "text": "special",
+              "start": 1.725,
+              "end": 2.35
+            },
+            {
+              "text": "place",
+              "start": 2.365625,
+              "end": 2.81875
+            },
+            {
+              "text": "in",
+              "start": 2.834375,
+              "end": 2.975
+            },
+            {
+              "text": "my",
+              "start": 2.990625,
+              "end": 3.225
+            },
+            {
+              "text": "heart",
+              "start": 3.240625,
+              "end": 3.7875
+            },
+            {
+              "text": "and",
+              "start": 3.959375,
+              "end": 4.25625
+            },
+            {
+              "text": "at",
+              "start": 4.271875,
+              "end": 4.44375
+            },
+            {
+              "text": "this",
+              "start": 4.459375,
+              "end": 4.725
+            },
+            {
+              "text": "size",
+              "start": 4.740625,
+              "end": 5.31875
+            },
+            {
+              "text": "we",
+              "start": 5.475,
+              "end": 5.678125
+            },
+            {
+              "text": "can",
+              "start": 5.69375,
+              "end": 5.896875
+            },
+            {
+              "text": "observe",
+              "start": 5.9125,
+              "end": 6.553125
+            },
+            {
+              "text": "their",
+              "start": 6.56875,
+              "end": 6.85
+            },
+            {
+              "text": "intricate",
+              "start": 6.865625,
+              "end": 7.490625
+            },
+            {
+              "text": "details",
+              "start": 7.50625,
+              "end": 8.334375
+            }
+          ],
+          "speech_duration": 9.456,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "These vibrant flowers often rely on bees for pollination, but when bees are scarce, they have a clever mechanism to ensure pollination.",
+          "visual": "Bee visiting a sunflower, then a shot of a bee flying away",
+          "image_prompt": "template: video\nheading: Bee visiting a sunflower",
+          "keywords": [
+            "bee",
+            "flower"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_01_segment_02.wav",
+          "start": 9.706,
+          "end": 21.86,
+          "shot": {
+            "template": "video",
+            "heading": "Bee visiting sunflower then shot bee flying",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "These",
+              "start": 0.1,
+              "end": 0.63125
+            },
+            {
+              "text": "vibrant",
+              "start": 0.646875,
+              "end": 1.2875
+            },
+            {
+              "text": "flowers",
+              "start": 1.303125,
+              "end": 1.990625
+            },
+            {
+              "text": "often",
+              "start": 2.00625,
+              "end": 2.44375
+            },
+            {
+              "text": "rely",
+              "start": 2.459375,
+              "end": 2.975
+            },
+            {
+              "text": "on",
+              "start": 2.990625,
+              "end": 3.225
+            },
+            {
+              "text": "bees",
+              "start": 3.240625,
+              "end": 3.646875
+            },
+            {
+              "text": "for",
+              "start": 3.6625,
+              "end": 3.85
+            },
+            {
+              "text": "pollination",
+              "start": 3.865625,
+              "end": 4.85
+            },
+            {
+              "text": "but",
+              "start": 5.0375,
+              "end": 5.2875
+            },
+            {
+              "text": "when",
+              "start": 5.303125,
+              "end": 5.56875
+            },
+            {
+              "text": "bees",
+              "start": 5.584375,
+              "end": 5.990625
+            },
+            {
+              "text": "are",
+              "start": 6.00625,
+              "end": 6.178125
+            },
+            {
+              "text": "scarce",
+              "start": 6.19375,
+              "end": 6.85
+            },
+            {
+              "text": "they",
+              "start": 7.00625,
+              "end": 7.209375
+            },
+            {
+              "text": "have",
+              "start": 7.225,
+              "end": 7.459375
+            },
+            {
+              "text": "a",
+              "start": 7.475,
+              "end": 7.5375
+            },
+            {
+              "text": "clever",
+              "start": 7.553125,
+              "end": 8.053125
+            },
+            {
+              "text": "mechanism",
+              "start": 8.06875,
+              "end": 8.88125
+            },
+            {
+              "text": "to",
+              "start": 8.896875,
+              "end": 9.1625
+            },
+            {
+              "text": "ensure",
+              "start": 9.178125,
+              "end": 9.803125
+            },
+            {
+              "text": "pollination",
+              "start": 9.81875,
+              "end": 10.7875
+            }
+          ],
+          "speech_duration": 11.904,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "The male reproductive parts, or anthers, curl inward, depositing pollen onto the sticky female stigma, a process known as self-pollination.",
+          "visual": "Anatomy diagram of a sunflower with anthers and stigma labeled",
+          "image_prompt": "Image 1: Anatomy diagram of a sunflower with anthers and stigma labeled\nImage 2: Pollen transfer diagram with arrows",
+          "keywords": [
+            "anthers",
+            "stigma",
+            "pollen"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_01_segment_03.wav",
+          "start": 21.86,
+          "end": 35.544,
+          "shot": {
+            "template": "process",
+            "heading": "Anatomy diagram sunflower with anthers and stigma",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [
+              "Anthers",
+              "Stigma"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.334375
+            },
+            {
+              "text": "male",
+              "start": 0.35,
+              "end": 0.75625
+            },
+            {
+              "text": "reproductive",
+              "start": 0.771875,
+              "end": 1.646875
+            },
+            {
+              "text": "parts",
+              "start": 1.6625,
+              "end": 2.25625
+            },
+            {
+              "text": "or",
+              "start": 2.4125,
+              "end": 2.69375
+            },
+            {
+              "text": "anthers",
+              "start": 2.709375,
+              "end": 3.475
+            },
+            {
+              "text": "curl",
+              "start": 3.6625,
+              "end": 4.021875
+            },
+            {
+              "text": "inward",
+              "start": 4.0375,
+              "end": 4.709375
+            },
+            {
+              "text": "depositing",
+              "start": 4.94375,
+              "end": 5.81875
+            },
+            {
+              "text": "pollen",
+              "start": 5.834375,
+              "end": 6.334375
+            },
+            {
+              "text": "onto",
+              "start": 6.35,
+              "end": 6.740625
+            },
+            {
+              "text": "the",
+              "start": 6.75625,
+              "end": 6.88125
+            },
+            {
+              "text": "sticky",
+              "start": 6.896875,
+              "end": 7.38125
+            },
+            {
+              "text": "female",
+              "start": 7.396875,
+              "end": 7.959375
+            },
+            {
+              "text": "stigma",
+              "start": 7.975,
+              "end": 8.740625
+            },
+            {
+              "text": "a",
+              "start": 8.990625,
+              "end": 9.146875
+            },
+            {
+              "text": "process",
+              "start": 9.1625,
+              "end": 9.803125
+            },
+            {
+              "text": "known",
+              "start": 9.81875,
+              "end": 10.240625
+            },
+            {
+              "text": "as",
+              "start": 10.25625,
+              "end": 10.50625
+            },
+            {
+              "text": "self-pollination",
+              "start": 10.521875,
+              "end": 11.865625
+            }
+          ],
+          "speech_duration": 12.984,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "Self-Pollination Mechanisms in Plants",
+      "narration": "Some plants, such as Xorra, exhibit simultaneous maturation of their anthers and stigmas, facilitating self-pollination and a phenomenon called homogamy. Certain species, like wood sorrel, produce small, inconspicuous flowers lacking fragrance in late summer. These bisexual flowers never open, and the process of self-pollination and fertilization within an unopened flower is termed as glystogomy.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Some plants, such as Xorra, exhibit simultaneous maturation of their anthers and stigmas, facilitating self-pollination and a phenomenon called homogamy.",
+          "visual": "Natural video: Xorra plants with mature anthers and stigmas",
+          "image_prompt": "template: video\nheading: Xorra plant with mature anthers and stigmas",
+          "keywords": [
+            "xorra",
+            "anthers",
+            "stigmas",
+            "pollen"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_02_segment_01.wav",
+          "start": 35.544,
+          "end": 49.92999999999999,
+          "shot": {
+            "template": "video",
+            "heading": "Natural video Xorra plants with mature anthers",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Some",
+              "start": 0.1,
+              "end": 0.615625
+            },
+            {
+              "text": "plants",
+              "start": 0.63125,
+              "end": 1.25625
+            },
+            {
+              "text": "such",
+              "start": 1.428125,
+              "end": 1.81875
+            },
+            {
+              "text": "as",
+              "start": 1.834375,
+              "end": 2.115625
+            },
+            {
+              "text": "Xorra",
+              "start": 2.13125,
+              "end": 2.81875
+            },
+            {
+              "text": "exhibit",
+              "start": 3.084375,
+              "end": 3.725
+            },
+            {
+              "text": "simultaneous",
+              "start": 3.740625,
+              "end": 4.7875
+            },
+            {
+              "text": "maturation",
+              "start": 4.803125,
+              "end": 5.678125
+            },
+            {
+              "text": "of",
+              "start": 5.69375,
+              "end": 5.85
+            },
+            {
+              "text": "their",
+              "start": 5.865625,
+              "end": 6.1625
+            },
+            {
+              "text": "anthers",
+              "start": 6.178125,
+              "end": 6.81875
+            },
+            {
+              "text": "and",
+              "start": 6.834375,
+              "end": 7.06875
+            },
+            {
+              "text": "stigmas",
+              "start": 7.084375,
+              "end": 7.94375
+            },
+            {
+              "text": "facilitating",
+              "start": 8.178125,
+              "end": 9.240625
+            },
+            {
+              "text": "self-pollination",
+              "start": 9.25625,
+              "end": 10.584375
+            },
+            {
+              "text": "and",
+              "start": 10.6,
+              "end": 10.85
+            },
+            {
+              "text": "a",
+              "start": 10.865625,
+              "end": 10.9125
+            },
+            {
+              "text": "phenomenon",
+              "start": 10.928125,
+              "end": 11.725
+            },
+            {
+              "text": "called",
+              "start": 11.740625,
+              "end": 12.13125
+            },
+            {
+              "text": "homogamy",
+              "start": 12.146875,
+              "end": 13.021875
+            }
+          ],
+          "speech_duration": 14.136,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Certain species, like wood sorrel, produce small, inconspicuous flowers lacking fragrance in late summer.",
+          "visual": "Static image: wood sorrel flowers in late summer",
+          "image_prompt": "Image 1: Photo of wood sorrel flowers in late summer\nImage 2: Illustration of small, inconspicuous flowers",
+          "keywords": [
+            "wood sorrel",
+            "flowers",
+            "fragrance"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_02_segment_02.wav",
+          "start": 49.92999999999999,
+          "end": 60.11599999999999,
+          "shot": {
+            "template": "process",
+            "heading": "wood sorrel flowers late summer",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [
+              "Wood Sorrel",
+              "Flowers"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [
+            {
+              "text": "Certain",
+              "start": 0.1,
+              "end": 0.803125
+            },
+            {
+              "text": "species",
+              "start": 0.81875,
+              "end": 1.678125
+            },
+            {
+              "text": "like",
+              "start": 1.85,
+              "end": 2.240625
+            },
+            {
+              "text": "wood",
+              "start": 2.25625,
+              "end": 2.4125
+            },
+            {
+              "text": "sorrel",
+              "start": 2.428125,
+              "end": 3.1
+            },
+            {
+              "text": "produce",
+              "start": 3.271875,
+              "end": 3.771875
+            },
+            {
+              "text": "small",
+              "start": 3.7875,
+              "end": 4.396875
+            },
+            {
+              "text": "inconspicuous",
+              "start": 4.646875,
+              "end": 5.6625
+            },
+            {
+              "text": "flowers",
+              "start": 5.678125,
+              "end": 6.2875
+            },
+            {
+              "text": "lacking",
+              "start": 6.303125,
+              "end": 6.81875
+            },
+            {
+              "text": "fragrance",
+              "start": 6.834375,
+              "end": 7.63125
+            },
+            {
+              "text": "in",
+              "start": 7.646875,
+              "end": 7.88125
+            },
+            {
+              "text": "late",
+              "start": 7.896875,
+              "end": 8.2875
+            },
+            {
+              "text": "summer",
+              "start": 8.303125,
+              "end": 8.834375
+            }
+          ],
+          "speech_duration": 9.936,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "These bisexual flowers never open, and the process of self-pollination and fertilization within an unopened flower is termed as glystogomy.",
+          "visual": "Illustration of unopened bisexual flower",
+          "image_prompt": "Image 1: Illustration of unopened bisexual flower\nImage 2: Diagram of pollen transfer within the flower",
+          "keywords": [
+            "bisexual flowers",
+            "glystogomy",
+            "pollen transfer"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_02_segment_03.wav",
+          "start": 60.11599999999999,
+          "end": 73.22399999999999,
+          "shot": {
+            "template": "process",
+            "heading": "Illustration unopened bisexual flower",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [
+              "Bisexual Flowers",
+              "Glystogomy"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [
+            {
+              "text": "These",
+              "start": 0.1,
+              "end": 0.584375
+            },
+            {
+              "text": "bisexual",
+              "start": 0.6,
+              "end": 1.475
+            },
+            {
+              "text": "flowers",
+              "start": 1.490625,
+              "end": 2.146875
+            },
+            {
+              "text": "never",
+              "start": 2.1625,
+              "end": 2.69375
+            },
+            {
+              "text": "open",
+              "start": 2.709375,
+              "end": 3.2875
+            },
+            {
+              "text": "and",
+              "start": 3.44375,
+              "end": 3.709375
+            },
+            {
+              "text": "the",
+              "start": 3.725,
+              "end": 3.81875
+            },
+            {
+              "text": "process",
+              "start": 3.834375,
+              "end": 4.44375
+            },
+            {
+              "text": "of",
+              "start": 4.459375,
+              "end": 4.615625
+            },
+            {
+              "text": "self-pollination",
+              "start": 4.63125,
+              "end": 5.9125
+            },
+            {
+              "text": "and",
+              "start": 5.928125,
+              "end": 6.19375
+            },
+            {
+              "text": "fertilization",
+              "start": 6.209375,
+              "end": 7.334375
+            },
+            {
+              "text": "within",
+              "start": 7.35,
+              "end": 7.725
+            },
+            {
+              "text": "an",
+              "start": 7.740625,
+              "end": 7.896875
+            },
+            {
+              "text": "unopened",
+              "start": 7.9125,
+              "end": 8.490625
+            },
+            {
+              "text": "flower",
+              "start": 8.50625,
+              "end": 9.13125
+            },
+            {
+              "text": "is",
+              "start": 9.146875,
+              "end": 9.31875
+            },
+            {
+              "text": "termed",
+              "start": 9.334375,
+              "end": 9.81875
+            },
+            {
+              "text": "as",
+              "start": 9.834375,
+              "end": 10.115625
+            },
+            {
+              "text": "glystogomy",
+              "start": 10.13125,
+              "end": 11.271875
+            }
+          ],
+          "speech_duration": 12.408,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "title": "Cross-Pollination Strategies",
+      "narration": "In contrast, plants like papaya have evolved to encourage cross-pollination by having separate male and female flowers on different plants. Sunflowers, on the other hand, bear bisexual flowers, where the anthers mature before the stigma, a process known as pro-tandry. Other plants, like the custard apple, exhibit the opposite pattern, where the stigma matures first, a phenomenon called pro-gynous.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "In contrast, plants like papaya have evolved to encourage cross-pollination by having separate male and female flowers on different plants.",
+          "visual": "Natural video: camera pans over a papaya plant with separate male and female flowers",
+          "image_prompt": "template: video\nheading: Papaya plant with separate male and female flowers",
+          "keywords": [
+            "male flowers",
+            "female flowers",
+            "pollen"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_03_segment_01.wav",
+          "start": 73.22399999999999,
+          "end": 85.37799999999999,
+          "shot": {
+            "template": "video",
+            "heading": "Natural video camera pans over papaya plant",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.38125
+            },
+            {
+              "text": "contrast",
+              "start": 0.396875,
+              "end": 1.303125
+            },
+            {
+              "text": "plants",
+              "start": 1.44375,
+              "end": 1.928125
+            },
+            {
+              "text": "like",
+              "start": 1.94375,
+              "end": 2.225
+            },
+            {
+              "text": "papaya",
+              "start": 2.240625,
+              "end": 2.85
+            },
+            {
+              "text": "have",
+              "start": 2.865625,
+              "end": 3.209375
+            },
+            {
+              "text": "evolved",
+              "start": 3.225,
+              "end": 3.81875
+            },
+            {
+              "text": "to",
+              "start": 3.834375,
+              "end": 3.990625
+            },
+            {
+              "text": "encourage",
+              "start": 4.00625,
+              "end": 4.646875
+            },
+            {
+              "text": "cross-pollination",
+              "start": 4.6625,
+              "end": 5.959375
+            },
+            {
+              "text": "by",
+              "start": 5.975,
+              "end": 6.19375
+            },
+            {
+              "text": "having",
+              "start": 6.209375,
+              "end": 6.63125
+            },
+            {
+              "text": "separate",
+              "start": 6.646875,
+              "end": 7.25625
+            },
+            {
+              "text": "male",
+              "start": 7.271875,
+              "end": 7.725
+            },
+            {
+              "text": "and",
+              "start": 7.740625,
+              "end": 8.021875
+            },
+            {
+              "text": "female",
+              "start": 8.0375,
+              "end": 8.56875
+            },
+            {
+              "text": "flowers",
+              "start": 8.584375,
+              "end": 9.334375
+            },
+            {
+              "text": "on",
+              "start": 9.35,
+              "end": 9.553125
+            },
+            {
+              "text": "different",
+              "start": 9.56875,
+              "end": 10.084375
+            },
+            {
+              "text": "plants",
+              "start": 10.1,
+              "end": 10.803125
+            }
+          ],
+          "speech_duration": 11.904,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Sunflowers, on the other hand, bear bisexual flowers, where the anthers mature before the stigma, a process known as pro-tandry.",
+          "visual": "Natural video: camera shows a sunflower with bisexual flowers, with animation arrows showing anthers maturing before stigma",
+          "image_prompt": "template: video\nheading: Sunflower with bisexual flowers",
+          "keywords": [
+            "anthers",
+            "stigma",
+            "pro-tandry"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_03_segment_02.wav",
+          "start": 85.37799999999999,
+          "end": 97.72399999999999,
+          "shot": {
+            "template": "video",
+            "heading": "Natural video camera shows sunflower with bisexual",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Sunflowers",
+              "start": 0.1,
+              "end": 1.365625
+            },
+            {
+              "text": "on",
+              "start": 1.521875,
+              "end": 1.75625
+            },
+            {
+              "text": "the",
+              "start": 1.771875,
+              "end": 1.928125
+            },
+            {
+              "text": "other",
+              "start": 1.94375,
+              "end": 2.2875
+            },
+            {
+              "text": "hand",
+              "start": 2.303125,
+              "end": 2.803125
+            },
+            {
+              "text": "bear",
+              "start": 3.0375,
+              "end": 3.31875
+            },
+            {
+              "text": "bisexual",
+              "start": 3.334375,
+              "end": 4.19375
+            },
+            {
+              "text": "flowers",
+              "start": 4.209375,
+              "end": 4.990625
+            },
+            {
+              "text": "where",
+              "start": 5.1625,
+              "end": 5.459375
+            },
+            {
+              "text": "the",
+              "start": 5.475,
+              "end": 5.63125
+            },
+            {
+              "text": "anthers",
+              "start": 5.646875,
+              "end": 6.303125
+            },
+            {
+              "text": "mature",
+              "start": 6.31875,
+              "end": 6.834375
+            },
+            {
+              "text": "before",
+              "start": 6.85,
+              "end": 7.334375
+            },
+            {
+              "text": "the",
+              "start": 7.35,
+              "end": 7.459375
+            },
+            {
+              "text": "stigma",
+              "start": 7.475,
+              "end": 8.240625
+            },
+            {
+              "text": "a",
+              "start": 8.490625,
+              "end": 8.646875
+            },
+            {
+              "text": "process",
+              "start": 8.6625,
+              "end": 9.35
+            },
+            {
+              "text": "known",
+              "start": 9.365625,
+              "end": 9.75625
+            },
+            {
+              "text": "as",
+              "start": 9.771875,
+              "end": 10.0375
+            },
+            {
+              "text": "pro-tandry",
+              "start": 10.053125,
+              "end": 10.975
+            }
+          ],
+          "speech_duration": 12.096,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "Other plants, like the custard apple, exhibit the opposite pattern, where the stigma matures first, a phenomenon called pro-gynous.",
+          "visual": "Natural video: camera shows a custard apple plant with stigma maturing before anthers",
+          "image_prompt": "template: video\nheading: Custard apple plant with stigma maturing",
+          "keywords": [
+            "stigma",
+            "pro-gynous"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_03_segment_03.wav",
+          "start": 97.72399999999999,
+          "end": 110.39999999999999,
+          "shot": {
+            "template": "video",
+            "heading": "Natural video camera shows custard apple plant",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Other",
+              "start": 0.1,
+              "end": 0.553125
+            },
+            {
+              "text": "plants",
+              "start": 0.56875,
+              "end": 1.19375
+            },
+            {
+              "text": "like",
+              "start": 1.31875,
+              "end": 1.6625
+            },
+            {
+              "text": "the",
+              "start": 1.678125,
+              "end": 1.81875
+            },
+            {
+              "text": "custard",
+              "start": 1.834375,
+              "end": 2.490625
+            },
+            {
+              "text": "apple",
+              "start": 2.50625,
+              "end": 3.178125
+            },
+            {
+              "text": "exhibit",
+              "start": 3.475,
+              "end": 4.19375
+            },
+            {
+              "text": "the",
+              "start": 4.209375,
+              "end": 4.38125
+            },
+            {
+              "text": "opposite",
+              "start": 4.396875,
+              "end": 4.959375
+            },
+            {
+              "text": "pattern",
+              "start": 4.975,
+              "end": 5.709375
+            },
+            {
+              "text": "where",
+              "start": 5.88125,
+              "end": 6.1625
+            },
+            {
+              "text": "the",
+              "start": 6.178125,
+              "end": 6.2875
+            },
+            {
+              "text": "stigma",
+              "start": 6.303125,
+              "end": 6.9125
+            },
+            {
+              "text": "matures",
+              "start": 6.928125,
+              "end": 7.6
+            },
+            {
+              "text": "first",
+              "start": 7.615625,
+              "end": 8.225
+            },
+            {
+              "text": "a",
+              "start": 8.50625,
+              "end": 8.678125
+            },
+            {
+              "text": "phenomenon",
+              "start": 8.69375,
+              "end": 9.490625
+            },
+            {
+              "text": "called",
+              "start": 9.50625,
+              "end": 9.928125
+            },
+            {
+              "text": "pro-gynous",
+              "start": 9.94375,
+              "end": 10.896875
+            }
+          ],
+          "speech_duration": 11.976,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 4,
+      "title": "Unique Adaptations for Cross-Pollination",
+      "narration": "Some flowers have developed unique adaptations to facilitate cross-pollination. For instance, pines and orchids have evolved distinct structural features, such as a hood covering the stigma or a specific arrangement of the anther and stigma, to attract pollinators. These adaptations enable cross-pollination, which is essential for the reproduction of many plant species.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Some flowers have developed unique adaptations to facilitate cross-pollination.",
+          "visual": "A diverse group of flowers in a garden",
+          "image_prompt": "A close-up documentary photograph of a bee collecting pollen from a bright yellow sunflower in a lush garden, with visible pollen grains on its body, surrounded by realistic green leaves and stems, taken from a slightly above eye-level camera position on a sunny day with soft natural light.",
+          "keywords": [
+            "flowers",
+            "developed",
+            "unique",
+            "adaptations",
+            "facilitate",
+            "cross-pollination",
+            "diverse",
+            "group"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_04_segment_01.wav",
+          "start": 110.39999999999999,
+          "end": 118.18599999999999,
+          "shot": {
+            "template": "photo",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Some",
+              "start": 0.1,
+              "end": 0.56875
+            },
+            {
+              "text": "flowers",
+              "start": 0.584375,
+              "end": 1.209375
+            },
+            {
+              "text": "have",
+              "start": 1.225,
+              "end": 1.44375
+            },
+            {
+              "text": "developed",
+              "start": 1.459375,
+              "end": 2.209375
+            },
+            {
+              "text": "unique",
+              "start": 2.225,
+              "end": 2.803125
+            },
+            {
+              "text": "adaptations",
+              "start": 2.81875,
+              "end": 3.88125
+            },
+            {
+              "text": "to",
+              "start": 3.896875,
+              "end": 4.021875
+            },
+            {
+              "text": "facilitate",
+              "start": 4.0375,
+              "end": 4.975
+            },
+            {
+              "text": "cross-pollination",
+              "start": 4.990625,
+              "end": 6.4125
+            }
+          ],
+          "speech_duration": 7.536,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "For instance, pines and orchids have evolved distinct structural features, such as a hood covering the stigma or a specific arrangement of the anther and stigma, to attract pollinators.",
+          "visual": "A pine and an orchid, with labeled parts (anther, stigma, hood)",
+          "image_prompt": "Image 1: Close-up of a pine cone with a hood-like structure\nImage 2: Illustration of an orchid with labeled anther and stigma",
+          "keywords": [
+            "anther",
+            "stigma",
+            "hood"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_04_segment_02.wav",
+          "start": 118.18599999999999,
+          "end": 134.132,
+          "shot": {
+            "template": "process",
+            "heading": "pine and orchid with labeled parts anther",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [
+              "Anther",
+              "Stigma"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [
+            {
+              "text": "For",
+              "start": 0.1,
+              "end": 0.396875
+            },
+            {
+              "text": "instance",
+              "start": 0.4125,
+              "end": 1.1625
+            },
+            {
+              "text": "pines",
+              "start": 1.303125,
+              "end": 1.803125
+            },
+            {
+              "text": "and",
+              "start": 1.81875,
+              "end": 2.00625
+            },
+            {
+              "text": "orchids",
+              "start": 2.021875,
+              "end": 2.5375
+            },
+            {
+              "text": "have",
+              "start": 2.553125,
+              "end": 2.88125
+            },
+            {
+              "text": "evolved",
+              "start": 2.896875,
+              "end": 3.521875
+            },
+            {
+              "text": "distinct",
+              "start": 3.5375,
+              "end": 4.146875
+            },
+            {
+              "text": "structural",
+              "start": 4.1625,
+              "end": 4.834375
+            },
+            {
+              "text": "features",
+              "start": 4.85,
+              "end": 5.646875
+            },
+            {
+              "text": "such",
+              "start": 5.88125,
+              "end": 6.303125
+            },
+            {
+              "text": "as",
+              "start": 6.31875,
+              "end": 6.5375
+            },
+            {
+              "text": "a",
+              "start": 6.553125,
+              "end": 6.615625
+            },
+            {
+              "text": "hood",
+              "start": 6.63125,
+              "end": 6.88125
+            },
+            {
+              "text": "covering",
+              "start": 6.896875,
+              "end": 7.428125
+            },
+            {
+              "text": "the",
+              "start": 7.44375,
+              "end": 7.553125
+            },
+            {
+              "text": "stigma",
+              "start": 7.56875,
+              "end": 8.334375
+            },
+            {
+              "text": "or",
+              "start": 8.35,
+              "end": 8.6
+            },
+            {
+              "text": "a",
+              "start": 8.615625,
+              "end": 8.678125
+            },
+            {
+              "text": "specific",
+              "start": 8.69375,
+              "end": 9.50625
+            },
+            {
+              "text": "arrangement",
+              "start": 9.521875,
+              "end": 10.38125
+            },
+            {
+              "text": "of",
+              "start": 10.396875,
+              "end": 10.5375
+            },
+            {
+              "text": "the",
+              "start": 10.553125,
+              "end": 10.740625
+            },
+            {
+              "text": "anther",
+              "start": 10.75625,
+              "end": 11.428125
+            },
+            {
+              "text": "and",
+              "start": 11.44375,
+              "end": 11.678125
+            },
+            {
+              "text": "stigma",
+              "start": 11.69375,
+              "end": 12.396875
+            },
+            {
+              "text": "to",
+              "start": 12.678125,
+              "end": 12.85
+            },
+            {
+              "text": "attract",
+              "start": 12.865625,
+              "end": 13.428125
+            },
+            {
+              "text": "pollinators",
+              "start": 13.44375,
+              "end": 14.584375
+            }
+          ],
+          "speech_duration": 15.696,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "These adaptations enable cross-pollination, which is essential for the reproduction of many plant species.",
+          "visual": "A bee transferring pollen from one flower to another",
+          "image_prompt": "A close-up documentary photograph of a bee transferring pollen from a bright sunflower to another, with visible pollen grains on its body, realistic petals and anthers, in a high resolution realistic educational biology style, with accurate natural flower structures, a single clear scene, and natural outdoor lighting.",
+          "keywords": [
+            "adaptations",
+            "enable",
+            "cross-pollination",
+            "essential",
+            "reproduction",
+            "many",
+            "plant",
+            "species"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_04_segment_03.wav",
+          "start": 134.132,
+          "end": 144.40800000000002,
+          "shot": {
+            "template": "photo",
+            "heading": "Cross-Pollination",
+            "learning_objective": "Show pollen transfer between flowers on different plants.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "These",
+              "start": 0.1,
+              "end": 0.6
+            },
+            {
+              "text": "adaptations",
+              "start": 0.615625,
+              "end": 1.740625
+            },
+            {
+              "text": "enable",
+              "start": 1.75625,
+              "end": 2.31875
+            },
+            {
+              "text": "cross-pollination",
+              "start": 2.334375,
+              "end": 3.646875
+            },
+            {
+              "text": "which",
+              "start": 3.834375,
+              "end": 4.084375
+            },
+            {
+              "text": "is",
+              "start": 4.1,
+              "end": 4.271875
+            },
+            {
+              "text": "essential",
+              "start": 4.2875,
+              "end": 5.0375
+            },
+            {
+              "text": "for",
+              "start": 5.053125,
+              "end": 5.25625
+            },
+            {
+              "text": "the",
+              "start": 5.271875,
+              "end": 5.365625
+            },
+            {
+              "text": "reproduction",
+              "start": 5.38125,
+              "end": 6.31875
+            },
+            {
+              "text": "of",
+              "start": 6.334375,
+              "end": 6.584375
+            },
+            {
+              "text": "many",
+              "start": 6.6,
+              "end": 7.00625
+            },
+            {
+              "text": "plant",
+              "start": 7.021875,
+              "end": 7.50625
+            },
+            {
+              "text": "species",
+              "start": 7.521875,
+              "end": 8.459375
+            }
+          ],
+          "speech_duration": 9.576,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 5,
+      "title": "Conclusion and Future Exploration",
+      "narration": "In summary, plants have developed various mechanisms to ensure pollination, including self-pollination and cross-pollination. By understanding these mechanisms, we can gain a deeper appreciation for the intricate relationships between plants and pollinators. As we explore the natural world, we often stumble upon fascinating examples of adaptation and survival.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "In summary, plants have developed various mechanisms to ensure pollination, including self-pollination and cross-pollination.",
+          "visual": "Illustration of plants with arrows indicating pollination mechanisms",
+          "image_prompt": "Image 1: Illustration of a plant with self-pollinating mechanism\nImage 2: Illustration of a plant with cross-pollinating mechanism",
+          "keywords": [
+            "self-pollination",
+            "cross-pollination"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_05_segment_01.wav",
+          "start": 144.40800000000002,
+          "end": 155.77,
+          "shot": {
+            "template": "process",
+            "heading": "Illustration plants with arrows indicating pollination mechanisms",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [
+              "Self-Pollination",
+              "Cross-Pollination"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.38125
+            },
+            {
+              "text": "summary",
+              "start": 0.396875,
+              "end": 1.1625
+            },
+            {
+              "text": "plants",
+              "start": 1.303125,
+              "end": 1.803125
+            },
+            {
+              "text": "have",
+              "start": 1.81875,
+              "end": 2.021875
+            },
+            {
+              "text": "developed",
+              "start": 2.0375,
+              "end": 2.678125
+            },
+            {
+              "text": "various",
+              "start": 2.69375,
+              "end": 3.2875
+            },
+            {
+              "text": "mechanisms",
+              "start": 3.303125,
+              "end": 4.146875
+            },
+            {
+              "text": "to",
+              "start": 4.1625,
+              "end": 4.4125
+            },
+            {
+              "text": "ensure",
+              "start": 4.428125,
+              "end": 5.021875
+            },
+            {
+              "text": "pollination",
+              "start": 5.0375,
+              "end": 5.990625
+            },
+            {
+              "text": "including",
+              "start": 6.225,
+              "end": 6.975
+            },
+            {
+              "text": "self-pollination",
+              "start": 6.990625,
+              "end": 8.2875
+            },
+            {
+              "text": "and",
+              "start": 8.303125,
+              "end": 8.63125
+            },
+            {
+              "text": "cross-pollination",
+              "start": 8.646875,
+              "end": 9.975
+            }
+          ],
+          "speech_duration": 11.112,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "By understanding these mechanisms, we can gain a deeper appreciation for the intricate relationships between plants and pollinators.",
+          "visual": "Still photo of a plant and pollinator interacting",
+          "image_prompt": "Macro nature video of a bee slowly visiting a single bright flower, pollen dust visible on the bee body, realistic petals and anthers, shallow depth of field, gentle natural movement, no text.",
+          "keywords": [
+            "plant",
+            "pollinator"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_05_segment_02.wav",
+          "start": 155.77,
+          "end": 167.324,
+          "shot": {
+            "template": "video",
+            "heading": "understanding these mechanisms can",
+            "learning_objective": "Explain the key idea in this segment.",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "By",
+              "start": 0.1,
+              "end": 0.475
+            },
+            {
+              "text": "understanding",
+              "start": 0.490625,
+              "end": 1.44375
+            },
+            {
+              "text": "these",
+              "start": 1.459375,
+              "end": 1.75625
+            },
+            {
+              "text": "mechanisms",
+              "start": 1.771875,
+              "end": 2.771875
+            },
+            {
+              "text": "we",
+              "start": 2.990625,
+              "end": 3.178125
+            },
+            {
+              "text": "can",
+              "start": 3.19375,
+              "end": 3.44375
+            },
+            {
+              "text": "gain",
+              "start": 3.459375,
+              "end": 3.834375
+            },
+            {
+              "text": "a",
+              "start": 3.85,
+              "end": 3.94375
+            },
+            {
+              "text": "deeper",
+              "start": 3.959375,
+              "end": 4.553125
+            },
+            {
+              "text": "appreciation",
+              "start": 4.56875,
+              "end": 5.5375
+            },
+            {
+              "text": "for",
+              "start": 5.553125,
+              "end": 5.740625
+            },
+            {
+              "text": "the",
+              "start": 5.75625,
+              "end": 5.928125
+            },
+            {
+              "text": "intricate",
+              "start": 5.94375,
+              "end": 6.6
+            },
+            {
+              "text": "relationships",
+              "start": 6.615625,
+              "end": 7.646875
+            },
+            {
+              "text": "between",
+              "start": 7.6625,
+              "end": 8.1625
+            },
+            {
+              "text": "plants",
+              "start": 8.178125,
+              "end": 8.834375
+            },
+            {
+              "text": "and",
+              "start": 8.85,
+              "end": 9.1
+            },
+            {
+              "text": "pollinators",
+              "start": 9.115625,
+              "end": 10.209375
+            }
+          ],
+          "speech_duration": 11.304,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "As we explore the natural world, we often stumble upon fascinating examples of adaptation and survival.",
+          "visual": "Natural video of a plant adapting to its environment",
+          "image_prompt": "template: video\nheading: Adaptation and Survival",
+          "keywords": [
+            "adaptation",
+            "survival"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_05_segment_03.wav",
+          "start": 167.324,
+          "end": 177.912,
+          "shot": {
+            "template": "video",
+            "heading": "Natural video plant adapting its environment",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "As",
+              "start": 0.1,
+              "end": 0.428125
+            },
+            {
+              "text": "we",
+              "start": 0.44375,
+              "end": 0.6
+            },
+            {
+              "text": "explore",
+              "start": 0.615625,
+              "end": 1.225
+            },
+            {
+              "text": "the",
+              "start": 1.240625,
+              "end": 1.35
+            },
+            {
+              "text": "natural",
+              "start": 1.365625,
+              "end": 2.021875
+            },
+            {
+              "text": "world",
+              "start": 2.0375,
+              "end": 2.584375
+            },
+            {
+              "text": "we",
+              "start": 2.803125,
+              "end": 3.0375
+            },
+            {
+              "text": "often",
+              "start": 3.053125,
+              "end": 3.475
+            },
+            {
+              "text": "stumble",
+              "start": 3.490625,
+              "end": 4.1
+            },
+            {
+              "text": "upon",
+              "start": 4.115625,
+              "end": 4.5375
+            },
+            {
+              "text": "fascinating",
+              "start": 4.553125,
+              "end": 5.475
+            },
+            {
+              "text": "examples",
+              "start": 5.490625,
+              "end": 6.35
+            },
+            {
+              "text": "of",
+              "start": 6.365625,
+              "end": 6.56875
+            },
+            {
+              "text": "adaptation",
+              "start": 6.584375,
+              "end": 7.56875
+            },
+            {
+              "text": "and",
+              "start": 7.584375,
+              "end": 7.928125
+            },
+            {
+              "text": "survival",
+              "start": 7.94375,
+              "end": 8.7875
+            }
+          ],
+          "speech_duration": 9.888,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 6,
+      "title": "The Role of Water in Pollination",
+      "narration": "Water plays a crucial role in guiding pollinators to flowers, whether it's through the scent of nectar or the promise of a nutritious reward. Sometimes, it's a matter of trickery, as seen in the case of the bee orchid, which mimics the appearance of a female bee to attract male bees for pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Water plays a crucial role in guiding pollinators to flowers, whether it's through the scent of nectar or the promise of a nutritious reward.",
+          "visual": "Natural video: bees flying towards colorful flowers with nectar-rich scent",
+          "image_prompt": "template: video\nheading: Bees flying towards flowers",
+          "keywords": [
+            "flower",
+            "nectar"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_06_segment_01.wav",
+          "start": 177.912,
+          "end": 189.514,
+          "shot": {
+            "template": "video",
+            "heading": "Natural video bees flying towards colorful flowers",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Water",
+              "start": 0.1,
+              "end": 0.63125
+            },
+            {
+              "text": "plays",
+              "start": 0.646875,
+              "end": 1.115625
+            },
+            {
+              "text": "a",
+              "start": 1.13125,
+              "end": 1.209375
+            },
+            {
+              "text": "crucial",
+              "start": 1.225,
+              "end": 1.865625
+            },
+            {
+              "text": "role",
+              "start": 1.88125,
+              "end": 2.25625
+            },
+            {
+              "text": "in",
+              "start": 2.271875,
+              "end": 2.396875
+            },
+            {
+              "text": "guiding",
+              "start": 2.4125,
+              "end": 2.94375
+            },
+            {
+              "text": "pollinators",
+              "start": 2.959375,
+              "end": 3.9125
+            },
+            {
+              "text": "to",
+              "start": 3.928125,
+              "end": 4.06875
+            },
+            {
+              "text": "flowers",
+              "start": 4.084375,
+              "end": 4.896875
+            },
+            {
+              "text": "whether",
+              "start": 5.053125,
+              "end": 5.553125
+            },
+            {
+              "text": "it's",
+              "start": 5.56875,
+              "end": 5.7875
+            },
+            {
+              "text": "through",
+              "start": 5.803125,
+              "end": 6.0375
+            },
+            {
+              "text": "the",
+              "start": 6.053125,
+              "end": 6.178125
+            },
+            {
+              "text": "scent",
+              "start": 6.19375,
+              "end": 6.615625
+            },
+            {
+              "text": "of",
+              "start": 6.63125,
+              "end": 6.834375
+            },
+            {
+              "text": "nectar",
+              "start": 6.85,
+              "end": 7.56875
+            },
+            {
+              "text": "or",
+              "start": 7.584375,
+              "end": 7.75625
+            },
+            {
+              "text": "the",
+              "start": 7.771875,
+              "end": 7.88125
+            },
+            {
+              "text": "promise",
+              "start": 7.896875,
+              "end": 8.459375
+            },
+            {
+              "text": "of",
+              "start": 8.475,
+              "end": 8.678125
+            },
+            {
+              "text": "a",
+              "start": 8.69375,
+              "end": 8.740625
+            },
+            {
+              "text": "nutritious",
+              "start": 8.75625,
+              "end": 9.6
+            },
+            {
+              "text": "reward",
+              "start": 9.615625,
+              "end": 10.225
+            }
+          ],
+          "speech_duration": 11.352,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Sometimes, it's a matter of trickery, as seen in the case of the bee orchid, which mimics the appearance of a female bee to attract male bees for pollination.",
+          "visual": "Static image: Bee orchid with male bee in close proximity",
+          "image_prompt": "Image 1: Bee orchid with male bee in close proximity\nImage 2: Close-up of a bee orchid's flower",
+          "keywords": [
+            "bee orchid",
+            "male bee"
+          ],
+          "audio_path": "outputs\\pollination_qwen_story_v1\\audio\\scene_06_segment_02.wav",
+          "start": 189.514,
+          "end": 202.666,
+          "shot": {
+            "template": "process",
+            "heading": "Bee orchid with male bee close proximity",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [
+              "Bee Orchid",
+              "Male Bee"
+            ],
+            "cues": [],
+            "stage_fractions": [
+              0.0,
+              0.55
+            ]
+          },
+          "captions": [
+            {
+              "text": "Sometimes",
+              "start": 0.1,
+              "end": 1.209375
+            },
+            {
+              "text": "it's",
+              "start": 1.38125,
+              "end": 1.646875
+            },
+            {
+              "text": "a",
+              "start": 1.6625,
+              "end": 1.725
+            },
+            {
+              "text": "matter",
+              "start": 1.740625,
+              "end": 2.271875
+            },
+            {
+              "text": "of",
+              "start": 2.2875,
+              "end": 2.459375
+            },
+            {
+              "text": "trickery",
+              "start": 2.475,
+              "end": 3.1625
+            },
+            {
+              "text": "as",
+              "start": 3.4125,
+              "end": 3.6625
+            },
+            {
+              "text": "seen",
+              "start": 3.678125,
+              "end": 4.115625
+            },
+            {
+              "text": "in",
+              "start": 4.13125,
+              "end": 4.2875
+            },
+            {
+              "text": "the",
+              "start": 4.303125,
+              "end": 4.4125
+            },
+            {
+              "text": "case",
+              "start": 4.428125,
+              "end": 4.85
+            },
+            {
+              "text": "of",
+              "start": 4.865625,
+              "end": 4.990625
+            },
+            {
+              "text": "the",
+              "start": 5.00625,
+              "end": 5.13125
+            },
+            {
+              "text": "bee",
+              "start": 5.146875,
+              "end": 5.365625
+            },
+            {
+              "text": "orchid",
+              "start": 5.38125,
+              "end": 6.0375
+            },
+            {
+              "text": "which",
+              "start": 6.396875,
+              "end": 6.69375
+            },
+            {
+              "text": "mimics",
+              "start": 6.709375,
+              "end": 7.19375
+            },
+            {
+              "text": "the",
+              "start": 7.209375,
+              "end": 7.38125
+            },
+            {
+              "text": "appearance",
+              "start": 7.396875,
+              "end": 8.06875
+            },
+            {
+              "text": "of",
+              "start": 8.084375,
+              "end": 8.271875
+            },
+            {
+              "text": "a",
+              "start": 8.2875,
+              "end": 8.35
+            },
+            {
+              "text": "female",
+              "start": 8.365625,
+              "end": 9.00625
+            },
+            {
+              "text": "bee",
+              "start": 9.021875,
+              "end": 9.240625
+            },
+            {
+              "text": "to",
+              "start": 9.25625,
+              "end": 9.490625
+            },
+            {
+              "text": "attract",
+              "start": 9.50625,
+              "end": 10.084375
+            },
+            {
+              "text": "male",
+              "start": 10.1,
+              "end": 10.4125
+            },
+            {
+              "text": "bees",
+              "start": 10.428125,
+              "end": 10.834375
+            },
+            {
+              "text": "for",
+              "start": 10.85,
+              "end": 11.053125
+            },
+            {
+              "text": "pollination",
+              "start": 11.06875,
+              "end": 12.0375
+            }
+          ],
+          "speech_duration": 13.152,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    }
+  ]
+}

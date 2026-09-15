@@ -1,0 +1,81 @@
+project_name: "Open Edu Video Generator LTX 12GB"
+
+output_resolution:
+  width: 1920
+  height: 1080
+
+fps: 30
+visual_mode: "hybrid"
+
+ffmpeg_path: "C:\\Users\\User\\Documents\\Codex\\Tools\\Transcribe\\ffmpeg\\ffmpeg-9.0.1-essentials_build\\bin\\ffmpeg.exe"
+ffprobe_path: "C:\\Users\\User\\Documents\\Codex\\Tools\\Transcribe\\ffmpeg\\ffmpeg-9.0.1-essentials_build\\bin\\ffprobe.exe"
+
+ollama_url: "http://localhost:11434"
+ollama_model: "llama3.1:8b"
+use_ollama: true
+
+tts_provider: "edge"
+edge_tts:
+  voice: "en-IN-NeerjaNeural"
+  rate: "-20%"
+
+piper_path: "C:/piper/piper.exe"
+piper_model: "C:/piper/voices/en_US-lessac-medium.onnx"
+piper_config: "C:/piper/voices/en_US-lessac-medium.onnx.json"
+
+voice:
+  sentence_gap_seconds: 0.25
+  scene_gap_seconds: 0.7
+
+render:
+  layout: modern
+  burn_captions: true
+  embed_subtitles: false
+  background: "#F7F8F3"
+  ink: "#182026"
+  accent: "#2E7D63"
+  second_accent: "#D18B32"
+  subtitle_bg: "#FFFFFF"
+  subtitle_fg: "#000000"
+  seconds_per_segment_without_audio: 5.0
+  video_crf: 17
+  video_preset: "slow"
+  reviewed_assets_dir: "assets/reviewed"
+  font_path: ""
+
+comfyui:
+  api_url: "http://127.0.0.1:8188"
+  enabled: true
+  workflow_path: "workflows/sdxl_txt2img_api.json"
+  checkpoint: "sd_xl_base_1.0.safetensors"
+  width: 1024
+  height: 576
+  steps: 20
+  cfg: 4.5
+  sampler_name: "euler"
+  scheduler: "simple"
+  seed: -1
+  timeout_seconds: 1800
+  fallback_to_slideshow: false
+  rewrite_prompts: true
+  prompt_prefix: "high resolution educational documentary photograph, realistic biology, clear subject, fine natural detail, soft daylight,"
+  prompt_suffix: "single realistic scene, accurate biology, text-free image, no labels"
+  negative_prompt: "text, letters, typography, labels, captions, watermark, logo, signature, diagram, infographic, chart, collage, grid, panels, border, blurry, distorted anatomy, duplicate parts, oversaturated, bad motion, flicker"
+  video_enabled: true
+  video_workflow_path: "workflows/ltx_video_12gb_api.json"
+  video_width: 768
+  video_height: 512
+  video_frames: 81
+  video_fps: 16
+  video_steps: 8
+  video_cfg: 1.0
+  video_sampler_name: "euler"
+  video_scheduler: "simple"
+  real_image_auto_promote: true
+  video_auto_promote: false
+  video_max_segments: 1
+  video_prompt_prefix: "realistic educational nature video, stable camera, gentle natural motion, coherent subject,"
+  video_prompt_suffix: "short cinematic b-roll, natural motion, coherent anatomy, no text, no subtitles, no watermark"
+
+
+

@@ -1,0 +1,62 @@
+Scene 1.1: Introduction to Sunflower Pollination
+A close-up macro shot of a sunflower in natural light, with detailed petals and center visible, set against a soft background to emphasize the subject, captured in documentary style with sharp detail and accurate representation.
+
+Scene 1.2: Introduction to Sunflower Pollination
+template: video
+heading: Bee pollination
+duration: 8.0 sec
+prompt: Cinematic macro video of a bee naturally moving onto a flower, pollen visible on anthers and bee legs, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending
+negative: cartoon, fantasy anatomy, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 1.3: Introduction to Sunflower Pollination
+template: video
+heading: Labeled sunflower diagram showing anther and stigma
+duration: 7.0 sec
+prompt: Realistic HD educational Wan video, Labeled sunflower diagram showing anther and stigma, natural motion, documentary style, sharp detail, accurate subject, seamless continuation, no blank cards, no slide layout
+negative: incorrect anatomy, wrong labels, unreadable text, watermark, blurry, distorted, fantasy, irrelevant objects
+
+Scene 1.4: Introduction to Sunflower Pollination
+A close-up macro shot of a sunflower in natural light, its detailed petals and center visible, set against a soft background, captured in documentary style with sharp detail and accurate representation of the subject.
+
+Scene 2.1: Homogamy in Xanthium
+A close-up, documentary-style photograph of a Xanthium flower, set in natural lighting, with sharp detail, highlighting the mature anther and stigma, illustrating the concept of homogamy in plants like Xanthium, where self-pollination is facilitated by simultaneous maturation of reproductive parts.
+
+Scene 2.2: Homogamy in Xanthium
+A close-up of wood sorrel flowers in late summer, set against a soft, natural background, with warm sunlight casting gentle shadows, capturing the delicate details of the small, inconspicuous blooms, in a documentary-style, realistic and accurate representation.
+
+Scene 2.3: Homogamy in Xanthium
+Realistic HD educational visual, Real HD educational visual: Close-up photo of closed bisexual flower with gynostogamy label. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels
+
+Scene 2.4: Homogamy in Xanthium
+A close-up, documentary-style photo of a stigma with pollen positioned for self-pollination, set against a natural, soft-focus background, with natural lighting and sharp detail to highlight the intricate details of the plant's reproductive structure.
+
+Scene 3.1: Cross-Pollination in Dioecious Plants
+Two papaya plants stand side by side in a lush garden, one with vibrant male flowers and the other with delicate female flowers, bathed in warm natural sunlight, with a documentary-style camera positioned at a slight angle to capture the intricate details of the plants' reproductive structures.
+
+Scene 3.2: Cross-Pollination in Dioecious Plants
+A close-up of a sunflower flower in natural sunlight, with the anther and stigma labeled, showcasing the pro-tandry process in a documentary-style educational visual with sharp detail and accurate representation.
+
+Scene 3.3: Cross-Pollination in Dioecious Plants
+A close-up of a custard apple flower, with natural light illuminating its delicate petals and highlighting the stigma and anther in sharp detail, set against a neutral background, in a documentary-style image.
+
+Scene 4.1: Structural Adaptations for Cross-Pollination
+A close-up of a pansy flower with a hood covering its stigma, set against a soft, natural background, with gentle natural lighting and sharp detail, capturing the flower's structural adaptation in a documentary-style image.
+
+Scene 4.2: Structural Adaptations for Cross-Pollination
+A close-up of an orchid flower in natural light, with sharp detail, showing pollen on the anther and stigma, in a documentary style, highlighting the structural adaptations for cross-pollination.
+
+Scene 4.3: Structural Adaptations for Cross-Pollination
+A close-up of a primrose flower in natural sunlight, with the stigma positioned higher than the anther, set against a soft focus blurred background, shot from directly above, showcasing the flower's structural adaptations for cross-pollination in a documentary style.
+
+Scene 4.4: Structural Adaptations for Cross-Pollination
+template: video
+heading: Bee visiting a flower
+duration: 4.0 sec
+prompt: Cinematic macro video of a bee naturally moving onto a flower, pollen visible on anthers and bee legs, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity
+negative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure
+
+Scene 5.1: Pollinator Attraction Strategies
+Macro documentary photograph of a bee orchid flower that resembles a female bee, with a male bee nearby, realistic botanical detail, natural daylight, no text, no labels.
+
+Scene 5.2: Pollinator Attraction Strategies
+A close-up of a sunflower in a garden, with a few bees and butterflies pollinating its bright yellow petals, surrounded by lush green leaves, shot from directly above with natural soft morning light, highlighting the intricate details of the flower and its visitors.

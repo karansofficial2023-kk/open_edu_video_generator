@@ -1,0 +1,11 @@
+{
+  "notice": "Lint findings, not factual certification",
+  "findings": [
+    {
+      "scene": 0,
+      "segment": 0,
+      "level": "error",
+      "message": "Storyboard does not cover the full Types of Pollination topic. Check coverage.json."
+    }
+  ]
+}

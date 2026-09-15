@@ -1,0 +1,107 @@
+[
+  {
+    "scene": 1,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Labeled diagram of an electrolytic cell showing electrodes, power source, and ion movement. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A realistic, high-definition educational visual of an electrolytic cell, with electrodes and a power source, set against a neutral background, under natural lighting, with sharp detail and a documentary style, accurately depicting the movement of ions.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 1,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Industrial electrolysis setup with metal purification and plating processes. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "Industrial electrolysis setup with metal purification and plating processes, set in a large, well-lit factory room with metal pipes and machinery, camera positioned at a 45-degree angle to show the equipment and workers in the background, natural light pouring in through large windows, highlighting the details of the machinery and the metal being purified and plated.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Photo of a lab setup with electrodes and solutions showing strong and weak electrolytes. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style photo of a lab setup with electrodes and solutions, showcasing strong and weak electrolytes under natural lighting, with sharp detail and accurate representation of the subject, without blank cards, slide layout, or text-heavy graphic panels.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 2,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Photo of a weak acid and base solution with labeled molar conductivity values. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A weak acid and base solution in a laboratory beaker, with a background of a chemistry lab, natural light streaming through a window, a camera positioned directly above the beaker, highlighting the labeled molar conductivity values on the beaker's side, with sharp detail and a documentary style.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Graph of molar conductivity vs concentration with asymptote. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A graph of molar conductivity vs concentration with an asymptote in the background, set in a laboratory with natural lighting, sharp detail, and a documentary style, featuring a realistic and accurate representation of the subject, with no blank cards, slide layout, or text-heavy graphic panels.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Image of Kohlrausch's law formula. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style image of a blackboard with a mathematical formula, Kohlrausch's law, written in sharp detail under natural lighting, with a subtle background of a laboratory setting, highlighting the accurate representation of the subject matter.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 3,
+    "segment": 3,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Diagram showing electrolyte dissociation into ions. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A beaker filled with a clear, colorless liquid electrolyte sits on a laboratory bench, under natural light, with a subtle gradient of brightness to emphasize the subject. The camera is positioned directly above the beaker, capturing the electrolyte's surface in sharp detail, as if seen through a microscope. In the background, a blurred laboratory setup with various equipment and chemicals adds context to the scene, without distracting from the main subject.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Photo of lab equipment with labeled ions. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style photo of a lab bench with a beaker of acetic acid solution, a conductivity meter, and a diagram of its constituent ions on a whiteboard, under natural lighting with sharp detail, highlighting the equipment and ions in a realistic educational setting.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Photo of ion migration in electrolyte solution. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style photo of ion migration in a clear electrolyte solution, with natural lighting illuminating the tiny particles in motion, surrounded by a simple laboratory setup, with a sharp focus on the subject, capturing the accurate representation of Kohlrausch's Law in action.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 4,
+    "segment": 3,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Photo of acetic acid solution with conductivity measurement. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A close-up photo of a beaker containing a clear acetic acid solution, with a conductivity meter placed nearby, under natural light, with sharp focus on the solution and the meter, in a documentary-style setting, capturing the accurate representation of the weak electrolyte and its measurement.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Graph showing molar conductivity vs. square root of concentration for strong electrolytes. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style graph of molar conductivity vs. square root of concentration for sodium acetate, hydrochloric acid, and sodium chloride, set against a subtle background, with natural lighting illuminating the sharp details of the graph, capturing the accurate representation of strong electrolytes' behavior.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 5,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Mathematical equation showing the calculation of limiting molar conductivity for acetic acid. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style image of a chemistry lab bench, with a whiteboard in the center, featuring a complex mathematical equation for calculating limiting molar conductivity, surrounded by beakers, test tubes, and other lab equipment, under natural lighting with sharp detail.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 1,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Mathematical equation on a whiteboard with acetic acid label. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A whiteboard in a chemistry lab, illuminated by natural light, with a mathematical equation written in sharp detail, surrounded by acetic acid labels and other chemistry equipment, in a documentary-style educational visual.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 2,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Lab setup with strong and weak electrolytes. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A lab bench with a strong electrolyte solution and a weak electrolyte solution in separate beakers, placed on a clutter-free wooden surface under natural light, with a camera positioned at a 45-degree angle to capture the solutions and the surrounding equipment in sharp detail, documentary style.",
+    "scientific_review_recommended": true
+  },
+  {
+    "scene": 6,
+    "segment": 4,
+    "original_prompt": "Realistic HD educational visual, Real HD educational visual: Chemical formulas for acetic acid and ammonium hydroxide. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts., natural lighting, sharp detail, documentary style, accurate subject, no blank cards, no slide layout, no text-heavy graphic panels",
+    "image_prompt": "A documentary-style image of two beakers on a laboratory bench, with chemical formulas for acetic acid and ammonium hydroxide written on whiteboards behind them, under natural lighting with sharp detail, showcasing the accurate representation of these weak electrolytes.",
+    "scientific_review_recommended": true
+  }
+]

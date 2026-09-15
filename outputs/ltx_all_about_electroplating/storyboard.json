@@ -1,0 +1,4099 @@
+{
+  "title": "Storyboard: Hello everyone",
+  "source": "Hello everyone. Join Anita on an exciting journey as she sets out to electroplate an antique copper keychain with silver, creating a special gift for Vivant's birthday. Together, we'll explore the intriguing process of electroplating and uncover the science behind it.\nToday is Vivant's birthday. Anita wants to gift him a silver-plated keychain. She already has an antique copper keychain she's decided to electroplate with silver on her own. Let's help Anita complete this task. The goal of this simulation is to study the electroplating process. Let's begin.\nThis is an electrolytic cell containing a silver nitrate solution. Tap on the highlighted apparatus one at a time to assemble the setup and perform the electroplating. The red wire is connected to the battery's positive terminal, while the blue wire is linked to the negative terminal via a switch. The keychain to be electroplated is attached to the negative terminal, and a pure silver rod is connected to the positive terminal. We're ready to start the process. Let's proceed.\nAs chemistry students, we must also learn the correct terminology for the process and equipment. Drag the labels into the designated boxes. The terminal linked to the battery's positive terminal is the anode, while the one connected to the negative terminal is the cathode. The solution in the electrolytic cell is called the electrolyte.\nNow, let's simulate the reactions occurring within the solution. Remember, the electrolyte contains positively charged silver ions and negatively charged chloride ions. Switch on the current supply. You can observe electrons moving from the battery to the cathode, which is the keychain, making it negatively charged. Positive silver ions are attracted to the negative electrode. Notice the silver ion has a vacant spot in its outer shell, so it gains an electron to fill it. The neutral silver atom then deposits onto the keychain.\nCan you identify the reaction at the cathode? Gaining electrons is reduction. Does this reduce the silver ion concentration in the solution? Yes, as more ions deposit onto the keychain. The solution will draw silver atoms from the pure silver anode into itself. During this process, each silver atom loses an electron to form a Ag⁺ ion. Which reaction occurs at the anode? Losing electrons is oxidation. These extra electrons travel through the rod into the wire and back to the battery, completing the circuit.\nThe process summarizes as silver atoms from the pure silver rod deposit onto the keychain. Let's answer the question. Since reduction occurs at the cathode and oxidation at the anode, the overall reaction is a redox reaction. Let's explore more about process variables.\nObserve a graph showing silver mass deposited versus time. As current is applied, the silver mass deposited increases over time. Now, double the battery's current and observe the effect on deposition time. The graph shows it takes half the time. Next, do all metals take the same time to deposit a specific mass, and does it depend on the metal? If we were depositing gold instead of silver, adjust the time slider and observe. More gold deposits in the same time. In summary, electroplating depends on current intensity, duration, and the metal chosen.\nAs we explore electroplating, we've learned about anode and cathode roles, reduction/oxidation dynamics, and factors influencing metal deposition. The story continues—stay tuned for the next chapter exploring electroplating's practical applications and artistic potential.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Introduction to Electroplating",
+      "narration": "Hello everyone. Join Anita on an exciting journey as she sets out to electroplate an antique copper keychain with silver, creating a special gift for Vivant's birthday. Together, we'll explore the intriguing process of electroplating and uncover the science behind it.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Hello everyone. Join Anita on an exciting journey as she sets out to electroplate an antique copper keychain with silver, creating a special gift for Vivant's birthday.",
+          "visual": "Real HD educational visual: Natural video: Anita working at a lab bench with electroplating setup. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Anita electroplating keychain\nduration: 8.0 sec\nprompt: Cinematic macro video of a woman in lab coat electroplating a copper keychain, silver solution in beaker, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong lab equipment, text artifacts, watermark, blurry, extra limbs, distorted human, inaccurate lab setup",
+          "keywords": [
+            "anita",
+            "keychain",
+            "silver solution",
+            "copper electrode"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_01_segment_01.wav",
+          "start": 0.0,
+          "end": 16.258,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video Anita working",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Hello",
+              "start": 0.1,
+              "end": 0.69375
+            },
+            {
+              "text": "everyone",
+              "start": 0.709375,
+              "end": 1.553125
+            },
+            {
+              "text": "Join",
+              "start": 2.64375,
+              "end": 3.33125
+            },
+            {
+              "text": "Anita",
+              "start": 3.346875,
+              "end": 4.01875
+            },
+            {
+              "text": "on",
+              "start": 4.034375,
+              "end": 4.26875
+            },
+            {
+              "text": "an",
+              "start": 4.284375,
+              "end": 4.409375
+            },
+            {
+              "text": "exciting",
+              "start": 4.425,
+              "end": 5.221875
+            },
+            {
+              "text": "journey",
+              "start": 5.2375,
+              "end": 5.784375
+            },
+            {
+              "text": "as",
+              "start": 5.8,
+              "end": 6.065625
+            },
+            {
+              "text": "she",
+              "start": 6.08125,
+              "end": 6.3
+            },
+            {
+              "text": "sets",
+              "start": 6.315625,
+              "end": 6.8
+            },
+            {
+              "text": "out",
+              "start": 6.815625,
+              "end": 7.096875
+            },
+            {
+              "text": "to",
+              "start": 7.1125,
+              "end": 7.315625
+            },
+            {
+              "text": "electroplate",
+              "start": 7.33125,
+              "end": 8.346875
+            },
+            {
+              "text": "an",
+              "start": 8.3625,
+              "end": 8.55
+            },
+            {
+              "text": "antique",
+              "start": 8.565625,
+              "end": 9.065625
+            },
+            {
+              "text": "copper",
+              "start": 9.08125,
+              "end": 9.565625
+            },
+            {
+              "text": "keychain",
+              "start": 9.58125,
+              "end": 10.253125
+            },
+            {
+              "text": "with",
+              "start": 10.26875,
+              "end": 10.471875
+            },
+            {
+              "text": "silver",
+              "start": 10.4875,
+              "end": 11.128125
+            },
+            {
+              "text": "creating",
+              "start": 11.378125,
+              "end": 12.065625
+            },
+            {
+              "text": "a",
+              "start": 12.08125,
+              "end": 12.159375
+            },
+            {
+              "text": "special",
+              "start": 12.175,
+              "end": 12.8
+            },
+            {
+              "text": "gift",
+              "start": 12.815625,
+              "end": 13.221875
+            },
+            {
+              "text": "for",
+              "start": 13.2375,
+              "end": 13.440625
+            },
+            {
+              "text": "Vivant's",
+              "start": 13.45625,
+              "end": 14.096875
+            },
+            {
+              "text": "birthday",
+              "start": 14.1125,
+              "end": 14.909375
+            }
+          ],
+          "speech_duration": 16.008,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Together, we'll explore the intriguing process of electroplating and uncover the science behind it.",
+          "visual": "Real HD educational visual: Natural video: Electroplating process with metal deposition. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Silver ion deposition\nduration: 6.0 sec\nprompt: Cinematic macro video of silver ions depositing on copper electrode in electroplating, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong electrochemical processes, text artifacts, watermark, blurry, extra limbs, distorted ions, inaccurate electroplating setup",
+          "keywords": [
+            "cathode",
+            "silver ions",
+            "electron flow"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_01_segment_02.wav",
+          "start": 16.258,
+          "end": 26.054,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video Electroplating process",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Together",
+              "start": 0.1,
+              "end": 0.94375
+            },
+            {
+              "text": "we'll",
+              "start": 1.146875,
+              "end": 1.44375
+            },
+            {
+              "text": "explore",
+              "start": 1.459375,
+              "end": 2.115625
+            },
+            {
+              "text": "the",
+              "start": 2.13125,
+              "end": 2.303125
+            },
+            {
+              "text": "intriguing",
+              "start": 2.31875,
+              "end": 3.053125
+            },
+            {
+              "text": "process",
+              "start": 3.06875,
+              "end": 3.69375
+            },
+            {
+              "text": "of",
+              "start": 3.709375,
+              "end": 3.928125
+            },
+            {
+              "text": "electroplating",
+              "start": 3.94375,
+              "end": 5.209375
+            },
+            {
+              "text": "and",
+              "start": 5.225,
+              "end": 5.490625
+            },
+            {
+              "text": "uncover",
+              "start": 5.50625,
+              "end": 6.209375
+            },
+            {
+              "text": "the",
+              "start": 6.225,
+              "end": 6.334375
+            },
+            {
+              "text": "science",
+              "start": 6.35,
+              "end": 7.00625
+            },
+            {
+              "text": "behind",
+              "start": 7.021875,
+              "end": 7.615625
+            },
+            {
+              "text": "it",
+              "start": 7.63125,
+              "end": 7.990625
+            }
+          ],
+          "speech_duration": 9.096,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "Setting Up the Electroplating Setup",
+      "narration": "Today is Vivant's birthday. Anita wants to gift him a silver-plated keychain. She already has an antique copper keychain she's decided to electroplate with silver on her own. Let's help Anita complete this task. The goal of this simulation is to study the electroplating process. Let's begin.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Today is Vivant's birthday.",
+          "visual": "Real HD educational visual: A family celebrating a birthday with decorations and gifts. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A family of four smiling together in a living room, surrounded by colorful birthday decorations and gifts, with natural light pouring in through a window, capturing a joyful and intimate moment.",
+          "keywords": [
+            "vivant's birthday"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_02_segment_01.wav",
+          "start": 26.054,
+          "end": 29.808,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual family celebrating birthday with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Today",
+              "start": 0.1,
+              "end": 0.69375
+            },
+            {
+              "text": "is",
+              "start": 0.709375,
+              "end": 0.94375
+            },
+            {
+              "text": "Vivant's",
+              "start": 0.959375,
+              "end": 1.584375
+            },
+            {
+              "text": "birthday",
+              "start": 1.6,
+              "end": 2.4125
+            }
+          ],
+          "speech_duration": 3.504,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Anita wants to gift him a silver-plated keychain.",
+          "visual": "Real HD educational visual: A keychain with a silver plating. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up shot of a keychain with a silver plating, placed on a workbench in a well-lit workshop, with a neutral background, natural lighting, sharp detail, and a documentary-style camera position.",
+          "keywords": [
+            "silver-plated keychain"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_02_segment_02.wav",
+          "start": 29.808,
+          "end": 35.122,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual keychain with silver plating",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Anita",
+              "start": 0.1,
+              "end": 0.771875
+            },
+            {
+              "text": "wants",
+              "start": 0.7875,
+              "end": 1.225
+            },
+            {
+              "text": "to",
+              "start": 1.240625,
+              "end": 1.38125
+            },
+            {
+              "text": "gift",
+              "start": 1.396875,
+              "end": 1.803125
+            },
+            {
+              "text": "him",
+              "start": 1.81875,
+              "end": 2.084375
+            },
+            {
+              "text": "a",
+              "start": 2.1,
+              "end": 2.209375
+            },
+            {
+              "text": "silver-plated",
+              "start": 2.225,
+              "end": 3.240625
+            },
+            {
+              "text": "keychain",
+              "start": 3.25625,
+              "end": 3.975
+            }
+          ],
+          "speech_duration": 5.064,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "She already has an antique copper keychain she's decided to electroplate with silver on her own.",
+          "visual": "Real HD educational visual: An antique copper keychain with electroplating setup. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up shot of an antique copper keychain placed on a workbench, surrounded by electroplating equipment, with natural light illuminating the scene from the side, capturing sharp details of the keychain and the setup.",
+          "keywords": [
+            "antique copper keychain",
+            "electroplating setup",
+            "silver plating"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_02_segment_03.wav",
+          "start": 35.122,
+          "end": 44.132,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual antique copper keychain with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "She",
+              "start": 0.1,
+              "end": 0.459375
+            },
+            {
+              "text": "already",
+              "start": 0.475,
+              "end": 1.13125
+            },
+            {
+              "text": "has",
+              "start": 1.146875,
+              "end": 1.44375
+            },
+            {
+              "text": "an",
+              "start": 1.459375,
+              "end": 1.615625
+            },
+            {
+              "text": "antique",
+              "start": 1.63125,
+              "end": 2.13125
+            },
+            {
+              "text": "copper",
+              "start": 2.146875,
+              "end": 2.646875
+            },
+            {
+              "text": "keychain",
+              "start": 2.6625,
+              "end": 3.271875
+            },
+            {
+              "text": "she's",
+              "start": 3.2875,
+              "end": 3.646875
+            },
+            {
+              "text": "decided",
+              "start": 3.6625,
+              "end": 4.38125
+            },
+            {
+              "text": "to",
+              "start": 4.396875,
+              "end": 4.6
+            },
+            {
+              "text": "electroplate",
+              "start": 4.615625,
+              "end": 5.63125
+            },
+            {
+              "text": "with",
+              "start": 5.646875,
+              "end": 5.896875
+            },
+            {
+              "text": "silver",
+              "start": 5.9125,
+              "end": 6.553125
+            },
+            {
+              "text": "on",
+              "start": 6.56875,
+              "end": 6.7875
+            },
+            {
+              "text": "her",
+              "start": 6.803125,
+              "end": 7.1625
+            },
+            {
+              "text": "own",
+              "start": 7.178125,
+              "end": 7.646875
+            }
+          ],
+          "speech_duration": 8.76,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "Let's help Anita complete this task.",
+          "visual": "Real HD educational visual: Anita helping with the electroplating process. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "Anita stands in a well-lit workshop, surrounded by electroplating equipment, with a focused expression as she carefully connects wires to a metal object, the camera positioned directly in front of her, capturing sharp details of her hands and the machinery.",
+          "keywords": [
+            "helping with electroplating"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_02_segment_04.wav",
+          "start": 44.132,
+          "end": 48.702,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Anita helping with the",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Let's",
+              "start": 0.1,
+              "end": 0.615625
+            },
+            {
+              "text": "help",
+              "start": 0.63125,
+              "end": 1.00625
+            },
+            {
+              "text": "Anita",
+              "start": 1.021875,
+              "end": 1.615625
+            },
+            {
+              "text": "complete",
+              "start": 1.63125,
+              "end": 2.2875
+            },
+            {
+              "text": "this",
+              "start": 2.303125,
+              "end": 2.584375
+            },
+            {
+              "text": "task",
+              "start": 2.6,
+              "end": 3.209375
+            }
+          ],
+          "speech_duration": 4.32,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 5,
+          "narration": "The goal of this simulation is to study the electroplating process.",
+          "visual": "Real HD educational visual: A diagram of the electroplating setup. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: A diagram of the electroplating setup\nduration: 6.0 sec\nprompt: Realistic HD educational Wan video, A diagram of the electroplating setup, natural motion, documentary style, sharp detail, accurate subject, seamless continuation, no blank cards, no slide layout\nnegative: incorrect anatomy, wrong labels, unreadable text, watermark, blurry, distorted, fantasy, irrelevant objects",
+          "keywords": [
+            "electroplating setup",
+            "cathode",
+            "anode",
+            "electrolyte",
+            "metal ions"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_02_segment_05.wav",
+          "start": 48.702,
+          "end": 55.408,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual diagram the electroplating setup",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.35
+            },
+            {
+              "text": "goal",
+              "start": 0.365625,
+              "end": 0.740625
+            },
+            {
+              "text": "of",
+              "start": 0.75625,
+              "end": 0.896875
+            },
+            {
+              "text": "this",
+              "start": 0.9125,
+              "end": 1.178125
+            },
+            {
+              "text": "simulation",
+              "start": 1.19375,
+              "end": 2.13125
+            },
+            {
+              "text": "is",
+              "start": 2.146875,
+              "end": 2.396875
+            },
+            {
+              "text": "to",
+              "start": 2.4125,
+              "end": 2.553125
+            },
+            {
+              "text": "study",
+              "start": 2.56875,
+              "end": 3.115625
+            },
+            {
+              "text": "the",
+              "start": 3.13125,
+              "end": 3.35
+            },
+            {
+              "text": "electroplating",
+              "start": 3.365625,
+              "end": 4.50625
+            },
+            {
+              "text": "process",
+              "start": 4.521875,
+              "end": 5.365625
+            }
+          ],
+          "speech_duration": 6.456,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 6,
+          "narration": "Let's begin.",
+          "visual": "Real HD educational visual: A close-up of the electroplating process starting. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up of an electroplating machine in a well-lit workshop, with the camera positioned directly above the machine, capturing the initial stages of the electroplating process with sharp detail and natural lighting.",
+          "keywords": [
+            "electroplating process starting"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_02_segment_06.wav",
+          "start": 55.408,
+          "end": 58.436,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual close-up the electroplating process",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Let's",
+              "start": 0.1,
+              "end": 0.6
+            },
+            {
+              "text": "begin",
+              "start": 0.615625,
+              "end": 1.225
+            }
+          ],
+          "speech_duration": 2.328,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "title": "Electrolytic Cell Components",
+      "narration": "This is an electrolytic cell containing a silver nitrate solution. Tap on the highlighted apparatus one at a time to assemble the setup and perform the electroplating. The red wire is connected to the battery's positive terminal, while the blue wire is linked to the negative terminal via a switch. The keychain to be electroplated is attached to the negative terminal, and a pure silver rod is connected to the positive terminal. We're ready to start the process. Let's proceed.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "This is an electrolytic cell containing a silver nitrate solution.",
+          "visual": "Real HD educational visual: Clear lab setup photo of an electrolytic cell with silver nitrate solution. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style photograph of an electrolytic cell in a well-lit laboratory, with a silver nitrate solution prominently displayed, showcasing sharp detail and accurate representation of the subject.",
+          "keywords": [
+            "electrolytic cell",
+            "silver nitrate solution"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_03_segment_01.wav",
+          "start": 58.436,
+          "end": 64.926,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Clear lab setup photo",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "This",
+              "start": 0.1,
+              "end": 0.584375
+            },
+            {
+              "text": "is",
+              "start": 0.6,
+              "end": 0.75625
+            },
+            {
+              "text": "an",
+              "start": 0.771875,
+              "end": 0.9125
+            },
+            {
+              "text": "electrolytic",
+              "start": 0.928125,
+              "end": 1.865625
+            },
+            {
+              "text": "cell",
+              "start": 1.88125,
+              "end": 2.240625
+            },
+            {
+              "text": "containing",
+              "start": 2.25625,
+              "end": 2.975
+            },
+            {
+              "text": "a",
+              "start": 2.990625,
+              "end": 3.06875
+            },
+            {
+              "text": "silver",
+              "start": 3.084375,
+              "end": 3.584375
+            },
+            {
+              "text": "nitrate",
+              "start": 3.6,
+              "end": 4.2875
+            },
+            {
+              "text": "solution",
+              "start": 4.303125,
+              "end": 5.115625
+            }
+          ],
+          "speech_duration": 6.24,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Tap on the highlighted apparatus one at a time to assemble the setup and perform the electroplating.",
+          "visual": "Real HD educational visual: Close-up of highlighted apparatus components for assembly. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up of an electrolytic cell's components, such as the anode and cathode, sit on a workbench under natural light, with a documentary-style camera capturing sharp details of the apparatus, ready for assembly and electroplating.",
+          "keywords": [
+            "apparatus 1",
+            "apparatus 2",
+            "assembly steps"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_03_segment_02.wav",
+          "start": 64.926,
+          "end": 73.744,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Close-up highlighted apparatus components",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Tap",
+              "start": 0.1,
+              "end": 0.521875
+            },
+            {
+              "text": "on",
+              "start": 0.5375,
+              "end": 0.678125
+            },
+            {
+              "text": "the",
+              "start": 0.69375,
+              "end": 0.803125
+            },
+            {
+              "text": "highlighted",
+              "start": 0.81875,
+              "end": 1.56875
+            },
+            {
+              "text": "apparatus",
+              "start": 1.584375,
+              "end": 2.38125
+            },
+            {
+              "text": "one",
+              "start": 2.396875,
+              "end": 2.740625
+            },
+            {
+              "text": "at",
+              "start": 2.75625,
+              "end": 2.928125
+            },
+            {
+              "text": "a",
+              "start": 2.94375,
+              "end": 3.00625
+            },
+            {
+              "text": "time",
+              "start": 3.021875,
+              "end": 3.490625
+            },
+            {
+              "text": "to",
+              "start": 3.50625,
+              "end": 3.678125
+            },
+            {
+              "text": "assemble",
+              "start": 3.69375,
+              "end": 4.31875
+            },
+            {
+              "text": "the",
+              "start": 4.334375,
+              "end": 4.459375
+            },
+            {
+              "text": "setup",
+              "start": 4.475,
+              "end": 5.084375
+            },
+            {
+              "text": "and",
+              "start": 5.1,
+              "end": 5.365625
+            },
+            {
+              "text": "perform",
+              "start": 5.38125,
+              "end": 6.00625
+            },
+            {
+              "text": "the",
+              "start": 6.021875,
+              "end": 6.178125
+            },
+            {
+              "text": "electroplating",
+              "start": 6.19375,
+              "end": 7.459375
+            }
+          ],
+          "speech_duration": 8.568,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "The red wire is connected to the battery's positive terminal, while the blue wire is linked to the negative terminal via a switch.",
+          "visual": "Real HD educational visual: Diagram showing wire connections to battery terminals. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style diagram of an electrolytic cell, with a battery in the center, surrounded by a red wire connected to the positive terminal and a blue wire connected to the negative terminal via a switch, under natural lighting with sharp detail.",
+          "keywords": [
+            "red wire",
+            "blue wire",
+            "battery",
+            "switch"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_03_segment_03.wav",
+          "start": 73.744,
+          "end": 84.89,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual wire connections battery terminals",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.35
+            },
+            {
+              "text": "red",
+              "start": 0.365625,
+              "end": 0.725
+            },
+            {
+              "text": "wire",
+              "start": 0.740625,
+              "end": 1.2875
+            },
+            {
+              "text": "is",
+              "start": 1.303125,
+              "end": 1.490625
+            },
+            {
+              "text": "connected",
+              "start": 1.50625,
+              "end": 2.146875
+            },
+            {
+              "text": "to",
+              "start": 2.1625,
+              "end": 2.2875
+            },
+            {
+              "text": "the",
+              "start": 2.303125,
+              "end": 2.428125
+            },
+            {
+              "text": "battery's",
+              "start": 2.44375,
+              "end": 3.13125
+            },
+            {
+              "text": "positive",
+              "start": 3.146875,
+              "end": 3.771875
+            },
+            {
+              "text": "terminal",
+              "start": 3.7875,
+              "end": 4.475
+            },
+            {
+              "text": "while",
+              "start": 4.615625,
+              "end": 4.959375
+            },
+            {
+              "text": "the",
+              "start": 4.975,
+              "end": 5.1
+            },
+            {
+              "text": "blue",
+              "start": 5.115625,
+              "end": 5.490625
+            },
+            {
+              "text": "wire",
+              "start": 5.50625,
+              "end": 6.13125
+            },
+            {
+              "text": "is",
+              "start": 6.146875,
+              "end": 6.365625
+            },
+            {
+              "text": "linked",
+              "start": 6.38125,
+              "end": 6.7875
+            },
+            {
+              "text": "to",
+              "start": 6.803125,
+              "end": 6.959375
+            },
+            {
+              "text": "the",
+              "start": 6.975,
+              "end": 7.1
+            },
+            {
+              "text": "negative",
+              "start": 7.115625,
+              "end": 7.75625
+            },
+            {
+              "text": "terminal",
+              "start": 7.771875,
+              "end": 8.4125
+            },
+            {
+              "text": "via",
+              "start": 8.428125,
+              "end": 8.94375
+            },
+            {
+              "text": "a",
+              "start": 8.959375,
+              "end": 9.053125
+            },
+            {
+              "text": "switch",
+              "start": 9.06875,
+              "end": 9.803125
+            }
+          ],
+          "speech_duration": 10.896,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "The keychain to be electroplated is attached to the negative terminal, and a pure silver rod is connected to the positive terminal.",
+          "visual": "Real HD educational visual: Close-up of keychain and silver rod connections. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up of a keychain attached to the negative terminal of an electrolytic cell, with a pure silver rod connected to the positive terminal, set against a neutral background, lit by natural light, in a documentary style, with sharp detail and accurate representation.",
+          "keywords": [
+            "keychain",
+            "silver rod",
+            "negative terminal",
+            "positive terminal"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_03_segment_04.wav",
+          "start": 84.89,
+          "end": 95.508,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Close-up keychain and silver",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.35
+            },
+            {
+              "text": "keychain",
+              "start": 0.365625,
+              "end": 1.021875
+            },
+            {
+              "text": "to",
+              "start": 1.0375,
+              "end": 1.178125
+            },
+            {
+              "text": "be",
+              "start": 1.19375,
+              "end": 1.396875
+            },
+            {
+              "text": "electroplated",
+              "start": 1.4125,
+              "end": 2.584375
+            },
+            {
+              "text": "is",
+              "start": 2.6,
+              "end": 2.834375
+            },
+            {
+              "text": "attached",
+              "start": 2.85,
+              "end": 3.459375
+            },
+            {
+              "text": "to",
+              "start": 3.475,
+              "end": 3.584375
+            },
+            {
+              "text": "the",
+              "start": 3.6,
+              "end": 3.725
+            },
+            {
+              "text": "negative",
+              "start": 3.740625,
+              "end": 4.2875
+            },
+            {
+              "text": "terminal",
+              "start": 4.303125,
+              "end": 4.975
+            },
+            {
+              "text": "and",
+              "start": 5.115625,
+              "end": 5.396875
+            },
+            {
+              "text": "a",
+              "start": 5.4125,
+              "end": 5.475
+            },
+            {
+              "text": "pure",
+              "start": 5.490625,
+              "end": 5.94375
+            },
+            {
+              "text": "silver",
+              "start": 5.959375,
+              "end": 6.475
+            },
+            {
+              "text": "rod",
+              "start": 6.490625,
+              "end": 6.834375
+            },
+            {
+              "text": "is",
+              "start": 6.85,
+              "end": 7.021875
+            },
+            {
+              "text": "connected",
+              "start": 7.0375,
+              "end": 7.69375
+            },
+            {
+              "text": "to",
+              "start": 7.709375,
+              "end": 7.834375
+            },
+            {
+              "text": "the",
+              "start": 7.85,
+              "end": 7.959375
+            },
+            {
+              "text": "positive",
+              "start": 7.975,
+              "end": 8.584375
+            },
+            {
+              "text": "terminal",
+              "start": 8.6,
+              "end": 9.271875
+            }
+          ],
+          "speech_duration": 10.368,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 5,
+          "narration": "We're ready to start the process. Let's proceed.",
+          "visual": "Real HD educational visual: Natural video: electroplating process in motion. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Electroplating process\nduration: 4.0 sec\nprompt: Cinematic macro video of electroplating process with silver deposition on keychain, natural lighting, educational clarity, shallow depth of field\nnegative: cartoon, fantasy equipment, wrong chemical labels, text artifacts, blurry, extra parts, inaccurate lab setup",
+          "keywords": [
+            "keychain",
+            "silver rod",
+            "solution"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_03_segment_05.wav",
+          "start": 95.508,
+          "end": 102.232,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video electroplating process",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "We're",
+              "start": 0.1,
+              "end": 0.521875
+            },
+            {
+              "text": "ready",
+              "start": 0.5375,
+              "end": 0.865625
+            },
+            {
+              "text": "to",
+              "start": 0.88125,
+              "end": 1.0375
+            },
+            {
+              "text": "start",
+              "start": 1.053125,
+              "end": 1.521875
+            },
+            {
+              "text": "the",
+              "start": 1.5375,
+              "end": 1.678125
+            },
+            {
+              "text": "process",
+              "start": 1.69375,
+              "end": 2.553125
+            },
+            {
+              "text": "Let's",
+              "start": 3.64375,
+              "end": 4.14375
+            },
+            {
+              "text": "proceed",
+              "start": 4.159375,
+              "end": 4.940625
+            }
+          ],
+          "speech_duration": 6.024,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 4,
+      "title": "Understanding Electrochemical Terms",
+      "narration": "As chemistry students, we must also learn the correct terminology for the process and equipment. Drag the labels into the designated boxes. The terminal linked to the battery's positive terminal is the anode, while the one connected to the negative terminal is the cathode. The solution in the electrolytic cell is called the electrolyte.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "As chemistry students, we must also learn the correct terminology for the process and equipment.",
+          "visual": "Real HD educational visual: Educational photo of a chemistry lab setup with labeled equipment. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A chemistry lab setup with a beaker, test tubes, and a Bunsen burner on a wooden workbench, under natural light, with a slight angle from the side, capturing sharp details of the equipment and surroundings.",
+          "keywords": [
+            "lab setup",
+            "chemistry equipment",
+            "process terminology"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_04_segment_01.wav",
+          "start": 102.232,
+          "end": 111.434,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Educational photo chemistry lab",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "As",
+              "start": 0.1,
+              "end": 0.490625
+            },
+            {
+              "text": "chemistry",
+              "start": 0.50625,
+              "end": 1.1625
+            },
+            {
+              "text": "students",
+              "start": 1.178125,
+              "end": 1.975
+            },
+            {
+              "text": "we",
+              "start": 2.146875,
+              "end": 2.334375
+            },
+            {
+              "text": "must",
+              "start": 2.35,
+              "end": 2.771875
+            },
+            {
+              "text": "also",
+              "start": 2.7875,
+              "end": 3.225
+            },
+            {
+              "text": "learn",
+              "start": 3.240625,
+              "end": 3.678125
+            },
+            {
+              "text": "the",
+              "start": 3.69375,
+              "end": 3.81875
+            },
+            {
+              "text": "correct",
+              "start": 3.834375,
+              "end": 4.31875
+            },
+            {
+              "text": "terminology",
+              "start": 4.334375,
+              "end": 5.38125
+            },
+            {
+              "text": "for",
+              "start": 5.396875,
+              "end": 5.6625
+            },
+            {
+              "text": "the",
+              "start": 5.678125,
+              "end": 5.7875
+            },
+            {
+              "text": "process",
+              "start": 5.803125,
+              "end": 6.553125
+            },
+            {
+              "text": "and",
+              "start": 6.56875,
+              "end": 6.85
+            },
+            {
+              "text": "equipment",
+              "start": 6.865625,
+              "end": 7.81875
+            }
+          ],
+          "speech_duration": 8.952,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Drag the labels into the designated boxes.",
+          "visual": "Real HD educational visual: Interactive diagram with labeled boxes and draggable label placeholders. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up of a chemistry textbook open on a wooden desk, with a diagram of an electrochemical cell in the center, surrounded by labeled boxes with draggable label placeholders, under natural light with sharp detail, in a documentary style, with accurate subject matter.",
+          "keywords": [
+            "designated boxes",
+            "draggable labels",
+            "label placeholder"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_04_segment_02.wav",
+          "start": 111.434,
+          "end": 116.556,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Interactive diagram with labeled",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Drag",
+              "start": 0.1,
+              "end": 0.709375
+            },
+            {
+              "text": "the",
+              "start": 0.725,
+              "end": 0.85
+            },
+            {
+              "text": "labels",
+              "start": 0.865625,
+              "end": 1.490625
+            },
+            {
+              "text": "into",
+              "start": 1.50625,
+              "end": 1.85
+            },
+            {
+              "text": "the",
+              "start": 1.865625,
+              "end": 1.990625
+            },
+            {
+              "text": "designated",
+              "start": 2.00625,
+              "end": 2.94375
+            },
+            {
+              "text": "boxes",
+              "start": 2.959375,
+              "end": 3.771875
+            }
+          ],
+          "speech_duration": 4.872,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "The terminal linked to the battery's positive terminal is the anode, while the one connected to the negative terminal is the cathode.",
+          "visual": "Real HD educational visual: Cinematic video of a battery and electrochemical cell setup with labeled terminals. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Battery and Electrochemical Cell Setup\nduration: 7.0 sec\nprompt: Cinematic macro video of a battery and electrochemical cell setup, visible terminals, natural daylight, realistic electrochemistry detail, clean background, educational clarity, designed for 7.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, text artifacts, watermark, blurry, extra limbs, distorted equipment, inaccurate cell setup",
+          "keywords": [
+            "positive terminal",
+            "negative terminal",
+            "anode",
+            "cathode"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_04_segment_03.wav",
+          "start": 116.556,
+          "end": 126.982,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Cinematic video battery and",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.334375
+            },
+            {
+              "text": "terminal",
+              "start": 0.35,
+              "end": 0.975
+            },
+            {
+              "text": "linked",
+              "start": 0.990625,
+              "end": 1.4125
+            },
+            {
+              "text": "to",
+              "start": 1.428125,
+              "end": 1.553125
+            },
+            {
+              "text": "the",
+              "start": 1.56875,
+              "end": 1.69375
+            },
+            {
+              "text": "battery's",
+              "start": 1.709375,
+              "end": 2.38125
+            },
+            {
+              "text": "positive",
+              "start": 2.396875,
+              "end": 3.0375
+            },
+            {
+              "text": "terminal",
+              "start": 3.053125,
+              "end": 3.709375
+            },
+            {
+              "text": "is",
+              "start": 3.725,
+              "end": 3.928125
+            },
+            {
+              "text": "the",
+              "start": 3.94375,
+              "end": 4.084375
+            },
+            {
+              "text": "anode",
+              "start": 4.1,
+              "end": 4.69375
+            },
+            {
+              "text": "while",
+              "start": 4.85,
+              "end": 5.178125
+            },
+            {
+              "text": "the",
+              "start": 5.19375,
+              "end": 5.334375
+            },
+            {
+              "text": "one",
+              "start": 5.35,
+              "end": 5.69375
+            },
+            {
+              "text": "connected",
+              "start": 5.709375,
+              "end": 6.334375
+            },
+            {
+              "text": "to",
+              "start": 6.35,
+              "end": 6.490625
+            },
+            {
+              "text": "the",
+              "start": 6.50625,
+              "end": 6.63125
+            },
+            {
+              "text": "negative",
+              "start": 6.646875,
+              "end": 7.225
+            },
+            {
+              "text": "terminal",
+              "start": 7.240625,
+              "end": 7.94375
+            },
+            {
+              "text": "is",
+              "start": 7.959375,
+              "end": 8.1625
+            },
+            {
+              "text": "the",
+              "start": 8.178125,
+              "end": 8.303125
+            },
+            {
+              "text": "cathode",
+              "start": 8.31875,
+              "end": 9.084375
+            }
+          ],
+          "speech_duration": 10.176,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "The solution in the electrolytic cell is called the electrolyte.",
+          "visual": "Real HD educational visual: Photograph of an electrolytic cell with labeled solution. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style photograph of an electrolytic cell, with the solution labeled, set in a well-lit laboratory environment, showcasing sharp detail and accurate representation of the subject.",
+          "keywords": [
+            "electrolyte solution",
+            "electrolytic cell",
+            "labeled solution"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_04_segment_04.wav",
+          "start": 126.982,
+          "end": 133.97,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Photograph electrolytic cell with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.365625
+            },
+            {
+              "text": "solution",
+              "start": 0.38125,
+              "end": 1.1625
+            },
+            {
+              "text": "in",
+              "start": 1.178125,
+              "end": 1.365625
+            },
+            {
+              "text": "the",
+              "start": 1.38125,
+              "end": 1.56875
+            },
+            {
+              "text": "electrolytic",
+              "start": 1.584375,
+              "end": 2.5375
+            },
+            {
+              "text": "cell",
+              "start": 2.553125,
+              "end": 3.021875
+            },
+            {
+              "text": "is",
+              "start": 3.0375,
+              "end": 3.2875
+            },
+            {
+              "text": "called",
+              "start": 3.303125,
+              "end": 3.7875
+            },
+            {
+              "text": "the",
+              "start": 3.803125,
+              "end": 4.021875
+            },
+            {
+              "text": "electrolyte",
+              "start": 4.0375,
+              "end": 5.178125
+            }
+          ],
+          "speech_duration": 6.288,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 5,
+      "title": "Electrochemical Reactions",
+      "narration": "Now, let's simulate the reactions occurring within the solution. Remember, the electrolyte contains positively charged silver ions and negatively charged chloride ions. Switch on the current supply. You can observe electrons moving from the battery to the cathode, which is the keychain, making it negatively charged. Positive silver ions are attracted to the negative electrode. Notice the silver ion has a vacant spot in its outer shell, so it gains an electron to fill it. The neutral silver atom then deposits onto the keychain.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Now, let's simulate the reactions occurring within the solution.",
+          "visual": "Real HD educational visual: Natural video: lab setup with beaker, electrodes, and solution. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Lab setup with electrolyte solution\nduration: 6.0 sec\nprompt: Cinematic macro video of a lab setup showing a beaker with electrolyte solution, silver electrodes, and visible ions, realistic colors, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "beaker",
+            "electrodes",
+            "solution"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_05_segment_01.wav",
+          "start": 133.97,
+          "end": 140.22,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video lab setup",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Now",
+              "start": 0.1,
+              "end": 0.75625
+            },
+            {
+              "text": "let's",
+              "start": 0.896875,
+              "end": 1.303125
+            },
+            {
+              "text": "simulate",
+              "start": 1.31875,
+              "end": 1.896875
+            },
+            {
+              "text": "the",
+              "start": 1.9125,
+              "end": 2.021875
+            },
+            {
+              "text": "reactions",
+              "start": 2.0375,
+              "end": 2.88125
+            },
+            {
+              "text": "occurring",
+              "start": 2.896875,
+              "end": 3.5375
+            },
+            {
+              "text": "within",
+              "start": 3.553125,
+              "end": 3.9125
+            },
+            {
+              "text": "the",
+              "start": 3.928125,
+              "end": 4.021875
+            },
+            {
+              "text": "solution",
+              "start": 4.0375,
+              "end": 4.896875
+            }
+          ],
+          "speech_duration": 6.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Remember, the electrolyte contains positively charged silver ions and negatively charged chloride ions.",
+          "visual": "Real HD educational visual: Photo of electrolyte solution with labeled ions. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style photo of an electrolyte solution in a beaker, with positively charged silver ions and negatively charged chloride ions visible, under natural lighting, with sharp detail, and a neutral background.",
+          "keywords": [
+            "silver ions (ag+)",
+            "chloride ions (cl-)",
+            "electrolyte solution"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_05_segment_02.wav",
+          "start": 140.22,
+          "end": 150.43,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Photo electrolyte solution with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Remember",
+              "start": 0.1,
+              "end": 1.021875
+            },
+            {
+              "text": "the",
+              "start": 1.178125,
+              "end": 1.4125
+            },
+            {
+              "text": "electrolyte",
+              "start": 1.428125,
+              "end": 2.35
+            },
+            {
+              "text": "contains",
+              "start": 2.365625,
+              "end": 3.0375
+            },
+            {
+              "text": "positively",
+              "start": 3.053125,
+              "end": 3.865625
+            },
+            {
+              "text": "charged",
+              "start": 3.88125,
+              "end": 4.459375
+            },
+            {
+              "text": "silver",
+              "start": 4.475,
+              "end": 5.084375
+            },
+            {
+              "text": "ions",
+              "start": 5.1,
+              "end": 5.740625
+            },
+            {
+              "text": "and",
+              "start": 5.75625,
+              "end": 6.0375
+            },
+            {
+              "text": "negatively",
+              "start": 6.053125,
+              "end": 6.834375
+            },
+            {
+              "text": "charged",
+              "start": 6.85,
+              "end": 7.4125
+            },
+            {
+              "text": "chloride",
+              "start": 7.428125,
+              "end": 8.146875
+            },
+            {
+              "text": "ions",
+              "start": 8.1625,
+              "end": 8.88125
+            }
+          ],
+          "speech_duration": 9.96,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "Switch on the current supply.",
+          "visual": "Real HD educational visual: Natural video: switch turning on and current flowing. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Switch turning on with current flow\nduration: 4.0 sec\nprompt: Cinematic macro video of an electrical switch turning on, showing visible current flow with glowing effect, realistic colors, shallow depth of field, educational clarity\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "switch",
+            "current flow"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_05_segment_03.wav",
+          "start": 150.43,
+          "end": 154.064,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video switch turning",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Switch",
+              "start": 0.1,
+              "end": 0.678125
+            },
+            {
+              "text": "on",
+              "start": 0.69375,
+              "end": 0.896875
+            },
+            {
+              "text": "the",
+              "start": 0.9125,
+              "end": 1.00625
+            },
+            {
+              "text": "current",
+              "start": 1.021875,
+              "end": 1.475
+            },
+            {
+              "text": "supply",
+              "start": 1.490625,
+              "end": 2.25625
+            }
+          ],
+          "speech_duration": 3.384,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "You can observe electrons moving from the battery to the cathode, which is the keychain, making it negatively charged.",
+          "visual": "Real HD educational visual: Natural video: electron flow from battery to cathode. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Electron flow from battery to cathode\nduration: 8.0 sec\nprompt: Cinematic macro video of electrons moving from battery to keychain cathode, showing negative charge buildup, realistic colors, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "battery",
+            "cathode (keychain)",
+            "electrons"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_05_segment_04.wav",
+          "start": 154.064,
+          "end": 164.274,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video electron flow",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "You",
+              "start": 0.1,
+              "end": 0.4125
+            },
+            {
+              "text": "can",
+              "start": 0.428125,
+              "end": 0.646875
+            },
+            {
+              "text": "observe",
+              "start": 0.6625,
+              "end": 1.334375
+            },
+            {
+              "text": "electrons",
+              "start": 1.35,
+              "end": 2.178125
+            },
+            {
+              "text": "moving",
+              "start": 2.19375,
+              "end": 2.69375
+            },
+            {
+              "text": "from",
+              "start": 2.709375,
+              "end": 2.975
+            },
+            {
+              "text": "the",
+              "start": 2.990625,
+              "end": 3.1
+            },
+            {
+              "text": "battery",
+              "start": 3.115625,
+              "end": 3.69375
+            },
+            {
+              "text": "to",
+              "start": 3.709375,
+              "end": 3.85
+            },
+            {
+              "text": "the",
+              "start": 3.865625,
+              "end": 3.990625
+            },
+            {
+              "text": "cathode",
+              "start": 4.00625,
+              "end": 4.725
+            },
+            {
+              "text": "which",
+              "start": 4.990625,
+              "end": 5.271875
+            },
+            {
+              "text": "is",
+              "start": 5.2875,
+              "end": 5.459375
+            },
+            {
+              "text": "the",
+              "start": 5.475,
+              "end": 5.6
+            },
+            {
+              "text": "keychain",
+              "start": 5.615625,
+              "end": 6.38125
+            },
+            {
+              "text": "making",
+              "start": 6.5375,
+              "end": 7.084375
+            },
+            {
+              "text": "it",
+              "start": 7.1,
+              "end": 7.303125
+            },
+            {
+              "text": "negatively",
+              "start": 7.31875,
+              "end": 8.146875
+            },
+            {
+              "text": "charged",
+              "start": 8.1625,
+              "end": 8.85
+            }
+          ],
+          "speech_duration": 9.96,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 5,
+          "narration": "Positive silver ions are attracted to the negative electrode.",
+          "visual": "Real HD educational visual: Natural video: silver ions moving toward cathode. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Silver ion movement toward cathode\nduration: 6.0 sec\nprompt: Cinematic macro video of silver ions (Ag+) moving toward cathode under electric field, realistic colors, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "silver ions (ag+)",
+            "cathode",
+            "electric field"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_05_segment_05.wav",
+          "start": 164.274,
+          "end": 170.548,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video silver ions",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Positive",
+              "start": 0.1,
+              "end": 0.81875
+            },
+            {
+              "text": "silver",
+              "start": 0.834375,
+              "end": 1.428125
+            },
+            {
+              "text": "ions",
+              "start": 1.44375,
+              "end": 1.959375
+            },
+            {
+              "text": "are",
+              "start": 1.975,
+              "end": 2.271875
+            },
+            {
+              "text": "attracted",
+              "start": 2.2875,
+              "end": 3.0375
+            },
+            {
+              "text": "to",
+              "start": 3.053125,
+              "end": 3.19375
+            },
+            {
+              "text": "the",
+              "start": 3.209375,
+              "end": 3.334375
+            },
+            {
+              "text": "negative",
+              "start": 3.35,
+              "end": 3.959375
+            },
+            {
+              "text": "electrode",
+              "start": 3.975,
+              "end": 4.896875
+            }
+          ],
+          "speech_duration": 6.024,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 6,
+          "narration": "Notice the silver ion has a vacant spot in its outer shell, so it gains an electron to fill it.",
+          "visual": "Real HD educational visual: Photo of silver ion with electron gain. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A silver ion in a beaker, surrounded by a laboratory setup, with a gentle light source above, illuminating its vacant outer shell, as an electron approaches to fill it, in a documentary-style, high-definition image with sharp detail.",
+          "keywords": [
+            "vacant spot",
+            "electron",
+            "silver ion (ag+)"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_05_segment_06.wav",
+          "start": 170.548,
+          "end": 179.726,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Photo silver ion with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Notice",
+              "start": 0.1,
+              "end": 0.740625
+            },
+            {
+              "text": "the",
+              "start": 0.75625,
+              "end": 0.896875
+            },
+            {
+              "text": "silver",
+              "start": 0.9125,
+              "end": 1.56875
+            },
+            {
+              "text": "ion",
+              "start": 1.584375,
+              "end": 2.0375
+            },
+            {
+              "text": "has",
+              "start": 2.053125,
+              "end": 2.35
+            },
+            {
+              "text": "a",
+              "start": 2.365625,
+              "end": 2.459375
+            },
+            {
+              "text": "vacant",
+              "start": 2.475,
+              "end": 3.00625
+            },
+            {
+              "text": "spot",
+              "start": 3.021875,
+              "end": 3.521875
+            },
+            {
+              "text": "in",
+              "start": 3.5375,
+              "end": 3.69375
+            },
+            {
+              "text": "its",
+              "start": 3.709375,
+              "end": 3.94375
+            },
+            {
+              "text": "outer",
+              "start": 3.959375,
+              "end": 4.396875
+            },
+            {
+              "text": "shell",
+              "start": 4.4125,
+              "end": 4.928125
+            },
+            {
+              "text": "so",
+              "start": 5.1,
+              "end": 5.365625
+            },
+            {
+              "text": "it",
+              "start": 5.38125,
+              "end": 5.5375
+            },
+            {
+              "text": "gains",
+              "start": 5.553125,
+              "end": 6.053125
+            },
+            {
+              "text": "an",
+              "start": 6.06875,
+              "end": 6.240625
+            },
+            {
+              "text": "electron",
+              "start": 6.25625,
+              "end": 7.00625
+            },
+            {
+              "text": "to",
+              "start": 7.021875,
+              "end": 7.146875
+            },
+            {
+              "text": "fill",
+              "start": 7.1625,
+              "end": 7.44375
+            },
+            {
+              "text": "it",
+              "start": 7.459375,
+              "end": 7.834375
+            }
+          ],
+          "speech_duration": 8.928,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 7,
+          "narration": "The neutral silver atom then deposits onto the keychain.",
+          "visual": "Real HD educational visual: Natural video: silver atom depositing onto keychain. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Silver atom deposition onto keychain\nduration: 6.0 sec\nprompt: Cinematic macro video of silver atom depositing onto keychain, showing deposition process, realistic colors, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "silver atom",
+            "keychain",
+            "deposition"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_05_segment_07.wav",
+          "start": 179.726,
+          "end": 185.946,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video silver atom",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.334375
+            },
+            {
+              "text": "neutral",
+              "start": 0.35,
+              "end": 0.94375
+            },
+            {
+              "text": "silver",
+              "start": 0.959375,
+              "end": 1.6
+            },
+            {
+              "text": "atom",
+              "start": 1.615625,
+              "end": 2.053125
+            },
+            {
+              "text": "then",
+              "start": 2.06875,
+              "end": 2.365625
+            },
+            {
+              "text": "deposits",
+              "start": 2.38125,
+              "end": 3.146875
+            },
+            {
+              "text": "onto",
+              "start": 3.1625,
+              "end": 3.521875
+            },
+            {
+              "text": "the",
+              "start": 3.5375,
+              "end": 3.6625
+            },
+            {
+              "text": "keychain",
+              "start": 3.678125,
+              "end": 4.4125
+            }
+          ],
+          "speech_duration": 5.52,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 6,
+      "title": "Cathode and Anode Reactions",
+      "narration": "Can you identify the reaction at the cathode? Gaining electrons is reduction. Does this reduce the silver ion concentration in the solution? Yes, as more ions deposit onto the keychain. The solution will draw silver atoms from the pure silver anode into itself. During this process, each silver atom loses an electron to form a Ag⁺ ion. Which reaction occurs at the anode? Losing electrons is oxidation. These extra electrons travel through the rod into the wire and back to the battery, completing the circuit.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Can you identify the reaction at the cathode? Gaining electrons is reduction.",
+          "visual": "Real HD educational visual: Electrochemical cell diagram with labeled cathode and anode. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style electrochemical cell diagram with a realistic, detailed cathode and anode, set against a subtle background, with natural lighting and sharp focus, highlighting the cathode's reaction where electrons are gained, illustrating the concept of reduction.",
+          "keywords": [
+            "cathode",
+            "reduction"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_06_segment_01.wav",
+          "start": 185.946,
+          "end": 194.476,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Electrochemical cell diagram with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Can",
+              "start": 0.1,
+              "end": 0.44375
+            },
+            {
+              "text": "you",
+              "start": 0.459375,
+              "end": 0.6625
+            },
+            {
+              "text": "identify",
+              "start": 0.678125,
+              "end": 1.615625
+            },
+            {
+              "text": "the",
+              "start": 1.63125,
+              "end": 1.75625
+            },
+            {
+              "text": "reaction",
+              "start": 1.771875,
+              "end": 2.459375
+            },
+            {
+              "text": "at",
+              "start": 2.475,
+              "end": 2.6625
+            },
+            {
+              "text": "the",
+              "start": 2.678125,
+              "end": 2.803125
+            },
+            {
+              "text": "cathode",
+              "start": 2.81875,
+              "end": 3.521875
+            },
+            {
+              "text": "Gaining",
+              "start": 4.628125,
+              "end": 5.26875
+            },
+            {
+              "text": "electrons",
+              "start": 5.284375,
+              "end": 6.096875
+            },
+            {
+              "text": "is",
+              "start": 6.1125,
+              "end": 6.315625
+            },
+            {
+              "text": "reduction",
+              "start": 6.33125,
+              "end": 7.190625
+            }
+          ],
+          "speech_duration": 8.28,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Does this reduce the silver ion concentration in the solution? Yes, as more ions deposit onto the keychain.",
+          "visual": "Real HD educational visual: Silver ions moving from solution to keychain. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Silver ion migration\nduration: 8.0 sec\nprompt: Cinematic macro video of silver ions naturally moving from solution to keychain, realistic chemistry detail, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "silver ions",
+            "keychain"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_06_segment_02.wav",
+          "start": 194.476,
+          "end": 206.006,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Silver ions moving from",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Does",
+              "start": 0.1,
+              "end": 0.56875
+            },
+            {
+              "text": "this",
+              "start": 0.584375,
+              "end": 0.9125
+            },
+            {
+              "text": "reduce",
+              "start": 0.928125,
+              "end": 1.44375
+            },
+            {
+              "text": "the",
+              "start": 1.459375,
+              "end": 1.584375
+            },
+            {
+              "text": "silver",
+              "start": 1.6,
+              "end": 2.225
+            },
+            {
+              "text": "ion",
+              "start": 2.240625,
+              "end": 2.6
+            },
+            {
+              "text": "concentration",
+              "start": 2.615625,
+              "end": 3.646875
+            },
+            {
+              "text": "in",
+              "start": 3.6625,
+              "end": 3.81875
+            },
+            {
+              "text": "the",
+              "start": 3.834375,
+              "end": 3.928125
+            },
+            {
+              "text": "solution",
+              "start": 3.94375,
+              "end": 4.725
+            },
+            {
+              "text": "Yes",
+              "start": 5.846875,
+              "end": 6.6125
+            },
+            {
+              "text": "as",
+              "start": 6.83125,
+              "end": 7.14375
+            },
+            {
+              "text": "more",
+              "start": 7.159375,
+              "end": 7.6125
+            },
+            {
+              "text": "ions",
+              "start": 7.628125,
+              "end": 8.159375
+            },
+            {
+              "text": "deposit",
+              "start": 8.175,
+              "end": 8.909375
+            },
+            {
+              "text": "onto",
+              "start": 8.925,
+              "end": 9.284375
+            },
+            {
+              "text": "the",
+              "start": 9.3,
+              "end": 9.440625
+            },
+            {
+              "text": "keychain",
+              "start": 9.45625,
+              "end": 10.190625
+            }
+          ],
+          "speech_duration": 11.28,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "The solution will draw silver atoms from the pure silver anode into itself.",
+          "visual": "Real HD educational visual: Silver atoms moving from anode into solution. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Silver atom migration\nduration: 6.0 sec\nprompt: Cinematic macro video of silver atoms naturally moving from anode into solution, realistic chemistry detail, shallow depth of field, educational clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "silver atoms",
+            "anode"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_06_segment_03.wav",
+          "start": 206.006,
+          "end": 213.72,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Silver atoms moving from",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.365625
+            },
+            {
+              "text": "solution",
+              "start": 0.38125,
+              "end": 1.1625
+            },
+            {
+              "text": "will",
+              "start": 1.178125,
+              "end": 1.38125
+            },
+            {
+              "text": "draw",
+              "start": 1.396875,
+              "end": 1.740625
+            },
+            {
+              "text": "silver",
+              "start": 1.75625,
+              "end": 2.35
+            },
+            {
+              "text": "atoms",
+              "start": 2.365625,
+              "end": 3.0375
+            },
+            {
+              "text": "from",
+              "start": 3.053125,
+              "end": 3.35
+            },
+            {
+              "text": "the",
+              "start": 3.365625,
+              "end": 3.475
+            },
+            {
+              "text": "pure",
+              "start": 3.490625,
+              "end": 3.94375
+            },
+            {
+              "text": "silver",
+              "start": 3.959375,
+              "end": 4.5375
+            },
+            {
+              "text": "anode",
+              "start": 4.553125,
+              "end": 5.13125
+            },
+            {
+              "text": "into",
+              "start": 5.146875,
+              "end": 5.56875
+            },
+            {
+              "text": "itself",
+              "start": 5.584375,
+              "end": 6.365625
+            }
+          ],
+          "speech_duration": 7.464,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "During this process, each silver atom loses an electron to form a Ag⁺ ion.",
+          "visual": "Real HD educational visual: Silver atom losing electron to form Ag⁺ ion. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A silver atom, surrounded by a simple, darkened laboratory background, is shown in close-up, with a subtle beam of light illuminating its surface, as it loses an electron to form a Ag⁺ ion, in a documentary-style, high-definition image with sharp detail and natural lighting.",
+          "keywords": [
+            "silver atom",
+            "ag⁺ ion",
+            "electron"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_06_segment_04.wav",
+          "start": 213.72,
+          "end": 221.962,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Silver atom losing electron",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "During",
+              "start": 0.1,
+              "end": 0.69375
+            },
+            {
+              "text": "this",
+              "start": 0.709375,
+              "end": 0.975
+            },
+            {
+              "text": "process",
+              "start": 0.990625,
+              "end": 1.7875
+            },
+            {
+              "text": "each",
+              "start": 2.084375,
+              "end": 2.4125
+            },
+            {
+              "text": "silver",
+              "start": 2.428125,
+              "end": 3.00625
+            },
+            {
+              "text": "atom",
+              "start": 3.021875,
+              "end": 3.428125
+            },
+            {
+              "text": "loses",
+              "start": 3.44375,
+              "end": 3.990625
+            },
+            {
+              "text": "an",
+              "start": 4.00625,
+              "end": 4.178125
+            },
+            {
+              "text": "electron",
+              "start": 4.19375,
+              "end": 4.9125
+            },
+            {
+              "text": "to",
+              "start": 4.928125,
+              "end": 5.06875
+            },
+            {
+              "text": "form",
+              "start": 5.084375,
+              "end": 5.6
+            },
+            {
+              "text": "a",
+              "start": 5.615625,
+              "end": 5.834375
+            },
+            {
+              "text": "Ag⁺",
+              "start": 5.85,
+              "end": 6.271875
+            },
+            {
+              "text": "ion",
+              "start": 6.2875,
+              "end": 6.88125
+            }
+          ],
+          "speech_duration": 7.992,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 5,
+          "narration": "Which reaction occurs at the anode? Losing electrons is oxidation.",
+          "visual": "Real HD educational visual: Electrochemical cell diagram with labeled anode. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A realistic, high-definition educational visual of an electrochemical cell, with a labeled anode, set in a documentary style, under natural lighting, showcasing sharp detail and an accurate representation of the subject.",
+          "keywords": [
+            "anode",
+            "oxidation"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_06_segment_05.wav",
+          "start": 221.962,
+          "end": 229.796,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Electrochemical cell diagram with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Which",
+              "start": 0.1,
+              "end": 0.521875
+            },
+            {
+              "text": "reaction",
+              "start": 0.5375,
+              "end": 1.146875
+            },
+            {
+              "text": "occurs",
+              "start": 1.1625,
+              "end": 1.646875
+            },
+            {
+              "text": "at",
+              "start": 1.6625,
+              "end": 1.834375
+            },
+            {
+              "text": "the",
+              "start": 1.85,
+              "end": 2.00625
+            },
+            {
+              "text": "anode",
+              "start": 2.021875,
+              "end": 2.646875
+            },
+            {
+              "text": "Losing",
+              "start": 3.753125,
+              "end": 4.425
+            },
+            {
+              "text": "electrons",
+              "start": 4.440625,
+              "end": 5.253125
+            },
+            {
+              "text": "is",
+              "start": 5.26875,
+              "end": 5.4875
+            },
+            {
+              "text": "oxidation",
+              "start": 5.503125,
+              "end": 6.503125
+            }
+          ],
+          "speech_duration": 7.584,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 6,
+          "narration": "These extra electrons travel through the rod into the wire and back to the battery, completing the circuit.",
+          "visual": "Real HD educational visual: Electron flow through circuit components. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Electron flow in circuit\nduration: 8.0 sec\nprompt: Cinematic macro video of electrons naturally flowing through circuit components, realistic chemistry detail, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "electrons",
+            "rod",
+            "wire",
+            "battery"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_06_segment_06.wav",
+          "start": 229.796,
+          "end": 239.59199999999998,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Electron flow through circuit",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "These",
+              "start": 0.1,
+              "end": 0.6
+            },
+            {
+              "text": "extra",
+              "start": 0.615625,
+              "end": 1.115625
+            },
+            {
+              "text": "electrons",
+              "start": 1.13125,
+              "end": 1.959375
+            },
+            {
+              "text": "travel",
+              "start": 1.975,
+              "end": 2.50625
+            },
+            {
+              "text": "through",
+              "start": 2.521875,
+              "end": 2.803125
+            },
+            {
+              "text": "the",
+              "start": 2.81875,
+              "end": 2.94375
+            },
+            {
+              "text": "rod",
+              "start": 2.959375,
+              "end": 3.396875
+            },
+            {
+              "text": "into",
+              "start": 3.4125,
+              "end": 3.709375
+            },
+            {
+              "text": "the",
+              "start": 3.725,
+              "end": 3.88125
+            },
+            {
+              "text": "wire",
+              "start": 3.896875,
+              "end": 4.521875
+            },
+            {
+              "text": "and",
+              "start": 4.5375,
+              "end": 4.771875
+            },
+            {
+              "text": "back",
+              "start": 4.7875,
+              "end": 5.13125
+            },
+            {
+              "text": "to",
+              "start": 5.146875,
+              "end": 5.2875
+            },
+            {
+              "text": "the",
+              "start": 5.303125,
+              "end": 5.428125
+            },
+            {
+              "text": "battery",
+              "start": 5.44375,
+              "end": 6.1625
+            },
+            {
+              "text": "completing",
+              "start": 6.334375,
+              "end": 7.115625
+            },
+            {
+              "text": "the",
+              "start": 7.13125,
+              "end": 7.240625
+            },
+            {
+              "text": "circuit",
+              "start": 7.25625,
+              "end": 7.990625
+            }
+          ],
+          "speech_duration": 9.096,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 7,
+      "title": "Overall Electroplating Reaction",
+      "narration": "The process summarizes as silver atoms from the pure silver rod deposit onto the keychain. Let's answer the question. Since reduction occurs at the cathode and oxidation at the anode, the overall reaction is a redox reaction. Let's explore more about process variables.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "The process summarizes as silver atoms from the pure silver rod deposit onto the keychain.",
+          "visual": "Real HD educational visual: Close-up of a keychain with silver atoms depositing onto its surface. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A close-up of a keychain in a well-lit workshop, with silver atoms visibly depositing onto its surface, surrounded by tools and equipment, captured in sharp detail with a documentary-style camera angle.",
+          "keywords": [
+            "silver rod",
+            "keychain",
+            "electron flow"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_07_segment_01.wav",
+          "start": 239.59199999999998,
+          "end": 248.146,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Close-up keychain with silver",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.334375
+            },
+            {
+              "text": "process",
+              "start": 0.35,
+              "end": 0.975
+            },
+            {
+              "text": "summarizes",
+              "start": 0.990625,
+              "end": 1.9125
+            },
+            {
+              "text": "as",
+              "start": 1.928125,
+              "end": 2.19375
+            },
+            {
+              "text": "silver",
+              "start": 2.209375,
+              "end": 2.771875
+            },
+            {
+              "text": "atoms",
+              "start": 2.7875,
+              "end": 3.44375
+            },
+            {
+              "text": "from",
+              "start": 3.459375,
+              "end": 3.740625
+            },
+            {
+              "text": "the",
+              "start": 3.75625,
+              "end": 3.865625
+            },
+            {
+              "text": "pure",
+              "start": 3.88125,
+              "end": 4.303125
+            },
+            {
+              "text": "silver",
+              "start": 4.31875,
+              "end": 4.81875
+            },
+            {
+              "text": "rod",
+              "start": 4.834375,
+              "end": 5.1625
+            },
+            {
+              "text": "deposit",
+              "start": 5.178125,
+              "end": 5.88125
+            },
+            {
+              "text": "onto",
+              "start": 5.896875,
+              "end": 6.2875
+            },
+            {
+              "text": "the",
+              "start": 6.303125,
+              "end": 6.428125
+            },
+            {
+              "text": "keychain",
+              "start": 6.44375,
+              "end": 7.178125
+            }
+          ],
+          "speech_duration": 8.304,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Let's answer the question.",
+          "visual": "Real HD educational visual: Educational diagram of an electroplating cell with labeled components. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style electroplating cell with labeled components, set in a well-lit laboratory with sharp detail, surrounded by equipment and workbenches, viewed from a neutral angle with natural lighting.",
+          "keywords": [
+            "answer",
+            "question",
+            "real",
+            "educational",
+            "visual",
+            "diagram",
+            "electroplating",
+            "cell"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_07_segment_02.wav",
+          "start": 248.146,
+          "end": 251.516,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual electroplating cell with labeled",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Let's",
+              "start": 0.1,
+              "end": 0.63125
+            },
+            {
+              "text": "answer",
+              "start": 0.646875,
+              "end": 1.084375
+            },
+            {
+              "text": "the",
+              "start": 1.1,
+              "end": 1.209375
+            },
+            {
+              "text": "question",
+              "start": 1.225,
+              "end": 2.00625
+            }
+          ],
+          "speech_duration": 3.12,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "Since reduction occurs at the cathode and oxidation at the anode, the overall reaction is a redox reaction.",
+          "visual": "Real HD educational visual: Natural motion showing electron flow from anode to cathode and ion movement in the electrolyte. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Redox reaction in electroplating\nduration: 8.0 sec\nprompt: Cinematic macro video of an electroplating setup with visible electron flow and ion movement in the electrolyte, lab environment, shallow depth of field, educational clarity, designed for 8.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "anode",
+            "cathode",
+            "electron flow",
+            "ion movement"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_07_segment_03.wav",
+          "start": 251.516,
+          "end": 261.798,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural motion showing electron",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Since",
+              "start": 0.1,
+              "end": 0.678125
+            },
+            {
+              "text": "reduction",
+              "start": 0.69375,
+              "end": 1.365625
+            },
+            {
+              "text": "occurs",
+              "start": 1.38125,
+              "end": 1.959375
+            },
+            {
+              "text": "at",
+              "start": 1.975,
+              "end": 2.146875
+            },
+            {
+              "text": "the",
+              "start": 2.1625,
+              "end": 2.271875
+            },
+            {
+              "text": "cathode",
+              "start": 2.2875,
+              "end": 3.053125
+            },
+            {
+              "text": "and",
+              "start": 3.06875,
+              "end": 3.271875
+            },
+            {
+              "text": "oxidation",
+              "start": 3.2875,
+              "end": 4.178125
+            },
+            {
+              "text": "at",
+              "start": 4.19375,
+              "end": 4.396875
+            },
+            {
+              "text": "the",
+              "start": 4.4125,
+              "end": 4.56875
+            },
+            {
+              "text": "anode",
+              "start": 4.584375,
+              "end": 5.19375
+            },
+            {
+              "text": "the",
+              "start": 5.428125,
+              "end": 5.646875
+            },
+            {
+              "text": "overall",
+              "start": 5.6625,
+              "end": 6.396875
+            },
+            {
+              "text": "reaction",
+              "start": 6.4125,
+              "end": 7.115625
+            },
+            {
+              "text": "is",
+              "start": 7.13125,
+              "end": 7.334375
+            },
+            {
+              "text": "a",
+              "start": 7.35,
+              "end": 7.4125
+            },
+            {
+              "text": "redox",
+              "start": 7.428125,
+              "end": 8.084375
+            },
+            {
+              "text": "reaction",
+              "start": 8.1,
+              "end": 8.9125
+            }
+          ],
+          "speech_duration": 10.032,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "Let's explore more about process variables.",
+          "visual": "Real HD educational visual: Educational diagram showing variables affecting electroplating. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style educational diagram of an electroplating process, set in a well-lit industrial workshop with sharp detail, showing variables such as temperature, current, and electrolyte concentration affecting the reaction.",
+          "keywords": [
+            "current",
+            "time",
+            "molar mass"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_07_segment_04.wav",
+          "start": 261.798,
+          "end": 267.394,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual showing variables affecting electroplating",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Let's",
+              "start": 0.1,
+              "end": 0.615625
+            },
+            {
+              "text": "explore",
+              "start": 0.63125,
+              "end": 1.31875
+            },
+            {
+              "text": "more",
+              "start": 1.334375,
+              "end": 1.678125
+            },
+            {
+              "text": "about",
+              "start": 1.69375,
+              "end": 2.1625
+            },
+            {
+              "text": "process",
+              "start": 2.178125,
+              "end": 2.7875
+            },
+            {
+              "text": "variables",
+              "start": 2.803125,
+              "end": 3.803125
+            }
+          ],
+          "speech_duration": 4.896,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 8,
+      "title": "Factors Affecting Electroplating",
+      "narration": "Observe a graph showing silver mass deposited versus time. As current is applied, the silver mass deposited increases over time. Now, double the battery's current and observe the effect on deposition time. The graph shows it takes half the time. Next, do all metals take the same time to deposit a specific mass, and does it depend on the metal? If we were depositing gold instead of silver, adjust the time slider and observe. More gold deposits in the same time. In summary, electroplating depends on current intensity, duration, and the metal chosen.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Observe a graph showing silver mass deposited versus time. As current is applied, the silver mass deposited increases over time.",
+          "visual": "Real HD educational visual: Graph with X-axis as time and Y-axis as silver mass, showing increasing trend. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style graph in a well-lit laboratory setting, with a sharp focus on the X-axis representing time and the Y-axis representing silver mass, showing a clear increasing trend as the current is applied.",
+          "keywords": [
+            "time",
+            "silver mass",
+            "trend line"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_08_segment_01.wav",
+          "start": 267.394,
+          "end": 280.196,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Graph with X-axis time",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Observe",
+              "start": 0.1,
+              "end": 0.88125
+            },
+            {
+              "text": "a",
+              "start": 0.896875,
+              "end": 0.990625
+            },
+            {
+              "text": "graph",
+              "start": 1.00625,
+              "end": 1.475
+            },
+            {
+              "text": "showing",
+              "start": 1.490625,
+              "end": 1.94375
+            },
+            {
+              "text": "silver",
+              "start": 1.959375,
+              "end": 2.428125
+            },
+            {
+              "text": "mass",
+              "start": 2.44375,
+              "end": 2.85
+            },
+            {
+              "text": "deposited",
+              "start": 2.865625,
+              "end": 3.646875
+            },
+            {
+              "text": "versus",
+              "start": 3.6625,
+              "end": 4.240625
+            },
+            {
+              "text": "time",
+              "start": 4.25625,
+              "end": 4.740625
+            },
+            {
+              "text": "As",
+              "start": 5.83125,
+              "end": 6.2375
+            },
+            {
+              "text": "current",
+              "start": 6.253125,
+              "end": 6.721875
+            },
+            {
+              "text": "is",
+              "start": 6.7375,
+              "end": 6.89375
+            },
+            {
+              "text": "applied",
+              "start": 6.909375,
+              "end": 7.596875
+            },
+            {
+              "text": "the",
+              "start": 7.784375,
+              "end": 7.95625
+            },
+            {
+              "text": "silver",
+              "start": 7.971875,
+              "end": 8.425
+            },
+            {
+              "text": "mass",
+              "start": 8.440625,
+              "end": 8.8625
+            },
+            {
+              "text": "deposited",
+              "start": 8.878125,
+              "end": 9.659375
+            },
+            {
+              "text": "increases",
+              "start": 9.675,
+              "end": 10.55
+            },
+            {
+              "text": "over",
+              "start": 10.565625,
+              "end": 10.940625
+            },
+            {
+              "text": "time",
+              "start": 10.95625,
+              "end": 11.471875
+            }
+          ],
+          "speech_duration": 12.552,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Now, double the battery's current and observe the effect on deposition time.",
+          "visual": "Real HD educational visual: Battery connected to electroplating cell, current flow visualized as glowing lines. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Current Flow in Electroplating\nduration: 6.0 sec\nprompt: Cinematic macro video of battery connected to electroplating cell with glowing current flow, professional lab setup, natural daylight, realistic detail, clean background, high clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "battery",
+            "current flow",
+            "electroplating cell"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_08_segment_02.wav",
+          "start": 280.196,
+          "end": 287.16600000000005,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Battery connected electroplating cell",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Now",
+              "start": 0.1,
+              "end": 0.771875
+            },
+            {
+              "text": "double",
+              "start": 0.9125,
+              "end": 1.38125
+            },
+            {
+              "text": "the",
+              "start": 1.396875,
+              "end": 1.50625
+            },
+            {
+              "text": "battery's",
+              "start": 1.521875,
+              "end": 2.209375
+            },
+            {
+              "text": "current",
+              "start": 2.225,
+              "end": 2.725
+            },
+            {
+              "text": "and",
+              "start": 2.740625,
+              "end": 2.928125
+            },
+            {
+              "text": "observe",
+              "start": 2.94375,
+              "end": 3.490625
+            },
+            {
+              "text": "the",
+              "start": 3.50625,
+              "end": 3.6625
+            },
+            {
+              "text": "effect",
+              "start": 3.678125,
+              "end": 4.146875
+            },
+            {
+              "text": "on",
+              "start": 4.1625,
+              "end": 4.334375
+            },
+            {
+              "text": "deposition",
+              "start": 4.35,
+              "end": 5.1
+            },
+            {
+              "text": "time",
+              "start": 5.115625,
+              "end": 5.615625
+            }
+          ],
+          "speech_duration": 6.72,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "The graph shows it takes half the time.",
+          "visual": "Real HD educational visual: Graph showing silver mass deposited over time with two data points: original and halved time. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style graph in a well-lit laboratory setting, showing a silver mass deposited over time with two data points: one with original time and another with time halved, featuring sharp detail and accurate representation.",
+          "keywords": [
+            "original time",
+            "halved time",
+            "mass deposited"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_08_segment_03.wav",
+          "start": 287.16600000000005,
+          "end": 291.47200000000004,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Graph showing silver mass",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.35
+            },
+            {
+              "text": "graph",
+              "start": 0.365625,
+              "end": 0.85
+            },
+            {
+              "text": "shows",
+              "start": 0.865625,
+              "end": 1.334375
+            },
+            {
+              "text": "it",
+              "start": 1.35,
+              "end": 1.521875
+            },
+            {
+              "text": "takes",
+              "start": 1.5375,
+              "end": 1.94375
+            },
+            {
+              "text": "half",
+              "start": 1.959375,
+              "end": 2.240625
+            },
+            {
+              "text": "the",
+              "start": 2.25625,
+              "end": 2.396875
+            },
+            {
+              "text": "time",
+              "start": 2.4125,
+              "end": 2.94375
+            }
+          ],
+          "speech_duration": 4.056,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "Next, do all metals take the same time to deposit a specific mass, and does it depend on the metal?",
+          "visual": "Real HD educational visual: Diagram showing different metals (silver, gold, copper) with their respective deposition times. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style diagram of silver, gold, and copper metals in a laboratory setting, with each metal having a timer next to it, showcasing their respective deposition times, under natural lighting with sharp detail.",
+          "keywords": [
+            "silver",
+            "gold",
+            "copper",
+            "deposition time"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_08_segment_04.wav",
+          "start": 291.47200000000004,
+          "end": 301.08200000000005,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual different metals silver gold",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Next",
+              "start": 0.1,
+              "end": 0.81875
+            },
+            {
+              "text": "do",
+              "start": 1.0375,
+              "end": 1.38125
+            },
+            {
+              "text": "all",
+              "start": 1.396875,
+              "end": 1.725
+            },
+            {
+              "text": "metals",
+              "start": 1.740625,
+              "end": 2.240625
+            },
+            {
+              "text": "take",
+              "start": 2.25625,
+              "end": 2.5375
+            },
+            {
+              "text": "the",
+              "start": 2.553125,
+              "end": 2.678125
+            },
+            {
+              "text": "same",
+              "start": 2.69375,
+              "end": 3.1
+            },
+            {
+              "text": "time",
+              "start": 3.115625,
+              "end": 3.50625
+            },
+            {
+              "text": "to",
+              "start": 3.521875,
+              "end": 3.646875
+            },
+            {
+              "text": "deposit",
+              "start": 3.6625,
+              "end": 4.334375
+            },
+            {
+              "text": "a",
+              "start": 4.35,
+              "end": 4.428125
+            },
+            {
+              "text": "specific",
+              "start": 4.44375,
+              "end": 5.178125
+            },
+            {
+              "text": "mass",
+              "start": 5.19375,
+              "end": 5.740625
+            },
+            {
+              "text": "and",
+              "start": 5.928125,
+              "end": 6.271875
+            },
+            {
+              "text": "does",
+              "start": 6.2875,
+              "end": 6.646875
+            },
+            {
+              "text": "it",
+              "start": 6.6625,
+              "end": 6.803125
+            },
+            {
+              "text": "depend",
+              "start": 6.81875,
+              "end": 7.396875
+            },
+            {
+              "text": "on",
+              "start": 7.4125,
+              "end": 7.584375
+            },
+            {
+              "text": "the",
+              "start": 7.6,
+              "end": 7.69375
+            },
+            {
+              "text": "metal",
+              "start": 7.709375,
+              "end": 8.25625
+            }
+          ],
+          "speech_duration": 9.36,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 5,
+          "narration": "If we were depositing gold instead of silver, adjust the time slider and observe. More gold deposits in the same time.",
+          "visual": "Real HD educational visual: Graph with time slider adjustment showing gold mass deposited over time. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Gold Deposition Comparison\nduration: 6.0 sec\nprompt: Cinematic macro video of a graph showing gold mass deposited over time with time slider adjustment, professional lab setup, natural daylight, realistic detail, clean background, high clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon, fantasy anatomy, wrong plant parts, text artifacts, watermark, blurry, extra limbs, distorted insect, inaccurate flower structure",
+          "keywords": [
+            "time slider",
+            "gold mass",
+            "silver comparison"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_08_segment_05.wav",
+          "start": 301.08200000000005,
+          "end": 312.82800000000003,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Graph with time slider",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "If",
+              "start": 0.1,
+              "end": 0.428125
+            },
+            {
+              "text": "we",
+              "start": 0.44375,
+              "end": 0.6625
+            },
+            {
+              "text": "were",
+              "start": 0.678125,
+              "end": 0.834375
+            },
+            {
+              "text": "depositing",
+              "start": 0.85,
+              "end": 1.646875
+            },
+            {
+              "text": "gold",
+              "start": 1.6625,
+              "end": 2.0375
+            },
+            {
+              "text": "instead",
+              "start": 2.053125,
+              "end": 2.553125
+            },
+            {
+              "text": "of",
+              "start": 2.56875,
+              "end": 2.75625
+            },
+            {
+              "text": "silver",
+              "start": 2.771875,
+              "end": 3.38125
+            },
+            {
+              "text": "adjust",
+              "start": 3.56875,
+              "end": 4.115625
+            },
+            {
+              "text": "the",
+              "start": 4.13125,
+              "end": 4.25625
+            },
+            {
+              "text": "time",
+              "start": 4.271875,
+              "end": 4.646875
+            },
+            {
+              "text": "slider",
+              "start": 4.6625,
+              "end": 5.38125
+            },
+            {
+              "text": "and",
+              "start": 5.396875,
+              "end": 5.6
+            },
+            {
+              "text": "observe",
+              "start": 5.615625,
+              "end": 6.303125
+            },
+            {
+              "text": "More",
+              "start": 7.378125,
+              "end": 7.846875
+            },
+            {
+              "text": "gold",
+              "start": 7.8625,
+              "end": 8.26875
+            },
+            {
+              "text": "deposits",
+              "start": 8.284375,
+              "end": 9.096875
+            },
+            {
+              "text": "in",
+              "start": 9.1125,
+              "end": 9.315625
+            },
+            {
+              "text": "the",
+              "start": 9.33125,
+              "end": 9.440625
+            },
+            {
+              "text": "same",
+              "start": 9.45625,
+              "end": 9.878125
+            },
+            {
+              "text": "time",
+              "start": 9.89375,
+              "end": 10.409375
+            }
+          ],
+          "speech_duration": 11.496,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 6,
+          "narration": "In summary, electroplating depends on current intensity, duration, and the metal chosen.",
+          "visual": "Real HD educational visual: Summary diagram showing current intensity, duration, and metal type as factors in electroplating. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style diagram of an electroplating process, with a metal object submerged in a solution under a bright light, surrounded by a few tools and a background of a laboratory, with a camera positioned at a 45-degree angle to show the metal, current intensity gauge, and timer in sharp detail.",
+          "keywords": [
+            "current intensity",
+            "duration",
+            "metal chosen"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_08_segment_06.wav",
+          "start": 312.82800000000003,
+          "end": 322.312,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Summary current intensity duration",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.365625
+            },
+            {
+              "text": "summary",
+              "start": 0.38125,
+              "end": 1.13125
+            },
+            {
+              "text": "electroplating",
+              "start": 1.303125,
+              "end": 2.459375
+            },
+            {
+              "text": "depends",
+              "start": 2.475,
+              "end": 3.053125
+            },
+            {
+              "text": "on",
+              "start": 3.06875,
+              "end": 3.25625
+            },
+            {
+              "text": "current",
+              "start": 3.271875,
+              "end": 3.81875
+            },
+            {
+              "text": "intensity",
+              "start": 3.834375,
+              "end": 4.834375
+            },
+            {
+              "text": "duration",
+              "start": 5.06875,
+              "end": 6.00625
+            },
+            {
+              "text": "and",
+              "start": 6.1625,
+              "end": 6.428125
+            },
+            {
+              "text": "the",
+              "start": 6.44375,
+              "end": 6.5375
+            },
+            {
+              "text": "metal",
+              "start": 6.553125,
+              "end": 6.990625
+            },
+            {
+              "text": "chosen",
+              "start": 7.00625,
+              "end": 7.69375
+            }
+          ],
+          "speech_duration": 8.784,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 9,
+      "title": "Summary of Electroplating Concepts",
+      "narration": "As we explore electroplating, we've learned about anode and cathode roles, reduction/oxidation dynamics, and factors influencing metal deposition. The story continues—stay tuned for the next chapter exploring electroplating's practical applications and artistic potential.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "As we explore electroplating, we've learned about anode and cathode roles, reduction/oxidation dynamics, and factors influencing metal deposition.",
+          "visual": "Real HD educational visual: Electrolytic cell diagram with labeled anode, cathode, and electron flow. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "A documentary-style, high-definition image of an electrolytic cell with a labeled anode and cathode, surrounded by a clutter-free workspace with natural light illuminating the metal components, showcasing the electron flow in sharp detail.",
+          "keywords": [
+            "anode",
+            "cathode",
+            "electron flow",
+            "reduction",
+            "oxidation"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_09_segment_01.wav",
+          "start": 322.312,
+          "end": 336.05,
+          "shot": {
+            "template": "photo",
+            "heading": "Real educational visual Electrolytic cell diagram with",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "As",
+              "start": 0.1,
+              "end": 0.44375
+            },
+            {
+              "text": "we",
+              "start": 0.459375,
+              "end": 0.615625
+            },
+            {
+              "text": "explore",
+              "start": 0.63125,
+              "end": 1.303125
+            },
+            {
+              "text": "electroplating",
+              "start": 1.31875,
+              "end": 2.521875
+            },
+            {
+              "text": "we've",
+              "start": 2.69375,
+              "end": 3.00625
+            },
+            {
+              "text": "learned",
+              "start": 3.021875,
+              "end": 3.428125
+            },
+            {
+              "text": "about",
+              "start": 3.44375,
+              "end": 3.990625
+            },
+            {
+              "text": "anode",
+              "start": 4.00625,
+              "end": 4.615625
+            },
+            {
+              "text": "and",
+              "start": 4.63125,
+              "end": 4.85
+            },
+            {
+              "text": "cathode",
+              "start": 4.865625,
+              "end": 5.459375
+            },
+            {
+              "text": "roles",
+              "start": 5.475,
+              "end": 6.021875
+            },
+            {
+              "text": "reduction",
+              "start": 6.225,
+              "end": 6.990625
+            },
+            {
+              "text": "oxidation",
+              "start": 7.00625,
+              "end": 7.88125
+            },
+            {
+              "text": "dynamics",
+              "start": 7.896875,
+              "end": 8.803125
+            },
+            {
+              "text": "and",
+              "start": 8.959375,
+              "end": 9.25625
+            },
+            {
+              "text": "factors",
+              "start": 9.271875,
+              "end": 10.00625
+            },
+            {
+              "text": "influencing",
+              "start": 10.021875,
+              "end": 11.00625
+            },
+            {
+              "text": "metal",
+              "start": 11.021875,
+              "end": 11.44375
+            },
+            {
+              "text": "deposition",
+              "start": 11.459375,
+              "end": 12.38125
+            }
+          ],
+          "speech_duration": 13.488,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "The story continues—stay tuned for the next chapter exploring electroplating's practical applications and artistic potential.",
+          "visual": "Real HD educational visual: Natural video: metal being electroplated onto an object. Avoid blank cards, slide boxes, synthetic sequence panels, and diagram-only layouts.",
+          "image_prompt": "template: video\nheading: Electroplating process\nduration: 6.0 sec\nprompt: Cinematic macro video of electroplating process showing metal ions in solution, visible deposition on object, natural motion, realistic industrial setting, high clarity, designed for 6.0 seconds with seamless natural continuation, no abrupt ending\nnegative: cartoon style, fantasy elements, incorrect chemical symbols, text artifacts, watermark, blurry, distorted components",
+          "keywords": [
+            "electroplating process",
+            "metal deposition",
+            "electrolyte solution"
+          ],
+          "audio_path": "outputs\\ltx_all_about_electroplating\\audio\\scene_09_segment_02.wav",
+          "start": 336.05,
+          "end": 347.354,
+          "shot": {
+            "template": "video",
+            "heading": "Real educational visual Natural video metal being",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.35
+            },
+            {
+              "text": "story",
+              "start": 0.365625,
+              "end": 0.9125
+            },
+            {
+              "text": "continues",
+              "start": 0.928125,
+              "end": 1.7875
+            },
+            {
+              "text": "stay",
+              "start": 2.053125,
+              "end": 2.490625
+            },
+            {
+              "text": "tuned",
+              "start": 2.50625,
+              "end": 2.928125
+            },
+            {
+              "text": "for",
+              "start": 2.94375,
+              "end": 3.13125
+            },
+            {
+              "text": "the",
+              "start": 3.146875,
+              "end": 3.25625
+            },
+            {
+              "text": "next",
+              "start": 3.271875,
+              "end": 3.725
+            },
+            {
+              "text": "chapter",
+              "start": 3.740625,
+              "end": 4.35
+            },
+            {
+              "text": "exploring",
+              "start": 4.365625,
+              "end": 5.178125
+            },
+            {
+              "text": "electroplating's",
+              "start": 5.19375,
+              "end": 6.4125
+            },
+            {
+              "text": "practical",
+              "start": 6.428125,
+              "end": 7.19375
+            },
+            {
+              "text": "applications",
+              "start": 7.209375,
+              "end": 8.2875
+            },
+            {
+              "text": "and",
+              "start": 8.303125,
+              "end": 8.56875
+            },
+            {
+              "text": "artistic",
+              "start": 8.584375,
+              "end": 9.271875
+            },
+            {
+              "text": "potential",
+              "start": 9.2875,
+              "end": 10.209375
+            }
+          ],
+          "speech_duration": 11.304,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    }
+  ]
+}

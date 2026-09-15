@@ -1,0 +1,137 @@
+Scene 1.1: Introduction to Electroplating
+Educational 3D animation of copper keychain with silver ions flowing toward it, labeled electroplating process, clear visual hierarchy, scientific accuracy, clean design
+
+Scene 1.2: Introduction to Electroplating
+Scientific diagram of electrolytic cell with copper anode, silver cathode, and electrolyte solution, color-coded labels, educational clarity, clean lines
+
+Scene 1.3: Introduction to Electroplating
+A close-up photograph of a silver-plated keychain on a colorful birthday gift box, surrounded by balloons and streamers, with a clean background and soft natural light illuminating the keychain from the side.
+
+Scene 1.4: Introduction to Electroplating
+Educational animation of copper keychain submerged in silver nitrate solution with ion flow, labeled components, scientific accuracy, clean design
+
+Scene 1.5: Introduction to Electroplating
+A close-up shot of Anita's hands electroplating a keychain in a well-lit, professional laboratory setting, with natural light pouring in through a nearby window, capturing the subtle motion of her fingers as she works
+
+Scene 1.6: Introduction to Electroplating
+Simplified educational flowchart of electroplating process with labeled steps, clear visual hierarchy, scientific accuracy, clean design
+
+Scene 2.1: Setting Up the Electrolytic Cell
+A close-up photograph of an electrolytic cell in a well-lit laboratory, with a silver nitrate solution inside, surrounded by a neutral-colored background, and the electrodes and container clearly labeled, shot from directly above with a shallow depth of field to emphasize the cell's components.
+
+Scene 2.2: Setting Up the Electrolytic Cell
+Animated educational diagram showing step-by-step assembly of an electrolytic cell for electroplating, numbered steps, clear labels, educational style
+
+Scene 2.3: Setting Up the Electrolytic Cell
+Detailed schematic diagram of an electrolytic cell circuit with labeled red and blue wires, battery terminals, and switch, educational style, clear labeling
+
+Scene 2.4: Setting Up the Electrolytic Cell
+A close-up shot of an electroplating setup in a neutral laboratory background, with a keychain attached to the negative terminal and a pure silver rod connected to the positive terminal, clear labels on the terminals for educational clarity.
+
+Scene 2.5: Setting Up the Electrolytic Cell
+template: video
+heading: Electroplating Initiation
+prompt: Cinematic macro video of an electrolytic cell starting electroplating process, keychain and silver rod visible, gentle handheld documentary motion, realistic colors, shallow depth of field, educational clarity
+negative: cartoon, fantasy anatomy, wrong lab setup, text artifacts, watermark, blurry, extra limbs, distorted equipment, inaccurate process
+
+Scene 3.1: Understanding Electroplating Terms
+Educational diagram of electroplating setup with labeled anode, cathode, and electrolyte, clean white background, professional illustration style
+
+Scene 3.2: Understanding Electroplating Terms
+A close-up photo of a workbench with labeled boxes and a few electroplating tools, taken from directly above with soft, natural light illuminating the scene, conveying a sense of hands-on learning and interactive engagement.
+
+Scene 3.3: Understanding Electroplating Terms
+Detailed electroplating cell diagram with labeled anode, cathode, and electrolyte, clean white background, professional illustration style
+
+Scene 3.4: Understanding Electroplating Terms
+Educational diagram of electrolytic cell with labeled electrolyte solution, clean white background, professional illustration style
+
+Scene 4.1: Electrochemical Reactions
+Educational 3D animation of electrolyte solution with silver and chloride ions, clear labeling, scientific accuracy, neutral background
+
+Scene 4.2: Electrochemical Reactions
+Scientific diagram of electrolyte solution with labeled Ag+ and Cl- ions, clear and concise, educational style
+
+Scene 4.3: Electrochemical Reactions
+Educational animation of an electrochemical cell with electron flow, clear labeling, scientific accuracy, neutral background
+
+Scene 4.4: Electrochemical Reactions
+Educational animation of electrochemical cell with electron flow to cathode, clear labeling, scientific accuracy, neutral background
+
+Scene 4.5: Electrochemical Reactions
+Educational animation of electrochemical cell with Ag+ ions moving toward cathode, clear labeling, scientific accuracy, neutral background
+
+Scene 4.6: Electrochemical Reactions
+Educational animation of silver ion gaining an electron, clear labeling, scientific accuracy, neutral background
+
+Scene 4.7: Electrochemical Reactions
+Educational animation of silver atom deposition on keychain, clear labeling, scientific accuracy, neutral background
+
+Scene 5.1: Cathode and Anode Reactions
+Educational animation of electrolytic cell with glowing cathode and electron flow arrows, labeled electrodes, clear diagram, scientific accuracy, clean background
+
+Scene 5.2: Cathode and Anode Reactions
+Educational animation of silver ion reduction at cathode, electron gain visualization, labeled ions and atoms, clear scientific diagram
+
+Scene 5.3: Cathode and Anode Reactions
+Educational animation of silver ion concentration change in electrolytic cell, labeled ions and solution, clear scientific visualization
+
+Scene 5.4: Cathode and Anode Reactions
+Educational animation of silver ion deposition on keychain, electron gain visualization, labeled ions and keychain, scientific accuracy
+
+Scene 5.5: Cathode and Anode Reactions
+Educational animation of silver atom movement from anode to solution, electron loss visualization, labeled atoms and ions, scientific accuracy
+
+Scene 5.6: Cathode and Anode Reactions
+Educational animation of silver oxidation at anode, electron loss visualization, labeled atoms and ions, scientific accuracy
+
+Scene 5.7: Cathode and Anode Reactions
+Educational animation of electrode reactions, labeled anode and electron flow, clear scientific diagram
+
+Scene 5.8: Cathode and Anode Reactions
+Educational animation of silver oxidation at anode, electron loss visualization, labeled atoms and ions, scientific accuracy
+
+Scene 5.9: Cathode and Anode Reactions
+Educational animation of electron flow in electroplating circuit, labeled components, clear scientific visualization
+
+Scene 6.1: Summary of Electroplating Process
+Educational animation of silver atoms moving from a rod to a key, labeled with 'Silver Rod', 'Keychain', and 'Silver Atoms', clean background, high clarity
+
+Scene 6.2: Summary of Electroplating Process
+A teacher stands at the front of a classroom, surrounded by students seated at desks, with a question board on the wall behind them, natural light streaming through the window, capturing the scene with a slight angle from the side, emphasizing the interaction between the teacher and students.
+
+Scene 6.3: Summary of Electroplating Process
+Educational diagram of an electrolytic cell with cathode and anode labeled, showing electron flow, clean background, high clarity
+
+Scene 6.4: Summary of Electroplating Process
+A lab technician stands beside a workbench with electroplating equipment, including a tank, wires, and a control panel, in a well-lit room with a clean background, focusing on the equipment with a neutral camera angle and high natural lighting.
+
+Scene 6.5: Summary of Electroplating Process
+Educational animation of a graph showing silver mass deposited versus time, labeled with 'Time', 'Mass', and 'Trend', clean background, high clarity
+
+Scene 6.6: Summary of Electroplating Process
+Educational animation of silver atoms moving from the rod to the keychain over time, labeled with 'Current', 'Mass', and 'Time', clean background, high clarity
+
+Scene 7.1: Factors Affecting Electroplating
+Educational animation of electrolytic cell with current adjustment slider, time display, and Faraday's law relationship visualization, clean layout, schematic style
+
+Scene 7.2: Factors Affecting Electroplating
+Scientific graph showing current vs. time for same mass, clear axis labels, clean white background, schematic style
+
+Scene 7.3: Factors Affecting Electroplating
+Educational animation of electrolytic cell with multiple metal electrodes, animated comparison arrows, schematic style
+
+Scene 7.4: Factors Affecting Electroplating
+Educational animation of gold and silver electrodes in electrolytic cell, time slider adjustment, deposition visualization, schematic style
+
+Scene 7.5: Factors Affecting Electroplating
+Educational animation of gold and silver deposition in electrolytic cell, mass comparison visualization, schematic style
+
+Scene 7.6: Factors Affecting Electroplating
+Educational diagram of electroplating factors, current, time, and metal type, schematic style, clean layout
+
+Scene 8.1: Conclusion and Applications
+Educational animated diagram of an electrolytic cell with labeled anode and cathode, redox reaction arrows, and factors influencing metal deposition, clean lines, scientific accuracy, educational clarity
+
+Scene 8.2: Conclusion and Applications
+A close-up photo of an electroplated metal sculpture in a minimalist gallery setting, with artistic application examples such as jewelry and decorative accents displayed nearby, natural light pouring in through a large window, high camera angle to emphasize the object's texture and details.

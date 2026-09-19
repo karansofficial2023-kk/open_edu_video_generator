@@ -9,6 +9,12 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageOps
 
+from .label_overlay import (
+    allows_precise_arrows,
+    build_label_plans,
+    draw_label_overlay,
+    is_label_template,
+)
 from .schema import Segment
 from .subtitles import phrase_captions
 from .visuals import _font, _pixel_wrap
@@ -16,7 +22,16 @@ from .visuals import _font, _pixel_wrap
 
 def stage_times(segment: Segment) -> list[float]:
     shot = segment.shot
-    count = len(shot.steps) if shot.template in {"process", "comparison", "classification", "agents", "pros_cons"} else 2
+    if shot.template == "formula":
+        count = max(1, len(shot.formula_lines or shot.steps))
+    elif is_label_template(shot.template):
+        count = max(1, len(shot.labels) or 2)
+    elif shot.template == "split_screen":
+        count = max(2, len(shot.columns) or 2)
+    elif shot.template == "title_card":
+        count = 2
+    else:
+        count = len(shot.steps) if shot.template in {"process", "comparison", "classification", "agents", "pros_cons"} else 2
     duration = segment.speech_duration or segment.end - segment.start
     if shot.cues:
         normalize = lambda s: re.findall(r"\w+", s.lower())
@@ -66,6 +81,54 @@ class Canvas:
         self.draw.ellipse([round(x * self.scale) for x in bounds], fill=fill,
                           outline=outline, width=max(1, round(2 * self.scale)))
 
+    def overlay(self, color="#000000", alpha=110):
+        layer = Image.new("RGBA", self.image.size, color + f"{max(0, min(255, alpha)):02x}")
+        self.image = Image.alpha_composite(self.image.convert("RGBA"), layer).convert("RGB")
+        self.draw = ImageDraw.Draw(self.image)
+
+    def cover_image(self, source, zoom=1.0):
+        src = source.convert("RGB")
+        base = ImageOps.fit(src, (self.width, self.height), method=Image.Resampling.LANCZOS, centering=(0.5, 0.5))
+        if zoom > 1:
+            zw, zh = round(self.width / zoom), round(self.height / zoom)
+            left = (self.width - zw) // 2
+            top = (self.height - zh) // 2
+            base = base.crop((left, top, left + zw, top + zh)).resize((self.width, self.height), Image.Resampling.LANCZOS)
+        self.image.paste(base, (0, 0))
+        self.draw = ImageDraw.Draw(self.image)
+
+    def text_center(self, text, bounds, size=26, color=None, bold=False):
+        left, top, right, bottom = [round(x * self.scale) for x in bounds]
+        size = round(size * self.scale)
+        for candidate in range(size, max(8, round(14 * self.scale)) - 1, -1):
+            font = _font(candidate, bold)
+            if self.config.render.font_path:
+                from PIL import ImageFont
+                font = ImageFont.truetype(self.config.render.font_path, candidate)
+            lines = _pixel_wrap(self.draw, text, font, right - left)
+            line_height = sum(font.getmetrics()) + round(6 * self.scale)
+            total = len(lines) * line_height
+            if total <= bottom - top:
+                y = top + max(0, (bottom - top - total) // 2)
+                for line in lines:
+                    bbox = self.draw.textbbox((0, 0), line, font=font)
+                    x = left + max(0, (right - left - (bbox[2] - bbox[0])) // 2)
+                    self.draw.text((x, y), line, font=font, fill=color or self.config.render.ink)
+                    y += line_height
+                return
+        raise ValueError(f"Text does not fit template; shorten it: {text[:80]}")
+
+    def arrow(self, start, end, fill, width=5):
+        sx, sy = start
+        ex, ey = end
+        self.line([(sx, sy), (ex, ey)], fill, width)
+        angle = math.atan2(ey - sy, ex - sx)
+        head = 18
+        for delta in (2.55, -2.55):
+            x = ex - head * math.cos(angle + delta)
+            y = ey - head * math.sin(angle + delta)
+            self.line([(ex, ey), (x, y)], fill, width)
+
     def text(self, text, bounds, size=26, color=None, bold=False):
         left, top, right, bottom = [round(x * self.scale) for x in bounds]
         size = round(size * self.scale)
@@ -82,6 +145,109 @@ class Canvas:
                                    fill=color or self.config.render.ink)
                 return
         raise ValueError(f"Text does not fit template; shorten it: {text[:80]}")
+
+
+
+def _motion_zoom(t: float, duration: float, amount: float = 0.045) -> float:
+    if duration <= 0:
+        return 1.0
+    return 1.0 + amount * max(0.0, min(1.0, t / duration))
+
+
+def _render_title_card(c: Canvas, shot, scene_title: str, source, t: float, duration: float):
+    if source is not None:
+        c.cover_image(source, _motion_zoom(t, duration, 0.035))
+        c.overlay("#000000", 92)
+    else:
+        c.overlay("#0B1720", 255)
+    title = shot.heading or scene_title
+    sub = shot.subheading or shot.learning_objective
+    c.text_center(title, (124, 230, 1164, 390), 64, "#000000", True)
+    c.text_center(title, (120, 226, 1160, 386), 64, "#FFFFFF", True)
+    if sub:
+        c.text_center(sub, (210, 405, 1070, 486), 30, "#F4E7B3", False)
+    c.line([(340, 512), (940, 512)], "#F4C542", 4)
+
+
+def _render_labeled_image(c: Canvas, shot, source, t: float, duration: float, accent: str, gold: str):
+    if source is not None:
+        c.cover_image(source, _motion_zoom(t, duration, 0.05))
+        c.overlay("#000000", 22)
+        display_heading = _safe_display_heading(shot.heading)
+        if display_heading:
+            c.text_center(display_heading, (93, 41, 1193, 105), 38, "#000000", True)
+            c.text_center(display_heading, (90, 38, 1190, 102), 38, "#FFFFFF", True)
+    else:
+        c.box((70, 130, 1210, 585), "#FFFFFF", "#D8DFD9", 8)
+        display_heading = _safe_display_heading(shot.heading)
+        if display_heading:
+            c.text_center(display_heading, (90, 38, 1190, 102), 38, "#06153D", True)
+    if not allows_precise_arrows(shot.template):
+        return
+    if not shot.labels:
+        return
+    plans, review = build_label_plans(
+        shot,
+        (c.width, c.height),
+        title_safe=(0, 0, c.width, round(122 * c.scale)),
+        subtitle_safe=(0, round(600 * c.scale), c.width, c.height),
+        logo_safe=(round(1040 * c.scale), 0, c.width, round(105 * c.scale)),
+    )
+    if review:
+        setattr(shot, "_label_review", review)
+    motion_type = str(shot.motion.get("type", "zoom"))
+    label_style = str(shot.motion.get("label_style", ""))
+    c.image = draw_label_overlay(c.image, plans, t, duration, motion_type, label_style, accent, gold)
+    c.draw = ImageDraw.Draw(c.image)
+
+
+def _safe_display_heading(text: str) -> str:
+    text = re.sub(r"\s+", " ", text or "").strip()
+    if not text:
+        return ""
+    blocked = [
+        "image requirement",
+        "image prompt",
+        "visual notes",
+        "label placement",
+        "no text",
+        "no labels",
+        "comfyui prompt",
+        "asset notes",
+        "camera",
+    ]
+    return "" if any(term in text.lower() for term in blocked) else text[:80]
+
+
+def _render_split_screen(c: Canvas, shot, source, t: float, duration: float, accent: str, gold: str):
+    c.text_center(shot.heading or "Compare", (75, 34, 1205, 98), 38, "#06153D", True)
+    if source is not None:
+        art = ImageOps.fit(source.convert("RGB"), (round(1184 * c.scale), round(445 * c.scale)), Image.Resampling.LANCZOS)
+        c.image.paste(art, (round(48 * c.scale), round(125 * c.scale)))
+    else:
+        c.box((48, 125, 623, 570), "#EAF4F7", "#C9DADD", 6)
+        c.box((657, 125, 1232, 570), "#F6EFE5", "#DDD0BD", 6)
+    columns = shot.columns or [{"title": s} for s in (shot.steps or ["Left", "Right"])]
+    for i, col in enumerate(columns[:2]):
+        left = 80 + i * 610
+        color = accent if i == 0 else gold
+        title = str(col.get("title") or col.get("label") or f"Side {i + 1}")
+        c.box((left, 500, left + 480, 560), "#FFFFFF", color, 14)
+        c.text_center(title, (left + 18, 508, left + 462, 552), 25, "#06153D", True)
+
+
+def _render_formula(c: Canvas, shot, t: float, duration: float, accent: str, gold: str):
+    c.text_center(shot.heading or "Formula", (75, 38, 1205, 104), 40, "#06153D", True)
+    lines = shot.formula_lines or shot.steps
+    visible = max(1, min(len(lines), int((t / max(duration, 0.1)) * (len(lines) + 0.8)) + 1))
+    top = 160
+    for i, line in enumerate(lines[:visible]):
+        y = top + i * 92
+        active = i == visible - 1
+        c.box((130, y, 1150, y + 68), "#FFFFFF", gold if active else "#CFD8D2", 10)
+        c.text_center(line, (160, y + 8, 1120, y + 60), 28, "#06153D", True)
+    if shot.explain_steps:
+        c.text_center("  |  ".join(shot.explain_steps[:3]), (120, 548, 1160, 605), 22, accent, False)
 
 
 def flower(c: Canvas, x: float, y: float, highlight: str = ""):
@@ -110,20 +276,34 @@ def flower(c: Canvas, x: float, y: float, highlight: str = ""):
 def render_frame(segment, scene_title, t, config, source=None):
     c = Canvas(config)
     shot = segment.shot
-    c.text(shot.heading or scene_title, (48, 25, 1230, 96), 36, bold=True)
-    c.line([(48, 104), (1232, 104)], "#D8DFD9", 2)
     times = stage_times(segment)
     stage = max(i for i, start in enumerate(times) if t >= start)
     duration = segment.end - segment.start
     accent = config.render.accent
     gold = config.render.second_accent
-    if shot.template in {"photo", "video"}:
+    rendered_pro = False
+    if shot.template == "title_card":
+        _render_title_card(c, shot, scene_title, source, t, duration)
+        rendered_pro = True
+    elif is_label_template(shot.template):
+        _render_labeled_image(c, shot, source, t, duration, accent, gold)
+        rendered_pro = True
+    elif shot.template == "split_screen":
+        _render_split_screen(c, shot, source, t, duration, accent, gold)
+        rendered_pro = True
+    elif shot.template == "formula":
+        _render_formula(c, shot, t, duration, accent, gold)
+        rendered_pro = True
+    else:
+        c.text(shot.heading or scene_title, (48, 25, 1230, 96), 36, bold=True)
+        c.line([(48, 104), (1232, 104)], "#D8DFD9", 2)
+    if not rendered_pro and shot.template in {"photo", "video", "video_broll"}:
         if source is None:
             raise ValueError("Photo/video requires a source image")
         art = ImageOps.contain(source.convert("RGB"),
                                (round(1184 * c.scale), round(466 * c.scale)), Image.Resampling.LANCZOS)
         c.image.paste(art, ((c.width - art.width) // 2, round(120 * c.scale)))
-    elif shot.template in {"process", "comparison", "classification", "agents", "pros_cons"}:
+    elif not rendered_pro and shot.template in {"process", "comparison", "classification", "agents", "pros_cons"}:
         count = len(shot.steps)
         gap = 24
         cell = (1184 - gap * (count - 1)) / count
@@ -146,15 +326,15 @@ def render_frame(segment, scene_title, t, config, source=None):
                     c.line([(x - 7, 354), (x + 7, 360), (x - 7, 366)], accent)
             c.text("Compare each idea" if shot.template == "comparison" else "Follow the sequence",
                    (48, 144, 1200, 192), 24, accent)
-    elif shot.template == "life_cycle":
+    elif not rendered_pro and shot.template == "life_cycle":
         _life_cycle(c, stage, accent, gold)
-    elif shot.template == "wind":
+    elif not rendered_pro and shot.template == "wind":
         _wind(c, stage, accent, gold)
-    elif shot.template == "water":
+    elif not rendered_pro and shot.template == "water":
         _water(c, stage, accent, gold)
-    elif shot.template == "insect":
+    elif not rendered_pro and shot.template == "insect":
         _insect(c, stage, accent, gold)
-    elif shot.template == "pollination":
+    elif not rendered_pro and shot.template == "pollination":
         flower(c, 300, 335, "anther")
         flower(c, 950, 335, "stigma")
         c.text("Pollen source", (220, 555, 470, 590), 23, accent, True)
@@ -166,7 +346,7 @@ def render_frame(segment, scene_title, t, config, source=None):
             x = 220 + (950 - 220) * p
             y = 283 + (243 - 283) * p - 125 * math.sin(math.pi * p)
             c.ellipse((x - 5, y - 5 + i % 3 * 6, x + 5, y + 5 + i % 3 * 6), gold)
-    else:
+    elif not rendered_pro:
         first = "anther" if shot.template == "protandry" else "stigma"
         second = "stigma" if first == "anther" else "anther"
         flower(c, 355, 340, first if stage == 0 else second)
@@ -183,8 +363,13 @@ def render_frame(segment, scene_title, t, config, source=None):
     if config.render.burn_captions:
         cue = next((x for x in phrase_captions(segment) if x.start <= t < x.end), None)
         if cue:
-            c.box((40, 630, 1240, 708), config.render.subtitle_bg, radius=12)
-            c.text(cue.text, (62, 639, 1218, 705), 27, config.render.subtitle_fg)
+            band = Image.new("RGBA", c.image.size, (0, 0, 0, 0))
+            bd = ImageDraw.Draw(band)
+            y1 = round(600 * c.scale)
+            bd.rectangle((0, y1, c.width, c.height), fill=(0, 0, 0, 112))
+            c.image = Image.alpha_composite(c.image.convert("RGBA"), band).convert("RGB")
+            c.draw = ImageDraw.Draw(c.image)
+            c.text_center(cue.text, (90, 612, 1190, 700), 34, "#FFFFFF", False)
     return c.image
 
 
@@ -294,7 +479,16 @@ def render_animation_clip(segment, title, clip, frame_count, config, source=None
                "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{width}x{height}",
                "-r", str(config.fps), "-i", "pipe:0", "-an", "-frames:v", str(frame_count),
                "-c:v", "libx264", "-preset", config.render.video_preset,
-               "-crf", str(config.render.video_crf), "-pix_fmt", "yuv420p", str(clip)]
+               "-crf", str(config.render.video_crf)]
+    if config.render.video_bitrate:
+        command.extend(["-b:v", config.render.video_bitrate, "-minrate", config.render.video_bitrate])
+    if config.render.video_maxrate:
+        command.extend(["-maxrate", config.render.video_maxrate])
+    if config.render.video_bufsize:
+        command.extend(["-bufsize", config.render.video_bufsize])
+    if config.render.video_bitrate:
+        command.extend(["-x264-params", "nal-hrd=cbr:force-cfr=1:filler=1"])
+    command.extend(["-pix_fmt", "yuv420p", str(clip)])
     with tempfile.TemporaryFile() as errors:
         proc = subprocess.Popen(command, stdin=subprocess.PIPE, stderr=errors, stdout=subprocess.DEVNULL)
         try:

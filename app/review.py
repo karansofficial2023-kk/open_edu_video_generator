@@ -9,6 +9,11 @@ from .coverage import coverage_report
 
 def review_storyboard(board, output_dir, expected_topic: str = ""):
     findings = []
+    seen_narration: dict[str, tuple[int, int]] = {}
+    weak_label_terms = {
+        "observe detail", "continue exploring", "however strategy", "explain",
+        "key part", "label", "visual", "process", "strategy",
+    }
     for scene, segment in board.all_segments():
         def add(level, message):
             findings.append({"scene": scene.scene_number, "segment": segment.segment_number,
@@ -29,8 +34,22 @@ def review_storyboard(board, output_dir, expected_topic: str = ""):
                 add("error", str(exc))
             if segment.shot.asset_path and not Path(segment.shot.asset_path).is_file():
                 add("error", f"Missing asset: {segment.shot.asset_path}")
+            if segment.shot.template == "labeled_image":
+                labels = [str(item.get("text", "")).strip().lower() for item in segment.shot.labels]
+                if not labels:
+                    add("warning", "Labeled-image shot has no labels; add precise terms such as anther, stigma, pollen grains.")
+                for label in labels:
+                    if label in weak_label_terms or len(label.split()) > 4:
+                        add("warning", f"Weak label for precision video: {label!r}. Use exact visible part names.")
         else:
             add("warning", "Legacy segment has no structured shot; it will remain a photograph/slide.")
+        normalized = re.sub(r"\W+", " ", segment.narration.lower()).strip()
+        if normalized:
+            previous = seen_narration.get(normalized)
+            if previous:
+                add("warning", f"Repeated narration from scene {previous[0]}, segment {previous[1]}; remove duplicate storyboard row.")
+            else:
+                seen_narration[normalized] = (scene.scene_number, segment.segment_number)
     coverage = coverage_report(board, output_dir)
     coverage_scope = f"{expected_topic} {board.title} {board.source}".lower()
     if "types of pollination" in coverage_scope and coverage["coverage_ratio"] < 0.75:

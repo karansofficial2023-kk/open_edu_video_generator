@@ -12,6 +12,8 @@ from .schema import Segment, Storyboard
 
 
 def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config: AppConfig) -> list[Path]:
+    from .label_overlay import is_label_template
+
     output_dir = Path(output_dir)
     frames_dir = Path(output_dir) / "frames"
     frames_dir.mkdir(parents=True, exist_ok=True)
@@ -26,7 +28,8 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
 
     for scene, segment in storyboard.all_segments():
         path = frames_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.png"
-        if segment.shot and segment.shot.template == "video" and not segment.shot.asset_path:
+        pro_asset_templates = {"split_screen", "title_card"}
+        if segment.shot and segment.shot.template in {"video", "video_broll", "short_motion_clip"} and not segment.shot.asset_path:
             if not comfy_client or not config.comfyui.video_enabled:
                 raise ValueError(
                     f"Scene {scene.scene_number}.{segment.segment_number} requests generated video, "
@@ -45,7 +48,7 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
             )
             paths.append(generated)
             continue
-        if segment.shot and segment.shot.template not in {"photo", "video"}:
+        if segment.shot and segment.shot.template not in {"photo", "video", "video_broll", "short_motion_clip", *pro_asset_templates} and not is_label_template(segment.shot.template):
             from .animation_renderer import render_frame
             render_frame(segment, scene.title, 0, config).save(path)
             paths.append(path)
@@ -64,6 +67,15 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
                     reviewed = candidate
                     break
         if reviewed:
+            if segment.shot and is_label_template(segment.shot.template):
+                paths.append(reviewed)
+                continue
+            if segment.shot and segment.shot.template in pro_asset_templates:
+                from .animation_renderer import render_frame
+                with Image.open(reviewed) as source:
+                    render_frame(segment, scene.title, 0, config, source=source).save(path)
+                paths.append(path)
+                continue
             if config.render.layout == "modern" or segment.shot:
                 paths.append(reviewed)
                 continue
@@ -85,6 +97,15 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
                 generated,
                 f"open_edu_scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}",
             )
+            if segment.shot and is_label_template(segment.shot.template):
+                paths.append(generated)
+                continue
+            if segment.shot and segment.shot.template in pro_asset_templates:
+                from .animation_renderer import render_frame
+                with Image.open(generated) as source:
+                    render_frame(segment, scene.title, 0, config, source=source).save(path)
+                paths.append(path)
+                continue
             if config.render.layout == "modern" or segment.shot:
                 paths.append(generated)
                 continue

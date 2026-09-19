@@ -52,6 +52,8 @@ def normalize_storyboard(storyboard: Storyboard) -> None:
 def _refine_imported_shot(scene_title: str, segment) -> Shot:
     """Replace generic imported card shots with safer subject-specific visuals."""
     shot = segment.shot
+    if shot and shot.template in {"title_card", "labeled_image", "split_screen", "formula", "video_broll"}:
+        return shot
     text = " ".join([
         scene_title or "",
         segment.narration or "",

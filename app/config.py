@@ -31,6 +31,9 @@ class RenderConfig(BaseModel):
     subtitle_fg: str = "#FFFFFF"
     seconds_per_segment_without_audio: float = 5.0
     video_crf: int = 18
+    video_bitrate: str = ""
+    video_maxrate: str = ""
+    video_bufsize: str = ""
     video_preset: str = "slow"
     font_path: str = ""
     reviewed_assets_dir: str = ""

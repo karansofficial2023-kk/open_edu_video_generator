@@ -11,7 +11,7 @@ ffmpeg_path: "C:\\Users\\User\\Documents\\Codex\\Tools\\Transcribe\\ffmpeg\\ffmp
 ffprobe_path: "C:\\Users\\User\\Documents\\Codex\\Tools\\Transcribe\\ffmpeg\\ffmpeg-9.0.1-essentials_build\\bin\\ffprobe.exe"
 
 ollama_url: "http://localhost:11434"
-ollama_model: "llama3.1:8b"
+ollama_model: "qwen3:14b"
 use_ollama: true
 
 tts_provider: "edge"
@@ -35,10 +35,13 @@ render:
   ink: "#182026"
   accent: "#2E7D63"
   second_accent: "#D18B32"
-  subtitle_bg: "#FFFFFF"
-  subtitle_fg: "#000000"
+  subtitle_bg: "#000000"
+  subtitle_fg: "#FFFFFF"
   seconds_per_segment_without_audio: 5.0
-  video_crf: 14
+  video_crf: 16
+  video_bitrate: "8000k"
+  video_maxrate: "10000k"
+  video_bufsize: "16000k"
   video_preset: "slow"
   reviewed_assets_dir: "assets/reviewed"
   font_path: ""

@@ -5,6 +5,7 @@ import shutil
 from pathlib import Path
 
 from .config import AppConfig
+from .label_overlay import is_label_template
 from .schema import Storyboard, Shot
 
 
@@ -90,10 +91,24 @@ def render_video(storyboard: Storyboard, frames: list[Path], audio: Path, output
         frame_cursor += frame_count
         duration = frame_count / config.fps
         clip = clips_dir / f"clip_{index:04d}.mp4"
-        if segment.shot and segment.shot.template == "video":
+        if segment.shot and segment.shot.template in {"video", "video_broll", "short_motion_clip"}:
             _render_video_asset(frame, clip, duration, config)
         elif segment.shot and segment.shot.template == "photo":
             _render_fullscreen_image_clip(frame, clip, duration, config)
+        elif segment.shot and segment.shot.template in {"title_card", "split_screen"}:
+            # These frames are already composited with generated/reviewed assets and labels.
+            # Re-rendering them would lose the source image and create blank local templates.
+            _render_image_clip(frame, clip, duration, config)
+        elif segment.shot and is_label_template(segment.shot.template):
+            from PIL import Image
+            from .animation_renderer import render_animation_clip
+            with Image.open(frame) as im:
+                source = im.convert("RGB")
+            render_config = config
+            if config.render.burn_captions:
+                render_config = config.model_copy(deep=True)
+                render_config.render.burn_captions = False
+            render_animation_clip(segment, items[index - 1][0].title, clip, frame_count, render_config, source)
         elif config.render.layout == "modern" or segment.shot:
             from PIL import Image
             from .animation_renderer import render_animation_clip
@@ -151,6 +166,7 @@ def render_video(storyboard: Storyboard, frames: list[Path], audio: Path, output
             "-pix_fmt",
             "yuv420p",
         ])
+        _append_video_rate_options(command, config)
     else:
         command.extend([
             "-c:v",
@@ -178,15 +194,15 @@ def _subtitle_filter(subtitles: Path, config: AppConfig) -> str:
     path = path.replace(":", r"\:").replace("'", r"\'")
     style = ",".join([
         "FontName=Arial",
-        "Fontsize=18",
-        f"PrimaryColour={_ass_color(config.render.subtitle_fg)}",
-        "OutlineColour=&H00FFFFFF",
-        f"BackColour={_ass_color(config.render.subtitle_bg, alpha='80')}",
-        "BorderStyle=3",
-        "Outline=1",
-        "Shadow=0",
+        "Fontsize=24",
+        "PrimaryColour=&H00FFFFFF",
+        "OutlineColour=&H00000000",
+        "BackColour=&H00000000",
+        "BorderStyle=1",
+        "Outline=2",
+        "Shadow=2",
         "Alignment=2",
-        "MarginV=48",
+        "MarginV=38",
     ])
     return f"subtitles='{path}':force_style='{style}'"
 
@@ -211,6 +227,7 @@ def _render_video_asset(source: Path, clip: Path, duration: float, config: AppCo
           "-an", "-vf", vf,
           "-frames:v", str(round(duration * config.fps)), "-c:v", "libx264",
           "-preset", config.render.video_preset, "-crf", str(config.render.video_crf),
+          *_video_rate_options(config),
           "-pix_fmt", "yuv420p", str(clip)])
 
 
@@ -241,6 +258,7 @@ def _render_fullscreen_image_clip(frame: Path, clip: Path, duration: float, conf
         config.render.video_preset,
         "-crf",
         str(config.render.video_crf),
+        *_video_rate_options(config),
         "-pix_fmt",
         "yuv420p",
         str(clip),
@@ -274,6 +292,7 @@ def _render_image_clip(frame: Path, clip: Path, duration: float, config: AppConf
         config.render.video_preset,
         "-crf",
         str(config.render.video_crf),
+        *_video_rate_options(config),
         "-pix_fmt",
         "yuv420p",
         str(clip),
@@ -328,6 +347,24 @@ def _audio_ext(storyboard: Storyboard) -> str:
 
 def _ffconcat_path(path: Path) -> str:
     return path.resolve().as_posix().replace("'", "'\\''")
+
+
+def _video_rate_options(config: AppConfig) -> list[str]:
+    options: list[str] = []
+    if config.render.video_bitrate:
+        options.extend(["-b:v", config.render.video_bitrate])
+        options.extend(["-minrate", config.render.video_bitrate])
+    if config.render.video_maxrate:
+        options.extend(["-maxrate", config.render.video_maxrate])
+    if config.render.video_bufsize:
+        options.extend(["-bufsize", config.render.video_bufsize])
+    if config.render.video_bitrate:
+        options.extend(["-x264-params", "nal-hrd=cbr:force-cfr=1:filler=1"])
+    return options
+
+
+def _append_video_rate_options(command: list[str], config: AppConfig) -> None:
+    command.extend(_video_rate_options(config))
 
 
 def _run(command: list[str]) -> None:

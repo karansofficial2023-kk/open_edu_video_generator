@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import List, Literal
+from typing import Any, List, Literal
 
 from pydantic import BaseModel, Field, model_validator
 
@@ -22,11 +22,22 @@ class Shot(BaseModel):
     template: Literal[
         "photo", "video", "process", "comparison", "pollination", "protandry", "protogyny",
         "classification", "agents", "wind", "water", "insect", "life_cycle", "pros_cons",
+        "title_card", "labeled_image", "split_screen", "formula", "video_broll",
+        "diagram_overlay", "realistic_labeled_image", "realistic_background_with_labels", "process_steps",
+        "short_motion_clip",
     ]
     heading: str = ""
     learning_objective: str = ""
     asset_path: str | None = None
-    steps: list[str] = Field(default_factory=list, max_length=4)
+    steps: list[str] = Field(default_factory=list, max_length=6)
+    subheading: str = ""
+    labels: list[dict[str, Any]] = Field(default_factory=list)
+    arrows: list[dict[str, Any]] = Field(default_factory=list)
+    highlights: list[dict[str, Any]] = Field(default_factory=list)
+    columns: list[dict[str, Any]] = Field(default_factory=list, max_length=4)
+    formula_lines: list[str] = Field(default_factory=list, max_length=8)
+    explain_steps: list[str] = Field(default_factory=list, max_length=6)
+    motion: dict[str, Any] = Field(default_factory=dict)
     # Cue phrases are matched against speech boundaries. Fractions are a fallback.
     cues: list[str] = Field(default_factory=list, max_length=4)
     stage_fractions: list[float] = Field(default_factory=list)
@@ -36,7 +47,9 @@ class Shot(BaseModel):
         step_templates = {"process", "comparison", "classification", "agents", "pros_cons"}
         count = len(self.steps) if self.template in step_templates else 2
         if self.template in step_templates and len(self.steps) < 2:
-            raise ValueError("Process/comparison templates need 2 to 4 steps")
+            raise ValueError("Process/comparison templates need 2 to 6 steps")
+        if self.template == "formula" and not (self.formula_lines or self.steps):
+            raise ValueError("Formula templates need formula_lines or steps")
         if self.cues and len(self.cues) != count:
             raise ValueError("Provide one cue per stage")
         if self.stage_fractions:

@@ -8,9 +8,15 @@ from unittest.mock import patch
 from PIL import ImageChops
 from pydantic import ValidationError
 
-from app.animation_renderer import render_frame, stage_times
+from app.animation_renderer import _safe_display_heading, render_frame, stage_times
 from app.config import AppConfig, load_config
 from app.coverage import coverage_report
+from app.label_overlay import (
+    allows_precise_arrows,
+    arrow_label_visibility,
+    build_label_plans,
+    draw_label_overlay,
+)
 from app.schema import Caption, Shot, Storyboard
 from app.review import review_storyboard
 from app.storyboard_cleanup import normalize_storyboard
@@ -49,6 +55,66 @@ class AnimationTests(unittest.TestCase):
                      {'template': 'protandry', 'stage_fractions': [0, 1.5]}]:
             with self.assertRaises(ValidationError):
                 Shot.model_validate(data)
+
+    def test_label_contract_maps_manual_coordinate_targets(self):
+        shot = Shot(
+            template="realistic_labeled_image",
+            labels=[{"text": "Anther", "target_xy": "0.25,0.40", "placement": "left side"}],
+        )
+        plans, review = build_label_plans(shot, (1280, 720))
+        self.assertFalse(review)
+        self.assertEqual(plans[0].target, (320, 288))
+        self.assertGreaterEqual(plans[0].confidence, 0.99)
+
+    def test_low_confidence_target_is_rejected(self):
+        shot = Shot(template="realistic_labeled_image", labels=[{"text": "Unknown gland"}])
+        plans, review = build_label_plans(shot, (1280, 720))
+        self.assertIsNone(plans[0].target)
+        self.assertTrue(review)
+
+    def test_label_boxes_avoid_subtitle_safe_area_and_overlap(self):
+        shot = Shot(
+            template="realistic_labeled_image",
+            labels=[
+                {"text": "Anther", "target_xy": "0.35,0.42", "placement": "left side"},
+                {"text": "Stigma", "target_xy": "0.58,0.36", "placement": "right side"},
+            ],
+        )
+        plans, review = build_label_plans(shot, (1280, 720), subtitle_safe=(0, 600, 1280, 720))
+        self.assertFalse(review)
+        boxes = [plan.box for plan in plans]
+        self.assertTrue(all(box and box[3] <= 600 for box in boxes))
+        self.assertTrue(boxes[0][2] <= boxes[1][0] or boxes[1][2] <= boxes[0][0] or boxes[0][3] <= boxes[1][1] or boxes[1][3] <= boxes[0][1])
+
+    def test_arrow_first_then_label_fade_timing(self):
+        arrow, label = arrow_label_visibility(0, 2, 0.35, 4.0, "arrow_draw_then_label_fade")
+        self.assertGreater(arrow, 0)
+        self.assertEqual(label, 0)
+        arrow, label = arrow_label_visibility(0, 2, 1.25, 4.0, "arrow_draw_then_label_fade")
+        self.assertEqual(arrow, 1)
+        self.assertGreater(label, 0)
+
+    def test_precise_arrows_are_blocked_for_motion_footage(self):
+        self.assertFalse(allows_precise_arrows("short_motion_clip"))
+        self.assertFalse(allows_precise_arrows("video_broll"))
+
+    def test_metadata_never_becomes_visible_label_text(self):
+        self.assertEqual(_safe_display_heading("Image requirement: macro flower with no text"), "")
+        self.assertEqual(_safe_display_heading("Label placement: anther left side"), "")
+        config = AppConfig()
+        config.render.burn_captions = False
+        segment = self.segment.model_copy(deep=True)
+        segment.shot = Shot(
+            template="realistic_labeled_image",
+            heading="Image requirement: macro flower with no text",
+            labels=[{"text": "Anther", "target_xy": "0.35,0.42", "placement": "left side"}],
+            motion={"type": "arrow_draw_then_label_fade"},
+        )
+        segment.end = segment.speech_duration = 4
+        image = render_frame(segment, "Pollination", 2.5, config)
+        plans, _ = build_label_plans(segment.shot, image.size)
+        overlay = draw_label_overlay(image, plans, 2.5, 4, "arrow_draw_then_label_fade")
+        self.assertEqual(overlay.size, image.size)
 
     def test_caption_text_and_timing_preserved(self):
         self.segment.captions = [Caption(text=w, start=i, end=i + .8)

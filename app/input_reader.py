@@ -193,7 +193,9 @@ def _is_vertical_shot_table(table) -> bool:
     if not table.rows or any(len(row.cells) != 2 for row in table.rows):
         return False
     keys = {_normalize_header(row.cells[0].text) for row in table.rows}
-    return "narration" in keys and bool(keys & {"template media", "visual type image requirement"})
+    return "narration" in keys and bool(keys & {
+        "template media", "visual type image requirement", "shot id", "visual type"
+    })
 
 
 def _segment_from_vertical_table(table, segment_number: int, shot_heading: str) -> Segment:
@@ -202,6 +204,8 @@ def _segment_from_vertical_table(table, segment_number: int, shot_heading: str) 
         for row in table.rows if len(row.cells) >= 2
     }
     sentence = fields.get("narration", "").strip().strip('"')
+    if "shot id" in fields or "visual type" in fields:
+        return _segment_from_production_fields(fields, segment_number, shot_heading)
     template_lines = _plain_items(fields.get("template media", ""))
     template = _normalize_template_value(template_lines[0] if template_lines else "")
     media_type = template_lines[1] if len(template_lines) > 1 else ""
@@ -278,12 +282,77 @@ def _segment_from_vertical_table(table, segment_number: int, shot_heading: str) 
     )
 
 
+def _segment_from_production_fields(
+    fields: dict[str, str], segment_number: int, shot_heading: str
+) -> Segment:
+    sentence = fields.get("narration", "").strip().strip('"')
+    visual_type = fields.get("visual type", "").strip()
+    media_type = fields.get("media type", "").strip()
+    visual = fields.get("image requirement", "").strip() or sentence
+    image_prompt = fields.get("image prompt", "").strip() or visual
+    labels = _labels(fields.get("labels", ""))
+    label_placement = fields.get("label placement", "")
+    label_style = fields.get("label style", "")
+    motion = fields.get("motion", "")
+    subtitle = fields.get("subtitle", "")
+    subtitle_style = fields.get("subtitle style", "")
+    asset_path = fields.get("asset path", "").strip() or None
+    wan_prompt = fields.get("wan video prompt", "").strip()
+    ltx_prompt = fields.get("ltx video prompt", "").strip()
+    review_notes = fields.get("review notes", "").strip()
+
+    routing_template = _normalize_template_value(visual_type)
+    video_prompt = ltx_prompt or wan_prompt
+    if video_prompt and routing_template == "short_motion_clip":
+        image_prompt = video_prompt
+    shot = _shot_from_storyboard(
+        template=routing_template,
+        heading=shot_heading,
+        tool="",
+        media_type=media_type,
+        motion=motion,
+        visual=visual,
+        image_prompt=image_prompt,
+        labels=labels,
+        overlay_plan="",
+        label_placement=label_placement,
+        label_style=label_style,
+        formula_text="",
+        steps_text="",
+        narration=sentence,
+    )
+    if shot is not None:
+        shot.asset_path = asset_path
+        shot.motion["visual_type"] = visual_type
+        shot.motion["subtitle"] = subtitle
+        shot.motion["subtitle_style"] = subtitle_style
+        shot.motion["review_notes"] = review_notes
+        if wan_prompt:
+            shot.motion["wan_video_prompt"] = wan_prompt
+        if ltx_prompt:
+            shot.motion["ltx_video_prompt"] = ltx_prompt
+
+    return Segment(
+        segment_number=segment_number,
+        narration=sentence,
+        visual=visual,
+        image_prompt=image_prompt,
+        keywords=labels or _keywords(sentence + " " + visual + " " + image_prompt),
+        shot=shot,
+    )
+
+
 def _normalize_template_value(text: str) -> str:
     value = _normalize_header(text).replace(" ", "_")
     aliases = {
         "video_b_roll": "video_broll",
         "split_screen_comparison": "split_screen",
         "realistic_image": "photo",
+        "diagram_overlay": "diagram_overlay",
+        "process_steps": "process_steps",
+        "realistic_labeled_image": "realistic_labeled_image",
+        "realistic_background_with_labels": "realistic_background_with_labels",
+        "short_motion_clip": "short_motion_clip",
         "photo_with_labels": "labeled_image",
         "animation_with_labels": "labeled_image",
     }
@@ -522,9 +591,14 @@ def _placement_map(text: str) -> dict[str, str]:
     result: dict[str, str] = {}
     for part in re.split(r"[\n]+", text or ""):
         clean = part.strip(" .")
-        if not clean or ":" not in clean:
+        if not clean:
             continue
-        name, placement = clean.split(":", 1)
+        if "|" in clean:
+            name, placement = clean.split("|", 1)
+        elif ":" in clean:
+            name, placement = clean.split(":", 1)
+        else:
+            continue
         key = _short_label(name).lower()
         if key and placement.strip():
             result[key] = placement.strip()
@@ -539,6 +613,13 @@ def _coordinate_from_text(text: str) -> str:
     )
     if target:
         return f"{target.group(1)},{target.group(2)}"
+    target_xy = re.search(
+        r"\btarget_xy\s*:\s*(0?\.\d+|1(?:\.0+)?)\s*,\s*(0?\.\d+|1(?:\.0+)?)",
+        text or "",
+        re.I,
+    )
+    if target_xy:
+        return f"{target_xy.group(1)},{target_xy.group(2)}"
     match = re.search(r"(?:@|->|\bxy\b|\btarget\b)?\s*(0?\.\d+|1(?:\.0+)?)\s*[,x]\s*(0?\.\d+|1(?:\.0+)?)", text or "", re.I)
     if match:
         return f"{match.group(1)},{match.group(2)}"

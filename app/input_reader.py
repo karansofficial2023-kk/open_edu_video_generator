@@ -46,6 +46,7 @@ def _try_read_storyboard_docx(path: Path) -> Storyboard | None:
     scenes: list[Scene] = []
     current_scene: Scene | None = None
     pending_narration = False
+    shot_refs: list[tuple[int, int, str]] = []
 
     for para in doc.paragraphs:
         text = para.text.strip()
@@ -53,6 +54,9 @@ def _try_read_storyboard_docx(path: Path) -> Storyboard | None:
             continue
         if text.lower().startswith("storyboard:"):
             title = text.replace("Storyboard:", "", 1).strip() or title
+            continue
+        if text.lower().endswith(" storyboard") and not scenes:
+            title = text[:-len(" storyboard")].strip() or title
             continue
         scene_match = re.match(r"scene\s+(\d+)\s*:\s*(.+)", text, re.IGNORECASE)
         if scene_match:
@@ -68,12 +72,28 @@ def _try_read_storyboard_docx(path: Path) -> Storyboard | None:
         if text.lower().startswith("narration/audio/voiceover"):
             pending_narration = True
             continue
+        shot_match = re.match(r"shot\s+(\d+)\.(\d+)\s*:\s*(.+)", text, re.IGNORECASE)
+        if shot_match:
+            shot_refs.append((int(shot_match.group(1)), int(shot_match.group(2)), shot_match.group(3).strip()))
+            continue
         if pending_narration and current_scene is not None:
             current_scene.narration = text.strip().strip('"')
             pending_narration = False
 
     if not scenes:
         return None
+
+    vertical_tables = [table for table in doc.tables if _is_vertical_shot_table(table)]
+    if vertical_tables:
+        scenes_by_number = {scene.scene_number: scene for scene in scenes}
+        for table, (scene_number, segment_number, heading) in zip(vertical_tables, shot_refs):
+            scene = scenes_by_number.get(scene_number)
+            if scene is not None:
+                scene.segments.append(_segment_from_vertical_table(table, segment_number, heading))
+        for scene in scenes:
+            if not scene.segments and scene.narration:
+                scene.segments = _segments_from_text(scene.narration)
+        return Storyboard(title=title, source=_storyboard_text_from_scenes(scenes), scenes=scenes)
 
     scene_index = 0
     for table in doc.tables:
@@ -167,6 +187,127 @@ def _try_read_storyboard_docx(path: Path) -> Storyboard | None:
             scene.segments = _segments_from_text(scene.narration)
 
     return Storyboard(title=title, source=_storyboard_text_from_scenes(scenes), scenes=scenes)
+
+
+def _is_vertical_shot_table(table) -> bool:
+    if not table.rows or any(len(row.cells) != 2 for row in table.rows):
+        return False
+    keys = {_normalize_header(row.cells[0].text) for row in table.rows}
+    return "narration" in keys and bool(keys & {"template media", "visual type image requirement"})
+
+
+def _segment_from_vertical_table(table, segment_number: int, shot_heading: str) -> Segment:
+    fields = {
+        _normalize_header(row.cells[0].text): row.cells[1].text.strip()
+        for row in table.rows if len(row.cells) >= 2
+    }
+    sentence = fields.get("narration", "").strip().strip('"')
+    template_lines = _plain_items(fields.get("template media", ""))
+    template = _normalize_template_value(template_lines[0] if template_lines else "")
+    media_type = template_lines[1] if len(template_lines) > 1 else ""
+    tool_lines = _plain_items(fields.get("tool motion type", ""))
+    tool = tool_lines[0] if tool_lines else ""
+
+    visual_sections = _named_sections(fields.get("visual type image requirement", ""))
+    visual_type = visual_sections.get("visual type", "")
+    visual = visual_sections.get("image requirement", "") or visual_sections.get("visual notes", "") or sentence
+    local_animation = visual_sections.get("local animation", "")
+
+    asset_sections = _named_sections(fields.get("asset image prompt", ""))
+    image_prompt = asset_sections.get("image prompt", "") or visual
+    motion_sections = _named_sections(fields.get("motion subtitle", ""))
+    motion = motion_sections.get("motion", "") or local_animation
+    subtitle = motion_sections.get("subtitle", "")
+    subtitle_style = motion_sections.get("subtitle style", "")
+    overlay_plan = "\n".join(
+        value for value in [motion_sections.get("arrows", ""), motion_sections.get("highlights", "")]
+        if value
+    )
+
+    labels_text = fields.get("labels", "")
+    labels = _labels(labels_text)
+    label_placement = fields.get("label placement", "")
+    label_style = fields.get("label style", "")
+
+    quality_sections = _named_sections(fields.get("coverage asset quality", ""))
+    formula_text = quality_sections.get("formula lines", "")
+    steps_text = quality_sections.get("explain steps", "") or quality_sections.get("steps", "")
+
+    wan_sections = _named_sections(fields.get("wan video shot", ""))
+    ltx_sections = _named_sections(fields.get("ltx video shot", ""))
+    video_prompt = ltx_sections.get("prompt", "") or wan_sections.get("prompt", "")
+    if video_prompt:
+        image_prompt = video_prompt
+
+    # The vertical format carries both the legacy renderer template and the
+    # authoritative visual type. Prefer the visual type so an unlabeled
+    # realistic image cannot be routed as a labeled image merely because an
+    # older Template / Media value says "labeled_image".
+    routing_template = _normalize_template_value(visual_type) or template
+    shot = _shot_from_storyboard(
+        template=routing_template,
+        heading=shot_heading,
+        tool=tool,
+        media_type=media_type,
+        motion=motion,
+        visual=visual,
+        image_prompt=image_prompt,
+        labels=labels,
+        overlay_plan=overlay_plan,
+        label_placement=label_placement,
+        label_style=label_style,
+        formula_text=formula_text,
+        steps_text=steps_text,
+        narration=sentence,
+    )
+    if shot is not None:
+        if visual_type:
+            shot.motion["visual_type"] = visual_type
+        if subtitle:
+            shot.motion["subtitle"] = subtitle
+        if subtitle_style:
+            shot.motion["subtitle_style"] = subtitle_style
+
+    return Segment(
+        segment_number=segment_number,
+        narration=sentence,
+        visual=visual,
+        image_prompt=image_prompt,
+        keywords=labels or _keywords(sentence + " " + visual + " " + image_prompt),
+        shot=shot,
+    )
+
+
+def _normalize_template_value(text: str) -> str:
+    value = _normalize_header(text).replace(" ", "_")
+    aliases = {
+        "video_b_roll": "video_broll",
+        "split_screen_comparison": "split_screen",
+        "realistic_image": "photo",
+        "photo_with_labels": "labeled_image",
+        "animation_with_labels": "labeled_image",
+    }
+    return aliases.get(value, value)
+
+
+def _named_sections(text: str) -> dict[str, str]:
+    known = (
+        "visual_type", "image_requirement", "visual notes", "local animation",
+        "asset_path", "image recommendations", "image_prompt", "motion", "subtitle",
+        "subtitle_style", "arrows", "highlights", "asset quality", "formula lines",
+        "explain steps", "steps", "columns", "template", "heading", "duration",
+        "clip duration", "clip count", "join", "prompt", "negative",
+    )
+    pattern = re.compile(
+        r"(?im)^(" + "|".join(re.escape(name) for name in known) + r")\s*:\s*"
+    )
+    matches = list(pattern.finditer(text or ""))
+    result: dict[str, str] = {}
+    for index, match in enumerate(matches):
+        end = matches[index + 1].start() if index + 1 < len(matches) else len(text)
+        key = _normalize_header(match.group(1))
+        result[key] = text[match.end():end].strip()
+    return result
 
 
 def _normalize_header(text: str) -> str:
@@ -267,6 +408,9 @@ def _shot_from_storyboard(
             motion=motion_data,
         )
 
+    if clean_template in {"photo", "realistic_image"}:
+        return Shot(template="photo", heading=shot_heading, motion=motion_data)
+
     has_formula_text = bool(_formula_lines(formula_text))
     formula_requested = clean_template in {"formula", "formula_card", "derivation"} or any(
         term in " ".join([template, media_type, tool]).lower()
@@ -291,6 +435,9 @@ def _shot_from_storyboard(
             motion=motion_data,
         )
 
+    if clean_template in {"video_broll", "ltx", "ltx_video", "wan", "wan_video", "short_motion_clip"} or "ltx" in routing_text or "wan video" in routing_text:
+        return Shot(template="short_motion_clip" if clean_template == "short_motion_clip" else "video_broll", heading=shot_heading, motion=motion_data)
+
     label_templates = {
         "labeled_image",
         "labelled_image",
@@ -313,9 +460,6 @@ def _shot_from_storyboard(
             highlights=_highlight_specs(overlay_plan),
             motion=motion_data,
         )
-
-    if clean_template in {"video_broll", "ltx", "ltx_video", "wan", "wan_video", "short_motion_clip"} or "ltx" in routing_text or "wan video" in routing_text:
-        return Shot(template="short_motion_clip" if clean_template == "short_motion_clip" else "video_broll", heading=shot_heading, motion=motion_data)
 
     return _shot_from_media_type(media_type, motion, visual, image_prompt, labels)
 
@@ -376,7 +520,7 @@ def _label_specs(labels: list[str], overlay_plan: str, label_placement: str = ""
 
 def _placement_map(text: str) -> dict[str, str]:
     result: dict[str, str] = {}
-    for part in re.split(r"[\n;]+", text or ""):
+    for part in re.split(r"[\n]+", text or ""):
         clean = part.strip(" .")
         if not clean or ":" not in clean:
             continue
@@ -388,6 +532,13 @@ def _placement_map(text: str) -> dict[str, str]:
 
 
 def _coordinate_from_text(text: str) -> str:
+    target = re.search(
+        r"\btarget\s*=\s*\(\s*(0?\.\d+|1(?:\.0+)?)\s*,\s*(0?\.\d+|1(?:\.0+)?)\s*\)",
+        text or "",
+        re.I,
+    )
+    if target:
+        return f"{target.group(1)},{target.group(2)}"
     match = re.search(r"(?:@|->|\bxy\b|\btarget\b)?\s*(0?\.\d+|1(?:\.0+)?)\s*[,x]\s*(0?\.\d+|1(?:\.0+)?)", text or "", re.I)
     if match:
         return f"{match.group(1)},{match.group(2)}"
@@ -432,7 +583,7 @@ def _highlight_specs(overlay_plan: str) -> list[dict[str, str]]:
 
 def _short_label(text: str) -> str:
     text = re.sub(r"(?i)\b(arrows?|highlights?|formula lines?|explain steps?|steps?|columns?|labels?)\b", " ", text or "")
-    words = re.findall(r"[A-Za-z0-9][A-Za-z0-9+-]{1,}", text)
+    words = re.findall(r"[A-Za-z0-9][A-Za-z0-9+-]*", text)
     if not words:
         return "Label"
     label = " ".join(words[:3])

@@ -93,6 +93,9 @@ def _try_read_storyboard_docx(path: Path) -> Storyboard | None:
         for scene in scenes:
             if not scene.segments and scene.narration:
                 scene.segments = _segments_from_text(scene.narration)
+        first_segment = next((segment for scene in scenes for segment in scene.segments), None)
+        if first_segment and first_segment.shot and first_segment.shot.template == "title_card":
+            first_segment.shot.heading = title
         return Storyboard(title=title, source=_storyboard_text_from_scenes(scenes), scenes=scenes)
 
     scene_index = 0
@@ -323,6 +326,10 @@ def _segment_from_production_fields(
     )
     if shot is not None:
         shot.asset_path = asset_path
+        if shot.template == "title_card":
+            # Title cards may display only an explicit viewer-facing subtitle.
+            # Image requirements and production metadata are never subheadings.
+            shot.subheading = subtitle.strip()
         shot.motion["visual_type"] = visual_type
         shot.motion["subtitle"] = subtitle
         shot.motion["subtitle_style"] = subtitle_style

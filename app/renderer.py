@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import subprocess
 import shutil
+import re
 from pathlib import Path
 
 from .config import AppConfig
@@ -194,17 +195,42 @@ def _subtitle_filter(subtitles: Path, config: AppConfig) -> str:
     path = path.replace(":", r"\:").replace("'", r"\'")
     style = ",".join([
         "FontName=Arial",
-        "Fontsize=24",
+        "Fontsize=26",
         "PrimaryColour=&H00FFFFFF",
         "OutlineColour=&H00000000",
         "BackColour=&H00000000",
         "BorderStyle=1",
-        "Outline=2",
-        "Shadow=2",
+        "Outline=1",
+        "Shadow=0",
         "Alignment=2",
-        "MarginV=38",
+        "MarginV=18",
     ])
+    band = "drawbox=x=0:y=ih*0.72:w=iw:h=ih*0.28:color=black@0.55:t=fill"
+    intervals = _subtitle_intervals(subtitles)
+    if intervals:
+        enabled = "+".join(f"between(t,{start:.3f},{end:.3f})" for start, end in intervals)
+        band += f":enable='{enabled}'"
+        return f"{band},subtitles='{path}':force_style='{style}'"
     return f"subtitles='{path}':force_style='{style}'"
+
+
+def _subtitle_intervals(subtitles: Path) -> list[tuple[float, float]]:
+    try:
+        text = subtitles.read_text(encoding="utf-8-sig")
+    except OSError:
+        return []
+    pattern = re.compile(
+        r"(\d{2}):(\d{2}):(\d{2})[,.](\d{3})\s*-->\s*"
+        r"(\d{2}):(\d{2}):(\d{2})[,.](\d{3})"
+    )
+    intervals = []
+    for match in pattern.finditer(text):
+        values = [int(value) for value in match.groups()]
+        start = values[0] * 3600 + values[1] * 60 + values[2] + values[3] / 1000
+        end = values[4] * 3600 + values[5] * 60 + values[6] + values[7] / 1000
+        if end > start:
+            intervals.append((start, end))
+    return intervals
 
 
 def _ass_color(hex_color: str, alpha: str = "00") -> str:

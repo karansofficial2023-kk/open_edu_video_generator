@@ -77,6 +77,16 @@ class ComfyUIConfig(BaseModel):
     video_prompt_suffix: str = "no text, no subtitles, no watermark, coherent motion"
 
 
+class VisionQAConfig(BaseModel):
+    enabled: bool = False
+    model: str = "qwen2.5vl:7b"
+    max_attempts: int = 3
+    minimum_relevance: float = 0.78
+    minimum_subject_match: float = 0.72
+    block_on_failure: bool = True
+    timeout_seconds: int = 600
+
+
 class AppConfig(BaseModel):
     project_name: str = "Open Edu Video Generator"
     output_resolution: Resolution = Resolution()
@@ -96,6 +106,7 @@ class AppConfig(BaseModel):
     voice: VoiceConfig = VoiceConfig()
     render: RenderConfig = RenderConfig()
     comfyui: ComfyUIConfig = ComfyUIConfig()
+    vision_qa: VisionQAConfig = VisionQAConfig()
 
 
 def load_config(path: str | Path) -> AppConfig:

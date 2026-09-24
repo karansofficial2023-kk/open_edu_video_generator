@@ -18,6 +18,40 @@ def _add_shot_table(document: Document, values: dict[str, str]) -> None:
 
 
 class VerticalStoryboardReaderTests(unittest.TestCase):
+    def test_title_card_never_displays_image_requirement_as_subheading(self):
+        with tempfile.TemporaryDirectory() as folder:
+            path = Path(folder) / "title_storyboard.docx"
+            document = Document()
+            document.add_paragraph("Storyboard: General Science")
+            document.add_paragraph("Scene 1: Introduction")
+            document.add_paragraph("Shot 1.1: General Science")
+            _add_shot_table(document, {
+                "shot_id": "1.1",
+                "narration": "Science explains the natural world.",
+                "visual_type": "title_card",
+                "media_type": "generated still",
+                "image_requirement": "Production background with empty central margins.",
+                "image_prompt": "Clean realistic background, no text.",
+                "labels": "",
+                "label_placement": "",
+                "label_style": "",
+                "motion": "slow_zoom_in",
+                "subtitle": "",
+                "subtitle_style": "bottom_band",
+                "asset_path": "",
+                "wan_video_prompt": "",
+                "ltx_video_prompt": "",
+                "review_notes": "Production metadata only.",
+            })
+            document.save(path)
+
+            _, storyboard = read_input(path)
+
+            shot = storyboard.scenes[0].segments[0].shot
+            self.assertEqual("title_card", shot.template)
+            self.assertEqual("General Science", shot.heading)
+            self.assertEqual("", shot.subheading)
+
     def test_reads_exact_production_record_fields(self):
         with tempfile.TemporaryDirectory() as folder:
             path = Path(folder) / "production_storyboard.docx"

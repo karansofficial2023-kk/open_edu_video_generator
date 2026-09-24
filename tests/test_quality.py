@@ -14,11 +14,12 @@ from PIL import Image, ImageDraw
 from app.comfyui_client import ComfyUIClient
 from app.config import AppConfig, load_config
 from app.input_reader import _shot_from_media_type
-from app.renderer import render_video
+from app.renderer import _subtitle_filter, render_video
 from app.schema import Scene, Segment, Shot, Storyboard
 from app.visual_planner import prepare_visual_prompts
 from app.storyboard_cleanup import normalize_storyboard, promote_real_image_shots, promote_video_shots
 from app.visuals import _font, _pixel_wrap, render_ai_image_frame, render_segment_frames
+from app.vision_qa import _normalize_proposals
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -97,6 +98,43 @@ class QualityTests(unittest.TestCase):
         self.assertEqual(result["6"]["inputs"]["text"], "A flower")
         self.assertEqual(result["7"]["inputs"]["text"], config.comfyui.negative_prompt)
         self.assertNotEqual(workflow["6"]["inputs"]["text"], "A flower")
+
+    def test_flux_workflow_patches_sd3_latent_dimensions(self):
+        workflow = json.loads((ROOT / "workflows/flux_schnell_fp8_api.json").read_text())
+        config = AppConfig()
+        config.comfyui.checkpoint = "flux1-schnell-fp8.safetensors"
+        config.comfyui.width = 960
+        config.comfyui.height = 544
+
+        result = ComfyUIClient(config)._patch_workflow(workflow, "A sunflower", "flux_test")
+
+        self.assertEqual(result["4"]["inputs"]["ckpt_name"], config.comfyui.checkpoint)
+        self.assertEqual(result["5"]["inputs"]["width"], 960)
+        self.assertEqual(result["5"]["inputs"]["height"], 544)
+        self.assertEqual(result["6"]["inputs"]["text"], "A sunflower")
+        self.assertEqual(result["9"]["inputs"]["filename_prefix"], "flux_test")
+
+    def test_vision_coordinate_proposals_are_normalized_but_not_approved(self):
+        proposals = _normalize_proposals({
+            "Stigma": {"x": 512, "y": 288, "confidence": 0.9},
+            "Unknown": None,
+        }, 1024, 576)
+        self.assertEqual(proposals["Stigma"]["x"], 0.5)
+        self.assertEqual(proposals["Stigma"]["y"], 0.5)
+        self.assertEqual(proposals["Unknown"], None)
+
+    def test_subtitle_filter_uses_one_readable_bottom_band(self):
+        with tempfile.TemporaryDirectory() as directory:
+            subtitles = Path(directory) / "lesson.srt"
+            subtitles.write_text(
+                "1\n00:00:05,250 --> 00:00:06,500\nPollen transfer\n",
+                encoding="utf-8",
+            )
+            result = _subtitle_filter(subtitles, AppConfig())
+            self.assertIn("drawbox=x=0:y=ih*0.72", result)
+            self.assertIn("color=black@0.55", result)
+            self.assertIn("between(t,5.250,6.500)", result)
+            self.assertIn("Fontsize=26", result)
 
     def test_raw_label_instructions_are_not_appended(self):
         segment = storyboard().all_segments()[0][1]

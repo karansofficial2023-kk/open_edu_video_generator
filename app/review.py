@@ -41,6 +41,14 @@ def review_storyboard(board, output_dir, expected_topic: str = ""):
                 for label in labels:
                     if label in weak_label_terms or len(label.split()) > 4:
                         add("warning", f"Weak label for precision video: {label!r}. Use exact visible part names.")
+            if segment.shot.template in {
+                "labeled_image", "realistic_labeled_image",
+                "realistic_background_with_labels", "diagram_overlay",
+            }:
+                for label in segment.shot.labels:
+                    if not any(label.get(key) for key in ("xy", "target_xy", "coordinate", "coords")):
+                        name = str(label.get("text") or label.get("name") or "label").strip()
+                        add("error", f"Label {name!r} needs a verified coordinate from the exact approved image.")
         else:
             add("warning", "Legacy segment has no structured shot; it will remain a photograph/slide.")
         normalized = re.sub(r"\W+", " ", segment.narration.lower()).strip()

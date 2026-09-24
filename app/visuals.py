@@ -11,6 +11,46 @@ from .config import AppConfig
 from .schema import Segment, Storyboard
 
 
+def _composite_config(config: AppConfig) -> AppConfig:
+    if not config.render.burn_captions:
+        return config
+    result = config.model_copy(deep=True)
+    result.render.burn_captions = False
+    return result
+
+
+def _generate_image_with_qa(comfy_client, segment, generated: Path, prefix: str, output_dir: Path, config: AppConfig) -> Path:
+    if not config.vision_qa.enabled:
+        return comfy_client.generate_image(segment, generated, prefix)
+
+    from .vision_qa import VisionQAClient, append_qa_audit
+
+    qa_client = VisionQAClient(config)
+    attempts = max(1, config.vision_qa.max_attempts)
+    last_result = None
+    for attempt in range(1, attempts + 1):
+        candidate = generated.with_stem(f"{generated.stem}_attempt_{attempt}")
+        comfy_client.generate_image(segment, candidate, f"{prefix}_attempt_{attempt}")
+        comfy_client.free_memory()
+        result = qa_client.analyze(segment, candidate)
+        append_qa_audit(output_dir / "vision_qa.json", {
+            "segment": segment.segment_number,
+            "attempt": attempt,
+            "image": str(candidate),
+            **result.to_dict(),
+            "coordinate_policy": "proposals_only_not_verified",
+        })
+        last_result = result
+        if result.accepted:
+            candidate.replace(generated)
+            return generated
+    if config.vision_qa.block_on_failure:
+        reasons = "; ".join(last_result.reasons if last_result else []) or "quality thresholds not met"
+        raise ValueError(f"Vision QA rejected {prefix} after {attempts} attempts: {reasons}")
+    candidate.replace(generated)
+    return generated
+
+
 def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config: AppConfig) -> list[Path]:
     from .label_overlay import is_label_template
 
@@ -73,7 +113,7 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
             if segment.shot and segment.shot.template in pro_asset_templates:
                 from .animation_renderer import render_frame
                 with Image.open(reviewed) as source:
-                    render_frame(segment, scene.title, 0, config, source=source).save(path)
+                    render_frame(segment, scene.title, 0, _composite_config(config), source=source).save(path)
                 paths.append(path)
                 continue
             if config.render.layout == "modern" or segment.shot:
@@ -92,10 +132,13 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
                     continue
             generated_dir = output_dir / "generated_images"
             generated = generated_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.png"
-            comfy_client.generate_image(
+            _generate_image_with_qa(
+                comfy_client,
                 segment,
                 generated,
                 f"open_edu_scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}",
+                output_dir,
+                config,
             )
             if segment.shot and is_label_template(segment.shot.template):
                 paths.append(generated)
@@ -103,7 +146,7 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
             if segment.shot and segment.shot.template in pro_asset_templates:
                 from .animation_renderer import render_frame
                 with Image.open(generated) as source:
-                    render_frame(segment, scene.title, 0, config, source=source).save(path)
+                    render_frame(segment, scene.title, 0, _composite_config(config), source=source).save(path)
                 paths.append(path)
                 continue
             if config.render.layout == "modern" or segment.shot:

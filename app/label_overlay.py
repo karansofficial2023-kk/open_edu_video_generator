@@ -92,20 +92,7 @@ def resolve_label_target(text: str, spec: dict[str, Any], width: int, height: in
     explicit = _explicit_xy(spec, width, height)
     if explicit:
         return explicit, 1.0, "manual coordinate"
-    placement = " ".join(str(spec.get(key, "")) for key in ("placement", "target", "description", "position", "anchor")).lower()
-    combined = f"{text} {placement}".lower()
-    if not placement or placement.strip().isdigit():
-        return None, 0.0, "missing placement or coordinate override"
-    x_hint = _horizontal_hint(combined, width)
-    y_hint = _vertical_hint(combined, height)
-    semantic = _semantic_target(text.lower(), width, height)
-    if semantic is None:
-        return None, 0.35, "unknown semantic target"
-    sx, sy = semantic
-    x = x_hint if x_hint is not None else sx
-    y = y_hint if y_hint is not None else sy
-    confidence = 0.78 if (x_hint is not None or y_hint is not None) else 0.58
-    return (int(x), int(y)), confidence, "semantic target with placement hint"
+    return None, 0.0, "verified image-specific coordinate required"
 
 
 def place_label_box(
@@ -210,48 +197,6 @@ def _norm_to_px(x: float, y: float, width: int, height: int) -> tuple[int, int]:
     if 0 <= x <= 1 and 0 <= y <= 1:
         return round(x * width), round(y * height)
     return round(x), round(y)
-
-
-def _semantic_target(text: str, width: int, height: int) -> tuple[int, int] | None:
-    table = [
-        (("anther", "pollen source"), (0.37, 0.44)),
-        (("stigma", "receptive"), (0.55, 0.38)),
-        (("pollen grains", "pollen"), (0.43, 0.45)),
-        (("pollen transfer path", "transfer path", "curved arrow"), (0.50, 0.44)),
-        (("pollinator", "bee", "insect"), (0.62, 0.42)),
-        (("closed flower", "cleistogamy"), (0.50, 0.48)),
-        (("wood sorrel",), (0.50, 0.52)),
-        (("style", "long style", "short style"), (0.52, 0.48)),
-        (("nectar guide", "nectar"), (0.48, 0.50)),
-        (("ray floret", "ray florets"), (0.30, 0.46)),
-        (("disc floret", "disc florets", "central disk"), (0.50, 0.46)),
-        (("flower 1",), (0.32, 0.50)),
-        (("flower 2",), (0.68, 0.50)),
-    ]
-    for keys, point in table:
-        if any(key in text for key in keys):
-            return round(point[0] * width), round(point[1] * height)
-    return None
-
-
-def _horizontal_hint(text: str, width: int) -> int | None:
-    if "left" in text:
-        return round(width * 0.33)
-    if "right" in text:
-        return round(width * 0.67)
-    if "center" in text or "middle" in text:
-        return round(width * 0.5)
-    return None
-
-
-def _vertical_hint(text: str, height: int) -> int | None:
-    if "top" in text or "upper" in text:
-        return round(height * 0.35)
-    if "bottom" in text or "lower" in text:
-        return round(height * 0.66)
-    if "center" in text or "middle" in text:
-        return round(height * 0.5)
-    return None
 
 
 def _clamp_box(box: tuple[int, int, int, int], width: int, height: int, margin: int) -> tuple[int, int, int, int]:

@@ -45,6 +45,14 @@ class ComfyUIClient:
         except requests.RequestException:
             return False
 
+    def free_memory(self) -> None:
+        response = requests.post(
+            f"{self.base_url}/free",
+            json={"unload_models": True, "free_memory": True},
+            timeout=30,
+        )
+        response.raise_for_status()
+
     def _load_workflow(self) -> dict[str, Any]:
         workflow_path = Path(self.config.comfyui.workflow_path)
         if not workflow_path.is_absolute():
@@ -83,7 +91,7 @@ class ComfyUIClient:
             inputs = node.setdefault("inputs", {})
             if class_type == "CheckpointLoaderSimple" and not video:
                 inputs["ckpt_name"] = self.config.comfyui.checkpoint
-            elif class_type == "EmptyLatentImage":
+            elif class_type in {"EmptyLatentImage", "EmptySD3LatentImage"}:
                 inputs["width"] = self.config.comfyui.video_width if video else self.config.comfyui.width
                 inputs["height"] = self.config.comfyui.video_height if video else self.config.comfyui.height
                 inputs["batch_size"] = 1

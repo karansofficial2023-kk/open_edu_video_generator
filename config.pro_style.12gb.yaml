@@ -14,6 +14,15 @@ ollama_url: "http://localhost:11434"
 ollama_model: "qwen3:14b"
 use_ollama: true
 
+vision_qa:
+  enabled: true
+  model: "qwen2.5vl:7b"
+  max_attempts: 3
+  minimum_relevance: 0.78
+  minimum_subject_match: 0.72
+  block_on_failure: true
+  timeout_seconds: 600
+
 tts_provider: "edge"
 edge_tts:
   voice: "en-IN-NeerjaNeural"
@@ -49,20 +58,20 @@ render:
 comfyui:
   api_url: "http://127.0.0.1:8188"
   enabled: true
-  workflow_path: "workflows/sdxl_txt2img_api.json"
-  checkpoint: "sd_xl_base_1.0.safetensors"
+  workflow_path: "workflows/flux_schnell_fp8_api.json"
+  checkpoint: "flux1-schnell-fp8.safetensors"
   width: 1024
   height: 576
-  steps: 20
-  cfg: 4.5
+  steps: 4
+  cfg: 1.0
   sampler_name: "euler"
   scheduler: "simple"
   seed: -1
   timeout_seconds: 1800
   fallback_to_slideshow: false
-  rewrite_prompts: true
-  prompt_prefix: "high resolution educational documentary photograph, realistic biology, clear subject, fine natural detail, soft daylight,"
-  prompt_suffix: "single realistic scene, accurate biology, text-free image, no labels"
+  rewrite_prompts: false
+  prompt_prefix: "sharp high-resolution educational documentary photograph, exact named scientific subject, physically realistic anatomy, clear focal subject, fine natural detail, neutral natural colors, soft daylight, label-safe negative space,"
+  prompt_suffix: "single coherent realistic scene, scientifically plausible structure, text-free image, no labels, no arrows, no caption, no watermark, no logo, no border, no infographic, no cartoon style, no painterly style, no duplicated anatomy, no deformed organisms"
   negative_prompt: "text, letters, typography, labels, captions, watermark, logo, signature, diagram, infographic, chart, collage, grid, panels, border, blurry, distorted anatomy, duplicate parts, oversaturated, bad motion, flicker"
   video_enabled: true
   video_workflow_path: "workflows/ltx_video_12gb_api.json"
@@ -79,7 +88,4 @@ comfyui:
   video_max_segments: 1
   video_prompt_prefix: "realistic educational nature video, stable camera, gentle natural motion, coherent subject,"
   video_prompt_suffix: "short cinematic b-roll, natural motion, coherent anatomy, no text, no subtitles, no watermark"
-
-
-
 

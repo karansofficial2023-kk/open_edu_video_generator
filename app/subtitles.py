@@ -7,10 +7,20 @@ from .schema import Caption, Segment, Storyboard
 
 def phrase_captions(segment: Segment) -> list[Caption]:
     """Group speech boundaries; proportional timing is the preview/legacy fallback."""
+    subtitle = None
+    if segment.shot and "subtitle" in segment.shot.motion:
+        subtitle = str(segment.shot.motion.get("subtitle") or "").strip()
+        if not subtitle:
+            return []
     words = segment.captions
     duration = segment.speech_duration or (segment.end - segment.start)
+    if subtitle is not None and subtitle != segment.narration.strip():
+        tokens = subtitle.split()
+        words = [Caption(text=w, start=i * duration / len(tokens),
+                         end=(i + 1) * duration / len(tokens))
+                 for i, w in enumerate(tokens)] if duration > 0 else []
     if not words:
-        tokens = segment.narration.split()
+        tokens = (subtitle if subtitle is not None else segment.narration).split()
         words = [Caption(text=w, start=i * duration / len(tokens),
                          end=(i + 1) * duration / len(tokens))
                  for i, w in enumerate(tokens)] if duration > 0 else []

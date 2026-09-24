@@ -72,6 +72,16 @@ class AnimationTests(unittest.TestCase):
         self.assertIsNone(plans[0].target)
         self.assertTrue(review)
 
+    def test_semantic_description_never_guesses_a_scientific_coordinate(self):
+        shot = Shot(template="realistic_labeled_image", labels=[{
+            "text": "Anther",
+            "placement": "target the pollen-bearing terminal part on the upper left",
+        }])
+        plans, review = build_label_plans(shot, (1280, 720))
+        self.assertIsNone(plans[0].target)
+        self.assertEqual(plans[0].reason, "verified image-specific coordinate required")
+        self.assertTrue(review)
+
     def test_label_boxes_avoid_subtitle_safe_area_and_overlap(self):
         shot = Shot(
             template="realistic_labeled_image",
@@ -122,6 +132,15 @@ class AnimationTests(unittest.TestCase):
         cues = phrase_captions(self.segment)
         self.assertEqual(' '.join(x.text for x in cues), self.segment.narration)
         self.assertEqual(cues[-1].end, self.segment.captions[-1].end)
+
+    def test_explicit_blank_subtitle_suppresses_narration_caption(self):
+        self.segment.shot.motion["subtitle"] = ""
+        self.assertEqual(phrase_captions(self.segment), [])
+
+    def test_explicit_subtitle_is_used_instead_of_narration(self):
+        self.segment.shot.motion["subtitle"] = "Viewer-facing summary only."
+        text = " ".join(cue.text for cue in phrase_captions(self.segment))
+        self.assertEqual(text, "Viewer-facing summary only.")
 
     def test_review_rejects_known_bad_term(self):
         self.segment.narration = 'This is glystogamy.'

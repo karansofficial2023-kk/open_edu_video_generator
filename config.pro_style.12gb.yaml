@@ -23,6 +23,13 @@ vision_qa:
   block_on_failure: true
   timeout_seconds: 600
 
+asset_retrieval:
+  enabled: true
+  provider: "wikimedia_commons"
+  max_candidates: 8
+  timeout_seconds: 45
+  thumbnail_width: 1600
+
 tts_provider: "edge"
 edge_tts:
   voice: "en-IN-NeerjaNeural"
@@ -88,4 +95,3 @@ comfyui:
   video_max_segments: 1
   video_prompt_prefix: "realistic educational nature video, stable camera, gentle natural motion, coherent subject,"
   video_prompt_suffix: "short cinematic b-roll, natural motion, coherent anatomy, no text, no subtitles, no watermark"
-

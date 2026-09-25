@@ -11,6 +11,7 @@ from unittest.mock import Mock, patch
 
 from PIL import Image, ImageDraw
 
+from app.asset_retrieval import CommonsAssetClient
 from app.comfyui_client import ComfyUIClient
 from app.config import AppConfig, load_config
 from app.input_reader import _shot_from_media_type
@@ -18,8 +19,20 @@ from app.renderer import _subtitle_filter, render_video
 from app.schema import Scene, Segment, Shot, Storyboard
 from app.visual_planner import prepare_visual_prompts
 from app.storyboard_cleanup import normalize_storyboard, promote_real_image_shots, promote_video_shots
-from app.visuals import _font, _pixel_wrap, render_ai_image_frame, render_segment_frames
-from app.vision_qa import _normalize_proposals
+from app.visuals import (
+    _comparison_concepts,
+    _comparison_panel_scene,
+    _comparison_search_query,
+    _definition_for_concept,
+    _physical_clause_for_concept,
+    _relationship_visual_cues,
+    _transfer_endpoints,
+    _font,
+    _pixel_wrap,
+    render_ai_image_frame,
+    render_segment_frames,
+)
+from app.vision_qa import VisionQAClient, _normalize_proposals
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -34,6 +47,32 @@ def storyboard():
 
 
 class QualityTests(unittest.TestCase):
+    def test_commons_retrieval_keeps_only_approved_bitmap_licenses(self):
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {
+            "query": {"pages": {
+                "1": {"title": "File:Approved.jpg", "imageinfo": [{
+                    "mediatype": "BITMAP",
+                    "thumburl": "https://example.test/approved.jpg",
+                    "descriptionurl": "https://commons.test/approved",
+                    "extmetadata": {
+                        "LicenseShortName": {"value": "CC BY-SA 4.0"},
+                        "Artist": {"value": "Example creator"},
+                    },
+                }]},
+                "2": {"title": "File:Rejected.jpg", "imageinfo": [{
+                    "mediatype": "BITMAP",
+                    "thumburl": "https://example.test/rejected.jpg",
+                    "extmetadata": {"LicenseShortName": {"value": "All rights reserved"}},
+                }]},
+            }}
+        }
+        with patch("app.asset_retrieval.requests.get", return_value=response):
+            assets = CommonsAssetClient(AppConfig()).search("test query")
+        self.assertEqual([asset.title for asset in assets], ["File:Approved.jpg"])
+        self.assertEqual(assets[0].creator, "Example creator")
+
     def test_queue_error_preserves_server_validation_details(self):
         response = Mock(ok=False, status_code=400)
         response.json.return_value = {"node_errors": {"4": {"errors": [
@@ -122,6 +161,62 @@ class QualityTests(unittest.TestCase):
         self.assertEqual(proposals["Stigma"]["x"], 0.5)
         self.assertEqual(proposals["Stigma"]["y"], 0.5)
         self.assertEqual(proposals["Unknown"], None)
+
+    def test_malformed_vision_response_is_a_rejected_attempt(self):
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {"message": {"content": "{truncated"}}
+        segment = storyboard().all_segments()[0][1]
+        with tempfile.TemporaryDirectory() as directory:
+            image = Path(directory) / "image.png"
+            Image.new("RGB", (64, 64), "white").save(image)
+            with patch("app.vision_qa.requests.post", return_value=response):
+                result = VisionQAClient(AppConfig()).analyze(segment, image)
+        self.assertFalse(result.accepted)
+        self.assertIn("malformed JSON", result.reasons[0])
+
+    def test_comparison_contract_is_split_into_focused_assets(self):
+        segment = storyboard().all_segments()[0][1]
+        segment.visual = (
+            "Comparative composition for each narration-defined mechanism: "
+            "Autogamy; Geitonogamy; Xenogamy."
+        )
+        segment.narration = (
+            "Autogamy occurs within one flower, geitonogamy involves flowers on one plant, "
+            "and xenogamy occurs between plants."
+        )
+        concepts = _comparison_concepts(segment)
+        self.assertEqual(concepts, ["Autogamy", "Geitonogamy", "Xenogamy"])
+        self.assertIn("within one flower", _definition_for_concept(segment.narration, "Autogamy", concepts))
+        self.assertIn("between plants", _definition_for_concept(segment.narration, "Xenogamy", concepts))
+        physical_clause = _physical_clause_for_concept(
+            _definition_for_concept(segment.narration, "Autogamy", concepts), "Autogamy"
+        )
+        self.assertNotIn("Autogamy", physical_clause)
+        self.assertIn("within one flower", physical_clause)
+        lesson_context = "Pollination is the transfer of pollen grains from anther to stigma."
+        self.assertEqual(_transfer_endpoints(lesson_context), ("pollen grains", "anther", "stigma"))
+        same_subject_cues = _relationship_visual_cues("transfer within the same flower", lesson_context)
+        self.assertIn("Do not include an insect", same_subject_cues)
+        self.assertIn("Both the source structure and receiving structure", same_subject_cues)
+        self.assertIn("never use an isolated close-up", same_subject_cues)
+        self.assertIn("anther as the source structure", same_subject_cues)
+        self.assertIn("stigma as the receiving structure", same_subject_cues)
+        panel_scene = _comparison_panel_scene(
+            "Autogamy occurs within one flower", lesson_context
+        )
+        self.assertIn("One complete flower", panel_scene)
+        self.assertIn("anther and stigma", panel_scene)
+        self.assertNotIn("transfer", panel_scene.casefold())
+        self.assertEqual(
+            _comparison_search_query("Autogamy", "Autogamy occurs within one flower", lesson_context),
+            "flower anther stigma",
+        )
+        same_plant_scene = _comparison_panel_scene(
+            "Geitonogamy involves different flowers of the same plant", lesson_context
+        )
+        self.assertIn("two distinct open flowers", same_plant_scene)
+        self.assertIn("same continuous stem", same_plant_scene)
 
     def test_subtitle_filter_uses_one_readable_bottom_band(self):
         with tempfile.TemporaryDirectory() as directory:

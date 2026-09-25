@@ -55,13 +55,23 @@ class VisionQAClient:
                 "format": "json",
                 "stream": False,
                 "keep_alive": 0,
-                "options": {"temperature": 0},
+                "options": {"temperature": 0, "num_predict": 512},
             },
             timeout=self.config.vision_qa.timeout_seconds,
         )
         response.raise_for_status()
         content = response.json().get("message", {}).get("content", "{}")
-        payload = _json_object(content)
+        try:
+            payload = _json_object(content)
+        except (json.JSONDecodeError, ValueError) as error:
+            return VisionQAResult(
+                accepted=False,
+                relevance=0.0,
+                subject_match=0.0,
+                text_present=False,
+                reasons=[f"Vision QA returned malformed JSON: {error}"],
+                raw={"response_preview": content[:500]},
+            )
         relevance = _score(payload.get("relevance"))
         subject_match = _score(payload.get("subject_match"))
         text_present = bool(payload.get("text_present", False))

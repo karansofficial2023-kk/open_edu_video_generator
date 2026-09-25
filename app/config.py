@@ -87,6 +87,25 @@ class VisionQAConfig(BaseModel):
     timeout_seconds: int = 600
 
 
+class AssetRetrievalConfig(BaseModel):
+    enabled: bool = False
+    provider: str = "wikimedia_commons"
+    max_candidates: int = 8
+    timeout_seconds: int = 45
+    thumbnail_width: int = 1600
+    user_agent: str = "OpenEduVideoGenerator/0.1 (local educational video application)"
+    allowed_licenses: list[str] = [
+        "CC0",
+        "Public domain",
+        "CC BY 4.0",
+        "CC BY-SA 4.0",
+        "CC BY 3.0",
+        "CC BY-SA 3.0",
+        "CC BY 2.0",
+        "CC BY-SA 2.0",
+    ]
+
+
 class AppConfig(BaseModel):
     project_name: str = "Open Edu Video Generator"
     output_resolution: Resolution = Resolution()
@@ -107,6 +126,7 @@ class AppConfig(BaseModel):
     render: RenderConfig = RenderConfig()
     comfyui: ComfyUIConfig = ComfyUIConfig()
     vision_qa: VisionQAConfig = VisionQAConfig()
+    asset_retrieval: AssetRetrievalConfig = AssetRetrievalConfig()
 
 
 def load_config(path: str | Path) -> AppConfig:

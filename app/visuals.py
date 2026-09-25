@@ -70,13 +70,86 @@ def _generate_image_with_qa(
         })
         last_result = result
         if result.accepted:
-            candidate.replace(generated)
-            return generated
+            verified = qa_client.verify_targets(segment, candidate, result.target_proposals)
+            append_qa_audit(output_dir / "vision_qa.json", {
+                "segment": segment.segment_number,
+                "attempt": attempt,
+                "image": str(candidate),
+                "qa_mode": "target_verification",
+                "verified_targets": verified,
+                "verification_audit": qa_client.last_target_verification,
+            })
+            requested = {
+                str(item.get("text") or item.get("name") or "").strip().casefold()
+                for item in (segment.shot.labels if segment.shot else [])
+                if str(item.get("text") or item.get("name") or "").strip()
+            }
+            resolved = {name.casefold() for name in verified}
+            if requested <= resolved:
+                _apply_verified_target_coordinates(segment, verified)
+                candidate.replace(generated)
+                return generated
+            continue
+    if last_result and last_result.core_accepted:
+        label_specs = list(segment.shot.labels if segment.shot else [])
+        unresolved = [str(item.get("text") or item.get("name") or "").strip() for item in label_specs]
+        append_qa_audit(output_dir / "label_review.json", {
+            "segment": segment.segment_number,
+            "image": str(candidate),
+            "labels": [
+                {
+                    "text": str(item.get("text") or item.get("name") or "").strip(),
+                    "placement": str(item.get("placement") or "").strip(),
+                    "proposed_target": _casefold_target(
+                        last_result.target_proposals,
+                        str(item.get("text") or item.get("name") or ""),
+                    ),
+                    "manual_override_format": "target=(x,y), normalized from top-left (0,0) to bottom-right (1,1)",
+                }
+                for item in label_specs
+                if str(item.get("text") or item.get("name") or "").strip()
+            ],
+            "verification_audit": qa_client.last_target_verification,
+            "status": "manual_coordinate_review_required",
+        })
+        append_qa_audit(output_dir / "vision_qa.json", {
+            "segment": segment.segment_number,
+            "attempt": attempts,
+            "image": str(candidate),
+            "qa_mode": "label_targets_unresolved",
+            "accepted_base_image": True,
+            "unresolved_labels": [name for name in unresolved if name],
+            "action": "base image retained; precise arrows and labels omitted pending reviewed coordinates",
+        })
+        candidate.replace(generated)
+        return generated
     if config.vision_qa.block_on_failure:
         reasons = "; ".join(last_result.reasons if last_result else []) or "quality thresholds not met"
         raise ValueError(f"Vision QA rejected {prefix} after {attempts} attempts: {reasons}")
     candidate.replace(generated)
     return generated
+
+
+def _apply_verified_target_coordinates(segment: Segment, verified: dict[str, dict[str, float]]) -> None:
+    if not segment.shot or not verified:
+        return
+    by_name = {name.casefold(): point for name, point in verified.items()}
+    for label in segment.shot.labels:
+        name = str(label.get("text") or label.get("name") or "").strip().casefold()
+        point = by_name.get(name)
+        if not point or float(point.get("confidence", 0)) < 0.85:
+            continue
+        label["target_xy"] = f"{float(point['x']):.6f},{float(point['y']):.6f}"
+        label["target_confidence"] = float(point["confidence"])
+        label["target_source"] = "vision_verified"
+
+
+def _casefold_target(mapping: dict[str, dict[str, float] | None], name: str):
+    wanted = name.strip().casefold()
+    for key, value in mapping.items():
+        if str(key).strip().casefold() == wanted:
+            return value
+    return None
 
 
 def _comparison_concepts(segment: Segment) -> list[str]:

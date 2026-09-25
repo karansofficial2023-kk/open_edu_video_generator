@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from PIL import ImageChops
+from PIL import Image, ImageChops
 from pydantic import ValidationError
 
 from app.animation_renderer import _safe_display_heading, render_frame, stage_times
@@ -16,10 +16,13 @@ from app.label_overlay import (
     arrow_label_visibility,
     build_label_plans,
     draw_label_overlay,
+    _segments_intersect,
 )
 from app.schema import Caption, Shot, Storyboard
 from app.review import review_storyboard
 from app.storyboard_cleanup import normalize_storyboard
+from app.visuals import _apply_verified_target_coordinates, _casefold_target
+from app.vision_qa import _target_collisions
 from app.subtitles import phrase_captions
 from app.tts_edge import _synthesize_text
 
@@ -82,6 +85,45 @@ class AnimationTests(unittest.TestCase):
         self.assertEqual(plans[0].reason, "verified image-specific coordinate required")
         self.assertTrue(review)
 
+    def test_verified_vision_target_becomes_label_coordinate(self):
+        segment = self.segment.model_copy(deep=True)
+        segment.shot = Shot(
+            template="realistic_labeled_image",
+            labels=[{"text": "Anther", "placement": "pollen-bearing terminal structure"}],
+        )
+        _apply_verified_target_coordinates(segment, {
+            "Anther": {"x": 0.375, "y": 0.42, "confidence": 0.93},
+        })
+        label = segment.shot.labels[0]
+        self.assertEqual(label["target_xy"], "0.375000,0.420000")
+        self.assertEqual(label["target_source"], "vision_verified")
+
+    def test_unverified_vision_target_is_not_applied(self):
+        segment = self.segment.model_copy(deep=True)
+        segment.shot = Shot(template="realistic_labeled_image", labels=[{"text": "Stigma"}])
+        _apply_verified_target_coordinates(segment, {
+            "Stigma": {"x": 0.5, "y": 0.4, "confidence": 0.7},
+        })
+        self.assertNotIn("target_xy", segment.shot.labels[0])
+
+    def test_review_manifest_proposal_lookup_is_case_insensitive(self):
+        point = {"x": 0.24, "y": 0.42, "confidence": 0.9}
+        self.assertEqual(_casefold_target({"Anther": point}, "anther"), point)
+
+    def test_distinct_scientific_targets_cannot_share_one_endpoint(self):
+        collisions = _target_collisions({
+            "Anther": {"x": 0.55, "y": 0.46, "confidence": 0.9},
+            "Stigma": {"x": 0.551, "y": 0.455, "confidence": 0.9},
+        })
+        self.assertEqual(collisions, [("Anther", "Stigma")])
+
+    def test_well_separated_scientific_targets_pass_collision_gate(self):
+        collisions = _target_collisions({
+            "Anther": {"x": 0.29, "y": 0.42, "confidence": 0.9},
+            "Stigma": {"x": 0.35, "y": 0.46, "confidence": 0.9},
+        })
+        self.assertEqual(collisions, [])
+
     def test_label_boxes_avoid_subtitle_safe_area_and_overlap(self):
         shot = Shot(
             template="realistic_labeled_image",
@@ -95,6 +137,10 @@ class AnimationTests(unittest.TestCase):
         boxes = [plan.box for plan in plans]
         self.assertTrue(all(box and box[3] <= 600 for box in boxes))
         self.assertTrue(boxes[0][2] <= boxes[1][0] or boxes[1][2] <= boxes[0][0] or boxes[0][3] <= boxes[1][1] or boxes[1][3] <= boxes[0][1])
+
+    def test_leader_line_crossing_detection(self):
+        self.assertTrue(_segments_intersect((0, 0), (100, 100), (0, 100), (100, 0)))
+        self.assertFalse(_segments_intersect((0, 0), (100, 0), (0, 40), (100, 40)))
 
     def test_arrow_first_then_label_fade_timing(self):
         arrow, label = arrow_label_visibility(0, 2, 0.35, 4.0, "arrow_draw_then_label_fade")
@@ -125,6 +171,18 @@ class AnimationTests(unittest.TestCase):
         plans, _ = build_label_plans(segment.shot, image.size)
         overlay = draw_label_overlay(image, plans, 2.5, 4, "arrow_draw_then_label_fade")
         self.assertEqual(overlay.size, image.size)
+
+    def test_labeled_photo_does_not_render_heading_over_image(self):
+        config = AppConfig()
+        config.render.burn_captions = False
+        source = Image.new("RGB", (1280, 720), "#7BA36A")
+        segment = self.segment.model_copy(deep=True)
+        segment.shot = Shot(template="realistic_labeled_image", heading="Narration repeated at top")
+        segment.end = segment.speech_duration = 4
+        with_heading = render_frame(segment, "Pollination", 2, config, source)
+        segment.shot.heading = ""
+        without_heading = render_frame(segment, "Pollination", 2, config, source)
+        self.assertIsNone(ImageChops.difference(with_heading, without_heading).getbbox())
 
     def test_caption_text_and_timing_preserved(self):
         self.segment.captions = [Caption(text=w, start=i, end=i + .8)
@@ -171,6 +229,59 @@ class AnimationTests(unittest.TestCase):
         self.assertIn('cleistogamy', text)
         self.assertTrue(self.segment.source_references)
         self.assertIsNotNone(self.segment.shot)
+
+    def test_ambiguous_follow_up_visual_inherits_previous_subject(self):
+        first = self.board.all_segments()[0][1]
+        first.narration = "A sunflower head contains many small florets."
+        second = first.model_copy(deep=True)
+        second.segment_number = 2
+        second.narration = "At this scale, we can observe them closely."
+        second.image_prompt = "Source-faithful visible subject and action."
+        second.shot = Shot(template="photo", heading="Close view")
+        self.board.scenes[0].segments = [first, second]
+        normalize_storyboard(self.board)
+        self.assertIn("sunflower head", second.image_prompt.lower())
+        self.assertIn("no unrelated substitute subject", second.image_prompt.lower())
+
+    def test_concrete_follow_up_does_not_inherit_unrelated_previous_agent(self):
+        first = self.board.all_segments()[0][1]
+        first.narration = "A bee visits a sunflower."
+        second = first.model_copy(deep=True)
+        second.segment_number = 2
+        second.narration = "Pollen from the anther reaches the stigma during self-pollination."
+        second.image_prompt = "Source-faithful visible subject and action."
+        second.shot = Shot(template="photo", heading="Self-pollination")
+        self.board.scenes[0].segments = [first, second]
+        normalize_storyboard(self.board)
+        self.assertNotIn("previous narration: a bee", second.image_prompt.lower())
+        self.assertIn("no bee", second.image_prompt.lower())
+
+    def test_dangling_strategy_teaser_becomes_one_visible_idea(self):
+        segment = self.board.all_segments()[0][1]
+        segment.narration = (
+            "While sunflowers are typically pollinated by bees, they have a clever strategy "
+            "to ensure pollination when bees are absent."
+        )
+        segment.visual = segment.narration
+        segment.image_prompt = segment.narration
+        segment.shot = Shot(template="photo", heading="Pollination strategy")
+        normalize_storyboard(self.board)
+        self.assertEqual(segment.narration, "Sunflowers are typically pollinated by bees.")
+        self.assertNotIn("strategy", segment.image_prompt.lower())
+
+    def test_transfer_sentence_becomes_stable_labeled_image(self):
+        segment = self.board.all_segments()[0][1]
+        segment.narration = "Pollen grains from the anther are transferred to the receptive stigma."
+        segment.shot = Shot(template="photo", heading="Pollen transfer")
+        normalize_storyboard(self.board)
+        self.assertEqual(segment.shot.template, "realistic_labeled_image")
+        self.assertEqual(
+            [item["text"] for item in segment.shot.labels],
+            ["Anther", "Receptive Stigma"],
+        )
+        self.assertEqual(segment.shot.motion["type"], "arrow_draw_then_label_fade")
+        self.assertIn("simultaneously visible", segment.image_prompt.lower())
+        self.assertIn("anther", segment.image_prompt.lower())
 
     def test_user_voice_preserved_in_both_configs(self):
         for filename in ['config.yaml', 'config.12gb.yaml']:

@@ -173,10 +173,6 @@ def _render_labeled_image(c: Canvas, shot, source, t: float, duration: float, ac
     if source is not None:
         c.cover_image(source, _motion_zoom(t, duration, 0.05))
         c.overlay("#000000", 22)
-        display_heading = _safe_display_heading(shot.heading)
-        if display_heading:
-            c.text_center(display_heading, (93, 41, 1193, 105), 38, "#000000", True)
-            c.text_center(display_heading, (90, 38, 1190, 102), 38, "#FFFFFF", True)
     else:
         c.box((70, 130, 1210, 585), "#FFFFFF", "#D8DFD9", 8)
         display_heading = _safe_display_heading(shot.heading)

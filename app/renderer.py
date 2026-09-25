@@ -195,7 +195,7 @@ def _subtitle_filter(subtitles: Path, config: AppConfig) -> str:
     path = path.replace(":", r"\:").replace("'", r"\'")
     style = ",".join([
         "FontName=Arial",
-        "Fontsize=26",
+        "Fontsize=16",
         "PrimaryColour=&H00FFFFFF",
         "OutlineColour=&H00000000",
         "BackColour=&H00000000",
@@ -203,9 +203,9 @@ def _subtitle_filter(subtitles: Path, config: AppConfig) -> str:
         "Outline=1",
         "Shadow=0",
         "Alignment=2",
-        "MarginV=18",
+        "MarginV=26",
     ])
-    band = "drawbox=x=0:y=ih*0.72:w=iw:h=ih*0.28:color=black@0.55:t=fill"
+    band = "drawbox=x=0:y=ih*0.82:w=iw:h=ih*0.18:color=black@0.58:t=fill"
     intervals = _subtitle_intervals(subtitles)
     if intervals:
         enabled = "+".join(f"between(t,{start:.3f},{end:.3f})" for start, end in intervals)

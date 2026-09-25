@@ -173,6 +173,7 @@ class QualityTests(unittest.TestCase):
             with patch("app.vision_qa.requests.post", return_value=response):
                 result = VisionQAClient(AppConfig()).analyze(segment, image)
         self.assertFalse(result.accepted)
+        self.assertFalse(result.core_accepted)
         self.assertIn("malformed JSON", result.reasons[0])
 
     def test_comparison_contract_is_split_into_focused_assets(self):
@@ -226,10 +227,10 @@ class QualityTests(unittest.TestCase):
                 encoding="utf-8",
             )
             result = _subtitle_filter(subtitles, AppConfig())
-            self.assertIn("drawbox=x=0:y=ih*0.72", result)
-            self.assertIn("color=black@0.55", result)
+            self.assertIn("drawbox=x=0:y=ih*0.82", result)
+            self.assertIn("color=black@0.58", result)
             self.assertIn("between(t,5.250,6.500)", result)
-            self.assertIn("Fontsize=26", result)
+            self.assertIn("Fontsize=16", result)
 
     def test_raw_label_instructions_are_not_appended(self):
         segment = storyboard().all_segments()[0][1]

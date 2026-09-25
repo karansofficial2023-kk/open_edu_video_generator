@@ -70,6 +70,7 @@ def build_label_plans(
     plans: list[LabelPlan] = []
     review: list[dict[str, Any]] = []
     occupied: list[tuple[int, int, int, int]] = []
+    leader_lines: list[tuple[tuple[int, int], tuple[int, int]]] = []
 
     for index, raw in enumerate(labels):
         text = _label_text(raw, index)
@@ -78,12 +79,13 @@ def build_label_plans(
             plans.append(LabelPlan(text=text, target=None, box=None, confidence=confidence, reason=reason))
             review.append({"label": text, "reason": reason or "low-confidence target", "confidence": confidence})
             continue
-        box = place_label_box(text, target, width, height, forbidden + occupied, raw, index)
+        box = place_label_box(text, target, width, height, forbidden + occupied, raw, index, leader_lines)
         if box is None:
             plans.append(LabelPlan(text=text, target=target, box=None, confidence=confidence, reason="no clear label box position"))
             review.append({"label": text, "reason": "no clear label box position", "confidence": confidence})
             continue
         occupied.append(box)
+        leader_lines.append((_box_anchor(box, target), target))
         plans.append(LabelPlan(text=text, target=target, box=box, confidence=confidence, reason=reason))
     return plans, review
 
@@ -103,28 +105,37 @@ def place_label_box(
     forbidden: list[tuple[int, int, int, int]],
     spec: dict[str, Any] | None = None,
     index: int = 0,
+    leader_lines: list[tuple[tuple[int, int], tuple[int, int]]] | None = None,
 ) -> tuple[int, int, int, int] | None:
     spec = spec or {}
-    bw = min(max(210, len(text) * 15 + 48), 360)
-    bh = 62
+    bw = min(max(180, len(text) * 13 + 44), 330)
+    bh = 56
     margin = 34
     tx, ty = target
+    leader_lines = leader_lines or []
     side = str(spec.get("box_side") or spec.get("side") or spec.get("placement") or "").lower()
+    safe_top = max((box[3] for box in forbidden if box[0] <= 0 and box[1] <= 0 and box[2] >= width), default=0)
+    top_row = max(margin, safe_top + 24)
+    safe_bottom = min((box[1] for box in forbidden if box[0] <= 0 and box[2] >= width and box[1] > height / 2),
+                      default=height - margin)
+    bottom_row = safe_bottom - bh - 24
     candidates = []
     if "left" in side:
         candidates.append((margin, ty - bh // 2, margin + bw, ty + bh // 2))
     if "right" in side:
         candidates.append((width - margin - bw, ty - bh // 2, width - margin, ty + bh // 2))
     candidates.extend([
-        (margin, 150 + (index % 5) * 86, margin + bw, 150 + (index % 5) * 86 + bh),
-        (width - margin - bw, 150 + (index % 5) * 86, width - margin, 150 + (index % 5) * 86 + bh),
-        (margin, height - 250 - (index % 3) * 78, margin + bw, height - 188 - (index % 3) * 78),
-        (width - margin - bw, height - 250 - (index % 3) * 78, width - margin, height - 188 - (index % 3) * 78),
-        (width // 2 - bw // 2, 145 + (index % 2) * 84, width // 2 + bw // 2, 145 + (index % 2) * 84 + bh),
+        (margin, top_row + (index % 5) * 86, margin + bw, top_row + (index % 5) * 86 + bh),
+        (width - margin - bw, top_row + (index % 5) * 86, width - margin, top_row + (index % 5) * 86 + bh),
+        (margin, bottom_row - (index % 3) * 78, margin + bw, bottom_row - (index % 3) * 78 + bh),
+        (width - margin - bw, bottom_row - (index % 3) * 78, width - margin, bottom_row - (index % 3) * 78 + bh),
+        (width // 2 - bw // 2, top_row + (index % 2) * 84, width // 2 + bw // 2, top_row + (index % 2) * 84 + bh),
     ])
     for box in candidates:
         box = _clamp_box(box, width, height, margin)
-        if not _intersects_any(box, forbidden) and not _contains_point(box, target):
+        line = (_box_anchor(box, target), target)
+        crosses = any(_segments_intersect(line[0], line[1], other[0], other[1]) for other in leader_lines)
+        if not _intersects_any(box, forbidden) and not _contains_point(box, target) and not crosses:
             return box
     return None
 
@@ -156,8 +167,10 @@ def draw_label_overlay(
             round(start[1] + (plan.target[1] - start[1]) * arrow_progress),
         )
         if arrow_progress > 0:
-            cv2.arrowedLine(arr, start, end, color, 4, tipLength=0.08)
-            cv2.circle(arr, plan.target, 7, color, -1)
+            cv2.arrowedLine(arr, start, end, color, 3, line_type=cv2.LINE_AA, tipLength=0.035)
+            if arrow_progress >= 0.92:
+                cv2.circle(arr, plan.target, 8, color, 2, lineType=cv2.LINE_AA)
+                cv2.circle(arr, plan.target, 3, color, -1, lineType=cv2.LINE_AA)
         if label_alpha > 0:
             arr = _draw_label_box(arr, plan.box, plan.text, color_hex, label_alpha, label_style)
     return Image.fromarray(cv2.cvtColor(arr, cv2.COLOR_BGRA2RGBA)).convert("RGB")
@@ -226,6 +239,22 @@ def _box_anchor(box: tuple[int, int, int, int], target: tuple[int, int]) -> tupl
     return x, y
 
 
+def _segments_intersect(
+    a1: tuple[int, int],
+    a2: tuple[int, int],
+    b1: tuple[int, int],
+    b2: tuple[int, int],
+) -> bool:
+    def orientation(p, q, r):
+        value = (q[1] - p[1]) * (r[0] - q[0]) - (q[0] - p[0]) * (r[1] - q[1])
+        if value == 0:
+            return 0
+        return 1 if value > 0 else 2
+
+    return (orientation(a1, a2, b1) != orientation(a1, a2, b2)
+            and orientation(b1, b2, a1) != orientation(b1, b2, a2))
+
+
 def _bgr(hex_color: str) -> tuple[int, int, int, int]:
     hex_color = hex_color.lstrip("#")
     r, g, b = int(hex_color[0:2], 16), int(hex_color[2:4], 16), int(hex_color[4:6], 16)
@@ -238,14 +267,19 @@ def _draw_label_box(arr: np.ndarray, box: tuple[int, int, int, int], text: str, 
     draw = ImageDraw.Draw(overlay)
     x1, y1, x2, y2 = box
     outline = color
-    fill_alpha = round(242 * alpha)
-    draw.rounded_rectangle(box, radius=10, fill=(255, 255, 255, fill_alpha), outline=outline, width=3)
-    font = _font(25, True)
-    lines = _pixel_wrap(draw, text, font, max(10, x2 - x1 - 24))
+    fill_alpha = round(248 * alpha)
+    shadow_alpha = round(70 * alpha)
+    draw.rounded_rectangle((x1 + 5, y1 + 6, x2 + 5, y2 + 6), radius=8,
+                           fill=(0, 0, 0, shadow_alpha))
+    draw.rounded_rectangle(box, radius=8, fill=(252, 253, 250, fill_alpha), outline=outline, width=2)
+    draw.rounded_rectangle((x1, y1, x1 + 8, y2), radius=4, fill=outline)
+    display_text = text[:1].upper() + text[1:] if text.islower() else text
+    font = _font(23, True)
+    lines = _pixel_wrap(draw, display_text, font, max(10, x2 - x1 - 34))
     line_height = sum(font.getmetrics()) + 4
     y = y1 + max(6, ((y2 - y1) - len(lines) * line_height) // 2)
     for line in lines:
-        draw.text((x1 + 14, y), line, font=font, fill=(6, 21, 61, round(255 * alpha)))
+        draw.text((x1 + 20, y), line, font=font, fill=(16, 29, 43, round(255 * alpha)))
         y += line_height
     image = Image.alpha_composite(image, overlay)
     return cv2.cvtColor(np.array(image), cv2.COLOR_RGBA2BGRA)

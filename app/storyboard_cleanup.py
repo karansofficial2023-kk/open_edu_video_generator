@@ -20,7 +20,10 @@ REPLACEMENTS = {
 }
 
 UNSAFE_CURL_CLAIM = re.compile(
-    r"the\s+male\s+anther\s+curls\s+in\s+on\s+itself\s+to\s+deposit\s+pollen\s+on\s+the\s+sticky\s+female\s+stigma",
+    r"(?:the\s+)?(?:male\s+(?:part|anther)|anther)(?:\s+of\s+the\s+flower)?\s+"
+    r"(?:curls?|bends?)\s+(?:inward|in\s+on\s+itself)\s+"
+    r"to\s+(?:transfer|deposit)\s+pollen\s+(?:on|onto)\s+"
+    r"(?:the\s+)?(?:sticky\s+)?(?:female\s+(?:part|structure|stigma)|stigma)",
     re.IGNORECASE,
 )
 
@@ -35,24 +38,39 @@ def normalize_storyboard(storyboard: Storyboard) -> None:
         segment.narration = _clean_text(segment.narration)
         segment.visual = _clean_text(segment.visual)
         segment.image_prompt = _clean_text(segment.image_prompt)
-        segment.keywords = [_clean_text(keyword).lower() for keyword in segment.keywords]
+        segment.keywords = [
+            cleaned for keyword in segment.keywords
+            if (cleaned := _clean_text(keyword).lower()) not in {"curl", "curls", "curling", "inward"}
+        ]
         if not segment.source_references:
             segment.source_references = ["Imported storyboard; verify against curriculum before publication."]
         if segment.shot is None:
             segment.shot = _infer_shot(scene.title, segment.narration)
         else:
             segment.shot.heading = _clean_text(segment.shot.heading)
+            if re.search(r"\b(?:curl|curls|curling)\b", segment.shot.heading, re.IGNORECASE):
+                segment.shot.heading = _heading_from_text(segment.narration)
             segment.shot.learning_objective = _clean_text(segment.shot.learning_objective)
             segment.shot.steps = [_clean_text(step) for step in segment.shot.steps]
             segment.shot.cues = [_clean_text(cue) for cue in segment.shot.cues]
+            segment.shot.motion = {
+                key: _clean_text(value) if isinstance(value, str) else value
+                for key, value in segment.shot.motion.items()
+            }
             segment.shot = _refine_imported_shot(scene.title, segment)
+            segment.shot = _ensure_transfer_labels(segment)
+    _ground_ambiguous_visuals(storyboard)
 
 
 
 def _refine_imported_shot(scene_title: str, segment) -> Shot:
     """Replace generic imported card shots with safer subject-specific visuals."""
     shot = segment.shot
-    if shot and shot.template in {"title_card", "labeled_image", "split_screen", "formula", "video_broll"}:
+    if shot and shot.template in {
+        "title_card", "labeled_image", "realistic_labeled_image",
+        "realistic_background_with_labels", "diagram_overlay",
+        "split_screen", "formula", "video_broll",
+    }:
         return shot
     text = " ".join([
         scene_title or "",
@@ -73,27 +91,25 @@ def _refine_imported_shot(scene_title: str, segment) -> Shot:
             steps=["Self-pollination", "Cross-pollination"],
             stage_fractions=[0, 0.5],
         )
+    if shot and shot.template == "process_steps":
+        return shot.model_copy(update={"template": "realistic_labeled_image"})
     if "cleistogamy" in text or "unopened flower" in text or "closed flower" in text:
         return Shot(
-            template="process",
+            template="photo",
             heading="Cleistogamy",
-            learning_objective="Show self-pollination inside a closed flower.",
-            steps=["Flower remains closed", "Self-pollination occurs inside"],
-            stage_fractions=[0, 0.52],
+            learning_objective="Show a real closed cleistogamous flower clearly.",
         )
     if "protandry" in text or "anther matures first" in text or "anthers mature before" in text:
         return Shot(
-            template="protandry",
+            template="photo",
             heading="Protandry",
-            learning_objective="Show that anthers release pollen before the stigma becomes receptive.",
-            stage_fractions=[0, 0.52],
+            learning_objective="Show the real flower structures used to explain protandry.",
         )
     if "protogyn" in text or "stigma matures first" in text or "stigma maturation first" in text:
         return Shot(
-            template="protogyny",
+            template="photo",
             heading="Protogyny",
-            learning_objective="Show that the stigma becomes receptive before anthers release pollen.",
-            stage_fractions=[0, 0.52],
+            learning_objective="Show the real flower structures used to explain protogyny.",
         )
     if "bee orchid" in text or "female bee mimic" in text:
         segment.image_prompt = (
@@ -376,7 +392,99 @@ def _clean_text(text: str) -> str:
         "pollen grains from the anther are transferred to the receptive stigma",
         cleaned,
     )
+    teaser_pattern = re.compile(
+        r"while\s+([^.!?]+?),\s+(?:they|it|these|those)\s+have\s+(?:a\s+)?(?:clever\s+)?"
+        r"strategy\s+to\s+[^.!?]+[.!?]?",
+        flags=re.IGNORECASE,
+    )
+    def replace_teaser(match: re.Match[str]) -> str:
+        statement = match.group(1).strip().rstrip(".")
+        return statement[:1].upper() + statement[1:] + "."
+    cleaned = teaser_pattern.sub(replace_teaser, cleaned)
     return cleaned
+
+
+AMBIGUOUS_VISUAL_TEXT = re.compile(
+    r"^(?:at\s+this|this|these|those|they|them|it|here|there)\b|"
+    r"source-faithful\s+visible\s+subject|show\s+the\s+narrated\s+concept|"
+    r"educational\s+(?:image|visual)$",
+    re.IGNORECASE,
+)
+
+
+def _ground_ambiguous_visuals(storyboard: Storyboard) -> None:
+    previous_narration = storyboard.title
+    for _scene, segment in storyboard.all_segments():
+        narration = (segment.narration or "").strip()
+        prompt = (segment.image_prompt or "").strip()
+        visual = (segment.visual or "").strip()
+        if segment.shot and segment.shot.template != "title_card":
+            narration_is_ambiguous = bool(AMBIGUOUS_VISUAL_TEXT.search(narration))
+            metadata_is_ambiguous = bool(
+                AMBIGUOUS_VISUAL_TEXT.search(prompt) or AMBIGUOUS_VISUAL_TEXT.search(visual)
+            )
+            if narration_is_ambiguous:
+                subject_context = (
+                    "Continue the exact physical subject established by the immediately preceding narration: "
+                    f"{previous_narration}. "
+                )
+            else:
+                subject_context = ""
+            if narration_is_ambiguous or metadata_is_ambiguous:
+                relationship_guard = ""
+                lowered = narration.lower()
+                if "self-pollination" in lowered and "anther" in lowered and "stigma" in lowered:
+                    relationship_guard = (
+                        " Show one complete flower with both the anther and stigma visible; "
+                        "no bee, insect, animal, hand, or other external transfer agent."
+                    )
+                segment.image_prompt = (
+                    f"{subject_context}Show the current narration literally: {narration}. "
+                    f"{prompt}{relationship_guard} No unrelated substitute subject, no symbolic stand-in, "
+                    "no text, no labels."
+                )
+            if segment.shot.labels:
+                names = [
+                    str(item.get("text") or item.get("name") or "").strip()
+                    for item in segment.shot.labels
+                ]
+                names = [name for name in names if name]
+                if names:
+                    segment.image_prompt = (
+                        f"{segment.image_prompt} Stable macro scientific reference photograph of one complete "
+                        f"subject with every requested physical structure simultaneously visible and sharply "
+                        f"distinguishable: {', '.join(names)}. Keep the full subject inside the frame and reserve "
+                        "clear side margins for later composited labels; do not generate label text or arrows."
+                    )
+        if narration and not AMBIGUOUS_VISUAL_TEXT.search(narration):
+            previous_narration = narration
+
+
+def _ensure_transfer_labels(segment) -> Shot:
+    shot = segment.shot
+    if shot is None or shot.template in {"title_card", "video", "video_broll", "short_motion_clip"}:
+        return shot
+    if shot.labels:
+        return shot
+    match = re.search(
+        r"\bfrom\s+(?:the\s+)?([a-z][a-z -]{1,45}?)\s+(?:is|are)\s+"
+        r"transferred\s+to\s+(?:the\s+)?([a-z][a-z -]{1,45}?)(?:[,.;]|$)",
+        segment.narration or "",
+        flags=re.IGNORECASE,
+    )
+    if not match:
+        return shot
+    source = match.group(1).strip()
+    receiver = match.group(2).strip()
+    labels = [
+        {"text": source.title(), "placement": f"exact visible {source} named as the transfer source"},
+        {"text": receiver.title(), "placement": f"exact visible {receiver} named as the transfer receiver"},
+    ]
+    return shot.model_copy(update={
+        "template": "realistic_labeled_image",
+        "labels": labels,
+        "motion": {**shot.motion, "type": "arrow_draw_then_label_fade"},
+    })
 
 
 def _infer_shot(scene_title: str, narration: str) -> Shot:

@@ -1,14 +1,16 @@
 from __future__ import annotations
 
 import base64
+import io
 import json
+import math
 import re
 from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
 import requests
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 
 from .config import AppConfig
 from .schema import Segment
@@ -17,6 +19,7 @@ from .schema import Segment
 @dataclass
 class VisionQAResult:
     accepted: bool
+    core_accepted: bool
     relevance: float
     subject_match: float
     text_present: bool
@@ -35,6 +38,7 @@ class VisionQAClient:
     def __init__(self, config: AppConfig) -> None:
         self.config = config
         self.base_url = config.ollama_url.rstrip("/")
+        self.last_target_verification: dict[str, Any] = {}
 
     def analyze(self, segment: Segment, image_path: str | Path) -> VisionQAResult:
         path = Path(image_path)
@@ -66,6 +70,7 @@ class VisionQAClient:
         except (json.JSONDecodeError, ValueError) as error:
             return VisionQAResult(
                 accepted=False,
+                core_accepted=False,
                 relevance=0.0,
                 subject_match=0.0,
                 text_present=False,
@@ -80,14 +85,23 @@ class VisionQAClient:
         proposals = _normalize_proposals(payload.get("target_proposals"), width, height)
         requested = {label.casefold() for label in labels}
         proposals = {name: point for name, point in proposals.items() if name.casefold() in requested}
-        accepted = (
+        proposed_names = {
+            name.casefold() for name, point in proposals.items()
+            if point and float(point.get("confidence", 0)) >= 0.75
+        }
+        missing_targets = sorted(requested - proposed_names)
+        if missing_targets:
+            reasons.append("Requested targets are not all clearly locatable: " + ", ".join(missing_targets))
+        core_accepted = (
             relevance >= self.config.vision_qa.minimum_relevance
             and subject_match >= self.config.vision_qa.minimum_subject_match
             and not text_present
             and not artifacts
         )
+        accepted = core_accepted and not missing_targets
         return VisionQAResult(
             accepted=accepted,
+            core_accepted=core_accepted,
             relevance=relevance,
             subject_match=subject_match,
             text_present=text_present,
@@ -96,6 +110,245 @@ class VisionQAClient:
             target_proposals=proposals,
             raw=payload,
         )
+
+    def verify_targets(
+        self,
+        segment: Segment,
+        image_path: str | Path,
+        proposals: dict[str, dict[str, float] | None],
+    ) -> dict[str, dict[str, float]]:
+        candidates = {
+            name: point for name, point in proposals.items()
+            if point and float(point.get("confidence", 0)) >= 0.75
+        }
+        if not candidates:
+            self.last_target_verification = {"status": "no_confident_candidates"}
+            return {}
+        source_path = Path(image_path)
+        annotated_path = source_path.with_name(source_path.stem + "_target_check.png")
+        with Image.open(source_path) as source:
+            image = source.convert("RGB")
+        draw = ImageDraw.Draw(image)
+        font_size = max(24, round(min(image.size) * 0.035))
+        try:
+            font = ImageFont.truetype("arial.ttf", font_size)
+        except OSError:
+            font = ImageFont.load_default()
+        marker_lines = []
+        names = list(candidates)
+        for index, name in enumerate(names, start=1):
+            point = candidates[name]
+            x = round(float(point["x"]) * image.width)
+            y = round(float(point["y"]) * image.height)
+            radius = max(20, round(min(image.size) * 0.032))
+            line_width = max(4, round(min(image.size) * 0.007))
+            draw.ellipse((x - radius, y - radius, x + radius, y + radius), outline="#FF0033", width=line_width)
+            draw.line((x - radius, y, x + radius, y), fill="#FFFF00", width=max(3, line_width // 2))
+            draw.line((x, y - radius, x, y + radius), fill="#FFFF00", width=max(3, line_width // 2))
+            draw.text((x + radius + 6, y - radius), str(index), fill="#FF0033", font=font,
+                      stroke_width=3, stroke_fill="white")
+            placement = _label_placement(segment, name)
+            marker_lines.append(f"{index}. {name}: {placement}")
+        image.save(annotated_path)
+        try:
+            encoded = base64.b64encode(annotated_path.read_bytes()).decode("ascii")
+            response_example = {
+                "targets": {
+                    name: {"verified": False, "confidence": 0.0, "reason": ""}
+                    for name in names
+                }
+            }
+            prompt = f"""You are verifying scientific annotation targets on one fixed image.
+Each numbered red ring and yellow crosshair marks a proposed target. Verify only whether
+the crosshair center touches the exact visible physical structure named below. Reject a
+point on a nearby petal, background, different organ, whole object when a specific part
+was requested, or any target hidden/ambiguous in the image.
+
+Targets:
+{chr(10).join(marker_lines)}
+
+Return one result for every target using these exact label keys. JSON only:
+{json.dumps(response_example)}
+Confidence ranges from 0 to 1. Set verified=true only when the crosshair center is on the
+named visible structure and confidence is at least 0.85. The marker graphics are temporary
+inspection aids, not scientific structures.
+"""
+            response = requests.post(
+                f"{self.base_url}/api/chat",
+                json={
+                    "model": self.config.vision_qa.model,
+                    "messages": [{"role": "user", "content": prompt, "images": [encoded]}],
+                    "format": "json",
+                    "stream": False,
+                    "keep_alive": 0,
+                    "options": {"temperature": 0, "num_predict": 512},
+                },
+                timeout=self.config.vision_qa.timeout_seconds,
+            )
+            response.raise_for_status()
+            payload = _json_object(response.json().get("message", {}).get("content", "{}"))
+            checks = payload.get("targets") if isinstance(payload.get("targets"), dict) else {}
+            verified: dict[str, dict[str, float]] = {}
+            rejected: dict[str, Any] = {}
+            for name, point in candidates.items():
+                check = _casefold_lookup(checks, name)
+                if not isinstance(check, dict):
+                    rejected[name] = {"reason": "missing verifier result"}
+                    continue
+                confidence = _score(check.get("confidence"))
+                if bool(check.get("verified")) and confidence >= 0.85:
+                    verified[name] = {
+                        "x": float(point["x"]),
+                        "y": float(point["y"]),
+                        "confidence": confidence,
+                    }
+                else:
+                    rejected[name] = check
+            refined_audit: dict[str, Any] = {}
+            for name, point in candidates.items():
+                if name in verified:
+                    continue
+                refined, audit = self._refine_target_in_crop(segment, image, name, point)
+                refined_audit[name] = audit
+                if refined:
+                    verified[name] = refined
+            collisions = _target_collisions(verified)
+            for first, second in collisions:
+                verified.pop(first, None)
+                verified.pop(second, None)
+                refined_audit.setdefault(first, {})["collision_rejection"] = second
+                refined_audit.setdefault(second, {})["collision_rejection"] = first
+            self.last_target_verification = {
+                "status": "completed",
+                "candidates": candidates,
+                "raw": payload,
+                "rejected_initial_checks": rejected,
+                "refined_checks": refined_audit,
+                "verified": verified,
+            }
+            return verified
+        except Exception as error:
+            self.last_target_verification = {
+                "status": "error",
+                "candidates": candidates,
+                "error": f"{type(error).__name__}: {error}",
+            }
+            raise
+        finally:
+            annotated_path.unlink(missing_ok=True)
+
+    def _refine_target_in_crop(
+        self,
+        segment: Segment,
+        image: Image.Image,
+        name: str,
+        proposal: dict[str, float],
+    ) -> tuple[dict[str, float] | None, dict[str, Any]]:
+        width, height = image.size
+        cx = float(proposal["x"]) * width
+        cy = float(proposal["y"]) * height
+        crop_width = min(width, round(width * 0.56))
+        crop_height = min(height, round(height * 0.72))
+        left = max(0, min(width - crop_width, round(cx - crop_width / 2)))
+        top = max(0, min(height - crop_height, round(cy - crop_height / 2)))
+        crop = image.crop((left, top, left + crop_width, top + crop_height))
+        scale = min(2.5, 1200 / max(crop.size))
+        if scale > 1:
+            crop = crop.resize((round(crop.width * scale), round(crop.height * scale)), Image.Resampling.LANCZOS)
+        placement = _label_placement(segment, name)
+        prompt = f"""This is a magnified crop of one scientific photograph.
+Locate exactly one visible physical target named: {name}
+Target definition and placement: {placement}
+
+Return a point at the center of that exact structure using integer x,y coordinates from
+0 to 1000 relative to this crop. Do not return the center of the whole image or whole
+specimen when a specific part is requested. If the named structure is not visibly
+distinguishable from nearby structures, set visible=false. Determine the point from the
+pixels; never default to the crop center and never reuse a point from another label.
+
+Return JSON only with keys "visible" (boolean), "point" (two integer coordinates), and
+"reason" (short string). Use null for point when visible is false.
+"""
+        payload = self._ask_image_json(crop, prompt, 256)
+        if not bool(payload.get("visible")):
+            return None, {"localization": payload, "status": "not_visible"}
+        point = payload.get("point")
+        if not isinstance(point, list) or len(point) != 2:
+            bbox = payload.get("bbox") or payload.get("bbox_2d")
+            if isinstance(bbox, list) and len(bbox) == 4:
+                point = [(float(bbox[0]) + float(bbox[2])) / 2, (float(bbox[1]) + float(bbox[3])) / 2]
+        try:
+            crop_x = max(0.0, min(1000.0, float(point[0]))) / 1000
+            crop_y = max(0.0, min(1000.0, float(point[1]))) / 1000
+        except (TypeError, ValueError, IndexError):
+            return None, {"localization": payload, "status": "invalid_point"}
+        x = (left + crop_x * crop_width) / width
+        y = (top + crop_y * crop_height) / height
+        exact, verification = self._verify_refined_point(image, name, placement, x, y)
+        audit = {
+            "status": "verified" if exact else "rejected",
+            "crop_bounds": [left, top, left + crop_width, top + crop_height],
+            "localization": payload,
+            "normalized_point": [x, y],
+            "verification": verification,
+        }
+        if not exact:
+            return None, audit
+        return {"x": x, "y": y, "confidence": 0.9}, audit
+
+    def _verify_refined_point(
+        self,
+        image: Image.Image,
+        name: str,
+        placement: str,
+        x: float,
+        y: float,
+    ) -> tuple[bool, dict[str, Any]]:
+        width, height = image.size
+        crop_width = min(width, round(width * 0.34))
+        crop_height = min(height, round(height * 0.48))
+        center_x, center_y = x * width, y * height
+        left = max(0, min(width - crop_width, round(center_x - crop_width / 2)))
+        top = max(0, min(height - crop_height, round(center_y - crop_height / 2)))
+        crop = image.crop((left, top, left + crop_width, top + crop_height)).convert("RGB")
+        draw = ImageDraw.Draw(crop)
+        px, py = round(center_x - left), round(center_y - top)
+        radius = max(8, round(min(crop.size) * 0.025))
+        draw.ellipse((px - radius, py - radius, px + radius, py + radius), outline="#FF0033", width=4)
+        draw.line((px - radius, py, px + radius, py), fill="#FFFF00", width=2)
+        draw.line((px, py - radius, px, py + radius), fill="#FFFF00", width=2)
+        scale = min(3.0, 1000 / max(crop.size))
+        if scale > 1:
+            crop = crop.resize((round(crop.width * scale), round(crop.height * scale)), Image.Resampling.LANCZOS)
+        prompt = f"""Inspect the center of the red ring and yellow crosshair in this magnified crop.
+Named physical target: {name}
+Target definition: {placement}
+Does the exact crosshair center touch the named visible structure? Size alone is not a
+reason to reject because this crop is magnified. Reject a nearby organ, petal, background,
+water droplet, or whole specimen when a specific part was requested.
+Return JSON only: {{"exact_target": true, "reason": ""}}
+"""
+        payload = self._ask_image_json(crop, prompt, 192)
+        return bool(payload.get("exact_target")), payload
+
+    def _ask_image_json(self, image: Image.Image, prompt: str, num_predict: int) -> dict[str, Any]:
+        buffer = io.BytesIO()
+        image.save(buffer, format="PNG")
+        encoded = base64.b64encode(buffer.getvalue()).decode("ascii")
+        response = requests.post(
+            f"{self.base_url}/api/chat",
+            json={
+                "model": self.config.vision_qa.model,
+                "messages": [{"role": "user", "content": prompt, "images": [encoded]}],
+                "format": "json",
+                "stream": False,
+                "keep_alive": 0,
+                "options": {"temperature": 0, "num_predict": num_predict},
+            },
+            timeout=self.config.vision_qa.timeout_seconds,
+        )
+        response.raise_for_status()
+        return _json_object(response.json().get("message", {}).get("content", "{}"))
 
     def _review_prompt(self, segment: Segment, labels: list[str]) -> str:
         expected = segment.image_prompt or segment.visual or segment.narration
@@ -115,7 +368,10 @@ expected description names it. Reject unrelated subjects, visible words, waterma
 collages, duplicated/deformed anatomy, and visually invented scientific structures.
 {title_note}
 
-Expected shot:
+Narration that the image must support:
+{segment.narration}
+
+Production prompt (supporting detail, not visible text to look for):
 {expected}
 
 Requested physical labels (may be empty): {json.dumps(labels)}
@@ -132,7 +388,18 @@ Return JSON only with exactly these keys:
 Scores range from 0 to 1. For each requested label, target_proposals may contain
 null or {{"x": number, "y": number, "confidence": number}}. Coordinates should be
 normalized from 0 to 1. These are unverified proposals, so use null when uncertain.
-Do not approve merely because the image is attractive or broadly on-topic."""
+Score relevance and subject_match for the clean base image independently from label
+coordinate availability. A missing or uncertain target belongs in target_proposals as
+null and must not by itself reduce relevance or subject_match when the named subject is
+otherwise correct.
+Judge the visible subject and action, not production phrases such as documentary frame,
+professional composition, safe margin, or educational style. A sharp still photograph is
+valid when it clearly shows the named subject even if an invisible process cannot be frozen
+in one frame. For narration describing transfer, timing, maturation, or another process,
+give full relevance when the stable image clearly shows every named physical source,
+receiver, or structure needed for later arrows and labels. Do not require particles in
+motion or completed overlays inside the clean source image. Do not approve merely because
+the image is attractive or broadly on-topic."""
 
 
 def append_qa_audit(path: str | Path, record: dict[str, Any]) -> None:
@@ -193,3 +460,43 @@ def _normalize_proposals(value: Any, width: int, height: int) -> dict[str, dict[
             continue
         result[str(name)] = {"x": x, "y": y, "confidence": _score(point.get("confidence"))}
     return result
+
+
+def _label_placement(segment: Segment, name: str) -> str:
+    if not segment.shot:
+        return "exact visible physical structure"
+    for item in segment.shot.labels:
+        label = str(item.get("text") or item.get("name") or "").strip()
+        if label.casefold() == name.casefold():
+            return str(item.get("placement") or "exact visible physical structure").strip()
+    return "exact visible physical structure"
+
+
+def _casefold_lookup(mapping: dict[str, Any], name: str) -> Any:
+    wanted = name.casefold()
+    for key, value in mapping.items():
+        if str(key).casefold() == wanted:
+            return value
+    wanted_tokens = set(re.findall(r"[a-z0-9]+", wanted))
+    for key, value in mapping.items():
+        key_tokens = set(re.findall(r"[a-z0-9]+", str(key).casefold()))
+        if wanted_tokens and key_tokens and (wanted_tokens <= key_tokens or key_tokens <= wanted_tokens):
+            return value
+    return None
+
+
+def _target_collisions(
+    targets: dict[str, dict[str, float]],
+    minimum_distance: float = 0.04,
+) -> list[tuple[str, str]]:
+    collisions: list[tuple[str, str]] = []
+    items = list(targets.items())
+    for index, (first_name, first) in enumerate(items):
+        for second_name, second in items[index + 1:]:
+            if first_name.casefold() == second_name.casefold():
+                continue
+            distance = math.hypot(float(first["x"]) - float(second["x"]),
+                                  float(first["y"]) - float(second["y"]))
+            if distance < minimum_distance:
+                collisions.append((first_name, second_name))
+    return collisions

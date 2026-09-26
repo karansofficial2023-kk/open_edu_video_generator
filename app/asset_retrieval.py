@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import re
 import shutil
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -29,6 +30,51 @@ class CommonsAsset:
 def _metadata_value(metadata: dict[str, Any], key: str) -> str:
     value = metadata.get(key, {})
     return str(value.get("value", "")) if isinstance(value, dict) else ""
+
+
+_QUERY_STOP_WORDS = {
+    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "in", "into", "is",
+    "it", "of", "on", "or", "that", "the", "their", "this", "to", "with", "where", "which",
+    "show", "image", "visual", "exact", "visible", "realistic", "scientific", "educational",
+}
+
+
+def build_asset_search_query(segment: Segment) -> str:
+    """Build a topic-neutral Commons query from the current storyboard shot only."""
+    source_terms: list[str] = []
+    if segment.shot:
+        for item in segment.shot.labels:
+            label = str(item.get("text") or item.get("name") or "").split(":", 1)[-1]
+            source_terms.extend(re.findall(r"[A-Za-z][A-Za-z-]{2,}", label))
+    source_terms.extend(str(item) for item in segment.keywords)
+    source_terms.extend(re.findall(r"[A-Za-z][A-Za-z-]{3,}", segment.narration or ""))
+
+    result: list[str] = []
+    seen: set[str] = set()
+    for raw in source_terms:
+        for token in re.findall(r"[A-Za-z][A-Za-z-]{2,}", raw):
+            key = token.casefold()
+            if key in _QUERY_STOP_WORDS or key in seen:
+                continue
+            seen.add(key)
+            result.append(token)
+            if len(result) >= 10:
+                return " ".join(result)
+    return " ".join(result)
+
+
+def _apply_verified_targets(segment: Segment, verified: dict[str, dict[str, float]]) -> None:
+    if not segment.shot:
+        return
+    for collection in (segment.shot.labels, segment.shot.arrows):
+        for item in collection:
+            name = str(item.get("text") or item.get("name") or "").strip()
+            point = next((value for key, value in verified.items() if key.casefold() == name.casefold()), None)
+            if not point:
+                continue
+            item["target_xy"] = f"{float(point['x']):.6f},{float(point['y']):.6f}"
+            item["target_confidence"] = float(point.get("confidence", 0.9))
+            item["target_source"] = "vision_verified_retrieved_asset"
 
 
 class CommonsAssetClient:
@@ -121,6 +167,22 @@ def retrieve_approved_asset(
         except (requests.RequestException, OSError, ValueError) as exc:
             records.append({**asdict(asset), "accepted": False, "error": str(exc)})
             continue
+        labels = [
+            str(item.get("text") or item.get("name") or "").strip()
+            for item in (segment.shot.labels if segment.shot else [])
+            if str(item.get("text") or item.get("name") or "").strip()
+        ]
+        verified: dict[str, dict[str, float]] = {}
+        verification_audit: dict[str, Any] = {}
+        if labels and result.core_accepted:
+            try:
+                verified = qa.verify_targets(segment, candidate, result.target_proposals)
+                verification_audit = qa.last_target_verification
+            except (requests.RequestException, OSError, ValueError, RuntimeError) as exc:
+                verification_audit = {"status": "error", "error": str(exc)}
+        resolved = {name.casefold() for name in verified}
+        targets_accepted = not labels or {name.casefold() for name in labels} <= resolved
+        accepted = result.core_accepted and targets_accepted
         audit = {
             "segment": segment.segment_number,
             "attempt": index,
@@ -129,11 +191,15 @@ def retrieve_approved_asset(
             "query": query,
             "source": asdict(asset),
             **result.to_dict(),
-            "coordinate_policy": "proposals_only_not_verified",
+            "accepted": accepted,
+            "verified_targets": verified,
+            "verification_audit": verification_audit,
+            "coordinate_policy": "verified_before_use" if labels else "no_label_targets_requested",
         }
         append_qa_audit(output_dir / "vision_qa.json", audit)
-        records.append({**asdict(asset), **result.to_dict()})
-        if result.accepted:
+        records.append({**asdict(asset), **result.to_dict(), "accepted": accepted})
+        if accepted:
+            _apply_verified_targets(segment, verified)
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy2(candidate, destination)
             attribution = output_dir / "asset_attribution.json"

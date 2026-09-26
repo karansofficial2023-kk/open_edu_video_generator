@@ -1,0 +1,48 @@
+{
+  "title": "Temporal Structure Sequence Test",
+  "source": "A focused rendering test for a narration-defined biological time sequence.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Protandry in Sunflower Disk Florets",
+      "narration": "In sunflower disk florets, the anther matures before the stigma, a process called protandry.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "In sunflower disk florets, the anther matures before the stigma, a process called protandry.",
+          "visual": "A stable two-stage scientific macro sequence showing the earlier pollen-bearing anther phase and the later receptive stigma phase in individual sunflower disk florets.",
+          "image_prompt": "Scientific macro photography of individual sunflower disk florets at clearly resolved developmental stages, botanically credible structures, sharp natural detail, no whole-head-only view, no insect, no text, no labels, no arrows.",
+          "keywords": ["anther", "stigma", "protandry"],
+          "source_references": ["Focused pipeline smoke test"],
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "Protandry in sunflower disk florets",
+            "labels": [
+              {
+                "text": "anther",
+                "placement": "anther | pollen-bearing anther tube of one individual disk floret | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "stigma",
+                "placement": "stigma | exserted bifid receptive stigma of one individual disk floret | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "anther",
+                "placement": "anther | pollen-bearing anther tube of one individual disk floret | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "stigma",
+                "placement": "stigma | exserted bifid receptive stigma of one individual disk floret | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "motion": {
+              "type": "arrow_draw_then_label_fade"
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

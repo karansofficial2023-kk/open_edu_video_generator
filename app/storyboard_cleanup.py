@@ -444,17 +444,23 @@ def _ground_ambiguous_visuals(storyboard: Storyboard) -> None:
                     "no text, no labels."
                 )
             if segment.shot.labels:
-                names = [
-                    str(item.get("text") or item.get("name") or "").strip()
-                    for item in segment.shot.labels
-                ]
-                names = [name for name in names if name]
-                if names:
+                targets = []
+                for item in segment.shot.labels:
+                    name = str(item.get("text") or item.get("name") or "").strip()
+                    placement = str(item.get("placement") or "").strip()
+                    if name:
+                        targets.append(f"{name} ({placement})" if placement else name)
+                if targets:
                     segment.image_prompt = (
                         f"{segment.image_prompt} Stable macro scientific reference photograph of one complete "
-                        f"subject with every requested physical structure simultaneously visible and sharply "
-                        f"distinguishable: {', '.join(names)}. Keep the full subject inside the frame and reserve "
-                        "clear side margins for later composited labels; do not generate label text or arrows."
+                        f"subject with every requested physical target simultaneously visible: {'; '.join(targets)}. "
+                        "Compose for precise later labeling: keep every required target in the same sharp focal "
+                        "plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear "
+                        "representative of each target, place the representatives in separate non-overlapping image "
+                        "regions with meaningful space between them, and avoid an angle where repeated organs hide "
+                        "or merge with a target. Keep the complete subject inside the frame and reserve clear side "
+                        "margins for composited label boxes and leader lines. No embedded text, labels, arrows, "
+                        "captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy."
                     )
         if narration and not AMBIGUOUS_VISUAL_TEXT.search(narration):
             previous_narration = narration

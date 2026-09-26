@@ -29,6 +29,11 @@ def _generate_image_with_qa(
     config: AppConfig,
     lesson_context: str = "",
 ) -> Path:
+    temporal_targets = _temporal_label_targets(segment)
+    if len(temporal_targets) >= 2:
+        return _generate_temporal_label_asset(
+            comfy_client, segment, temporal_targets, generated, prefix, output_dir, config, lesson_context
+        )
     concepts = _comparison_concepts(segment)
     if len(concepts) >= 2:
         return _generate_comparison_asset(
@@ -56,9 +61,19 @@ def _generate_image_with_qa(
     qa_client = VisionQAClient(config)
     attempts = max(1, config.vision_qa.max_attempts)
     last_result = None
+    best_core_result = None
+    best_core_candidate = None
+    retry_feedback = ""
     for attempt in range(1, attempts + 1):
         candidate = generated.with_stem(f"{generated.stem}_attempt_{attempt}")
-        comfy_client.generate_image(segment, candidate, f"{prefix}_attempt_{attempt}")
+        attempt_segment = segment.model_copy(deep=True)
+        if retry_feedback:
+            attempt_segment.image_prompt = (
+                f"{segment.image_prompt} CORRECTIVE REGENERATION REQUIREMENTS: {retry_feedback} "
+                "Create a genuinely different composition that fixes every listed failure. Do not repeat the "
+                "rejected subject, species, anatomy, framing, or missing target."
+            )
+        comfy_client.generate_image(attempt_segment, candidate, f"{prefix}_attempt_{attempt}")
         comfy_client.free_memory()
         result = qa_client.analyze(segment, candidate)
         append_qa_audit(output_dir / "vision_qa.json", {
@@ -69,7 +84,15 @@ def _generate_image_with_qa(
             "coordinate_policy": "proposals_only_not_verified",
         })
         last_result = result
-        if result.accepted:
+        if result.core_accepted and (
+            best_core_result is None
+            or (result.subject_match + result.relevance)
+            > (best_core_result.subject_match + best_core_result.relevance)
+        ):
+            best_core_result = result
+            best_core_candidate = candidate
+        has_labels = bool(segment.shot and segment.shot.labels)
+        if result.accepted or (result.core_accepted and has_labels):
             verified = qa_client.verify_targets(segment, candidate, result.target_proposals)
             append_qa_audit(output_dir / "vision_qa.json", {
                 "segment": segment.segment_number,
@@ -89,8 +112,32 @@ def _generate_image_with_qa(
                 _apply_verified_target_coordinates(segment, verified)
                 candidate.replace(generated)
                 return generated
+            unresolved = sorted(requested - resolved)
+            retry_feedback = _corrective_retry_feedback(
+                result.reasons,
+                [f"required target not independently verified: {name}" for name in unresolved],
+            )
             continue
-    if last_result and last_result.core_accepted:
+        retry_feedback = _corrective_retry_feedback(result.reasons)
+    from .asset_retrieval import build_asset_search_query, retrieve_approved_asset
+
+    search_query = build_asset_search_query(segment)
+    if search_query:
+        retrieved = retrieve_approved_asset(segment, search_query, generated, output_dir, config)
+        if retrieved:
+            append_qa_audit(output_dir / "vision_qa.json", {
+                "segment": segment.segment_number,
+                "image": str(retrieved),
+                "qa_mode": "automatic_failure_recovery",
+                "accepted": True,
+                "search_query": search_query,
+                "action": "generation retries failed; approved open-license asset selected",
+            })
+            return retrieved
+
+    if best_core_result is not None and best_core_candidate is not None:
+        last_result = best_core_result
+        candidate = best_core_candidate
         label_specs = list(segment.shot.labels if segment.shot else [])
         unresolved = [str(item.get("text") or item.get("name") or "").strip() for item in label_specs]
         append_qa_audit(output_dir / "label_review.json", {
@@ -119,14 +166,133 @@ def _generate_image_with_qa(
             "qa_mode": "label_targets_unresolved",
             "accepted_base_image": True,
             "unresolved_labels": [name for name in unresolved if name],
-            "action": "base image retained; precise arrows and labels omitted pending reviewed coordinates",
+            "action": "candidate recorded for review; not approved while precise targets remain unresolved",
         })
-        candidate.replace(generated)
-        return generated
+        if not config.vision_qa.block_on_failure:
+            candidate.replace(generated)
+            return generated
+        reasons = "; ".join(last_result.reasons) or "precise label targets were not independently verified"
+        raise ValueError(
+            f"Vision QA accepted the base image for {prefix}, but rejected its label targets after "
+            f"{attempts} attempts and open-license recovery found no approved asset: {reasons}"
+        )
     if config.vision_qa.block_on_failure:
         reasons = "; ".join(last_result.reasons if last_result else []) or "quality thresholds not met"
         raise ValueError(f"Vision QA rejected {prefix} after {attempts} attempts: {reasons}")
     candidate.replace(generated)
+    return generated
+
+
+def _corrective_retry_feedback(reasons: list[str], extra: list[str] | None = None) -> str:
+    items = [re.sub(r"\s+", " ", str(item)).strip() for item in [*(reasons or []), *(extra or [])]]
+    items = [item for item in items if item]
+    if not items:
+        return "The previous image did not satisfy visual QA; strengthen exact subject and target visibility."
+    return " ".join(f"Failure {index + 1}: {item}" for index, item in enumerate(items))[:1800]
+
+
+def _temporal_label_targets(segment: Segment) -> list[dict]:
+    if not segment.shot or len(segment.shot.labels) < 2:
+        return []
+    narration = (segment.narration or "").casefold()
+    temporal = re.search(
+        r"\b(?:before|after|first|later|then|followed by|earlier|subsequently|prior to)\b",
+        narration,
+    )
+    if not temporal:
+        return []
+    labels = [item for item in segment.shot.labels if str(item.get("text") or item.get("name") or "").strip()]
+    if len(labels) < 2:
+        return []
+    positions = []
+    for index, item in enumerate(labels):
+        name = str(item.get("text") or item.get("name") or "").strip()
+        position = narration.find(name.casefold())
+        positions.append((position if position >= 0 else len(narration) + index, item))
+    return [item for _position, item in sorted(positions, key=lambda value: value[0])]
+
+
+def _generate_temporal_label_asset(
+    comfy_client,
+    segment: Segment,
+    targets: list[dict],
+    generated: Path,
+    prefix: str,
+    output_dir: Path,
+    config: AppConfig,
+    lesson_context: str = "",
+) -> Path:
+    panel_dir = generated.parent / f"{generated.stem}_temporal_panels"
+    panel_dir.mkdir(parents=True, exist_ok=True)
+    panels: list[Path] = []
+    captions: list[str] = []
+    for index, target in enumerate(targets, start=1):
+        name = str(target.get("text") or target.get("name") or "").strip()
+        placement = str(target.get("placement") or "").split("|", 1)[0].strip()
+        description_parts = [part.strip() for part in str(target.get("placement") or "").split("|")]
+        description = description_parts[1] if len(description_parts) > 1 else placement or name
+        panel_segment = segment.model_copy(deep=True)
+        panel_segment.visual = (
+            f"Focused temporal stage showing the exact visible {name}: {description}. "
+            "Use the camera distance required to make this one physical target unmistakable."
+        )
+        panel_segment.image_prompt = (
+            f"Single realistic scientific reference photograph for this narration: {segment.narration} "
+            f"This panel isolates the stage in which the {name} is clearly visible and teaches this exact "
+            f"physical target: {description}. Make the {name} large, sharp, unobstructed, and visually "
+            "distinguishable from nearby structures. If the target is a small part of a larger aggregate, "
+            "show one representative unit at true macro scale instead of an unresolvable wide view. "
+            "Do not attempt to show the other temporal stage in this panel. Neutral natural lighting, "
+            "scientific macro photography, credible anatomy, stable camera, no insect or unrelated object "
+            "unless the narration requires it. No text, label, arrow, caption, watermark, logo, border, "
+            "diagram, infographic, collage, duplicated anatomy, or fantasy structure."
+        )
+        if panel_segment.shot:
+            panel_segment.shot.labels = [target.copy()]
+            panel_segment.shot.arrows = [target.copy()]
+        panel = panel_dir / f"stage_{index:02d}.png"
+        _generate_image_with_qa(
+            comfy_client,
+            panel_segment,
+            panel,
+            f"{prefix}_stage_{index:02d}",
+            output_dir,
+            config,
+            lesson_context,
+        )
+        verified_label = panel_segment.shot and panel_segment.shot.labels and all(
+            str(item.get("target_source") or "").startswith("vision_verified")
+            and float(item.get("target_confidence") or 0) >= 0.85
+            and bool(item.get("target_xy"))
+            for item in panel_segment.shot.labels
+        )
+        if not verified_label:
+            raise ValueError(
+                f"Temporal stage target {name!r} was not independently verified. "
+                "Use a reviewed scientific asset with measured coordinates; do not publish an approximate stage."
+            )
+        panels.append(panel)
+        phase = "Earlier" if index == 1 else "Later" if index == len(targets) else f"Stage {index}"
+        captions.append(f"{phase}: {name}")
+
+    _compose_comparison_panels(panels, captions, generated, config)
+    if segment.shot:
+        segment.shot.template = "photo"
+        segment.shot.labels = []
+        segment.shot.arrows = []
+        segment.shot.motion = {
+            "type": "slow_zoom_in",
+            "sequence": "temporal_focused_panels",
+            "precise_arrows": False,
+        }
+    from .vision_qa import append_qa_audit
+    append_qa_audit(output_dir / "vision_qa.json", {
+        "segment": segment.segment_number,
+        "qa_mode": "temporal_focused_panels",
+        "targets": captions,
+        "image": str(generated),
+        "reason": "Temporal targets were rendered as separate stable stages; no approximate arrows were used.",
+    })
     return generated
 
 

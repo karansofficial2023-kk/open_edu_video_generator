@@ -17,6 +17,13 @@ from .review import review_storyboard
 from .storyboard_cleanup import normalize_storyboard, promote_real_image_shots, promote_video_shots
 
 
+def _is_deferred_render_error(message: str, config) -> bool:
+    return bool(
+        config.vision_qa.enabled
+        and "needs a verified coordinate from the exact approved image" in message
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Generate an educational video from text, DOCX, or storyboard JSON.")
     parser.add_argument("--input", required=True, help="Path to .txt, .docx, or storyboard .json")
@@ -72,7 +79,8 @@ def main() -> None:
     errors = [item for item in findings if item["level"] == "error"]
     blocking_errors = [
         item for item in errors
-        if args.strict_coverage or "does not cover the full Types of Pollination topic" not in item["message"]
+        if not _is_deferred_render_error(item["message"], config)
+        and (args.strict_coverage or "does not cover the full Types of Pollination topic" not in item["message"])
     ]
     if blocking_errors and not args.allow_incomplete:
         messages = "\n".join(f"- {item['message']}" for item in blocking_errors)
@@ -104,6 +112,12 @@ def main() -> None:
     write_srt(storyboard, subtitles_path)
 
     frames = render_segment_frames(storyboard, output_dir, config)
+    # Vision QA resolves image-specific scientific targets during rendering. Persist
+    # those verified coordinates and refresh lint artifacts so they describe the
+    # delivered frames instead of the pre-render storyboard.
+    save_storyboard(storyboard, storyboard_path)
+    export_storyboard_docx(storyboard, output_dir / "storyboard.docx")
+    review_storyboard(storyboard, output_dir, expected_topic)
 
     if args.skip_tts and not args.preview:
         print(f"Storyboard and frames created in {output_dir}")

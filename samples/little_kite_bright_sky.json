@@ -1,0 +1,91 @@
+{
+  "title": "Little Kite, Bright Sky",
+  "source": "Original children's rhyme created as a local animation workflow demonstration.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Little Kite, Bright Sky",
+      "narration": "Little kite, bright sky, wave to every cloud nearby.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Little kite, bright sky, wave to every cloud nearby.",
+          "visual": "A cheerful red kite above a sunny green meadow, with soft white clouds and generous clear space for the title.",
+          "image_prompt": "Premium children's picture-book illustration of a cheerful small red diamond kite flying above a sunny green meadow, soft rounded white clouds, bright blue sky, warm morning light, simple readable composition, kite in the upper right, wide clear center area for title typography, charming polished 3D storybook look, vivid balanced colors, consistent clean shapes. No text, no letters, no labels, no logo, no watermark, no border, no frightening imagery, no malformed objects.",
+          "keywords": ["kite", "sky", "clouds"],
+          "source_references": ["Original rhyme demo"],
+          "shot": {
+            "template": "title_card",
+            "heading": "Little Kite, Bright Sky",
+            "subheading": "An original tiny rhyme",
+            "learning_objective": "",
+            "motion": {"type": "slow_zoom_in"}
+          }
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "Up Goes the Kite",
+      "narration": "Up it skips on breezy feet, dancing to a windy beat.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Up it skips on breezy feet, dancing to a windy beat.",
+          "visual": "The same small red diamond kite gently bobbing and swaying above a meadow while its ribbon tail flutters naturally.",
+          "image_prompt": "Polished children's animation shot, the same cheerful small red diamond kite with a yellow ribbon tail gently bobbing and swaying in a bright blue sky above a green meadow, soft rounded clouds drifting slowly, stable wide camera, smooth gentle wind motion, consistent kite shape, joyful preschool-safe mood, premium 3D storybook rendering, natural coherent movement. No people, no text, no subtitles, no logo, no watermark, no border, no rapid camera movement, no morphing, no duplicated kite, no tangled tail, no distorted objects.",
+          "keywords": ["breeze", "dance", "kite"],
+          "source_references": ["Original rhyme demo"],
+          "shot": {
+            "template": "short_motion_clip",
+            "heading": "Dancing in the breeze",
+            "learning_objective": "",
+            "motion": {"type": "gentle_natural_motion"}
+          }
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "title": "Hello, Sun",
+      "narration": "Past the sun and clouds so white, tails of yellow curl in flight.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Past the sun and clouds so white, tails of yellow curl in flight.",
+          "visual": "The same red kite glides past a warm smiling sun and large soft white clouds; its yellow ribbon tail makes a graceful curve.",
+          "image_prompt": "Premium children's picture-book illustration, the same small red diamond kite with one yellow ribbon tail gliding past a warm stylized sun and large soft rounded white clouds, graceful S-curve in the ribbon tail, blue sky, sunny golden rim light, kite clearly separated from clouds, clean uncluttered composition, polished 3D storybook aesthetic, vivid balanced colors, child-friendly and joyful. No text, no letters, no labels, no logo, no watermark, no border, no extra kite, no duplicated tail, no deformed objects, no scary faces.",
+          "keywords": ["sun", "clouds", "yellow tail"],
+          "source_references": ["Original rhyme demo"],
+          "shot": {
+            "template": "photo",
+            "heading": "Past the sun and clouds",
+            "learning_objective": "",
+            "motion": {"type": "slow_pan_right"}
+          }
+        }
+      ]
+    },
+    {
+      "scene_number": 4,
+      "title": "Home at Sunset",
+      "narration": "When the sleepy moon peeks through, little kite comes home to you.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "When the sleepy moon peeks through, little kite comes home to you.",
+          "visual": "The same red kite descends toward a cozy hill at sunset while a pale crescent moon appears in the evening sky.",
+          "image_prompt": "Premium children's picture-book illustration, the same small red diamond kite with one yellow ribbon tail descending gently toward a cozy rounded green hill at sunset, pale crescent moon appearing in a lavender and coral evening sky, warm glowing horizon, calm bedtime feeling, clean readable silhouette, polished 3D storybook rendering, vivid but soothing colors, child-friendly composition. No text, no letters, no labels, no logo, no watermark, no border, no extra kite, no duplicated moon, no deformed objects, no frightening darkness.",
+          "keywords": ["moon", "sunset", "home"],
+          "source_references": ["Original rhyme demo"],
+          "shot": {
+            "template": "photo",
+            "heading": "Home at sunset",
+            "learning_objective": "",
+            "motion": {"type": "slow_zoom_out"}
+          }
+        }
+      ]
+    }
+  ]
+}

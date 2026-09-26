@@ -7,7 +7,7 @@ from typing import Any
 
 import cv2
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 
 from .visuals import _font, _pixel_wrap
 
@@ -108,28 +108,30 @@ def place_label_box(
     leader_lines: list[tuple[tuple[int, int], tuple[int, int]]] | None = None,
 ) -> tuple[int, int, int, int] | None:
     spec = spec or {}
-    bw = min(max(180, len(text) * 13 + 44), 330)
-    bh = 56
-    margin = 34
+    scale = max(0.75, min(1.5, height / 1080))
+    bw = min(max(round(220 * scale), round(len(text) * 16 * scale + 64 * scale)), round(440 * scale))
+    bh = round(70 * scale)
+    margin = round(40 * scale)
     tx, ty = target
     leader_lines = leader_lines or []
     side = str(spec.get("box_side") or spec.get("side") or spec.get("placement") or "").lower()
     safe_top = max((box[3] for box in forbidden if box[0] <= 0 and box[1] <= 0 and box[2] >= width), default=0)
-    top_row = max(margin, safe_top + 24)
+    top_row = max(margin, safe_top + round(26 * scale))
     safe_bottom = min((box[1] for box in forbidden if box[0] <= 0 and box[2] >= width and box[1] > height / 2),
                       default=height - margin)
-    bottom_row = safe_bottom - bh - 24
+    bottom_row = safe_bottom - bh - round(26 * scale)
+    row_gap = round(28 * scale)
     candidates = []
     if "left" in side:
         candidates.append((margin, ty - bh // 2, margin + bw, ty + bh // 2))
     if "right" in side:
         candidates.append((width - margin - bw, ty - bh // 2, width - margin, ty + bh // 2))
     candidates.extend([
-        (margin, top_row + (index % 5) * 86, margin + bw, top_row + (index % 5) * 86 + bh),
-        (width - margin - bw, top_row + (index % 5) * 86, width - margin, top_row + (index % 5) * 86 + bh),
-        (margin, bottom_row - (index % 3) * 78, margin + bw, bottom_row - (index % 3) * 78 + bh),
-        (width - margin - bw, bottom_row - (index % 3) * 78, width - margin, bottom_row - (index % 3) * 78 + bh),
-        (width // 2 - bw // 2, top_row + (index % 2) * 84, width // 2 + bw // 2, top_row + (index % 2) * 84 + bh),
+        (margin, top_row + (index % 5) * (bh + row_gap), margin + bw, top_row + (index % 5) * (bh + row_gap) + bh),
+        (width - margin - bw, top_row + (index % 5) * (bh + row_gap), width - margin, top_row + (index % 5) * (bh + row_gap) + bh),
+        (margin, bottom_row - (index % 3) * (bh + row_gap), margin + bw, bottom_row - (index % 3) * (bh + row_gap) + bh),
+        (width - margin - bw, bottom_row - (index % 3) * (bh + row_gap), width - margin, bottom_row - (index % 3) * (bh + row_gap) + bh),
+        (width // 2 - bw // 2, top_row + (index % 2) * (bh + row_gap), width // 2 + bw // 2, top_row + (index % 2) * (bh + row_gap) + bh),
     ])
     for box in candidates:
         box = _clamp_box(box, width, height, margin)
@@ -167,12 +169,16 @@ def draw_label_overlay(
             round(start[1] + (plan.target[1] - start[1]) * arrow_progress),
         )
         if arrow_progress > 0:
-            cv2.arrowedLine(arr, start, end, color, 3, line_type=cv2.LINE_AA, tipLength=0.035)
+            line_width = max(3, round(image.height / 360))
+            cv2.arrowedLine(arr, start, end, color, line_width, line_type=cv2.LINE_AA, tipLength=0.035)
             if arrow_progress >= 0.92:
-                cv2.circle(arr, plan.target, 8, color, 2, lineType=cv2.LINE_AA)
-                cv2.circle(arr, plan.target, 3, color, -1, lineType=cv2.LINE_AA)
+                ring = max(8, round(image.height / 120))
+                cv2.circle(arr, plan.target, ring, color, max(2, line_width - 1), lineType=cv2.LINE_AA)
+                cv2.circle(arr, plan.target, max(3, ring // 3), color, -1, lineType=cv2.LINE_AA)
         if label_alpha > 0:
-            arr = _draw_label_box(arr, plan.box, plan.text, color_hex, label_alpha, label_style)
+            arr = _draw_label_box(
+                arr, plan.box, plan.text, color_hex, label_alpha, label_style, plan.target
+            )
     return Image.fromarray(cv2.cvtColor(arr, cv2.COLOR_BGRA2RGBA)).convert("RGB")
 
 
@@ -261,25 +267,69 @@ def _bgr(hex_color: str) -> tuple[int, int, int, int]:
     return b, g, r, 255
 
 
-def _draw_label_box(arr: np.ndarray, box: tuple[int, int, int, int], text: str, color: str, alpha: float, style: str) -> np.ndarray:
+def _draw_label_box(
+    arr: np.ndarray,
+    box: tuple[int, int, int, int],
+    text: str,
+    color: str,
+    alpha: float,
+    style: str,
+    target: tuple[int, int] | None = None,
+) -> np.ndarray:
     image = Image.fromarray(cv2.cvtColor(arr, cv2.COLOR_BGRA2RGBA)).convert("RGBA")
+    scale = max(0.75, min(1.5, image.height / 1080))
+    radius = round(13 * scale)
+    shadow_offset = round(7 * scale)
+    shadow_blur = round(9 * scale)
     overlay = Image.new("RGBA", image.size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
     x1, y1, x2, y2 = box
-    outline = color
-    fill_alpha = round(248 * alpha)
-    shadow_alpha = round(70 * alpha)
-    draw.rounded_rectangle((x1 + 5, y1 + 6, x2 + 5, y2 + 6), radius=8,
-                           fill=(0, 0, 0, shadow_alpha))
-    draw.rounded_rectangle(box, radius=8, fill=(252, 253, 250, fill_alpha), outline=outline, width=2)
-    draw.rounded_rectangle((x1, y1, x1 + 8, y2), radius=4, fill=outline)
+    accent_rgb = tuple(int(color.lstrip("#")[i:i + 2], 16) for i in (0, 2, 4))
+
+    shadow = Image.new("RGBA", image.size, (0, 0, 0, 0))
+    shadow_draw = ImageDraw.Draw(shadow)
+    shadow_draw.rounded_rectangle(
+        (x1 + shadow_offset, y1 + shadow_offset, x2 + shadow_offset, y2 + shadow_offset),
+        radius=radius,
+        fill=(0, 0, 0, round(125 * alpha)),
+    )
+    shadow = shadow.filter(ImageFilter.GaussianBlur(shadow_blur))
+    overlay = Image.alpha_composite(overlay, shadow)
+    draw = ImageDraw.Draw(overlay)
+
+    panel_alpha = round(232 * alpha)
+    outline_alpha = round(155 * alpha)
+    draw.rounded_rectangle(
+        box,
+        radius=radius,
+        fill=(12, 24, 40, panel_alpha),
+        outline=(*accent_rgb, outline_alpha),
+        width=max(2, round(2 * scale)),
+    )
+    draw.line(
+        (x1 + radius, y1 + 2, x2 - radius, y1 + 2),
+        fill=(255, 255, 255, round(38 * alpha)),
+        width=max(1, round(scale)),
+    )
+
+    rail_width = max(5, round(7 * scale))
+    rail_on_right = target is not None and target[0] >= (x1 + x2) // 2
+    rail_x = x2 - rail_width if rail_on_right else x1
+    draw.rounded_rectangle(
+        (rail_x, y1 + round(10 * scale), rail_x + rail_width, y2 - round(10 * scale)),
+        radius=max(2, rail_width // 2),
+        fill=(*accent_rgb, round(255 * alpha)),
+    )
+
     display_text = text[:1].upper() + text[1:] if text.islower() else text
-    font = _font(23, True)
-    lines = _pixel_wrap(draw, display_text, font, max(10, x2 - x1 - 34))
-    line_height = sum(font.getmetrics()) + 4
+    font = _font(round(30 * scale), True)
+    text_left = x1 + round(24 * scale)
+    text_right_padding = round(24 * scale)
+    lines = _pixel_wrap(draw, display_text, font, max(10, x2 - text_left - text_right_padding))
+    line_height = sum(font.getmetrics()) + round(4 * scale)
     y = y1 + max(6, ((y2 - y1) - len(lines) * line_height) // 2)
     for line in lines:
-        draw.text((x1 + 20, y), line, font=font, fill=(16, 29, 43, round(255 * alpha)))
+        draw.text((text_left, y), line, font=font, fill=(248, 251, 255, round(255 * alpha)))
         y += line_height
     image = Image.alpha_composite(image, overlay)
     return cv2.cvtColor(np.array(image), cv2.COLOR_RGBA2BGRA)

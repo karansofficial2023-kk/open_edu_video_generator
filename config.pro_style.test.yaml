@@ -1,4 +1,4 @@
-﻿project_name: "Open Edu Video Generator Pro Style 12GB"
+project_name: "Open Edu Video Generator Pro Style Diagnostic"
 
 output_resolution:
   width: 1920
@@ -16,15 +16,11 @@ use_ollama: true
 
 vision_qa:
   enabled: true
-  model: "qwen3-vl:8b-instruct"
-  secondary_model: "qwen2.5vl:7b"
-  sam_enabled: true
-  sam_model_type: "vit_b"
-  sam_checkpoint: "D:\\AI\\ComfyUI_windows_portable\\ComfyUI\\models\\sams\\sam_vit_b_01ec64.pth"
-  max_attempts: 5
+  model: "qwen2.5vl:7b"
+  max_attempts: 1
   minimum_relevance: 0.78
   minimum_subject_match: 0.72
-  block_on_failure: true
+  block_on_failure: false
   timeout_seconds: 600
 
 asset_retrieval:
@@ -38,10 +34,6 @@ tts_provider: "edge"
 edge_tts:
   voice: "en-IN-NeerjaNeural"
   rate: "-20%"
-
-piper_path: "C:/piper/piper.exe"
-piper_model: "C:/piper/voices/en_US-lessac-medium.onnx"
-piper_config: "C:/piper/voices/en_US-lessac-medium.onnx.json"
 
 voice:
   sentence_gap_seconds: 0.25

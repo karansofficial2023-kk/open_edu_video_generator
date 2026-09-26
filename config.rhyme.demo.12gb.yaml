@@ -1,0 +1,80 @@
+project_name: "Open Edu Video Generator - Kids Rhyme Demo"
+
+output_resolution:
+  width: 1920
+  height: 1080
+
+fps: 30
+visual_mode: "hybrid"
+
+ffmpeg_path: "C:\\Users\\User\\Documents\\Codex\\Tools\\Transcribe\\ffmpeg\\ffmpeg-9.0.1-essentials_build\\bin\\ffmpeg.exe"
+ffprobe_path: "C:\\Users\\User\\Documents\\Codex\\Tools\\Transcribe\\ffmpeg\\ffmpeg-9.0.1-essentials_build\\bin\\ffprobe.exe"
+
+use_ollama: false
+
+vision_qa:
+  enabled: false
+
+asset_retrieval:
+  enabled: false
+
+tts_provider: "edge"
+edge_tts:
+  voice: "en-IN-NeerjaNeural"
+  rate: "-12%"
+
+voice:
+  sentence_gap_seconds: 0.35
+  scene_gap_seconds: 0.6
+
+render:
+  layout: "modern"
+  burn_captions: true
+  embed_subtitles: false
+  background: "#FFF8E7"
+  ink: "#182026"
+  accent: "#19A7A0"
+  second_accent: "#F2B134"
+  subtitle_bg: "#101820"
+  subtitle_fg: "#FFFFFF"
+  seconds_per_segment_without_audio: 6.0
+  video_crf: 16
+  video_bitrate: "8000k"
+  video_maxrate: "10000k"
+  video_bufsize: "16000k"
+  video_preset: "slow"
+  reviewed_assets_dir: "assets/reviewed"
+
+comfyui:
+  api_url: "http://127.0.0.1:8188"
+  enabled: true
+  workflow_path: "workflows/flux_schnell_fp8_api.json"
+  checkpoint: "flux1-schnell-fp8.safetensors"
+  width: 1024
+  height: 576
+  steps: 4
+  cfg: 1.0
+  sampler_name: "euler"
+  scheduler: "simple"
+  seed: 24681357
+  timeout_seconds: 1800
+  fallback_to_slideshow: false
+  rewrite_prompts: false
+  prompt_prefix: "premium children's picture-book frame, polished 3D storybook illustration, clean expressive shapes, bright balanced colors, soft cinematic lighting, crisp high-resolution render, child-friendly composition,"
+  prompt_suffix: "single coherent scene, no text, no letters, no labels, no caption, no watermark, no logo, no border, no infographic, no UI elements, no duplicated subjects, no malformed objects"
+  negative_prompt: "text, letters, typography, labels, captions, watermark, logo, signature, border, collage, grid, panels, UI, blurry, noisy, distorted, duplicate subjects, malformed objects, extra limbs, frightening, gloomy, photorealistic adult imagery"
+  video_enabled: true
+  video_workflow_path: "workflows/ltx_video_12gb_api.json"
+  video_width: 768
+  video_height: 512
+  video_frames: 81
+  video_fps: 16
+  video_steps: 8
+  video_cfg: 1.0
+  video_sampler_name: "euler"
+  video_scheduler: "simple"
+  real_image_auto_promote: false
+  video_auto_promote: false
+  video_max_segments: 1
+  video_prompt_prefix: "premium children's 3D storybook animation, bright child-friendly colors, stable wide camera, smooth gentle motion, coherent subject,"
+  video_prompt_suffix: "short clean animation shot, consistent shapes, no text, no subtitles, no watermark, no logo, no morphing, no rapid camera movement"

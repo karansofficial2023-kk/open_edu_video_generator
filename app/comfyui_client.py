@@ -123,20 +123,43 @@ class ComfyUIClient:
 
         self._patch_generic_video_inputs(patched, prompt, filename_prefix, video)
 
-        # Conditioning connections, not JSON key order, identify prompt polarity.
+        # Conditioning connections, not JSON key order or sampler class, identify
+        # prompt polarity. LTX workflows commonly route SamplerCustom through an
+        # LTXVConditioning node instead of connecting CLIPTextEncode directly.
         for node in patched.values():
-            if node.get("class_type") != "KSampler":
-                continue
             for polarity, text in [("positive", prompt), ("negative", self.config.comfyui.negative_prompt)]:
-                link = node["inputs"].get(polarity)
+                link = node.get("inputs", {}).get(polarity)
                 if not isinstance(link, list):
                     continue
-                encoder = patched[str(link[0])]
-                if encoder.get("class_type") != "CLIPTextEncode":
-                    continue
-                encoder["inputs"]["text"] = text
+                self._patch_conditioning_text(patched, link, polarity, text)
 
         return patched
+
+    def _patch_conditioning_text(
+        self,
+        workflow: dict[str, Any],
+        link: list[Any],
+        polarity: str,
+        text: str,
+        seen: set[str] | None = None,
+    ) -> bool:
+        """Follow one conditioning branch until its text encoder is reached."""
+        if not link:
+            return False
+        node_id = str(link[0])
+        seen = seen or set()
+        if node_id in seen:
+            return False
+        seen.add(node_id)
+        node = workflow.get(node_id, {})
+        inputs = node.get("inputs", {})
+        if node.get("class_type") == "CLIPTextEncode" and isinstance(inputs.get("text"), str):
+            inputs["text"] = text
+            return True
+        upstream = inputs.get(polarity)
+        if isinstance(upstream, list):
+            return self._patch_conditioning_text(workflow, upstream, polarity, text, seen)
+        return False
 
     def _patch_generic_video_inputs(
         self,

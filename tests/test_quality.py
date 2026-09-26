@@ -11,10 +11,11 @@ from unittest.mock import Mock, patch
 
 from PIL import Image, ImageDraw
 
-from app.asset_retrieval import CommonsAssetClient
+from app.asset_retrieval import CommonsAsset, CommonsAssetClient, build_asset_search_query, retrieve_approved_asset
 from app.comfyui_client import ComfyUIClient
 from app.config import AppConfig, load_config
 from app.input_reader import _shot_from_media_type
+from app.main import _is_deferred_render_error
 from app.renderer import _subtitle_filter, render_video
 from app.schema import Scene, Segment, Shot, Storyboard
 from app.visual_planner import prepare_visual_prompts
@@ -23,16 +24,18 @@ from app.visuals import (
     _comparison_concepts,
     _comparison_panel_scene,
     _comparison_search_query,
+    _corrective_retry_feedback,
     _definition_for_concept,
     _physical_clause_for_concept,
     _relationship_visual_cues,
+    _temporal_label_targets,
     _transfer_endpoints,
     _font,
     _pixel_wrap,
     render_ai_image_frame,
     render_segment_frames,
 )
-from app.vision_qa import VisionQAClient, _normalize_proposals
+from app.vision_qa import VisionQAClient, _normalize_proposals, _point_inside_verified_bbox
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,6 +50,246 @@ def storyboard():
 
 
 class QualityTests(unittest.TestCase):
+    def test_asset_search_query_is_derived_from_shot_metadata(self):
+        segment = Segment(
+            segment_number=1,
+            narration="The receiving structure is visible beside the source structure.",
+            visual="Stable close-up.",
+            image_prompt="Scientific photograph.",
+            keywords=["specimen", "macro"],
+            shot=Shot(
+                template="realistic_labeled_image",
+                labels=[
+                    {"text": "Upper receptor"},
+                    {"text": "Lower source"},
+                ],
+            ),
+        )
+
+        query = build_asset_search_query(segment)
+
+        self.assertIn("receptor", query.casefold())
+        self.assertIn("source", query.casefold())
+        self.assertIn("specimen", query.casefold())
+
+    def test_retrieved_labeled_asset_requires_verified_targets(self):
+        config = AppConfig()
+        config.asset_retrieval.enabled = True
+        segment = Segment(
+            segment_number=1,
+            narration="Inspect the target.",
+            visual="Stable close-up.",
+            image_prompt="Scientific photograph.",
+            shot=Shot(template="realistic_labeled_image", labels=[{"text": "Target"}]),
+        )
+        asset = CommonsAsset(
+            title="File:Candidate.jpg",
+            thumbnail_url="https://example.test/candidate.jpg",
+            description_url="https://example.test/page",
+            license_name="CC BY-SA 4.0",
+            license_url="https://creativecommons.org/licenses/by-sa/4.0/",
+            creator="Example",
+        )
+        result = Mock(core_accepted=True)
+        result.to_dict.return_value = {"accepted": True, "core_accepted": True}
+        result.target_proposals = {"Target": {"x": 0.4, "y": 0.3, "confidence": 0.9}}
+        with tempfile.TemporaryDirectory() as directory, patch(
+            "app.asset_retrieval.CommonsAssetClient.search", return_value=[asset]
+        ), patch(
+            "app.asset_retrieval.CommonsAssetClient.download",
+            side_effect=lambda _asset, path: (Image.new("RGB", (64, 64), "white").save(path) or path),
+        ), patch(
+            "app.asset_retrieval.VisionQAClient.analyze", return_value=result
+        ), patch(
+            "app.asset_retrieval.VisionQAClient.verify_targets",
+            return_value={"Target": {"x": 0.4, "y": 0.3, "confidence": 0.9}},
+        ):
+            output = Path(directory)
+            destination = output / "approved.png"
+            approved = retrieve_approved_asset(segment, "target specimen", destination, output, config)
+
+        self.assertEqual(destination, approved)
+        self.assertEqual("0.400000,0.300000", segment.shot.labels[0]["target_xy"])
+        self.assertEqual("vision_verified_retrieved_asset", segment.shot.labels[0]["target_source"])
+
+    def test_rejected_image_feedback_guides_the_next_generation(self):
+        feedback = _corrective_retry_feedback(
+            ["The flower is not a primrose."],
+            ["required target not independently verified: stigma"],
+        )
+
+        self.assertIn("not a primrose", feedback)
+        self.assertIn("target not independently verified: stigma", feedback)
+
+    def test_temporal_structure_claim_uses_separate_focused_targets(self):
+        segment = Segment(
+            segment_number=1,
+            narration="The anther matures before the stigma.",
+            visual="Two developmental phases.",
+            image_prompt="Scientific macro photograph.",
+            shot=Shot(
+                template="realistic_labeled_image",
+                labels=[
+                    {"text": "anther", "placement": "anther | pollen-bearing structure"},
+                    {"text": "stigma", "placement": "stigma | receptive structure"},
+                ],
+            ),
+        )
+
+        targets = _temporal_label_targets(segment)
+
+        self.assertEqual([target["text"] for target in targets], ["anther", "stigma"])
+
+    def test_non_temporal_anatomy_keeps_one_labeled_frame(self):
+        segment = Segment(
+            segment_number=1,
+            narration="The flower contains an anther and a stigma.",
+            visual="Stable anatomy.",
+            image_prompt="Scientific macro photograph.",
+            shot=Shot(
+                template="realistic_labeled_image",
+                labels=[{"text": "anther"}, {"text": "stigma"}],
+            ),
+        )
+
+        self.assertEqual(_temporal_label_targets(segment), [])
+
+    def test_scientific_target_point_must_fall_inside_independent_bbox(self):
+        payload = {"visible": True, "bbox": [400, 300, 520, 460]}
+
+        accepted, accepted_audit = _point_inside_verified_bbox(payload, 0.48, 0.40)
+        rejected, rejected_audit = _point_inside_verified_bbox(payload, 0.70, 0.40)
+
+        self.assertTrue(accepted)
+        self.assertEqual("point_inside_target_bbox", accepted_audit["status"])
+        self.assertFalse(rejected)
+        self.assertEqual("point_outside_target_bbox", rejected_audit["status"])
+
+    def test_scientific_target_accepts_separate_repeated_structure_boxes(self):
+        payload = {
+            "visible": True,
+            "bboxes": [[100, 100, 240, 260], [610, 310, 760, 500]],
+        }
+
+        accepted, accepted_audit = _point_inside_verified_bbox(payload, 0.68, 0.40)
+        between, between_audit = _point_inside_verified_bbox(payload, 0.45, 0.40)
+
+        self.assertTrue(accepted)
+        self.assertEqual("point_inside_target_bbox", accepted_audit["status"])
+        self.assertFalse(between)
+        self.assertEqual("point_outside_target_bbox", between_audit["status"])
+
+    def test_scientific_target_accepts_near_independent_point_and_rejects_wrong_organ(self):
+        payload = {"visible": True, "points": [[220, 310], [710, 430]]}
+
+        accepted, accepted_audit = _point_inside_verified_bbox(payload, 0.69, 0.45)
+        rejected, rejected_audit = _point_inside_verified_bbox(payload, 0.48, 0.45)
+
+        self.assertTrue(accepted)
+        self.assertEqual("point_near_verified_target", accepted_audit["status"])
+        self.assertFalse(rejected)
+        self.assertEqual("point_far_from_verified_target", rejected_audit["status"])
+
+    def test_scientific_target_rejects_combined_broad_box(self):
+        accepted, audit = _point_inside_verified_bbox(
+            {"visible": True, "bboxes": [[20, 20, 980, 960]]},
+            0.50,
+            0.50,
+        )
+
+        self.assertFalse(accepted)
+        self.assertEqual("target_bbox_too_broad", audit["status"])
+
+    def test_labeled_image_prompt_requests_separable_visible_targets(self):
+        segment = storyboard().all_segments()[0][1]
+        segment.shot = Shot(
+            template="realistic_labeled_image",
+            labels=[
+                {"text": "First structure", "placement": "target the upper visible tip"},
+                {"text": "Second structure", "placement": "target the lower visible base"},
+            ],
+        )
+        board = Storyboard(
+            title="Generic lesson",
+            scenes=[Scene(scene_number=1, title="Structure", narration=segment.narration, segments=[segment])],
+        )
+
+        normalize_storyboard(board)
+
+        prompt = segment.image_prompt
+        self.assertIn("First structure (target the upper visible tip)", prompt)
+        self.assertIn("same sharp focal plane", prompt)
+        self.assertIn("separate non-overlapping image regions", prompt)
+        self.assertIn("No embedded text, labels, arrows", prompt)
+
+    def test_crosshair_approval_still_requires_independent_clean_image_check(self):
+        config = AppConfig()
+        client = VisionQAClient(config)
+        segment = storyboard().all_segments()[0][1]
+        segment.shot = Shot(
+            template="realistic_labeled_image",
+            labels=[{"text": "Target", "placement": "exact visible tip"}],
+        )
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {
+            "message": {"content": json.dumps({
+                "targets": {"Target": {"verified": True, "confidence": 0.99, "reason": "marked"}}
+            })}
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            image_path = Path(directory) / "subject.png"
+            Image.new("RGB", (800, 600), "white").save(image_path)
+            with patch("app.vision_qa.requests.post", return_value=response), patch.object(
+                client, "_refine_target_in_crop", return_value=(None, {"status": "rejected"})
+            ) as refine:
+                verified = client.verify_targets(
+                    segment,
+                    image_path,
+                    {"Target": {"x": 0.5, "y": 0.5, "confidence": 0.95}},
+                )
+
+        self.assertEqual({}, verified)
+        refine.assert_called_once()
+        self.assertIn("Target", client.last_target_verification["initially_supported"])
+
+    def test_missing_initial_proposals_still_run_safe_target_search(self):
+        config = AppConfig()
+        client = VisionQAClient(config)
+        segment = storyboard().all_segments()[0][1]
+        segment.shot = Shot(
+            template="realistic_labeled_image",
+            labels=[{"text": "Target", "placement": "exact visible tip"}],
+        )
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {
+            "message": {"content": json.dumps({
+                "targets": {"Target": {"verified": False, "confidence": 0.0, "reason": "search"}}
+            })}
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            image_path = Path(directory) / "subject.png"
+            Image.new("RGB", (800, 600), "white").save(image_path)
+            with patch("app.vision_qa.requests.post", return_value=response), patch.object(
+                client, "_refine_target_in_crop", return_value=(None, {"status": "rejected"})
+            ) as refine:
+                verified = client.verify_targets(segment, image_path, {"Target": None})
+
+        self.assertEqual({}, verified)
+        refine.assert_called_once()
+        seeded = client.last_target_verification["candidates"]["Target"]
+        self.assertEqual((0.5, 0.5), (seeded["x"], seeded["y"]))
+
+    def test_verified_coordinate_error_is_deferred_when_vision_qa_is_enabled(self):
+        config = AppConfig()
+        config.vision_qa.enabled = True
+        message = "Label 'Anther' needs a verified coordinate from the exact approved image."
+
+        self.assertTrue(_is_deferred_render_error(message, config))
+        config.vision_qa.enabled = False
+        self.assertFalse(_is_deferred_render_error(message, config))
+
     def test_commons_retrieval_keeps_only_approved_bitmap_licenses(self):
         response = Mock()
         response.raise_for_status.return_value = None
@@ -267,6 +510,28 @@ class QualityTests(unittest.TestCase):
         self.assertEqual(patched["3"]["inputs"]["sampler_name"], config.comfyui.video_sampler_name)
         self.assertEqual(patched["3"]["inputs"]["scheduler"], config.comfyui.video_scheduler)
         self.assertEqual(patched["1"]["inputs"]["text"], "A moving flower")
+
+    def test_ltx_sampler_custom_patches_prompt_through_conditioning_node(self):
+        config = AppConfig()
+        workflow = {
+            "6": {"class_type": "CLIPTextEncode", "inputs": {"text": "stale positive"}},
+            "7": {"class_type": "CLIPTextEncode", "inputs": {"text": "stale negative"}},
+            "69": {
+                "class_type": "LTXVConditioning",
+                "inputs": {"positive": ["6", 0], "negative": ["7", 0], "frame_rate": 16},
+            },
+            "72": {
+                "class_type": "SamplerCustom",
+                "inputs": {"positive": ["69", 0], "negative": ["69", 1], "noise_seed": 1},
+            },
+        }
+
+        patched = ComfyUIClient(config)._patch_workflow(
+            workflow, "A red kite dancing in the sky", "rhyme", video=True
+        )
+
+        self.assertEqual(patched["6"]["inputs"]["text"], "A red kite dancing in the sky")
+        self.assertEqual(patched["7"]["inputs"]["text"], config.comfyui.negative_prompt)
 
     def test_existing_storyboard_prompts_are_rewritten_and_audited(self):
         config = load_config(ROOT / "config.12gb.yaml")

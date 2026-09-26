@@ -79,7 +79,11 @@ class ComfyUIConfig(BaseModel):
 
 class VisionQAConfig(BaseModel):
     enabled: bool = False
-    model: str = "qwen2.5vl:7b"
+    model: str = "qwen3-vl:8b-instruct"
+    secondary_model: str | None = "qwen2.5vl:7b"
+    sam_enabled: bool = False
+    sam_model_type: str = "vit_b"
+    sam_checkpoint: str | None = None
     max_attempts: int = 3
     minimum_relevance: float = 0.78
     minimum_subject_match: float = 0.72

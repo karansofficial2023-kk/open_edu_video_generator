@@ -68,11 +68,7 @@ def _generate_image_with_qa(
         candidate = generated.with_stem(f"{generated.stem}_attempt_{attempt}")
         attempt_segment = segment.model_copy(deep=True)
         if retry_prompt:
-            attempt_segment.image_prompt = (
-                f"Lesson topic: {lesson_context or 'educational subject'}. "
-                f"Teaching point: {segment.narration}. SME replacement scene: {retry_prompt} "
-                "Single coherent text-free image with the required physical evidence clearly visible."
-            )
+            attempt_segment.image_prompt = _qa_retry_prompt(segment, lesson_context, retry_prompt)
         comfy_client.generate_image(attempt_segment, candidate, f"{prefix}_attempt_{attempt}")
         comfy_client.free_memory()
         result = qa_client.analyze(segment, candidate)
@@ -80,6 +76,7 @@ def _generate_image_with_qa(
             "segment": segment.segment_number,
             "attempt": attempt,
             "image": str(candidate),
+            "effective_prompt": attempt_segment.image_prompt,
             **result.to_dict(),
             "coordinate_policy": "proposals_only_not_verified",
         })
@@ -119,18 +116,18 @@ def _generate_image_with_qa(
             )
             continue
         retry_prompt = result.regeneration_prompt or _corrective_retry_feedback(result.reasons)
-    from .asset_retrieval import build_asset_search_query, retrieve_approved_asset
+    from .asset_retrieval import build_asset_search_queries, retrieve_approved_asset
 
-    search_query = build_asset_search_query(segment)
-    if search_query:
-        retrieved = retrieve_approved_asset(segment, search_query, generated, output_dir, config)
+    search_queries = build_asset_search_queries(segment)
+    if search_queries:
+        retrieved = retrieve_approved_asset(segment, search_queries, generated, output_dir, config)
         if retrieved:
             append_qa_audit(output_dir / "vision_qa.json", {
                 "segment": segment.segment_number,
                 "image": str(retrieved),
                 "qa_mode": "automatic_failure_recovery",
                 "accepted": True,
-                "search_query": search_query,
+                "search_queries": search_queries,
                 "action": "generation retries failed; approved open-license asset selected",
             })
             return retrieved
@@ -169,7 +166,16 @@ def _generate_image_with_qa(
             "action": "candidate recorded for review; not approved while precise targets remain unresolved",
         })
         if not config.vision_qa.block_on_failure:
+            omitted_labels = _remove_unverified_labels(segment)
             candidate.replace(generated)
+            append_qa_audit(output_dir / "vision_qa.json", {
+                "segment": segment.segment_number,
+                "image": str(generated),
+                "qa_mode": "safe_draft_fallback",
+                "accepted_base_image": True,
+                "omitted_labels": omitted_labels,
+                "action": "kept the accepted subject image but removed every unverified label and arrow",
+            })
             return generated
         reasons = "; ".join(last_result.reasons) or "precise label targets were not independently verified"
         raise ValueError(
@@ -179,8 +185,68 @@ def _generate_image_with_qa(
     if config.vision_qa.block_on_failure:
         reasons = "; ".join(last_result.reasons if last_result else []) or "quality thresholds not met"
         raise ValueError(f"Vision QA rejected {prefix} after {attempts} attempts: {reasons}")
-    candidate.replace(generated)
+    omitted_labels = _remove_unverified_labels(segment)
+    _render_neutral_fallback(generated, config)
+    append_qa_audit(output_dir / "vision_qa.json", {
+        "segment": segment.segment_number,
+        "image": str(generated),
+        "qa_mode": "safe_draft_fallback",
+        "accepted_base_image": False,
+        "omitted_labels": omitted_labels,
+        "rejected_attempts": attempts,
+        "action": "used a neutral text-free frame; no rejected subject or unverified annotation was published",
+    })
     return generated
+
+
+def _qa_retry_prompt(segment: Segment, lesson_context: str, correction: str) -> str:
+    context = re.sub(r"\s+", " ", lesson_context).strip()[:240]
+    narration = re.sub(r"\s+", " ", segment.narration).strip()[:600]
+    original = re.sub(
+        r"\s+", " ", segment.image_prompt or segment.visual or segment.narration
+    ).strip()[:1100]
+    correction = re.sub(r"\s+", " ", correction).strip()[:700]
+    return (
+        f"Current lesson and scene only: {context or 'educational subject'}. "
+        f"Exact current-shot teaching point: {narration}. "
+        f"Required current-shot image specification: {original}. "
+        f"SME correction for the next independent attempt: {correction}. "
+        "Do not substitute a common lookalike, a subject from another shot, or a previously rejected species. "
+        "Single coherent realistic text-free image; required physical evidence must be large, sharp, and visible."
+    )
+
+
+def _remove_unverified_labels(segment: Segment) -> list[str]:
+    if not segment.shot:
+        return []
+    omitted = [
+        str(item.get("text") or item.get("name") or "").strip()
+        for item in segment.shot.labels
+        if str(item.get("text") or item.get("name") or "").strip()
+    ]
+    segment.shot.labels = []
+    segment.shot.arrows = []
+    return omitted
+
+
+def _render_neutral_fallback(output: Path, config: AppConfig) -> None:
+    """Create a polished, claim-free draft frame without exposing production text."""
+    width = config.output_resolution.width
+    height = config.output_resolution.height
+    top = (22, 33, 43)
+    bottom = (43, 63, 70)
+    image = Image.new("RGB", (width, height), top)
+    draw = ImageDraw.Draw(image)
+    for y in range(height):
+        amount = y / max(1, height - 1)
+        color = tuple(round(a + (b - a) * amount) for a, b in zip(top, bottom))
+        draw.line((0, y, width, y), fill=color)
+    spacing = max(80, width // 16)
+    line = (62, 83, 88)
+    for x in range(-height, width + height, spacing):
+        draw.line((x, 0, x + height, height), fill=line, width=1)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    image.save(output)
 
 
 def _corrective_retry_feedback(reasons: list[str], extra: list[str] | None = None) -> str:
@@ -694,7 +760,7 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
                 f"open_edu_scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}",
                 output_dir,
                 config,
-                storyboard.source,
+                f"{storyboard.title}. Scene: {scene.title}",
             )
             if segment.shot and is_label_template(segment.shot.template):
                 paths.append(generated)

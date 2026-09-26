@@ -36,11 +36,17 @@ def main() -> None:
     parser.add_argument("--preview", action="store_true", help="Render a silent MP4 with approximate timing; no TTS required")
     parser.add_argument("--burn-captions", action="store_true", help="Burn captions into video pixels")
     parser.add_argument("--no-embed-subtitles", action="store_true", help="Write subtitles.srt without embedding a subtitle track in MP4")
-    parser.add_argument("--allow-incomplete", action="store_true", help="Render even when coverage lint says the topic is incomplete")
+    parser.add_argument(
+        "--allow-incomplete",
+        action="store_true",
+        help="Create a safe draft despite incomplete coverage or unresolved visual QA; rejected visuals and labels are omitted",
+    )
     parser.add_argument("--strict-coverage", action="store_true", help="Block rendering when coverage lint says the topic is incomplete")
     args = parser.parse_args()
 
     config = load_config(args.config)
+    if args.allow_incomplete:
+        config.vision_qa.block_on_failure = False
     if args.burn_captions:
         config.render.burn_captions = True
     if args.no_embed_subtitles:

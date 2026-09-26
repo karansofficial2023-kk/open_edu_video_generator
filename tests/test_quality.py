@@ -11,7 +11,13 @@ from unittest.mock import Mock, patch
 
 from PIL import Image, ImageDraw
 
-from app.asset_retrieval import CommonsAsset, CommonsAssetClient, build_asset_search_query, retrieve_approved_asset
+from app.asset_retrieval import (
+    CommonsAsset,
+    CommonsAssetClient,
+    build_asset_search_queries,
+    build_asset_search_query,
+    retrieve_approved_asset,
+)
 from app.comfyui_client import ComfyUIClient
 from app.config import AppConfig, load_config
 from app.input_reader import _shot_from_media_type
@@ -31,7 +37,11 @@ from app.visuals import (
     _temporal_label_targets,
     _transfer_endpoints,
     _font,
+    _generate_image_with_qa,
     _pixel_wrap,
+    _qa_retry_prompt,
+    _remove_unverified_labels,
+    _render_neutral_fallback,
     render_ai_image_frame,
     render_segment_frames,
 )
@@ -71,6 +81,128 @@ class QualityTests(unittest.TestCase):
         self.assertIn("receptor", query.casefold())
         self.assertIn("source", query.casefold())
         self.assertIn("specimen", query.casefold())
+
+    def test_asset_search_queries_prioritize_current_named_subject(self):
+        segment = Segment(
+            segment_number=2,
+            narration="In species like Ixora, the anther and stigma reach maturity simultaneously.",
+            visual="Macro view of the current flower only.",
+            image_prompt="A sharp macro photograph of Ixora reproductive structures.",
+            shot=Shot(
+                template="realistic_labeled_image",
+                labels=[{"text": "anther"}, {"text": "stigma"}],
+            ),
+        )
+
+        queries = build_asset_search_queries(segment)
+
+        self.assertEqual("ixora anther stigma", queries[0].casefold())
+        self.assertEqual("ixora", queries[1].casefold())
+        self.assertNotIn("sunflower", " ".join(queries).casefold())
+
+    def test_retry_prompt_uses_only_scoped_scene_context(self):
+        segment = Segment(
+            segment_number=2,
+            narration="Show an Ixora flower with visible anther and stigma.",
+            visual="Ixora macro.",
+            image_prompt="Realistic macro photograph of one Ixora flower.",
+        )
+
+        prompt = _qa_retry_prompt(
+            segment,
+            "Types of Pollination. Scene: Self-pollination",
+            "The previous image used an unrelated subject.",
+        )
+
+        self.assertIn("Ixora", prompt)
+        self.assertIn("Scene: Self-pollination", prompt)
+        self.assertNotIn("sunflower", prompt.casefold())
+
+    def test_safe_draft_fallback_removes_unverified_annotations(self):
+        config = AppConfig()
+        config.output_resolution.width = 640
+        config.output_resolution.height = 360
+        segment = Segment(
+            segment_number=1,
+            narration="Inspect the structures.",
+            visual="Stable scientific view.",
+            image_prompt="Scientific photograph.",
+            shot=Shot(
+                template="realistic_labeled_image",
+                labels=[{"text": "Target"}],
+                arrows=[{"text": "Target"}],
+            ),
+        )
+
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "fallback.png"
+            omitted = _remove_unverified_labels(segment)
+            _render_neutral_fallback(output, config)
+            with Image.open(output) as image:
+                self.assertEqual((640, 360), image.size)
+
+        self.assertEqual(["Target"], omitted)
+        self.assertEqual([], segment.shot.labels)
+        self.assertEqual([], segment.shot.arrows)
+
+    def test_rejected_visual_uses_safe_draft_frame_without_false_labels(self):
+        config = AppConfig()
+        config.vision_qa.enabled = True
+        config.vision_qa.max_attempts = 1
+        config.vision_qa.block_on_failure = False
+        config.asset_retrieval.enabled = False
+        config.output_resolution.width = 640
+        config.output_resolution.height = 360
+        segment = Segment(
+            segment_number=2,
+            narration="Show one exact named scientific subject.",
+            visual="Exact subject only.",
+            image_prompt="Exact scientific subject.",
+            shot=Shot(
+                template="realistic_labeled_image",
+                labels=[{"text": "Exact target"}],
+            ),
+        )
+        result = Mock(
+            accepted=False,
+            core_accepted=False,
+            relevance=0.0,
+            subject_match=0.0,
+            reasons=["The image depicts an unrelated subject."],
+            regeneration_prompt="Show the exact subject.",
+        )
+        result.to_dict.return_value = {
+            "accepted": False,
+            "core_accepted": False,
+            "reasons": result.reasons,
+        }
+        comfy = Mock()
+        comfy.generate_image.side_effect = (
+            lambda _segment, path, _prefix: (Image.new("RGB", (64, 64), "red").save(path) or path)
+        )
+
+        with tempfile.TemporaryDirectory() as directory, patch(
+            "app.vision_qa.VisionQAClient.analyze", return_value=result
+        ):
+            root = Path(directory)
+            output = root / "generated.png"
+            generated = _generate_image_with_qa(
+                comfy,
+                segment,
+                output,
+                "test_scene",
+                root,
+                config,
+                "Current lesson. Scene: Current scene",
+            )
+            audit = json.loads((root / "vision_qa.json").read_text(encoding="utf-8"))
+            with Image.open(generated) as image:
+                self.assertEqual((640, 360), image.size)
+                self.assertNotEqual((255, 0, 0), image.getpixel((0, 0)))
+
+        self.assertEqual([], segment.shot.labels)
+        self.assertEqual("safe_draft_fallback", audit[-1]["qa_mode"])
+        self.assertFalse(audit[-1]["accepted_base_image"])
 
     def test_retrieved_labeled_asset_requires_verified_targets(self):
         config = AppConfig()

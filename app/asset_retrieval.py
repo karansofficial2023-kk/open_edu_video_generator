@@ -63,6 +63,53 @@ def build_asset_search_query(segment: Segment) -> str:
     return " ".join(result)
 
 
+def build_asset_search_queries(segment: Segment) -> list[str]:
+    """Return focused-to-broad Commons queries for only the current shot."""
+    text = " ".join(
+        value for value in (segment.narration, segment.visual, segment.image_prompt) if value
+    )
+    subjects: list[str] = []
+    patterns = (
+        r"\b(?:species\s+like|such\s+as|including|for\s+example)\s+"
+        r"([A-Za-z][A-Za-z-]*(?:\s+[A-Za-z][A-Za-z-]*){0,2})",
+        r"\b(?:plant|flower|organism|material|apparatus)\s+(?:called|named)\s+"
+        r"([A-Za-z][A-Za-z-]*(?:\s+[A-Za-z][A-Za-z-]*){0,2})",
+    )
+    for pattern in patterns:
+        for match in re.finditer(pattern, text, flags=re.IGNORECASE):
+            words = [
+                word for word in match.group(1).split()
+                if word.casefold() not in _QUERY_STOP_WORDS
+            ]
+            if words:
+                subjects.append(" ".join(words))
+
+    labels = []
+    if segment.shot:
+        labels = [
+            str(item.get("text") or item.get("name") or "").strip()
+            for item in segment.shot.labels
+            if str(item.get("text") or item.get("name") or "").strip()
+        ]
+
+    queries: list[str] = []
+    for subject in subjects:
+        if labels:
+            queries.append(" ".join([subject, *labels[:2]]))
+        queries.append(subject)
+    queries.append(build_asset_search_query(segment))
+
+    unique: list[str] = []
+    seen: set[str] = set()
+    for query in queries:
+        normalized = re.sub(r"\s+", " ", query).strip()
+        key = normalized.casefold()
+        if normalized and key not in seen:
+            seen.add(key)
+            unique.append(normalized)
+    return unique
+
+
 def _apply_verified_targets(segment: Segment, verified: dict[str, dict[str, float]]) -> None:
     if not segment.shot:
         return
@@ -137,7 +184,7 @@ class CommonsAssetClient:
 
 def retrieve_approved_asset(
     segment: Segment,
-    query: str,
+    query: str | list[str],
     destination: Path,
     output_dir: Path,
     config: AppConfig,
@@ -147,64 +194,70 @@ def retrieve_approved_asset(
     client = CommonsAssetClient(config)
     qa = VisionQAClient(config)
     records: list[dict[str, Any]] = []
-    try:
-        assets = client.search(query)
-    except requests.RequestException as exc:
-        append_qa_audit(output_dir / "vision_qa.json", {
-            "segment": segment.segment_number,
-            "accepted": False,
-            "qa_mode": "commons_retrieval",
-            "query": query,
-            "reasons": [f"Asset search unavailable: {exc}"],
-        })
-        return None
-
-    for index, asset in enumerate(assets, start=1):
-        candidate = destination.with_stem(f"{destination.stem}_commons_{index:02d}")
+    queries = [query] if isinstance(query, str) else list(query)
+    candidate_index = 0
+    for current_query in queries:
+        if candidate_index >= client.settings.max_candidates:
+            break
         try:
-            client.download(asset, candidate)
-            result = qa.analyze(segment, candidate)
-        except (requests.RequestException, OSError, ValueError) as exc:
-            records.append({**asdict(asset), "accepted": False, "error": str(exc)})
+            assets = client.search(current_query)
+        except requests.RequestException as exc:
+            append_qa_audit(output_dir / "vision_qa.json", {
+                "segment": segment.segment_number,
+                "accepted": False,
+                "qa_mode": "commons_retrieval",
+                "query": current_query,
+                "reasons": [f"Asset search unavailable: {exc}"],
+            })
             continue
-        labels = [
-            str(item.get("text") or item.get("name") or "").strip()
-            for item in (segment.shot.labels if segment.shot else [])
-            if str(item.get("text") or item.get("name") or "").strip()
-        ]
-        verified: dict[str, dict[str, float]] = {}
-        verification_audit: dict[str, Any] = {}
-        if labels and result.core_accepted:
+
+        for asset in assets:
+            if candidate_index >= client.settings.max_candidates:
+                break
+            candidate_index += 1
+            index = candidate_index
+            candidate = destination.with_stem(f"{destination.stem}_commons_{index:02d}")
             try:
+                client.download(asset, candidate)
+                result = qa.analyze(segment, candidate)
+            except (requests.RequestException, OSError, ValueError) as exc:
+                records.append({**asdict(asset), "accepted": False, "error": str(exc)})
+                continue
+            labels = [
+                str(item.get("text") or item.get("name") or "").strip()
+                for item in (segment.shot.labels if segment.shot else [])
+                if str(item.get("text") or item.get("name") or "").strip()
+            ]
+            verified: dict[str, dict[str, float]] = {}
+            verification_audit: dict[str, Any] = {}
+            if labels and result.core_accepted:
                 verified = qa.verify_targets(segment, candidate, result.target_proposals)
                 verification_audit = qa.last_target_verification
-            except (requests.RequestException, OSError, ValueError, RuntimeError) as exc:
-                verification_audit = {"status": "error", "error": str(exc)}
-        resolved = {name.casefold() for name in verified}
-        targets_accepted = not labels or {name.casefold() for name in labels} <= resolved
-        accepted = result.core_accepted and targets_accepted
-        audit = {
-            "segment": segment.segment_number,
-            "attempt": index,
-            "image": str(candidate),
-            "qa_mode": "commons_retrieval",
-            "query": query,
-            "source": asdict(asset),
-            **result.to_dict(),
-            "accepted": accepted,
-            "verified_targets": verified,
-            "verification_audit": verification_audit,
-            "coordinate_policy": "verified_before_use" if labels else "no_label_targets_requested",
-        }
-        append_qa_audit(output_dir / "vision_qa.json", audit)
-        records.append({**asdict(asset), **result.to_dict(), "accepted": accepted})
-        if accepted:
-            _apply_verified_targets(segment, verified)
-            destination.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(candidate, destination)
-            attribution = output_dir / "asset_attribution.json"
-            existing = json.loads(attribution.read_text(encoding="utf-8")) if attribution.exists() else []
-            existing.append({"local_file": str(destination), "query": query, **asdict(asset)})
-            attribution.write_text(json.dumps(existing, indent=2, ensure_ascii=False), encoding="utf-8")
-            return destination
+            resolved = {name.casefold() for name in verified}
+            targets_accepted = not labels or {name.casefold() for name in labels} <= resolved
+            accepted = result.core_accepted and targets_accepted
+            audit = {
+                "segment": segment.segment_number,
+                "attempt": index,
+                "image": str(candidate),
+                "qa_mode": "commons_retrieval",
+                "query": current_query,
+                "source": asdict(asset),
+                **result.to_dict(),
+                "accepted": accepted,
+                "verified_targets": verified,
+                "verification_audit": verification_audit,
+                "coordinate_policy": "verified_before_use" if labels else "no_label_targets_requested",
+            }
+            append_qa_audit(output_dir / "vision_qa.json", audit)
+            records.append({**asdict(asset), **result.to_dict(), "accepted": accepted})
+            if accepted:
+                _apply_verified_targets(segment, verified)
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(candidate, destination)
+                attribution = output_dir / "asset_attribution.json"
+                existing = json.loads(attribution.read_text(encoding="utf-8")) if attribution.exists() else []
+                existing.append({"local_file": str(destination), "query": current_query, **asdict(asset)})
+                attribution.write_text(json.dumps(existing, indent=2, ensure_ascii=False), encoding="utf-8")
+                return destination
     return None

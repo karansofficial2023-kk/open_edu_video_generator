@@ -195,12 +195,21 @@ inspection aids, not scientific structures.
                     "format": "json",
                     "stream": False,
                     "keep_alive": 0,
-                    "options": {"temperature": 0, "num_predict": 512},
+                    "options": {"temperature": 0, "num_predict": 1024},
                 },
                 timeout=self.config.vision_qa.timeout_seconds,
             )
             response.raise_for_status()
-            payload = _json_object(response.json().get("message", {}).get("content", "{}"))
+            content = response.json().get("message", {}).get("content", "{}")
+            payload, parse_error = _safe_json_object(content)
+            if parse_error:
+                self.last_target_verification = {
+                    "status": "malformed_response",
+                    "candidates": candidates,
+                    "error": parse_error,
+                    "response_preview": str(content)[:800],
+                }
+                return {}
             checks = payload.get("targets") if isinstance(payload.get("targets"), dict) else {}
             initially_supported: dict[str, Any] = {}
             rejected: dict[str, Any] = {}
@@ -243,7 +252,7 @@ inspection aids, not scientific structures.
                 "candidates": candidates,
                 "error": f"{type(error).__name__}: {error}",
             }
-            raise
+            return {}
         finally:
             annotated_path.unlink(missing_ok=True)
 
@@ -472,7 +481,14 @@ Judge the object that physically occupies the exact center of this image.
             timeout=self.config.vision_qa.timeout_seconds,
         )
         response.raise_for_status()
-        return _json_object(response.json().get("message", {}).get("content", "{}"))
+        content = response.json().get("message", {}).get("content", "{}")
+        payload, parse_error = _safe_json_object(content)
+        if parse_error:
+            return {
+                "_qa_response_error": parse_error,
+                "_qa_response_preview": str(content)[:800],
+            }
+        return payload
 
     def _review_prompt(self, segment: Segment, labels: list[str]) -> str:
         expected = segment.image_prompt or segment.visual or segment.narration
@@ -569,6 +585,13 @@ def _json_object(value: str) -> dict[str, Any]:
     if not isinstance(parsed, dict):
         raise ValueError("Vision QA response must be a JSON object")
     return parsed
+
+
+def _safe_json_object(value: str) -> tuple[dict[str, Any], str | None]:
+    try:
+        return _json_object(value), None
+    except (json.JSONDecodeError, TypeError, ValueError) as error:
+        return {}, f"{type(error).__name__}: {error}"
 
 
 def _score(value: Any) -> float:

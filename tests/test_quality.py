@@ -423,6 +423,35 @@ class QualityTests(unittest.TestCase):
         self.assertFalse(result.core_accepted)
         self.assertIn("malformed JSON", result.reasons[0])
 
+    def test_malformed_target_verifier_response_rejects_coordinates_without_crashing(self):
+        config = AppConfig()
+        client = VisionQAClient(config)
+        segment = storyboard().all_segments()[0][1]
+        segment.shot = Shot(
+            template="realistic_labeled_image",
+            labels=[{"text": "Target", "placement": "exact visible tip"}],
+        )
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {
+            "message": {
+                "content": '{"targets":{"Target":{"verified":true,"reason":"unterminated'
+            }
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            image_path = Path(directory) / "subject.png"
+            Image.new("RGB", (800, 600), "white").save(image_path)
+            with patch("app.vision_qa.requests.post", return_value=response):
+                verified = client.verify_targets(
+                    segment,
+                    image_path,
+                    {"Target": {"x": 0.5, "y": 0.5, "confidence": 0.95}},
+                )
+
+        self.assertEqual({}, verified)
+        self.assertEqual("malformed_response", client.last_target_verification["status"])
+        self.assertIn("JSONDecodeError", client.last_target_verification["error"])
+
     def test_vision_qa_returns_an_sme_regeneration_prompt(self):
         response = Mock()
         response.raise_for_status.return_value = None

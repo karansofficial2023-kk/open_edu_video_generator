@@ -28,6 +28,17 @@ def coverage_report(storyboard: Storyboard, output_dir: str | Path) -> dict:
         f"{scene.title} {scene.narration} " + " ".join(segment.narration for segment in scene.segments)
         for scene in storyboard.scenes
     ]))
+    if "types of pollination" not in text:
+        report = {
+            "notice": "No topic-specific coverage profile applies; verify against the teacher or curriculum source.",
+            "profile": None,
+            "covered_topics": [],
+            "missing_topics": [],
+            "coverage_ratio": 1.0,
+        }
+        Path(output_dir, "coverage.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+        return report
+
     topic_hits = {}
     missing = []
     for topic, markers in POLLINATION_TOPICS.items():
@@ -37,6 +48,7 @@ def coverage_report(storyboard: Storyboard, output_dir: str | Path) -> dict:
             missing.append(topic)
     report = {
         "notice": "Coverage lint for Types of Pollination; verify against teacher/curriculum source.",
+        "profile": "types_of_pollination",
         "covered_topics": [topic for topic in POLLINATION_TOPICS if topic not in missing],
         "missing_topics": missing,
         "coverage_ratio": round((len(POLLINATION_TOPICS) - len(missing)) / len(POLLINATION_TOPICS), 3),

@@ -80,8 +80,8 @@ comfyui:
   seed: -1
   timeout_seconds: 1800
   fallback_to_slideshow: false
-  rewrite_prompts: false
-  prompt_prefix: "sharp high-resolution educational documentary photograph, exact named scientific subject, physically realistic anatomy, clear focal subject, fine natural detail, neutral natural colors, soft daylight, label-safe negative space,"
+  rewrite_prompts: true
+  prompt_prefix: "sharp high-resolution educational documentary photograph, exact named lesson subject, physically credible scientific objects and structures, clear focal evidence, fine natural detail, neutral natural colors, controlled realistic lighting, label-safe negative space,"
   prompt_suffix: "single coherent realistic scene, scientifically plausible structure, text-free image, no labels, no arrows, no caption, no watermark, no logo, no border, no infographic, no cartoon style, no painterly style, no duplicated anatomy, no deformed organisms"
   negative_prompt: "text, letters, typography, labels, captions, watermark, logo, signature, diagram, infographic, chart, collage, grid, panels, border, blurry, distorted anatomy, duplicate parts, oversaturated, bad motion, flicker"
   video_enabled: true

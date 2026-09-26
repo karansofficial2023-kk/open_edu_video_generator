@@ -25,6 +25,7 @@ class VisionQAResult:
     text_present: bool
     major_artifacts: list[str] = field(default_factory=list)
     reasons: list[str] = field(default_factory=list)
+    regeneration_prompt: str = ""
     target_proposals: dict[str, dict[str, float] | None] = field(default_factory=dict)
     raw: dict[str, Any] = field(default_factory=dict)
 
@@ -84,6 +85,7 @@ class VisionQAClient:
         text_present = bool(payload.get("text_present", False))
         artifacts = _strings(payload.get("major_artifacts"))
         reasons = _strings(payload.get("reasons"))
+        regeneration_prompt = str(payload.get("regeneration_prompt") or "").strip()
         proposals = _normalize_proposals(payload.get("target_proposals"), width, height)
         requested = {label.casefold() for label in labels}
         proposals = {name: point for name, point in proposals.items() if name.casefold() in requested}
@@ -109,6 +111,7 @@ class VisionQAClient:
             text_present=text_present,
             major_artifacts=artifacts,
             reasons=reasons,
+            regeneration_prompt=regeneration_prompt,
             target_proposals=proposals,
             raw=payload,
         )
@@ -491,10 +494,15 @@ Judge the object that physically occupies the exact center of this image.
                 "below final delivery resolution; deterministic rendering and upscaling occur later. "
                 "A clearly relevant pollinator, flower, or subject placed behind a dark overlay is valid."
             )
-        return f"""You are a strict visual quality inspector for an educational video.
+        return f"""You are a strict visual quality inspector and subject-matter expert for an educational video.
 Judge only what is visibly present. Do not assume that a structure exists because the
-expected description names it. Reject unrelated subjects, visible words, watermarks,
-collages, duplicated/deformed anatomy, and visually invented scientific structures.
+expected description names it. Use established subject knowledge to identify the
+indispensable visible components of any named apparatus, organism, process, graph,
+demonstration, or physical mechanism. Reject a broadly related or decorative image when
+those components, their physical relationships, or necessary connections are missing,
+implausible, disconnected, malformed, or scientifically misleading. Reject unrelated
+subjects, visible words, watermarks, collages, duplicated/deformed anatomy, and visually
+invented scientific structures. Do not approve merely because the setting looks scientific.
 {title_note}
 {label_note}
 
@@ -513,6 +521,7 @@ Return JSON only with exactly these keys:
   "text_present": false,
   "major_artifacts": [],
   "reasons": [],
+  "regeneration_prompt": "",
   "target_proposals": {{}}
 }}
 Scores range from 0 to 1. For each requested label, target_proposals may contain
@@ -522,6 +531,13 @@ Score relevance and subject_match for the clean base image independently from la
 coordinate availability. A missing or uncertain target belongs in target_proposals as
 null and must not by itself reduce relevance or subject_match when the named subject is
 otherwise correct.
+When rejecting the image, act as a subject-matter expert and fill regeneration_prompt
+with a fresh 30-65 word image-generation prompt. Describe only the scientifically correct
+physical subject, apparatus, materials, action, composition, camera position, and lighting
+needed for the narration. Use positive language. Never name any rejected or unrelated
+object visible in the bad image, and do not use no/not/avoid statements. Do not request
+text, labels, arrows, formulas, captions, diagrams, collages, or UI. When accepting the
+image, return an empty regeneration_prompt.
 Judge the visible subject and action, not production phrases such as documentary frame,
 professional composition, safe margin, or educational style. A sharp still photograph is
 valid when it clearly shows the named subject even if an invisible process cannot be frozen

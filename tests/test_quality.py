@@ -114,12 +114,16 @@ class QualityTests(unittest.TestCase):
 
     def test_rejected_image_feedback_guides_the_next_generation(self):
         feedback = _corrective_retry_feedback(
-            ["The flower is not a primrose."],
+            [
+                "The image depicts a wasp, which is unrelated to electroplating.",
+                "No electrolyte, electrode, or conductive material is visible.",
+            ],
             ["required target not independently verified: stigma"],
         )
 
-        self.assertIn("not a primrose", feedback)
-        self.assertIn("target not independently verified: stigma", feedback)
+        self.assertNotIn("wasp", feedback.lower())
+        self.assertIn("electrolyte, electrode, or conductive material", feedback.lower())
+        self.assertIn("required target clearly: stigma", feedback.lower())
 
     def test_temporal_structure_claim_uses_separate_focused_targets(self):
         segment = Segment(
@@ -418,6 +422,37 @@ class QualityTests(unittest.TestCase):
         self.assertFalse(result.accepted)
         self.assertFalse(result.core_accepted)
         self.assertIn("malformed JSON", result.reasons[0])
+
+    def test_vision_qa_returns_an_sme_regeneration_prompt(self):
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {"message": {"content": json.dumps({
+            "relevance": 0.1,
+            "subject_match": 0.1,
+            "text_present": False,
+            "major_artifacts": [],
+            "reasons": ["The visible subject is unrelated."],
+            "regeneration_prompt": (
+                "Laboratory electroplating cell with a metal object and source electrode immersed in a "
+                "clear electrolyte beaker, connected to a DC power supply, eye-level documentary photograph."
+            ),
+            "target_proposals": {},
+        })}}
+        segment = storyboard().all_segments()[0][1]
+        with tempfile.TemporaryDirectory() as directory:
+            image = Path(directory) / "image.png"
+            Image.new("RGB", (64, 64), "white").save(image)
+            with patch("app.vision_qa.requests.post", return_value=response):
+                result = VisionQAClient(AppConfig()).analyze(segment, image)
+        self.assertFalse(result.accepted)
+        self.assertIn("electroplating cell", result.regeneration_prompt.lower())
+
+    def test_vision_qa_prompt_requires_complete_scientific_mechanisms(self):
+        segment = storyboard().all_segments()[0][1]
+        prompt = VisionQAClient(AppConfig())._review_prompt(segment, [])
+        self.assertIn("indispensable visible components", prompt)
+        self.assertIn("necessary connections", prompt)
+        self.assertIn("Do not approve merely because the setting looks scientific", prompt)
 
     def test_comparison_contract_is_split_into_focused_assets(self):
         segment = storyboard().all_segments()[0][1]

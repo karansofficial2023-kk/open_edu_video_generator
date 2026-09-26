@@ -63,15 +63,15 @@ def _generate_image_with_qa(
     last_result = None
     best_core_result = None
     best_core_candidate = None
-    retry_feedback = ""
+    retry_prompt = ""
     for attempt in range(1, attempts + 1):
         candidate = generated.with_stem(f"{generated.stem}_attempt_{attempt}")
         attempt_segment = segment.model_copy(deep=True)
-        if retry_feedback:
+        if retry_prompt:
             attempt_segment.image_prompt = (
-                f"{segment.image_prompt} CORRECTIVE REGENERATION REQUIREMENTS: {retry_feedback} "
-                "Create a genuinely different composition that fixes every listed failure. Do not repeat the "
-                "rejected subject, species, anatomy, framing, or missing target."
+                f"Lesson topic: {lesson_context or 'educational subject'}. "
+                f"Teaching point: {segment.narration}. SME replacement scene: {retry_prompt} "
+                "Single coherent text-free image with the required physical evidence clearly visible."
             )
         comfy_client.generate_image(attempt_segment, candidate, f"{prefix}_attempt_{attempt}")
         comfy_client.free_memory()
@@ -113,12 +113,12 @@ def _generate_image_with_qa(
                 candidate.replace(generated)
                 return generated
             unresolved = sorted(requested - resolved)
-            retry_feedback = _corrective_retry_feedback(
+            retry_prompt = result.regeneration_prompt or _corrective_retry_feedback(
                 result.reasons,
                 [f"required target not independently verified: {name}" for name in unresolved],
             )
             continue
-        retry_feedback = _corrective_retry_feedback(result.reasons)
+        retry_prompt = result.regeneration_prompt or _corrective_retry_feedback(result.reasons)
     from .asset_retrieval import build_asset_search_query, retrieve_approved_asset
 
     search_query = build_asset_search_query(segment)
@@ -184,11 +184,38 @@ def _generate_image_with_qa(
 
 
 def _corrective_retry_feedback(reasons: list[str], extra: list[str] | None = None) -> str:
-    items = [re.sub(r"\s+", " ", str(item)).strip() for item in [*(reasons or []), *(extra or [])]]
-    items = [item for item in items if item]
-    if not items:
-        return "The previous image did not satisfy visual QA; strengthen exact subject and target visibility."
-    return " ".join(f"Failure {index + 1}: {item}" for index, item in enumerate(items))[:1800]
+    requirements: list[str] = []
+    for raw in [*(reasons or []), *(extra or [])]:
+        item = re.sub(r"\s+", " ", str(raw)).strip(" .")
+        if not item:
+            continue
+
+        target = re.search(r"required target not independently verified:\s*(.+)$", item, re.I)
+        if target:
+            requirements.append(f"Show the required target clearly: {target.group(1).strip()}")
+            continue
+
+        missing = re.match(
+            r"no\s+(.+?)\s+(?:is|are|was|were)\s+(?:clearly\s+)?(?:visible|shown|depicted|present)$",
+            item,
+            re.I,
+        )
+        if missing:
+            requirements.append(f"Clearly show this required evidence: {missing.group(1).strip()}")
+            continue
+
+        requested = re.search(r"requested (?:physical )?targets?[^:]*:\s*(.+)$", item, re.I)
+        if requested:
+            requirements.append(f"Clearly show every requested target: {requested.group(1).strip()}")
+
+    if not requirements:
+        requirements.append("Make the exact lesson subject and its required physical evidence unmistakably visible")
+    unique = list(dict.fromkeys(requirements))
+    return (
+        "Create a fresh independent composition. Match only the exact lesson subject. "
+        + ". ".join(unique)
+        + "."
+    )[:1200]
 
 
 def _temporal_label_targets(segment: Segment) -> list[dict]:

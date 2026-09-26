@@ -40,7 +40,9 @@ def prepare_visual_prompts(storyboard: Storyboard, output_dir: Path, config: App
                         "Never request labels, letters, logos, captions, arrows, infographics, collages, "
                         "panels, comparison charts, slide layouts or multiple stages in one image. "
                         "Remove editing and animation instructions. Text is drawn separately by software. "
-                        "For abstract topics choose one representative real-world example. "
+                        "For abstract topics choose one representative real-world example with concrete, "
+                        "physically visible apparatus, materials, specimens, quantities, or actions. "
+                        "Use the topic and narration to disambiguate technical terms. "
                         "Do not invent biological structures or combine species."
                     ),
                     "prompt": json.dumps({"topic": storyboard.title, "scene": scene.title,
@@ -77,6 +79,6 @@ def _fallback_prompt(topic: str, scene: str, narration: str, visual: str, origin
     words = source.split()
     concise = " ".join(words[:70]) if words else narration or scene or topic
     return (
-        "High resolution educational documentary image, realistic biology, sharp 1080p detail, "
+        "High resolution subject-matter-accurate educational documentary image, sharp 1080p detail, "
         f"{concise}, natural lighting, clear subject, text-free, no watermark"
     )

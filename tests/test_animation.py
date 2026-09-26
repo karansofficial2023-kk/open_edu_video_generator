@@ -298,6 +298,15 @@ class AnimationTests(unittest.TestCase):
         self.assertLess(report['coverage_ratio'], .75)
         self.assertIn('wind pollination', report['missing_topics'])
 
+    def test_unrelated_topic_does_not_receive_pollination_coverage_failures(self):
+        self.board.title = "Applications of Kohlrausch's Law"
+        self.board.source = "Limiting molar conductivity is calculated from ionic contributions."
+        with tempfile.TemporaryDirectory() as folder:
+            report = coverage_report(self.board, folder)
+        self.assertEqual(report['missing_topics'], [])
+        self.assertEqual(report['coverage_ratio'], 1.0)
+        self.assertIsNone(report['profile'])
+
     def test_edge_stream_writes_audio_and_captures_word_offsets(self):
         class FakeStream:
             async def stream(self):

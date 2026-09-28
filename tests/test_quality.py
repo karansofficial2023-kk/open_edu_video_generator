@@ -20,8 +20,11 @@ from app.asset_retrieval import (
 )
 from app.comfyui_client import ComfyUIClient
 from app.config import AppConfig, load_config
+from app.asset_quality import fingerprint_distance, inspect_image, update_manifest
 from app.input_reader import _shot_from_media_type
 from app.main import _is_deferred_render_error
+from app.motion_qa import MotionQAResult, review_generated_motion
+from app.render_router import RenderKind, route_segment
 from app.renderer import _subtitle_filter, render_video
 from app.schema import Scene, Segment, Shot, Storyboard
 from app.visual_planner import prepare_visual_prompts
@@ -38,14 +41,15 @@ from app.visuals import (
     _transfer_endpoints,
     _font,
     _generate_image_with_qa,
+    _generate_video_with_qa,
     _pixel_wrap,
     _qa_retry_prompt,
     _remove_unverified_labels,
-    _render_neutral_fallback,
     render_ai_image_frame,
     render_segment_frames,
 )
 from app.vision_qa import VisionQAClient, _normalize_proposals, _point_inside_verified_bbox
+from app.vision_qa import VisionQAResult
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -85,7 +89,9 @@ class QualityTests(unittest.TestCase):
     def test_asset_search_queries_prioritize_current_named_subject(self):
         segment = Segment(
             segment_number=2,
-            narration="In species like Ixora, the anther and stigma reach maturity simultaneously.",
+            narration=(
+                "In species like Ixora, the anther and stigma reach maturity simultaneously."
+            ),
             visual="Macro view of the current flower only.",
             image_prompt="A sharp macro photograph of Ixora reproductive structures.",
             shot=Shot(
@@ -118,34 +124,7 @@ class QualityTests(unittest.TestCase):
         self.assertIn("Scene: Self-pollination", prompt)
         self.assertNotIn("sunflower", prompt.casefold())
 
-    def test_safe_draft_fallback_removes_unverified_annotations(self):
-        config = AppConfig()
-        config.output_resolution.width = 640
-        config.output_resolution.height = 360
-        segment = Segment(
-            segment_number=1,
-            narration="Inspect the structures.",
-            visual="Stable scientific view.",
-            image_prompt="Scientific photograph.",
-            shot=Shot(
-                template="realistic_labeled_image",
-                labels=[{"text": "Target"}],
-                arrows=[{"text": "Target"}],
-            ),
-        )
-
-        with tempfile.TemporaryDirectory() as directory:
-            output = Path(directory) / "fallback.png"
-            omitted = _remove_unverified_labels(segment)
-            _render_neutral_fallback(output, config)
-            with Image.open(output) as image:
-                self.assertEqual((640, 360), image.size)
-
-        self.assertEqual(["Target"], omitted)
-        self.assertEqual([], segment.shot.labels)
-        self.assertEqual([], segment.shot.arrows)
-
-    def test_rejected_visual_uses_safe_draft_frame_without_false_labels(self):
+    def test_rejected_visual_blocks_instead_of_publishing_a_plain_fallback(self):
         config = AppConfig()
         config.vision_qa.enabled = True
         config.vision_qa.max_attempts = 1
@@ -177,32 +156,115 @@ class QualityTests(unittest.TestCase):
             "reasons": result.reasons,
         }
         comfy = Mock()
-        comfy.generate_image.side_effect = (
-            lambda _segment, path, _prefix: (Image.new("RGB", (64, 64), "red").save(path) or path)
-        )
+        def write_candidate(_segment, path, _prefix):
+            image = Image.new("RGB", (1024, 576), "#345678")
+            draw = ImageDraw.Draw(image)
+            for x in range(0, 1024, 32):
+                draw.line((x, 0, 1024 - x, 575), fill="#DDEEFF", width=3)
+            image.save(path)
+            return path
+        comfy.generate_image.side_effect = write_candidate
 
         with tempfile.TemporaryDirectory() as directory, patch(
             "app.vision_qa.VisionQAClient.analyze", return_value=result
         ):
             root = Path(directory)
             output = root / "generated.png"
-            generated = _generate_image_with_qa(
-                comfy,
-                segment,
-                output,
-                "test_scene",
-                root,
-                config,
-                "Current lesson. Scene: Current scene",
-            )
+            with self.assertRaisesRegex(ValueError, "Vision QA rejected"):
+                _generate_image_with_qa(
+                    comfy,
+                    segment,
+                    output,
+                    "test_scene",
+                    root,
+                    config,
+                    "Current lesson. Scene: Current scene",
+                )
             audit = json.loads((root / "vision_qa.json").read_text(encoding="utf-8"))
-            with Image.open(generated) as image:
-                self.assertEqual((640, 360), image.size)
-                self.assertNotEqual((255, 0, 0), image.getpixel((0, 0)))
 
-        self.assertEqual([], segment.shot.labels)
-        self.assertEqual("safe_draft_fallback", audit[-1]["qa_mode"])
-        self.assertFalse(audit[-1]["accepted_base_image"])
+        self.assertEqual([{"text": "Exact target"}], segment.shot.labels)
+        self.assertEqual("production_asset_blocked", audit[-1]["qa_mode"])
+        self.assertFalse(audit[-1]["accepted"])
+
+    def test_router_uses_storyboard_contract_without_topic_keywords(self):
+        segment = storyboard().all_segments()[0][1]
+        segment.shot = Shot(template="formula", formula_lines=["x = 1"])
+        self.assertEqual(route_segment(segment).kind, RenderKind.DETERMINISTIC_GRAPHIC)
+        segment.shot = Shot(template="short_motion_clip")
+        self.assertEqual(route_segment(segment).kind, RenderKind.GENERATED_MOTION)
+        segment.shot = Shot(template="short_motion_clip", labels=[{"text": "Target"}])
+        self.assertEqual(route_segment(segment).kind, RenderKind.LABELED_STILL)
+
+    def test_technical_gate_rejects_blank_and_repeated_images(self):
+        with tempfile.TemporaryDirectory() as directory:
+            blank = Path(directory) / "blank.png"
+            Image.new("RGB", (1024, 576), "white").save(blank)
+            result = inspect_image(blank)
+            self.assertFalse(result.accepted)
+            self.assertTrue(any("blank" in reason for reason in result.reasons))
+
+            detailed = Path(directory) / "detailed.png"
+            image = Image.effect_noise((1024, 576), 80).convert("RGB")
+            image.save(detailed)
+            first = inspect_image(detailed)
+            repeated = inspect_image(detailed, {first.fingerprint})
+            self.assertTrue(first.accepted)
+            self.assertFalse(repeated.accepted)
+            self.assertEqual(fingerprint_distance(first.fingerprint, repeated.fingerprint), 0)
+
+    def test_motion_qa_requires_consistent_first_and_final_frames(self):
+        config = AppConfig()
+        config.vision_qa.minimum_motion_consistency = 0.78
+        segment = storyboard().all_segments()[0][1]
+        segment.shot = Shot(template="short_motion_clip")
+        accepted_still = VisionQAResult(
+            accepted=True, core_accepted=True, relevance=.95, subject_match=.95,
+            text_present=False,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "first.png"
+            final = root / "final.png"
+            Image.effect_noise((1024, 576), 60).convert("RGB").save(first)
+            Image.effect_noise((1024, 576), 60).convert("RGB").save(final)
+            pair = {
+                "same_subject": True,
+                "subject_consistency": .92,
+                "anatomy_morphing": False,
+                "text_present": False,
+                "reasons": [],
+                "regeneration_prompt": "",
+            }
+            with patch("app.motion_qa.extract_boundary_frames", return_value=(first, final)), \
+                 patch.object(VisionQAClient, "analyze", return_value=accepted_still), \
+                 patch.object(VisionQAClient, "compare_motion_frames", return_value=pair):
+                result = review_generated_motion(segment, root / "clip.mp4", root, config)
+        self.assertTrue(result.accepted)
+
+    def test_rejected_motion_is_regenerated_then_blocks(self):
+        config = AppConfig()
+        config.vision_qa.enabled = True
+        config.vision_qa.motion_max_attempts = 2
+        segment = storyboard().all_segments()[0][1]
+        segment.shot = Shot(template="short_motion_clip")
+        rejected = MotionQAResult(
+            accepted=False,
+            consistency=.2,
+            reasons=["subject changed between boundary frames"],
+            regeneration_prompt="Keep one stable subject.",
+        )
+        comfy = Mock()
+        comfy.generate_video.side_effect = lambda _s, path, _p: (Path(path).parent.mkdir(parents=True, exist_ok=True) or Path(path).write_bytes(b"video") or Path(path))
+        with tempfile.TemporaryDirectory() as directory, patch(
+            "app.motion_qa.review_generated_motion", return_value=rejected
+        ):
+            with self.assertRaisesRegex(ValueError, "Motion QA rejected"):
+                _generate_video_with_qa(
+                    comfy, segment, Path(directory) / "clip.mp4", "clip", Path(directory), config
+                )
+            audit = json.loads((Path(directory) / "motion_qa.json").read_text(encoding="utf-8"))
+        self.assertEqual(comfy.generate_video.call_count, 2)
+        self.assertEqual(audit[-1]["qa_mode"], "production_motion_blocked")
 
     def test_retrieved_labeled_asset_requires_verified_targets(self):
         config = AppConfig()
@@ -417,6 +479,35 @@ class QualityTests(unittest.TestCase):
         seeded = client.last_target_verification["candidates"]["Target"]
         self.assertEqual((0.5, 0.5), (seeded["x"], seeded["y"]))
 
+    def test_malformed_target_verifier_response_rejects_coordinates_without_crashing(self):
+        config = AppConfig()
+        client = VisionQAClient(config)
+        segment = storyboard().all_segments()[0][1]
+        segment.shot = Shot(
+            template="realistic_labeled_image",
+            labels=[{"text": "Target", "placement": "exact visible tip"}],
+        )
+        response = Mock()
+        response.raise_for_status.return_value = None
+        response.json.return_value = {
+            "message": {
+                "content": '{"targets":{"Target":{"verified":true,"reason":"unterminated'
+            }
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            image_path = Path(directory) / "subject.png"
+            Image.new("RGB", (800, 600), "white").save(image_path)
+            with patch("app.vision_qa.requests.post", return_value=response):
+                verified = client.verify_targets(
+                    segment,
+                    image_path,
+                    {"Target": {"x": 0.5, "y": 0.5, "confidence": 0.95}},
+                )
+
+        self.assertEqual({}, verified)
+        self.assertEqual("malformed_response", client.last_target_verification["status"])
+        self.assertIn("JSONDecodeError", client.last_target_verification["error"])
+
     def test_verified_coordinate_error_is_deferred_when_vision_qa_is_enabled(self):
         config = AppConfig()
         config.vision_qa.enabled = True
@@ -555,35 +646,6 @@ class QualityTests(unittest.TestCase):
         self.assertFalse(result.core_accepted)
         self.assertIn("malformed JSON", result.reasons[0])
 
-    def test_malformed_target_verifier_response_rejects_coordinates_without_crashing(self):
-        config = AppConfig()
-        client = VisionQAClient(config)
-        segment = storyboard().all_segments()[0][1]
-        segment.shot = Shot(
-            template="realistic_labeled_image",
-            labels=[{"text": "Target", "placement": "exact visible tip"}],
-        )
-        response = Mock()
-        response.raise_for_status.return_value = None
-        response.json.return_value = {
-            "message": {
-                "content": '{"targets":{"Target":{"verified":true,"reason":"unterminated'
-            }
-        }
-        with tempfile.TemporaryDirectory() as directory:
-            image_path = Path(directory) / "subject.png"
-            Image.new("RGB", (800, 600), "white").save(image_path)
-            with patch("app.vision_qa.requests.post", return_value=response):
-                verified = client.verify_targets(
-                    segment,
-                    image_path,
-                    {"Target": {"x": 0.5, "y": 0.5, "confidence": 0.95}},
-                )
-
-        self.assertEqual({}, verified)
-        self.assertEqual("malformed_response", client.last_target_verification["status"])
-        self.assertIn("JSONDecodeError", client.last_target_verification["error"])
-
     def test_vision_qa_returns_an_sme_regeneration_prompt(self):
         response = Mock()
         response.raise_for_status.return_value = None
@@ -666,10 +728,11 @@ class QualityTests(unittest.TestCase):
                 encoding="utf-8",
             )
             result = _subtitle_filter(subtitles, AppConfig())
-            self.assertIn("drawbox=x=0:y=ih*0.82", result)
-            self.assertIn("color=black@0.58", result)
+            self.assertIn("drawbox=x=0:y=ih*0.80", result)
+            self.assertIn("h=ih*0.20:color=#171A1F@0.72", result)
+            self.assertIn("MarginL=90,MarginR=90,MarginV=38", result)
             self.assertIn("between(t,5.250,6.500)", result)
-            self.assertIn("Fontsize=16", result)
+            self.assertIn("Fontsize=20", result)
 
     def test_raw_label_instructions_are_not_appended(self):
         segment = storyboard().all_segments()[0][1]
@@ -780,18 +843,47 @@ class QualityTests(unittest.TestCase):
             available.assert_not_called()
             self.assertEqual(frames, [source])
 
+    def test_resumed_generated_asset_restores_verified_label_coordinates(self):
+        config = load_config(ROOT / "config.12gb.yaml")
+        config.vision_qa.enabled = True
+        board = storyboard()
+        segment = board.all_segments()[0][1]
+        segment.shot = Shot(template="realistic_labeled_image", labels=[{"text": "Target"}])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            generated = root / "generated_images" / "scene_01_segment_01.png"
+            generated.parent.mkdir(parents=True)
+            Image.effect_noise((1024, 576), 60).convert("RGB").save(generated)
+            quality = inspect_image(generated)
+            update_manifest(root / "render_manifest.json", "scene_01_segment_01", {
+                "status": "approved",
+                "path": str(generated.resolve()),
+                "fingerprint": quality.fingerprint,
+                "labels": [{"text": "Target", "target_xy": "0.4,0.5", "target_confidence": .95}],
+            })
+            with patch.object(ComfyUIClient, "is_available", return_value=True), \
+                 patch.object(ComfyUIClient, "generate_image") as generate:
+                frames = render_segment_frames(board, root, config)
+        generate.assert_not_called()
+        self.assertEqual(frames, [generated])
+        self.assertEqual(segment.shot.labels[0]["target_xy"], "0.4,0.5")
+
     def test_generated_video_segment_uses_comfy_video_client(self):
         config = load_config(ROOT / "config.12gb.yaml")
         config.comfyui.video_enabled = True
+        config.vision_qa.enabled = True
         board = storyboard()
         segment = board.all_segments()[0][1]
         segment.shot = Shot(template="video", heading="Moving flower")
         with tempfile.TemporaryDirectory() as directory, patch.object(ComfyUIClient, "is_available", return_value=True), \
-             patch.object(ComfyUIClient, "generate_video") as generate_video:
+             patch.object(ComfyUIClient, "generate_video") as generate_video, \
+             patch("app.motion_qa.review_generated_motion", return_value=MotionQAResult(True, .95)):
             generated = Path(directory) / "generated_videos" / "scene_01_segment_01.mp4"
-            generated.parent.mkdir(parents=True)
-            generated.write_bytes(b"video")
-            generate_video.return_value = generated
+            def write_video(_segment, path, _prefix):
+                Path(path).parent.mkdir(parents=True, exist_ok=True)
+                Path(path).write_bytes(b"video")
+                return Path(path)
+            generate_video.side_effect = write_video
             frames = render_segment_frames(board, Path(directory), config)
         self.assertEqual(frames, [generated])
         generate_video.assert_called_once()

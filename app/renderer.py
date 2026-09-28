@@ -8,6 +8,7 @@ from pathlib import Path
 from .config import AppConfig
 from .label_overlay import is_label_template
 from .schema import Storyboard, Shot
+from .pipeline_state import PipelineState, file_signature, stable_signature
 
 
 def assign_timing(storyboard: Storyboard, config: AppConfig) -> None:
@@ -30,6 +31,7 @@ def concat_audio(storyboard: Storyboard, output_dir: str | Path, config: AppConf
     output_dir = Path(output_dir).resolve()
     audio_ext = _audio_ext(storyboard)
     output = output_dir / f"narration{audio_ext}"
+    state = PipelineState(output_dir)
     sentence_silence = output_dir / f"silence_sentence{audio_ext}"
     scene_silence = output_dir / f"silence_scene{audio_ext}"
     _make_silence(sentence_silence, config.voice.sentence_gap_seconds, config)
@@ -50,6 +52,12 @@ def concat_audio(storyboard: Storyboard, output_dir: str | Path, config: AppConf
 
     if not audio_files:
         raise ValueError("No narration audio is available")
+    signature = stable_signature(
+        [(str(path.resolve()), file_signature(path)) for path in audio_files],
+        config.voice.model_dump(),
+    )
+    if state.reusable("combined_audio", "narration", signature, [output]):
+        return output
 
     command = [
         _tool_path(config.ffmpeg_path, "ffmpeg"),
@@ -70,6 +78,7 @@ def concat_audio(storyboard: Storyboard, output_dir: str | Path, config: AppConf
         ]
     )
     _run(command)
+    state.approved("combined_audio", "narration", signature, [output])
     return output
 
 
@@ -80,6 +89,7 @@ def render_video(storyboard: Storyboard, frames: list[Path], audio: Path, output
     clips_dir = output_dir / "clips"
     clips_dir.mkdir(parents=True, exist_ok=True)
     clips: list[Path] = []
+    state = PipelineState(output_dir)
 
     items = storyboard.all_segments()
     segments = [segment for _scene, segment in items]
@@ -92,40 +102,50 @@ def render_video(storyboard: Storyboard, frames: list[Path], audio: Path, output
         frame_cursor += frame_count
         duration = frame_count / config.fps
         clip = clips_dir / f"clip_{index:04d}.mp4"
-        if segment.shot and segment.shot.template in {"video", "video_broll", "short_motion_clip"}:
-            _render_video_asset(frame, clip, duration, config)
-        elif segment.shot and segment.shot.template == "photo":
-            _render_fullscreen_image_clip(frame, clip, duration, config)
-        elif segment.shot and segment.shot.template in {"title_card", "split_screen"}:
-            # These frames are already composited with generated/reviewed assets and labels.
-            # Re-rendering them would lose the source image and create blank local templates.
-            _render_image_clip(frame, clip, duration, config)
-        elif segment.shot and is_label_template(segment.shot.template):
-            from PIL import Image
-            from .animation_renderer import render_animation_clip
-            with Image.open(frame) as im:
-                source = im.convert("RGB")
-            render_config = config
-            if config.render.burn_captions:
-                render_config = config.model_copy(deep=True)
-                render_config.render.burn_captions = False
-            render_animation_clip(segment, items[index - 1][0].title, clip, frame_count, render_config, source)
-        elif config.render.layout == "modern" or segment.shot:
-            from PIL import Image
-            from .animation_renderer import render_animation_clip
-            if segment.shot is None:
-                segment.shot = Shot(template="photo")
-            source = None
-            if segment.shot.template == "photo":
-                with Image.open(frame) as im:
-                    source = im.convert("RGB")
-            render_config = config
-            if config.render.burn_captions:
-                render_config = config.model_copy(deep=True)
-                render_config.render.burn_captions = False
-            render_animation_clip(segment, items[index - 1][0].title, clip, frame_count, render_config, source)
-        else:
-            _render_image_clip(frame, clip, duration, config)
+        key = f"clip_{index:04d}"
+        signature = stable_signature(
+            file_signature(frame), frame_count, config.fps,
+            config.output_resolution.model_dump(), config.render.model_dump(),
+            segment.shot.model_dump() if segment.shot else None,
+        )
+        if not state.reusable("clips", key, signature, [clip]):
+            try:
+                if segment.shot and segment.shot.template in {"video", "video_broll", "short_motion_clip"}:
+                    _render_video_asset(frame, clip, duration, config)
+                elif segment.shot and segment.shot.template == "photo":
+                    _render_fullscreen_image_clip(frame, clip, duration, config)
+                elif segment.shot and segment.shot.template in {"title_card", "split_screen"}:
+                    _render_image_clip(frame, clip, duration, config)
+                elif segment.shot and is_label_template(segment.shot.template):
+                    from PIL import Image
+                    from .animation_renderer import render_animation_clip
+                    with Image.open(frame) as im:
+                        source = im.convert("RGB")
+                    render_config = config
+                    if config.render.burn_captions:
+                        render_config = config.model_copy(deep=True)
+                        render_config.render.burn_captions = False
+                    render_animation_clip(segment, items[index - 1][0].title, clip, frame_count, render_config, source)
+                elif config.render.layout == "modern" or segment.shot:
+                    from PIL import Image
+                    from .animation_renderer import render_animation_clip
+                    if segment.shot is None:
+                        segment.shot = Shot(template="photo")
+                    source = None
+                    if segment.shot.template == "photo":
+                        with Image.open(frame) as im:
+                            source = im.convert("RGB")
+                    render_config = config
+                    if config.render.burn_captions:
+                        render_config = config.model_copy(deep=True)
+                        render_config.render.burn_captions = False
+                    render_animation_clip(segment, items[index - 1][0].title, clip, frame_count, render_config, source)
+                else:
+                    _render_image_clip(frame, clip, duration, config)
+                state.approved("clips", key, signature, [clip])
+            except Exception as error:
+                state.failed("clips", key, signature, f"{type(error).__name__}: {error}")
+                raise
         clips.append(clip)
 
     concat_file = output_dir / "video_concat.txt"
@@ -195,17 +215,19 @@ def _subtitle_filter(subtitles: Path, config: AppConfig) -> str:
     path = path.replace(":", r"\:").replace("'", r"\'")
     style = ",".join([
         "FontName=Arial",
-        "Fontsize=16",
+        "Fontsize=20",
         "PrimaryColour=&H00FFFFFF",
         "OutlineColour=&H00000000",
         "BackColour=&H00000000",
         "BorderStyle=1",
-        "Outline=1",
+        "Outline=2",
         "Shadow=0",
         "Alignment=2",
-        "MarginV=26",
+        "MarginL=90",
+        "MarginR=90",
+        "MarginV=38",
     ])
-    band = "drawbox=x=0:y=ih*0.82:w=iw:h=ih*0.18:color=black@0.58:t=fill"
+    band = "drawbox=x=0:y=ih*0.80:w=iw:h=ih*0.20:color=#171A1F@0.72:t=fill"
     intervals = _subtitle_intervals(subtitles)
     if intervals:
         enabled = "+".join(f"between(t,{start:.3f},{end:.3f})" for start, end in intervals)

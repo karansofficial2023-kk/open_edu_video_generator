@@ -1,0 +1,3203 @@
+{
+  "title": "Types of Pollination e2e",
+  "source": "Sunflowers are among my favorite flowers. At this scale, we can observe them closely. Sunflowers are typically pollinated by bees. pollen grains from the anther are transferred to the receptive stigma, a process known as self-pollination.\nIn plants such as Oxalis, the anther and stigma reach maturity simultaneously, a phenomenon that facilitates self-pollination and is referred to as homogamy. Some species, like wood sorrel, produce small, unremarkable flowers in late summer that lack fragrance and remain closed. These bisexual flowers undergo self-pollination and fertilization without opening, a process termed cleistogamy. In such cases, pollen grains are already positioned on the stigma of the same flower, enabling self-pollination.\nFor cross-pollination, papaya is a dioecious plant, meaning male and female flowers grow on separate plants to promote cross-pollination. In contrast, sunflowers have bisexual flowers where the anther matures before the stigma, a process called protandry. However, in custard apple, the stigma matures first, a phenomenon known as protogyny. Certain flowers, like pansies, feature a hood-like structure covering the stigma, a structural adaptation called hercogamy.\nIn orchids, the pollen from the anther fails to germinate on the same flower's stigma. Primrose exhibits heterostyly, where the stigma is positioned at a different height relative to the anther. These adaptations enhance cross-pollination.\nTo summarize, self-pollination occurs in plants like Oxalis, where anther and stigma mature together (homogamy). Wood sorrel has bisexual, closed flowers where self-pollination and fertilization take place, termed cleistogamy. For cross-pollination, papaya is dioecious, encouraging cross-pollination.\nSunflowers have bisexual flowers with protandry (anther matures first). Pansies display hercogamy, with a stigma-covering hood. Primrose shows heterostyly, where the stigma is at a different height than the anther.\nThese floral adaptations support cross-pollination. Pollinators are drawn to flowers through various means-sometimes by sweet scents and nectar, or through deception. The bee orchid, for instance, mimics the appearance of a female bee, luring male bees seeking mates.\nWhen males attempt to mate with the flower, they inadvertently transfer pollen. Fascinating, isn't it? Continue exploring to learn more.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Sunflowers are among my favorite flowers.",
+      "narration": "Sunflowers are among my favorite flowers. At this scale, we can observe them closely. Sunflowers are typically pollinated by bees. pollen grains from the anther are transferred to the receptive stigma, a process known as self-pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Sunflowers are among my favorite flowers.",
+          "visual": "Sharp 1920x1080 realistic educational background directly representing Types of Pollination e2e, subject-matter accurate, natural lighting, clear subject separation, empty central margins for the renderer title, no embedded text",
+          "image_prompt": "Sharp 1920x1080 realistic educational background directly representing Types of Pollination e2e, subject-matter accurate, natural lighting, clear subject separation, empty central margins for the renderer title, no embedded text. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. No generated text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout.",
+          "keywords": [
+            "sunflowers",
+            "among",
+            "favorite",
+            "flowers",
+            "sharp",
+            "realistic",
+            "educational",
+            "background"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_01_segment_01.wav",
+          "start": 0.0,
+          "end": 5.002,
+          "shot": {
+            "template": "title_card",
+            "heading": "Types of Pollination e2e",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "title_card",
+              "subtitle": "",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Title-card guard: visualSubject is background guidance only and must not be rendered as visible text. Academic level: High School Intended learners: High School Students Learning objectives: Define pollination as the transfer of pollen grains from anther to stigma; Explain the different types of pollination (autogamy, geitonogamy, xenogamy); Describe cleistogamy and its examples (Viola, Oxalis, Commelina); Explain dichogamy, including protandry and protogyny; Describe herkogamy and heterostyly with examples (primrose); Discuss adaptations for insect, wind, water, bird, and bat pollination; Compare advantages and disadvantages of self-pollination and cross-pollination Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Sunflowers",
+              "start": 0.1,
+              "end": 1.25625
+            },
+            {
+              "text": "are",
+              "start": 1.271875,
+              "end": 1.475
+            },
+            {
+              "text": "among",
+              "start": 1.490625,
+              "end": 1.975
+            },
+            {
+              "text": "my",
+              "start": 1.990625,
+              "end": 2.19375
+            },
+            {
+              "text": "favorite",
+              "start": 2.209375,
+              "end": 2.803125
+            },
+            {
+              "text": "flowers",
+              "start": 2.81875,
+              "end": 3.6
+            }
+          ],
+          "speech_duration": 4.752,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "At this scale, we can observe them closely.",
+          "visual": "Source-faithful visible subject and action: At this scale, we can observe them closely. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Continue the exact physical subject established by the immediately preceding narration: Sunflowers are among my favorite flowers.. Show the current narration literally: At this scale, we can observe them closely.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: At this scale, we can observe them closely. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "scale",
+            "observe",
+            "closely",
+            "source-faithful",
+            "visible",
+            "subject",
+            "action",
+            "compose"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_01_segment_02.wav",
+          "start": 5.002,
+          "end": 10.1,
+          "shot": {
+            "template": "photo",
+            "heading": "this scale can observe them closely",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_image",
+              "subtitle": "At this scale, we can observe them closely.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "At",
+              "start": 0.1,
+              "end": 0.428125
+            },
+            {
+              "text": "this",
+              "start": 0.44375,
+              "end": 0.725
+            },
+            {
+              "text": "scale",
+              "start": 0.740625,
+              "end": 1.31875
+            },
+            {
+              "text": "we",
+              "start": 1.50625,
+              "end": 1.725
+            },
+            {
+              "text": "can",
+              "start": 1.740625,
+              "end": 1.959375
+            },
+            {
+              "text": "observe",
+              "start": 1.975,
+              "end": 2.6
+            },
+            {
+              "text": "them",
+              "start": 2.615625,
+              "end": 2.9125
+            },
+            {
+              "text": "closely",
+              "start": 2.928125,
+              "end": 3.75625
+            }
+          ],
+          "speech_duration": 4.848,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "Sunflowers are typically pollinated by bees.",
+          "visual": "Source-faithful visible subject and action: Sunflowers are typically pollinated by bees. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: Sunflowers are typically pollinated by bees.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: Sunflowers are typically pollinated by bees. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "sunflowers",
+            "typically",
+            "pollinated",
+            "bees",
+            "they",
+            "clever",
+            "strategy",
+            "ensure"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_01_segment_03.wav",
+          "start": 10.1,
+          "end": 15.462,
+          "shot": {
+            "template": "photo",
+            "heading": "While sunflowers are typically pollinated bees",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "zoom",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_image",
+              "subtitle": "Sunflowers are typically pollinated by bees.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Sunflowers",
+              "start": 0.1,
+              "end": 1.303125
+            },
+            {
+              "text": "are",
+              "start": 1.31875,
+              "end": 1.490625
+            },
+            {
+              "text": "typically",
+              "start": 1.50625,
+              "end": 2.1625
+            },
+            {
+              "text": "pollinated",
+              "start": 2.178125,
+              "end": 3.0375
+            },
+            {
+              "text": "by",
+              "start": 3.053125,
+              "end": 3.334375
+            },
+            {
+              "text": "bees",
+              "start": 3.35,
+              "end": 3.990625
+            }
+          ],
+          "speech_duration": 5.112,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "pollen grains from the anther are transferred to the receptive stigma, a process known as self-pollination.",
+          "visual": "Source-faithful visible subject and action: pollen grains from the anther are transferred to the receptive stigma, a process known as self-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: pollen grains from the anther are transferred to the receptive stigma, a process known as self-pollination.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: pollen grains from the anther are transferred to the receptive stigma, a process known as self-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. Show one complete flower with both the anther and stigma visible; no bee, insect, animal, hand, or other external transfer agent. No unrelated substitute subject, no symbolic stand-in, no text, no labels. Stable macro scientific reference photograph of one complete subject with every requested physical target simultaneously visible: Anther (exact visible anther named as the transfer source); Receptive Stigma (exact visible receptive stigma named as the transfer receiver). Compose for precise later labeling: keep every required target in the same sharp focal plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear representative of each target, place the representatives in separate non-overlapping image regions with meaningful space between them, and avoid an angle where repeated organs hide or merge with a target. Keep the complete subject inside the frame and reserve clear side margins for composited label boxes and leader lines. No embedded text, labels, arrows, captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy.",
+          "keywords": [
+            "male",
+            "part",
+            "flower",
+            "transfer",
+            "pollen",
+            "onto"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_01_segment_04.wav",
+          "start": 15.462,
+          "end": 25.618,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "pollen grains from the",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "Anther",
+                "placement": "exact visible anther named as the transfer source"
+              },
+              {
+                "text": "Receptive Stigma",
+                "placement": "exact visible receptive stigma named as the transfer receiver"
+              }
+            ],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_image",
+              "subtitle": "pollen grains from the anther are transferred to the receptive stigma, a process known as self-pollination.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "pollen",
+              "start": 0.1,
+              "end": 0.63125
+            },
+            {
+              "text": "grains",
+              "start": 0.646875,
+              "end": 1.178125
+            },
+            {
+              "text": "from",
+              "start": 1.19375,
+              "end": 1.44375
+            },
+            {
+              "text": "the",
+              "start": 1.459375,
+              "end": 1.615625
+            },
+            {
+              "text": "anther",
+              "start": 1.63125,
+              "end": 2.334375
+            },
+            {
+              "text": "are",
+              "start": 2.35,
+              "end": 2.50625
+            },
+            {
+              "text": "transferred",
+              "start": 2.521875,
+              "end": 3.334375
+            },
+            {
+              "text": "to",
+              "start": 3.35,
+              "end": 3.490625
+            },
+            {
+              "text": "the",
+              "start": 3.50625,
+              "end": 3.6
+            },
+            {
+              "text": "receptive",
+              "start": 3.615625,
+              "end": 4.35
+            },
+            {
+              "text": "stigma",
+              "start": 4.365625,
+              "end": 5.13125
+            },
+            {
+              "text": "a",
+              "start": 5.4125,
+              "end": 5.56875
+            },
+            {
+              "text": "process",
+              "start": 5.584375,
+              "end": 6.271875
+            },
+            {
+              "text": "known",
+              "start": 6.2875,
+              "end": 6.709375
+            },
+            {
+              "text": "as",
+              "start": 6.725,
+              "end": 6.975
+            },
+            {
+              "text": "self-pollination",
+              "start": 6.990625,
+              "end": 8.35
+            }
+          ],
+          "speech_duration": 9.456,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "In plants such as Oxalis, the anther and stigma",
+      "narration": "In plants such as Oxalis, the anther and stigma reach maturity simultaneously, a phenomenon that facilitates self-pollination and is referred to as homogamy. Some species, like wood sorrel, produce small, unremarkable flowers in late summer that lack fragrance and remain closed. These bisexual flowers undergo self-pollination and fertilization without opening, a process termed cleistogamy. In such cases, pollen grains are already positioned on the stigma of the same flower, enabling self-pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "In plants such as Oxalis, the anther and stigma reach maturity simultaneously, a phenomenon that facilitates self-pollination and is referred to as homogamy.",
+          "visual": "Source-faithful visible subject and action: In plants such as Oxalis, the anther and stigma reach maturity simultaneously, a phenomenon that facilitates self-pollination and is referred to as homogamy. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: In plants such as Oxalis, the anther and stigma reach maturity simultaneously, a phenomenon that facilitates self-pollination and is referred to as homogamy.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: In plants such as Oxalis, the anther and stigma reach maturity simultaneously, a phenomenon that facilitates self-pollination and is referred to as homogamy. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. Show one complete flower with both the anther and stigma visible; no bee, insect, animal, hand, or other external transfer agent. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "plants",
+            "oxalis",
+            "anther",
+            "stigma",
+            "reach",
+            "maturity",
+            "simultaneously",
+            "phenomenon"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_02_segment_01.wav",
+          "start": 25.618,
+          "end": 40.028,
+          "shot": {
+            "template": "photo",
+            "heading": "plants such Oxalis the anther and stigma",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "zoom",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_image",
+              "subtitle": "In plants such as Oxalis, the anther and stigma reach maturity simultaneously, a phenomenon that facilitates self-pollination and is referred to as homogamy.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.396875
+            },
+            {
+              "text": "plants",
+              "start": 0.4125,
+              "end": 0.990625
+            },
+            {
+              "text": "such",
+              "start": 1.00625,
+              "end": 1.334375
+            },
+            {
+              "text": "as",
+              "start": 1.35,
+              "end": 1.6
+            },
+            {
+              "text": "Oxalis",
+              "start": 1.615625,
+              "end": 2.475
+            },
+            {
+              "text": "the",
+              "start": 2.6625,
+              "end": 2.865625
+            },
+            {
+              "text": "anther",
+              "start": 2.88125,
+              "end": 3.5375
+            },
+            {
+              "text": "and",
+              "start": 3.553125,
+              "end": 3.803125
+            },
+            {
+              "text": "stigma",
+              "start": 3.81875,
+              "end": 4.38125
+            },
+            {
+              "text": "reach",
+              "start": 4.396875,
+              "end": 4.7875
+            },
+            {
+              "text": "maturity",
+              "start": 4.803125,
+              "end": 5.5375
+            },
+            {
+              "text": "simultaneously",
+              "start": 5.553125,
+              "end": 6.94375
+            },
+            {
+              "text": "a",
+              "start": 7.209375,
+              "end": 7.38125
+            },
+            {
+              "text": "phenomenon",
+              "start": 7.396875,
+              "end": 8.209375
+            },
+            {
+              "text": "that",
+              "start": 8.225,
+              "end": 8.428125
+            },
+            {
+              "text": "facilitates",
+              "start": 8.44375,
+              "end": 9.396875
+            },
+            {
+              "text": "self-pollination",
+              "start": 9.4125,
+              "end": 10.725
+            },
+            {
+              "text": "and",
+              "start": 10.740625,
+              "end": 11.021875
+            },
+            {
+              "text": "is",
+              "start": 11.0375,
+              "end": 11.209375
+            },
+            {
+              "text": "referred",
+              "start": 11.225,
+              "end": 11.771875
+            },
+            {
+              "text": "to",
+              "start": 11.7875,
+              "end": 12.00625
+            },
+            {
+              "text": "as",
+              "start": 12.021875,
+              "end": 12.240625
+            },
+            {
+              "text": "homogamy",
+              "start": 12.25625,
+              "end": 13.06875
+            }
+          ],
+          "speech_duration": 14.16,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Some species, like wood sorrel, produce small, unremarkable flowers in late summer that lack fragrance and remain closed.",
+          "visual": "Source-faithful visible subject and action: Some species, like wood sorrel, produce small, unremarkable flowers in late summer that lack fragrance and remain closed. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: Some species, like wood sorrel, produce small, unremarkable flowers in late summer that lack fragrance and remain closed.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: Some species, like wood sorrel, produce small, unremarkable flowers in late summer that lack fragrance and remain closed. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "species",
+            "like",
+            "wood",
+            "sorrel",
+            "produce",
+            "small",
+            "unremarkable",
+            "flowers"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_02_segment_02.wav",
+          "start": 40.028,
+          "end": 51.774,
+          "shot": {
+            "template": "photo",
+            "heading": "Some species like wood sorrel produce small",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "zoom",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_image",
+              "subtitle": "Some species, like wood sorrel, produce small, unremarkable flowers in late summer that lack fragrance and remain closed.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Some",
+              "start": 0.1,
+              "end": 0.63125
+            },
+            {
+              "text": "species",
+              "start": 0.646875,
+              "end": 1.521875
+            },
+            {
+              "text": "like",
+              "start": 1.678125,
+              "end": 2.084375
+            },
+            {
+              "text": "wood",
+              "start": 2.1,
+              "end": 2.271875
+            },
+            {
+              "text": "sorrel",
+              "start": 2.2875,
+              "end": 2.959375
+            },
+            {
+              "text": "produce",
+              "start": 3.146875,
+              "end": 3.6625
+            },
+            {
+              "text": "small",
+              "start": 3.678125,
+              "end": 4.303125
+            },
+            {
+              "text": "unremarkable",
+              "start": 4.584375,
+              "end": 5.678125
+            },
+            {
+              "text": "flowers",
+              "start": 5.69375,
+              "end": 6.35
+            },
+            {
+              "text": "in",
+              "start": 6.365625,
+              "end": 6.5375
+            },
+            {
+              "text": "late",
+              "start": 6.553125,
+              "end": 6.9125
+            },
+            {
+              "text": "summer",
+              "start": 6.928125,
+              "end": 7.4125
+            },
+            {
+              "text": "that",
+              "start": 7.428125,
+              "end": 7.709375
+            },
+            {
+              "text": "lack",
+              "start": 7.725,
+              "end": 8.084375
+            },
+            {
+              "text": "fragrance",
+              "start": 8.1,
+              "end": 8.9125
+            },
+            {
+              "text": "and",
+              "start": 8.928125,
+              "end": 9.178125
+            },
+            {
+              "text": "remain",
+              "start": 9.19375,
+              "end": 9.69375
+            },
+            {
+              "text": "closed",
+              "start": 9.709375,
+              "end": 10.4125
+            }
+          ],
+          "speech_duration": 11.496,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "These bisexual flowers undergo self-pollination and fertilization without opening, a process termed cleistogamy.",
+          "visual": "Source-faithful visible subject and action: These bisexual flowers undergo self-pollination and fertilization without opening, a process termed cleistogamy. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Continue the exact physical subject established by the immediately preceding narration: Some species, like wood sorrel, produce small, unremarkable flowers in late summer that lack fragrance and remain closed.. Show the current narration literally: These bisexual flowers undergo self-pollination and fertilization without opening, a process termed cleistogamy.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: These bisexual flowers undergo self-pollination and fertilization without opening, a process termed cleistogamy. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels. Stable macro scientific reference photograph of one complete subject with every requested physical target simultaneously visible: bisexual flower (Flower with both male and female reproductive structures | COORDINATES_PENDING_APPROVED_IMAGE). Compose for precise later labeling: keep every required target in the same sharp focal plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear representative of each target, place the representatives in separate non-overlapping image regions with meaningful space between them, and avoid an angle where repeated organs hide or merge with a target. Keep the complete subject inside the frame and reserve clear side margins for composited label boxes and leader lines. No embedded text, labels, arrows, captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy.",
+          "keywords": [
+            "bisexual flower"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_02_segment_03.wav",
+          "start": 51.774,
+          "end": 62.68,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "These bisexual flowers undergo self-pollination and",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "bisexual flower",
+                "position": "0",
+                "placement": "Flower with both male and female reproductive structures | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "bisexual flower",
+                "position": "0",
+                "placement": "Flower with both male and female reproductive structures | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "These bisexual flowers undergo self-pollination and fertilization without opening, a process termed cleistogamy.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "These",
+              "start": 0.1,
+              "end": 0.584375
+            },
+            {
+              "text": "bisexual",
+              "start": 0.6,
+              "end": 1.475
+            },
+            {
+              "text": "flowers",
+              "start": 1.490625,
+              "end": 2.13125
+            },
+            {
+              "text": "undergo",
+              "start": 2.146875,
+              "end": 2.709375
+            },
+            {
+              "text": "self-pollination",
+              "start": 2.725,
+              "end": 4.053125
+            },
+            {
+              "text": "and",
+              "start": 4.06875,
+              "end": 4.334375
+            },
+            {
+              "text": "fertilization",
+              "start": 4.35,
+              "end": 5.56875
+            },
+            {
+              "text": "without",
+              "start": 5.584375,
+              "end": 6.178125
+            },
+            {
+              "text": "opening",
+              "start": 6.19375,
+              "end": 6.88125
+            },
+            {
+              "text": "a",
+              "start": 7.084375,
+              "end": 7.225
+            },
+            {
+              "text": "process",
+              "start": 7.240625,
+              "end": 7.896875
+            },
+            {
+              "text": "termed",
+              "start": 7.9125,
+              "end": 8.35
+            },
+            {
+              "text": "cleistogamy",
+              "start": 8.365625,
+              "end": 9.521875
+            }
+          ],
+          "speech_duration": 10.656,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "In such cases, pollen grains are already positioned on the stigma of the same flower, enabling self-pollination.",
+          "visual": "Source-faithful visible subject and action: In such cases, pollen grains are already positioned on the stigma of the same flower, enabling self-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: In such cases, pollen grains are already positioned on the stigma of the same flower, enabling self-pollination.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: In such cases, pollen grains are already positioned on the stigma of the same flower, enabling self-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels. Stable macro scientific reference photograph of one complete subject with every requested physical target simultaneously visible: pollen grains (Microscopic reproductive cells produced by anthers | COORDINATES_PENDING_APPROVED_IMAGE); stigma (Sticky receptive part of the female reproductive structure | COORDINATES_PENDING_APPROVED_IMAGE). Compose for precise later labeling: keep every required target in the same sharp focal plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear representative of each target, place the representatives in separate non-overlapping image regions with meaningful space between them, and avoid an angle where repeated organs hide or merge with a target. Keep the complete subject inside the frame and reserve clear side margins for composited label boxes and leader lines. No embedded text, labels, arrows, captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy.",
+          "keywords": [
+            "pollen grains",
+            "stigma"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_02_segment_04.wav",
+          "start": 62.68,
+          "end": 73.652,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "such cases pollen grains are already positioned",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "pollen grains",
+                "position": "0",
+                "placement": "Microscopic reproductive cells produced by anthers | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "stigma",
+                "position": "1",
+                "placement": "Sticky receptive part of the female reproductive structure | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "pollen grains",
+                "position": "0",
+                "placement": "Microscopic reproductive cells produced by anthers | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "stigma",
+                "position": "1",
+                "placement": "Sticky receptive part of the female reproductive structure | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "In such cases, pollen grains are already positioned on the stigma of the same flower, enabling self-pollination.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.396875
+            },
+            {
+              "text": "such",
+              "start": 0.4125,
+              "end": 0.834375
+            },
+            {
+              "text": "cases",
+              "start": 0.85,
+              "end": 1.553125
+            },
+            {
+              "text": "pollen",
+              "start": 1.709375,
+              "end": 2.146875
+            },
+            {
+              "text": "grains",
+              "start": 2.1625,
+              "end": 2.740625
+            },
+            {
+              "text": "are",
+              "start": 2.75625,
+              "end": 3.00625
+            },
+            {
+              "text": "already",
+              "start": 3.021875,
+              "end": 3.584375
+            },
+            {
+              "text": "positioned",
+              "start": 3.6,
+              "end": 4.334375
+            },
+            {
+              "text": "on",
+              "start": 4.35,
+              "end": 4.521875
+            },
+            {
+              "text": "the",
+              "start": 4.5375,
+              "end": 4.646875
+            },
+            {
+              "text": "stigma",
+              "start": 4.6625,
+              "end": 5.31875
+            },
+            {
+              "text": "of",
+              "start": 5.334375,
+              "end": 5.5375
+            },
+            {
+              "text": "the",
+              "start": 5.553125,
+              "end": 5.678125
+            },
+            {
+              "text": "same",
+              "start": 5.69375,
+              "end": 6.115625
+            },
+            {
+              "text": "flower",
+              "start": 6.13125,
+              "end": 6.834375
+            },
+            {
+              "text": "enabling",
+              "start": 7.13125,
+              "end": 7.803125
+            },
+            {
+              "text": "self-pollination",
+              "start": 7.81875,
+              "end": 9.178125
+            }
+          ],
+          "speech_duration": 10.272,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "title": "For cross-pollination, papaya is a dioecious plant,",
+      "narration": "For cross-pollination, papaya is a dioecious plant, meaning male and female flowers grow on separate plants to promote cross-pollination. In contrast, sunflowers have bisexual flowers where the anther matures before the stigma, a process called protandry. However, in custard apple, the stigma matures first, a phenomenon known as protogyny. Certain flowers, like pansies, feature a hood-like structure covering the stigma, a structural adaptation called hercogamy.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "For cross-pollination, papaya is a dioecious plant, meaning male and female flowers grow on separate plants to promote cross-pollination.",
+          "visual": "Source-faithful visible subject and action: For cross-pollination, papaya is a dioecious plant, meaning male and female flowers grow on separate plants to promote cross-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: For cross-pollination, papaya is a dioecious plant, meaning male and female flowers grow on separate plants to promote cross-pollination.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: For cross-pollination, papaya is a dioecious plant, meaning male and female flowers grow on separate plants to promote cross-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels. Stable macro scientific reference photograph of one complete subject with every requested physical target simultaneously visible: papaya (Tropical fruit tree with separate male and female flowers | COORDINATES_PENDING_APPROVED_IMAGE). Compose for precise later labeling: keep every required target in the same sharp focal plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear representative of each target, place the representatives in separate non-overlapping image regions with meaningful space between them, and avoid an angle where repeated organs hide or merge with a target. Keep the complete subject inside the frame and reserve clear side margins for composited label boxes and leader lines. No embedded text, labels, arrows, captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy.",
+          "keywords": [
+            "papaya"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_03_segment_01.wav",
+          "start": 73.652,
+          "end": 85.902,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "For cross-pollination papaya dioecious plant",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "papaya",
+                "position": "0",
+                "placement": "Tropical fruit tree with separate male and female flowers | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "papaya",
+                "position": "0",
+                "placement": "Tropical fruit tree with separate male and female flowers | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "For cross-pollination, papaya is a dioecious plant, meaning male and female flowers grow on separate plants to promote cross-pollination.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "For",
+              "start": 0.1,
+              "end": 0.396875
+            },
+            {
+              "text": "cross-pollination",
+              "start": 0.4125,
+              "end": 1.7875
+            },
+            {
+              "text": "papaya",
+              "start": 1.94375,
+              "end": 2.615625
+            },
+            {
+              "text": "is",
+              "start": 2.63125,
+              "end": 2.81875
+            },
+            {
+              "text": "a",
+              "start": 2.834375,
+              "end": 2.896875
+            },
+            {
+              "text": "dioecious",
+              "start": 2.9125,
+              "end": 3.69375
+            },
+            {
+              "text": "plant",
+              "start": 3.709375,
+              "end": 4.303125
+            },
+            {
+              "text": "meaning",
+              "start": 4.56875,
+              "end": 5.06875
+            },
+            {
+              "text": "male",
+              "start": 5.084375,
+              "end": 5.475
+            },
+            {
+              "text": "and",
+              "start": 5.490625,
+              "end": 5.69375
+            },
+            {
+              "text": "female",
+              "start": 5.709375,
+              "end": 6.209375
+            },
+            {
+              "text": "flowers",
+              "start": 6.225,
+              "end": 6.88125
+            },
+            {
+              "text": "grow",
+              "start": 6.896875,
+              "end": 7.31875
+            },
+            {
+              "text": "on",
+              "start": 7.334375,
+              "end": 7.6
+            },
+            {
+              "text": "separate",
+              "start": 7.615625,
+              "end": 8.178125
+            },
+            {
+              "text": "plants",
+              "start": 8.19375,
+              "end": 8.740625
+            },
+            {
+              "text": "to",
+              "start": 8.75625,
+              "end": 8.88125
+            },
+            {
+              "text": "promote",
+              "start": 8.896875,
+              "end": 9.475
+            },
+            {
+              "text": "cross-pollination",
+              "start": 9.490625,
+              "end": 10.88125
+            }
+          ],
+          "speech_duration": 12.0,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "In contrast, sunflowers have bisexual flowers where the anther matures before the stigma, a process called protandry.",
+          "visual": "Reviewed sunflower head macro: opened pollen-bearing anther tubes in the earlier male phase and elongated two-lobed stigmas in the later female phase. Exact arrow targets were manually measured on this 16:9 asset.",
+          "image_prompt": "Reviewed CC BY-SA sunflower macro photograph showing successive disk-floret reproductive phases; no image generation required.",
+          "keywords": [
+            "anther",
+            "stigma"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_03_segment_02.wav",
+          "start": 85.902,
+          "end": 97.21600000000001,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "contrast sunflowers have bisexual flowers where",
+            "learning_objective": "",
+            "asset_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\assets\\reviewed\\pollination\\sunflower_flower_head_protandry_16x9.jpg",
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "Anther tube (male phase)",
+                "placement": "Pollen-bearing opened brown anther tube beneath yellow pollen",
+                "target_xy": "0.715000,0.340000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "right"
+              },
+              {
+                "text": "Two-lobed stigma (female phase)",
+                "placement": "Elongated two-lobed hairy stigma projecting from a disk floret",
+                "target_xy": "0.455000,0.335000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "left"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "Anther tube (male phase)",
+                "placement": "Pollen-bearing opened brown anther tube beneath yellow pollen",
+                "target_xy": "0.715000,0.340000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "right"
+              },
+              {
+                "text": "Two-lobed stigma (female phase)",
+                "placement": "Elongated two-lobed hairy stigma projecting from a disk floret",
+                "target_xy": "0.455000,0.335000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "left"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "In contrast, sunflowers have bisexual flowers where the anther matures before the stigma, a process called protandry.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Exact reviewed asset; manually measured normalized coordinates; attribution recorded beside the asset."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.4125
+            },
+            {
+              "text": "contrast",
+              "start": 0.428125,
+              "end": 1.334375
+            },
+            {
+              "text": "sunflowers",
+              "start": 1.490625,
+              "end": 2.553125
+            },
+            {
+              "text": "have",
+              "start": 2.56875,
+              "end": 2.834375
+            },
+            {
+              "text": "bisexual",
+              "start": 2.85,
+              "end": 3.69375
+            },
+            {
+              "text": "flowers",
+              "start": 3.709375,
+              "end": 4.396875
+            },
+            {
+              "text": "where",
+              "start": 4.4125,
+              "end": 4.678125
+            },
+            {
+              "text": "the",
+              "start": 4.69375,
+              "end": 4.834375
+            },
+            {
+              "text": "anther",
+              "start": 4.85,
+              "end": 5.35
+            },
+            {
+              "text": "matures",
+              "start": 5.365625,
+              "end": 6.115625
+            },
+            {
+              "text": "before",
+              "start": 6.13125,
+              "end": 6.63125
+            },
+            {
+              "text": "the",
+              "start": 6.646875,
+              "end": 6.75625
+            },
+            {
+              "text": "stigma",
+              "start": 6.771875,
+              "end": 7.5375
+            },
+            {
+              "text": "a",
+              "start": 7.7875,
+              "end": 7.94375
+            },
+            {
+              "text": "process",
+              "start": 7.959375,
+              "end": 8.615625
+            },
+            {
+              "text": "called",
+              "start": 8.63125,
+              "end": 9.053125
+            },
+            {
+              "text": "protandry",
+              "start": 9.06875,
+              "end": 9.94375
+            }
+          ],
+          "speech_duration": 11.064,
+          "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Flower_head.jpg",
+            "CC BY-SA 3.0; Laszlo Nemeth (Nl74)"
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "However, in custard apple, the stigma matures first, a phenomenon known as protogyny.",
+          "visual": "Source-faithful visible subject and action: However, in custard apple, the stigma matures first, a phenomenon known as protogyny. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: However, in custard apple, the stigma matures first, a phenomenon known as protogyny.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: However, in custard apple, the stigma matures first, a phenomenon known as protogyny. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels. Stable macro scientific reference photograph of one complete subject with every requested physical target simultaneously visible: stigma (Sticky receptive part of the female reproductive structure | COORDINATES_PENDING_APPROVED_IMAGE). Compose for precise later labeling: keep every required target in the same sharp focal plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear representative of each target, place the representatives in separate non-overlapping image regions with meaningful space between them, and avoid an angle where repeated organs hide or merge with a target. Keep the complete subject inside the frame and reserve clear side margins for composited label boxes and leader lines. No embedded text, labels, arrows, captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy.",
+          "keywords": [
+            "stigma"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_03_segment_03.wav",
+          "start": 97.21600000000001,
+          "end": 106.58600000000001,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "However custard apple the stigma matures first",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "stigma",
+                "position": "0",
+                "placement": "Sticky receptive part of the female reproductive structure | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "stigma",
+                "position": "0",
+                "placement": "Sticky receptive part of the female reproductive structure | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "However, in custard apple, the stigma matures first, a phenomenon known as protogyny.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "However",
+              "start": 0.1,
+              "end": 0.959375
+            },
+            {
+              "text": "in",
+              "start": 1.178125,
+              "end": 1.396875
+            },
+            {
+              "text": "custard",
+              "start": 1.4125,
+              "end": 2.0375
+            },
+            {
+              "text": "apple",
+              "start": 2.053125,
+              "end": 2.709375
+            },
+            {
+              "text": "the",
+              "start": 2.94375,
+              "end": 3.115625
+            },
+            {
+              "text": "stigma",
+              "start": 3.13125,
+              "end": 3.740625
+            },
+            {
+              "text": "matures",
+              "start": 3.75625,
+              "end": 4.459375
+            },
+            {
+              "text": "first",
+              "start": 4.475,
+              "end": 5.115625
+            },
+            {
+              "text": "a",
+              "start": 5.4125,
+              "end": 5.584375
+            },
+            {
+              "text": "phenomenon",
+              "start": 5.6,
+              "end": 6.38125
+            },
+            {
+              "text": "known",
+              "start": 6.396875,
+              "end": 6.7875
+            },
+            {
+              "text": "as",
+              "start": 6.803125,
+              "end": 7.06875
+            },
+            {
+              "text": "protogyny",
+              "start": 7.084375,
+              "end": 8.00625
+            }
+          ],
+          "speech_duration": 9.12,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 4,
+          "narration": "Certain flowers, like pansies, feature a hood-like structure covering the stigma, a structural adaptation called hercogamy.",
+          "visual": "Source-faithful visible subject and action: Certain flowers, like pansies, feature a hood-like structure covering the stigma, a structural adaptation called hercogamy. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: Certain flowers, like pansies, feature a hood-like structure covering the stigma, a structural adaptation called hercogamy.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: Certain flowers, like pansies, feature a hood-like structure covering the stigma, a structural adaptation called hercogamy. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels. Stable macro scientific reference photograph of one complete subject with every requested physical target simultaneously visible: hood-like structure (exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE); stigma (exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE). Compose for precise later labeling: keep every required target in the same sharp focal plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear representative of each target, place the representatives in separate non-overlapping image regions with meaningful space between them, and avoid an angle where repeated organs hide or merge with a target. Keep the complete subject inside the frame and reserve clear side margins for composited label boxes and leader lines. No embedded text, labels, arrows, captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy.",
+          "keywords": [
+            "hood-like structure",
+            "stigma"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_03_segment_04.wav",
+          "start": 106.58600000000001,
+          "end": 118.80600000000001,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "Certain flowers like pansies feature hood-like",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "hood-like structure",
+                "position": "0",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "stigma",
+                "position": "1",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "hood-like structure",
+                "position": "0",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "stigma",
+                "position": "1",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "Certain flowers, like pansies, feature a hood-like structure covering the stigma, a structural adaptation called hercogamy.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Certain",
+              "start": 0.1,
+              "end": 0.7875
+            },
+            {
+              "text": "flowers",
+              "start": 0.803125,
+              "end": 1.584375
+            },
+            {
+              "text": "like",
+              "start": 1.740625,
+              "end": 2.1
+            },
+            {
+              "text": "pansies",
+              "start": 2.115625,
+              "end": 2.959375
+            },
+            {
+              "text": "feature",
+              "start": 3.13125,
+              "end": 3.75625
+            },
+            {
+              "text": "a",
+              "start": 3.771875,
+              "end": 3.834375
+            },
+            {
+              "text": "hood-like",
+              "start": 3.85,
+              "end": 4.396875
+            },
+            {
+              "text": "structure",
+              "start": 4.4125,
+              "end": 5.084375
+            },
+            {
+              "text": "covering",
+              "start": 5.1,
+              "end": 5.646875
+            },
+            {
+              "text": "the",
+              "start": 5.6625,
+              "end": 5.771875
+            },
+            {
+              "text": "stigma",
+              "start": 5.7875,
+              "end": 6.5375
+            },
+            {
+              "text": "a",
+              "start": 6.834375,
+              "end": 6.975
+            },
+            {
+              "text": "structural",
+              "start": 6.990625,
+              "end": 7.896875
+            },
+            {
+              "text": "adaptation",
+              "start": 7.9125,
+              "end": 8.896875
+            },
+            {
+              "text": "called",
+              "start": 8.9125,
+              "end": 9.365625
+            },
+            {
+              "text": "hercogamy",
+              "start": 9.38125,
+              "end": 10.4125
+            }
+          ],
+          "speech_duration": 11.52,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 4,
+      "title": "In orchids, the pollen from the anther fails to",
+      "narration": "In orchids, the pollen from the anther fails to germinate on the same flower's stigma. Primrose exhibits heterostyly, where the stigma is positioned at a different height relative to the anther. These adaptations enhance cross-pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "In orchids, the pollen from the anther fails to germinate on the same flower's stigma.",
+          "visual": "Source-faithful visible subject and action: In orchids, the pollen from the anther fails to germinate on the same flower's stigma. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: In orchids, the pollen from the anther fails to germinate on the same flower's stigma.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: In orchids, the pollen from the anther fails to germinate on the same flower's stigma. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels. Stable macro scientific reference photograph of one complete subject with every requested physical target simultaneously visible: pollen (exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE); anther (exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE); stigma (exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE). Compose for precise later labeling: keep every required target in the same sharp focal plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear representative of each target, place the representatives in separate non-overlapping image regions with meaningful space between them, and avoid an angle where repeated organs hide or merge with a target. Keep the complete subject inside the frame and reserve clear side margins for composited label boxes and leader lines. No embedded text, labels, arrows, captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy.",
+          "keywords": [
+            "pollen",
+            "anther",
+            "stigma"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_04_segment_01.wav",
+          "start": 118.80600000000001,
+          "end": 126.784,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "orchids the pollen from the anther fails",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "pollen",
+                "position": "0",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "anther",
+                "position": "1",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "stigma",
+                "position": "2",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "pollen",
+                "position": "0",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "anther",
+                "position": "1",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "stigma",
+                "position": "2",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "In orchids, the pollen from the anther fails to germinate on the same flower's stigma.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "In",
+              "start": 0.1,
+              "end": 0.4125
+            },
+            {
+              "text": "orchids",
+              "start": 0.428125,
+              "end": 1.1
+            },
+            {
+              "text": "the",
+              "start": 1.240625,
+              "end": 1.396875
+            },
+            {
+              "text": "pollen",
+              "start": 1.4125,
+              "end": 1.928125
+            },
+            {
+              "text": "from",
+              "start": 1.94375,
+              "end": 2.209375
+            },
+            {
+              "text": "the",
+              "start": 2.225,
+              "end": 2.38125
+            },
+            {
+              "text": "anther",
+              "start": 2.396875,
+              "end": 2.928125
+            },
+            {
+              "text": "fails",
+              "start": 2.94375,
+              "end": 3.4125
+            },
+            {
+              "text": "to",
+              "start": 3.428125,
+              "end": 3.56875
+            },
+            {
+              "text": "germinate",
+              "start": 3.584375,
+              "end": 4.38125
+            },
+            {
+              "text": "on",
+              "start": 4.396875,
+              "end": 4.6
+            },
+            {
+              "text": "the",
+              "start": 4.615625,
+              "end": 4.725
+            },
+            {
+              "text": "same",
+              "start": 4.740625,
+              "end": 5.209375
+            },
+            {
+              "text": "flower's",
+              "start": 5.225,
+              "end": 5.9125
+            },
+            {
+              "text": "stigma",
+              "start": 5.928125,
+              "end": 6.63125
+            }
+          ],
+          "speech_duration": 7.728,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Primrose exhibits heterostyly, where the stigma is positioned at a different height relative to the anther.",
+      "visual": "Reviewed side-by-side longitudinal sections of Primula vulgaris pin and thrum flowers. The pin morph visibly has a high stigma and low anthers; the thrum morph visibly has high anthers and a low stigma.",
+      "image_prompt": "Reviewed scientific photograph of dissected pin and thrum Primula vulgaris flowers; no image generation required.",
+          "keywords": [
+            "stigma",
+            "anther"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_04_segment_02.wav",
+          "start": 126.784,
+          "end": 136.178,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "Primrose exhibits heterostyly where the stigma",
+            "learning_objective": "",
+        "asset_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\assets\\reviewed\\pollination\\distyly_primula_restored_16x9.png",
+            "steps": [],
+            "subheading": "",
+            "labels": [
+          {
+            "text": "Pin: high stigma",
+            "placement": "Receptive stigma at the mouth of the pin flower corolla tube",
+            "target_xy": "0.430000,0.227000",
+            "target_confidence": 1.0,
+            "target_source": "manual_reviewed_asset",
+            "box_side": "left"
+          },
+          {
+            "text": "Pin: low anthers",
+            "placement": "Yellow pollen-bearing anthers midway down the pin flower corolla tube",
+            "target_xy": "0.426000,0.378000",
+            "target_confidence": 1.0,
+            "target_source": "manual_reviewed_asset",
+            "box_side": "left"
+          },
+          {
+            "text": "Thrum: high anthers",
+            "placement": "Yellow pollen-bearing anthers at the mouth of the thrum flower corolla tube",
+            "target_xy": "0.581000,0.174000",
+            "target_confidence": 1.0,
+            "target_source": "manual_reviewed_asset",
+            "box_side": "right"
+          },
+          {
+            "text": "Thrum: low stigma",
+            "placement": "Receptive stigma midway down the thrum flower corolla tube",
+            "target_xy": "0.565000,0.457000",
+            "target_confidence": 1.0,
+            "target_source": "manual_reviewed_asset",
+            "box_side": "right"
+          }
+            ],
+            "arrows": [
+          {
+            "text": "Pin: high stigma",
+            "placement": "Receptive stigma at the mouth of the pin flower corolla tube",
+            "target_xy": "0.430000,0.227000",
+            "target_confidence": 1.0,
+            "target_source": "manual_reviewed_asset",
+            "box_side": "left"
+          },
+          {
+            "text": "Pin: low anthers",
+            "placement": "Yellow pollen-bearing anthers midway down the pin flower corolla tube",
+            "target_xy": "0.426000,0.378000",
+            "target_confidence": 1.0,
+            "target_source": "manual_reviewed_asset",
+            "box_side": "left"
+          },
+          {
+            "text": "Thrum: high anthers",
+            "placement": "Yellow pollen-bearing anthers at the mouth of the thrum flower corolla tube",
+            "target_xy": "0.581000,0.174000",
+            "target_confidence": 1.0,
+            "target_source": "manual_reviewed_asset",
+            "box_side": "right"
+          },
+          {
+            "text": "Thrum: low stigma",
+            "placement": "Receptive stigma midway down the thrum flower corolla tube",
+            "target_xy": "0.565000,0.457000",
+            "target_confidence": 1.0,
+            "target_source": "manual_reviewed_asset",
+            "box_side": "right"
+          }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "Primrose exhibits heterostyly, where the stigma is positioned at a different height relative to the anther.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+          "review_notes": "Reviewed Primula vulgaris pin/thrum asset with manually verified normalized coordinates. The two morphs are required to demonstrate reciprocal heterostyly; do not substitute a single generic flower. Attribution recorded beside the asset."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Primrose",
+              "start": 0.1,
+              "end": 0.896875
+            },
+            {
+              "text": "exhibits",
+              "start": 0.9125,
+              "end": 1.56875
+            },
+            {
+              "text": "heterostyly",
+              "start": 1.584375,
+              "end": 2.771875
+            },
+            {
+              "text": "where",
+              "start": 2.94375,
+              "end": 3.209375
+            },
+            {
+              "text": "the",
+              "start": 3.225,
+              "end": 3.334375
+            },
+            {
+              "text": "stigma",
+              "start": 3.35,
+              "end": 3.990625
+            },
+            {
+              "text": "is",
+              "start": 4.00625,
+              "end": 4.209375
+            },
+            {
+              "text": "positioned",
+              "start": 4.225,
+              "end": 5.021875
+            },
+            {
+              "text": "at",
+              "start": 5.0375,
+              "end": 5.31875
+            },
+            {
+              "text": "a",
+              "start": 5.334375,
+              "end": 5.396875
+            },
+            {
+              "text": "different",
+              "start": 5.4125,
+              "end": 5.990625
+            },
+            {
+              "text": "height",
+              "start": 6.00625,
+              "end": 6.44375
+            },
+            {
+              "text": "relative",
+              "start": 6.459375,
+              "end": 7.021875
+            },
+            {
+              "text": "to",
+              "start": 7.0375,
+              "end": 7.1625
+            },
+            {
+              "text": "the",
+              "start": 7.178125,
+              "end": 7.365625
+            },
+            {
+              "text": "anther",
+              "start": 7.38125,
+              "end": 8.021875
+            }
+          ],
+          "speech_duration": 9.144,
+      "source_references": [
+        "https://commons.wikimedia.org/wiki/File:Distyly_primula.jpg",
+        "CC BY-SA 3.0; berru / Berrucomons",
+        "https://pmc.ncbi.nlm.nih.gov/articles/PMC6299000/"
+      ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "These adaptations enhance cross-pollination.",
+          "visual": "Source-faithful visible subject and action: These adaptations enhance cross-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Continue the exact physical subject established by the immediately preceding narration: Primrose exhibits heterostyly, where the stigma is positioned at a different height relative to the anther.. Show the current narration literally: These adaptations enhance cross-pollination.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: These adaptations enhance cross-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "adaptations",
+            "enhance",
+            "cross-pollination",
+            "source-faithful",
+            "visible",
+            "subject",
+            "action",
+            "compose"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_04_segment_03.wav",
+          "start": 136.178,
+          "end": 141.654,
+          "shot": {
+            "template": "photo",
+            "heading": "These adaptations enhance cross-pollination",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_image",
+              "subtitle": "These adaptations enhance cross-pollination.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "These",
+              "start": 0.1,
+              "end": 0.56875
+            },
+            {
+              "text": "adaptations",
+              "start": 0.584375,
+              "end": 1.646875
+            },
+            {
+              "text": "enhance",
+              "start": 1.6625,
+              "end": 2.303125
+            },
+            {
+              "text": "cross-pollination",
+              "start": 2.31875,
+              "end": 3.6625
+            }
+          ],
+          "speech_duration": 4.776,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 5,
+      "title": "To summarize, self-pollination occurs in plants like",
+      "narration": "To summarize, self-pollination occurs in plants like Oxalis, where anther and stigma mature together (homogamy). Wood sorrel has bisexual, closed flowers where self-pollination and fertilization take place, termed cleistogamy. For cross-pollination, papaya is dioecious, encouraging cross-pollination.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "To summarize, self-pollination occurs in plants like Oxalis, where anther and stigma mature together (homogamy).",
+          "visual": "Source-faithful visible subject and action: To summarize, self-pollination occurs in plants like Oxalis, where anther and stigma mature together (homogamy). Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: To summarize, self-pollination occurs in plants like Oxalis, where anther and stigma mature together (homogamy).. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: To summarize, self-pollination occurs in plants like Oxalis, where anther and stigma mature together (homogamy). Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. Show one complete flower with both the anther and stigma visible; no bee, insect, animal, hand, or other external transfer agent. No unrelated substitute subject, no symbolic stand-in, no text, no labels. Stable macro scientific reference photograph of one complete subject with every requested physical target simultaneously visible: anther (exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE); stigma (exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE). Compose for precise later labeling: keep every required target in the same sharp focal plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear representative of each target, place the representatives in separate non-overlapping image regions with meaningful space between them, and avoid an angle where repeated organs hide or merge with a target. Keep the complete subject inside the frame and reserve clear side margins for composited label boxes and leader lines. No embedded text, labels, arrows, captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy.",
+          "keywords": [
+            "anther",
+            "stigma"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_05_segment_01.wav",
+          "start": 141.654,
+          "end": 152.656,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "summarize self-pollination occurs plants like",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "anther",
+                "position": "0",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "stigma",
+                "position": "1",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "anther",
+                "position": "0",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              },
+              {
+                "text": "stigma",
+                "position": "1",
+                "placement": "exact semantic target description | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "To summarize, self-pollination occurs in plants like Oxalis, where anther and stigma mature together (homogamy).",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "To",
+              "start": 0.1,
+              "end": 0.303125
+            },
+            {
+              "text": "summarize",
+              "start": 0.31875,
+              "end": 1.334375
+            },
+            {
+              "text": "self-pollination",
+              "start": 1.521875,
+              "end": 2.7875
+            },
+            {
+              "text": "occurs",
+              "start": 2.803125,
+              "end": 3.2875
+            },
+            {
+              "text": "in",
+              "start": 3.303125,
+              "end": 3.459375
+            },
+            {
+              "text": "plants",
+              "start": 3.475,
+              "end": 4.053125
+            },
+            {
+              "text": "like",
+              "start": 4.06875,
+              "end": 4.396875
+            },
+            {
+              "text": "Oxalis",
+              "start": 4.4125,
+              "end": 5.240625
+            },
+            {
+              "text": "where",
+              "start": 5.44375,
+              "end": 5.803125
+            },
+            {
+              "text": "anther",
+              "start": 5.81875,
+              "end": 6.459375
+            },
+            {
+              "text": "and",
+              "start": 6.475,
+              "end": 6.740625
+            },
+            {
+              "text": "stigma",
+              "start": 6.75625,
+              "end": 7.334375
+            },
+            {
+              "text": "mature",
+              "start": 7.35,
+              "end": 7.834375
+            },
+            {
+              "text": "together",
+              "start": 7.85,
+              "end": 8.56875
+            },
+            {
+              "text": "homogamy",
+              "start": 8.740625,
+              "end": 9.646875
+            }
+          ],
+          "speech_duration": 10.752,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Wood sorrel has bisexual, closed flowers where self-pollination and fertilization take place, termed cleistogamy.",
+          "visual": "Source-faithful visible subject and action: Wood sorrel has bisexual, closed flowers where self-pollination and fertilization take place, termed cleistogamy. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: Wood sorrel has bisexual, closed flowers where self-pollination and fertilization take place, termed cleistogamy.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: Wood sorrel has bisexual, closed flowers where self-pollination and fertilization take place, termed cleistogamy. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "wood",
+            "sorrel",
+            "bisexual",
+            "closed",
+            "flowers",
+            "self-pollination",
+            "fertilization",
+            "take"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_05_segment_02.wav",
+          "start": 152.656,
+          "end": 163.25,
+          "shot": {
+            "template": "photo",
+            "heading": "Cleistogamy",
+            "learning_objective": "Show a real closed cleistogamous flower clearly.",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {},
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Wood",
+              "start": 0.1,
+              "end": 0.4125
+            },
+            {
+              "text": "sorrel",
+              "start": 0.428125,
+              "end": 0.975
+            },
+            {
+              "text": "has",
+              "start": 0.990625,
+              "end": 1.2875
+            },
+            {
+              "text": "bisexual",
+              "start": 1.303125,
+              "end": 2.303125
+            },
+            {
+              "text": "closed",
+              "start": 2.44375,
+              "end": 2.9125
+            },
+            {
+              "text": "flowers",
+              "start": 2.928125,
+              "end": 3.584375
+            },
+            {
+              "text": "where",
+              "start": 3.6,
+              "end": 3.865625
+            },
+            {
+              "text": "self-pollination",
+              "start": 3.88125,
+              "end": 5.1625
+            },
+            {
+              "text": "and",
+              "start": 5.178125,
+              "end": 5.428125
+            },
+            {
+              "text": "fertilization",
+              "start": 5.44375,
+              "end": 6.6
+            },
+            {
+              "text": "take",
+              "start": 6.615625,
+              "end": 6.9125
+            },
+            {
+              "text": "place",
+              "start": 6.928125,
+              "end": 7.490625
+            },
+            {
+              "text": "termed",
+              "start": 7.678125,
+              "end": 8.084375
+            },
+            {
+              "text": "cleistogamy",
+              "start": 8.1,
+              "end": 9.209375
+            }
+          ],
+          "speech_duration": 10.344,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "For cross-pollination, papaya is dioecious, encouraging cross-pollination.",
+          "visual": "Source-faithful visible subject and action: For cross-pollination, papaya is dioecious, encouraging cross-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: For cross-pollination, papaya is dioecious, encouraging cross-pollination.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: For cross-pollination, papaya is dioecious, encouraging cross-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "cross-pollination",
+            "papaya",
+            "dioecious",
+            "encouraging",
+            "source-faithful",
+            "visible",
+            "subject",
+            "action"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_05_segment_03.wav",
+          "start": 163.25,
+          "end": 171.39,
+          "shot": {
+            "template": "photo",
+            "heading": "For cross-pollination papaya dioecious",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_image",
+              "subtitle": "For cross-pollination, papaya is dioecious, encouraging cross-pollination.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "For",
+              "start": 0.1,
+              "end": 0.4125
+            },
+            {
+              "text": "cross-pollination",
+              "start": 0.428125,
+              "end": 1.81875
+            },
+            {
+              "text": "papaya",
+              "start": 1.990625,
+              "end": 2.678125
+            },
+            {
+              "text": "is",
+              "start": 2.69375,
+              "end": 2.9125
+            },
+            {
+              "text": "dioecious",
+              "start": 2.928125,
+              "end": 3.803125
+            },
+            {
+              "text": "encouraging",
+              "start": 4.021875,
+              "end": 4.9125
+            },
+            {
+              "text": "cross-pollination",
+              "start": 4.928125,
+              "end": 6.31875
+            }
+          ],
+          "speech_duration": 7.44,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 6,
+      "title": "Sunflowers have bisexual flowers with protandry",
+      "narration": "Sunflowers have bisexual flowers with protandry (anther matures first). Pansies display hercogamy, with a stigma-covering hood. Primrose shows heterostyly, where the stigma is at a different height than the anther.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Sunflowers have bisexual flowers with protandry (anther matures first).",
+          "visual": "Sharp 1920x1080 realistic documentary image for Types of Pollination e2e - Sunflowers have bisexual flowers with protandry; depict the concrete subject or visible action described by: Sunflowers have bisexual flowers with protandry (anther matures first).; principal subject large and unobscured, clear foreground-background separation, safe overlay margins, eye-level camera, neutral natural lighting, and no unrelated elements.",
+          "image_prompt": "Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Sharp 1920x1080 realistic documentary image for Types of Pollination e2e - Sunflowers have bisexual flowers with protandry; depict the concrete subject or visible action described by: Sunflowers have bisexual flowers with protandry (anther matures first).; principal subject large and unobscured, clear foreground-background separation, safe overlay margins, eye-level camera, neutral natural lighting, and no unrelated elements.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout.",
+          "keywords": [
+            "sunflowers",
+            "bisexual",
+            "flowers",
+            "protandry",
+            "anther",
+            "matures",
+            "sharp",
+            "realistic"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_06_segment_01.wav",
+          "start": 171.39,
+          "end": 178.95999999999998,
+          "shot": {
+            "template": "photo",
+            "heading": "Protandry",
+            "learning_objective": "Show the real flower structures used to explain protandry.",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {},
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Sunflowers",
+              "start": 0.1,
+              "end": 1.225
+            },
+            {
+              "text": "have",
+              "start": 1.240625,
+              "end": 1.50625
+            },
+            {
+              "text": "bisexual",
+              "start": 1.521875,
+              "end": 2.365625
+            },
+            {
+              "text": "flowers",
+              "start": 2.38125,
+              "end": 3.084375
+            },
+            {
+              "text": "with",
+              "start": 3.1,
+              "end": 3.271875
+            },
+            {
+              "text": "protandry",
+              "start": 3.2875,
+              "end": 4.178125
+            },
+            {
+              "text": "anther",
+              "start": 4.35,
+              "end": 4.896875
+            },
+            {
+              "text": "matures",
+              "start": 4.9125,
+              "end": 5.584375
+            },
+            {
+              "text": "first",
+              "start": 5.6,
+              "end": 6.225
+            }
+          ],
+          "speech_duration": 7.32,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Pansies display hercogamy, with a stigma-covering hood.",
+          "visual": "Sharp 1920x1080 realistic documentary image for Types of Pollination e2e - Sunflowers have bisexual flowers with protandry; depict the concrete subject or visible action described by: Pansies display hercogamy, with a stigma-covering hood.; principal subject large and unobscured, clear foreground-background separation, safe overlay margins, eye-level camera, neutral natural lighting, and no unrelated elements.",
+          "image_prompt": "Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Sharp 1920x1080 realistic documentary image for Types of Pollination e2e - Sunflowers have bisexual flowers with protandry; depict the concrete subject or visible action described by: Pansies display hercogamy, with a stigma-covering hood.; principal subject large and unobscured, clear foreground-background separation, safe overlay margins, eye-level camera, neutral natural lighting, and no unrelated elements.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout.",
+          "keywords": [
+            "pansies",
+            "display",
+            "hercogamy",
+            "stigma-covering",
+            "hood",
+            "sharp",
+            "realistic",
+            "documentary"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_06_segment_02.wav",
+          "start": 178.95999999999998,
+          "end": 184.84999999999997,
+          "shot": {
+            "template": "photo",
+            "heading": "Protandry",
+            "learning_objective": "Show the real flower structures used to explain protandry.",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {},
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Pansies",
+              "start": 0.1,
+              "end": 0.88125
+            },
+            {
+              "text": "display",
+              "start": 0.896875,
+              "end": 1.475
+            },
+            {
+              "text": "hercogamy",
+              "start": 1.490625,
+              "end": 2.428125
+            },
+            {
+              "text": "with",
+              "start": 2.678125,
+              "end": 2.88125
+            },
+            {
+              "text": "a",
+              "start": 2.896875,
+              "end": 2.975
+            },
+            {
+              "text": "stigma-covering",
+              "start": 2.990625,
+              "end": 4.1
+            },
+            {
+              "text": "hood",
+              "start": 4.115625,
+              "end": 4.521875
+            }
+          ],
+          "speech_duration": 5.64,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "Primrose shows heterostyly, where the stigma is at a different height than the anther.",
+          "visual": "Sharp 1920x1080 realistic documentary image for Types of Pollination e2e - Sunflowers have bisexual flowers with protandry; depict the concrete subject or visible action described by: Primrose shows heterostyly, where the stigma is at a different height than the anther.; principal subject large and unobscured, clear foreground-background separation, safe overlay margins, eye-level camera, neutral natural lighting, and no unrelated elements.",
+          "image_prompt": "Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Sharp 1920x1080 realistic documentary image for Types of Pollination e2e - Sunflowers have bisexual flowers with protandry; depict the concrete subject or visible action described by: Primrose shows heterostyly, where the stigma is at a different height than the anther.; principal subject large and unobscured, clear foreground-background separation, safe overlay margins, eye-level camera, neutral natural lighting, and no unrelated elements.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout.",
+          "keywords": [
+            "primrose",
+            "shows",
+            "heterostyly",
+            "stigma",
+            "height",
+            "anther",
+            "sharp",
+            "realistic"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_06_segment_03.wav",
+          "start": 184.84999999999997,
+          "end": 193.13399999999996,
+          "shot": {
+            "template": "photo",
+            "heading": "Protandry",
+            "learning_objective": "Show the real flower structures used to explain protandry.",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {},
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Primrose",
+              "start": 0.1,
+              "end": 0.81875
+            },
+            {
+              "text": "shows",
+              "start": 0.834375,
+              "end": 1.2875
+            },
+            {
+              "text": "heterostyly",
+              "start": 1.303125,
+              "end": 2.490625
+            },
+            {
+              "text": "where",
+              "start": 2.69375,
+              "end": 2.990625
+            },
+            {
+              "text": "the",
+              "start": 3.00625,
+              "end": 3.115625
+            },
+            {
+              "text": "stigma",
+              "start": 3.13125,
+              "end": 3.803125
+            },
+            {
+              "text": "is",
+              "start": 3.81875,
+              "end": 4.0375
+            },
+            {
+              "text": "at",
+              "start": 4.053125,
+              "end": 4.240625
+            },
+            {
+              "text": "a",
+              "start": 4.25625,
+              "end": 4.31875
+            },
+            {
+              "text": "different",
+              "start": 4.334375,
+              "end": 4.9125
+            },
+            {
+              "text": "height",
+              "start": 4.928125,
+              "end": 5.334375
+            },
+            {
+              "text": "than",
+              "start": 5.35,
+              "end": 5.646875
+            },
+            {
+              "text": "the",
+              "start": 5.6625,
+              "end": 5.81875
+            },
+            {
+              "text": "anther",
+              "start": 5.834375,
+              "end": 6.475
+            }
+          ],
+          "speech_duration": 7.584,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 7,
+      "title": "These floral adaptations support cross-pollination.",
+      "narration": "These floral adaptations support cross-pollination. Pollinators are drawn to flowers through various means-sometimes by sweet scents and nectar, or through deception. The bee orchid, for instance, mimics the appearance of a female bee, luring male bees seeking mates.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "These floral adaptations support cross-pollination.",
+          "visual": "Source-faithful visible subject and action: These floral adaptations support cross-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Continue the exact physical subject established by the immediately preceding narration: Primrose shows heterostyly, where the stigma is at a different height than the anther.. Show the current narration literally: These floral adaptations support cross-pollination.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: These floral adaptations support cross-pollination. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "floral",
+            "adaptations",
+            "support",
+            "cross-pollination",
+            "source-faithful",
+            "visible",
+            "subject",
+            "action"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_07_segment_01.wav",
+          "start": 193.13399999999996,
+          "end": 198.66399999999996,
+          "shot": {
+            "template": "photo",
+            "heading": "These floral adaptations support cross-pollination",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_image",
+              "subtitle": "These floral adaptations support cross-pollination.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "These",
+              "start": 0.1,
+              "end": 0.584375
+            },
+            {
+              "text": "floral",
+              "start": 0.6,
+              "end": 1.178125
+            },
+            {
+              "text": "adaptations",
+              "start": 1.19375,
+              "end": 2.209375
+            },
+            {
+              "text": "support",
+              "start": 2.225,
+              "end": 2.771875
+            },
+            {
+              "text": "cross-pollination",
+              "start": 2.7875,
+              "end": 4.1625
+            }
+          ],
+          "speech_duration": 5.28,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Pollinators are drawn to flowers through various means-sometimes by sweet scents and nectar, or through deception.",
+          "visual": "Source-faithful visible subject and action: Pollinators are drawn to flowers through various means-sometimes by sweet scents and nectar, or through deception. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: Pollinators are drawn to flowers through various means-sometimes by sweet scents and nectar, or through deception.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: Pollinators are drawn to flowers through various means-sometimes by sweet scents and nectar, or through deception. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels. Stable macro scientific reference photograph of one complete subject with every requested physical target simultaneously visible: scent (volatile chemical compounds released by flowers to attract pollinators | COORDINATES_PENDING_APPROVED_IMAGE). Compose for precise later labeling: keep every required target in the same sharp focal plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear representative of each target, place the representatives in separate non-overlapping image regions with meaningful space between them, and avoid an angle where repeated organs hide or merge with a target. Keep the complete subject inside the frame and reserve clear side margins for composited label boxes and leader lines. No embedded text, labels, arrows, captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy.",
+          "keywords": [
+            "scent"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_07_segment_02.wav",
+          "start": 198.66399999999996,
+          "end": 208.65799999999996,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "Pollinators are drawn flowers through various",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "scent",
+                "position": "0",
+                "placement": "volatile chemical compounds released by flowers to attract pollinators | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "scent",
+                "position": "0",
+                "placement": "volatile chemical compounds released by flowers to attract pollinators | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "Pollinators are drawn to flowers through various means-sometimes by sweet scents and nectar, or through deception.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Label safety review: abstract or non-pointable concepts remain in narration/subtitles; no scientific arrows are drawn to them. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Pollinators",
+              "start": 0.1,
+              "end": 1.1
+            },
+            {
+              "text": "are",
+              "start": 1.115625,
+              "end": 1.25625
+            },
+            {
+              "text": "drawn",
+              "start": 1.271875,
+              "end": 1.725
+            },
+            {
+              "text": "to",
+              "start": 1.740625,
+              "end": 1.88125
+            },
+            {
+              "text": "flowers",
+              "start": 1.896875,
+              "end": 2.553125
+            },
+            {
+              "text": "through",
+              "start": 2.56875,
+              "end": 2.834375
+            },
+            {
+              "text": "various",
+              "start": 2.85,
+              "end": 3.50625
+            },
+            {
+              "text": "means-sometimes",
+              "start": 3.521875,
+              "end": 4.6625
+            },
+            {
+              "text": "by",
+              "start": 4.678125,
+              "end": 4.928125
+            },
+            {
+              "text": "sweet",
+              "start": 4.94375,
+              "end": 5.396875
+            },
+            {
+              "text": "scents",
+              "start": 5.4125,
+              "end": 5.959375
+            },
+            {
+              "text": "and",
+              "start": 5.975,
+              "end": 6.178125
+            },
+            {
+              "text": "nectar",
+              "start": 6.19375,
+              "end": 6.896875
+            },
+            {
+              "text": "or",
+              "start": 7.115625,
+              "end": 7.38125
+            },
+            {
+              "text": "through",
+              "start": 7.396875,
+              "end": 7.709375
+            },
+            {
+              "text": "deception",
+              "start": 7.725,
+              "end": 8.615625
+            }
+          ],
+          "speech_duration": 9.744,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "The bee orchid, for instance, mimics the appearance of a female bee, luring male bees seeking mates.",
+          "visual": "Source-faithful visible subject and action: The bee orchid, for instance, mimics the appearance of a female bee, luring male bees seeking mates. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: The bee orchid, for instance, mimics the appearance of a female bee, luring male bees seeking mates.. Macro documentary photograph of a bee orchid flower that resembles a female bee, with a male bee nearby, realistic botanical detail, natural daylight, no text, no labels. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "orchid",
+            "instance",
+            "mimics",
+            "appearance",
+            "female",
+            "luring",
+            "male",
+            "bees"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_07_segment_03.wav",
+          "start": 208.65799999999996,
+          "end": 218.38199999999995,
+          "shot": {
+            "template": "photo",
+            "heading": "Bee Orchid Mimicry",
+            "learning_objective": "Show how deceptive mimicry can attract a pollinator.",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {},
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "The",
+              "start": 0.1,
+              "end": 0.35
+            },
+            {
+              "text": "bee",
+              "start": 0.365625,
+              "end": 0.6
+            },
+            {
+              "text": "orchid",
+              "start": 0.615625,
+              "end": 1.25625
+            },
+            {
+              "text": "for",
+              "start": 1.459375,
+              "end": 1.69375
+            },
+            {
+              "text": "instance",
+              "start": 1.709375,
+              "end": 2.475
+            },
+            {
+              "text": "mimics",
+              "start": 2.646875,
+              "end": 3.209375
+            },
+            {
+              "text": "the",
+              "start": 3.225,
+              "end": 3.38125
+            },
+            {
+              "text": "appearance",
+              "start": 3.396875,
+              "end": 4.053125
+            },
+            {
+              "text": "of",
+              "start": 4.06875,
+              "end": 4.25625
+            },
+            {
+              "text": "a",
+              "start": 4.271875,
+              "end": 4.334375
+            },
+            {
+              "text": "female",
+              "start": 4.35,
+              "end": 4.94375
+            },
+            {
+              "text": "bee",
+              "start": 4.959375,
+              "end": 5.365625
+            },
+            {
+              "text": "luring",
+              "start": 5.5375,
+              "end": 6.053125
+            },
+            {
+              "text": "male",
+              "start": 6.06875,
+              "end": 6.38125
+            },
+            {
+              "text": "bees",
+              "start": 6.396875,
+              "end": 6.771875
+            },
+            {
+              "text": "seeking",
+              "start": 6.7875,
+              "end": 7.31875
+            },
+            {
+              "text": "mates",
+              "start": 7.334375,
+              "end": 7.928125
+            }
+          ],
+          "speech_duration": 9.024,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    },
+    {
+      "scene_number": 8,
+      "title": "When males attempt to mate with the flower, they",
+      "narration": "When males attempt to mate with the flower, they inadvertently transfer pollen. Fascinating, isn't it? Continue exploring to learn more.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "When males attempt to mate with the flower, they inadvertently transfer pollen.",
+          "visual": "Source-faithful visible subject and action: When males attempt to mate with the flower, they inadvertently transfer pollen. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: When males attempt to mate with the flower, they inadvertently transfer pollen.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: When males attempt to mate with the flower, they inadvertently transfer pollen. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels. Stable macro scientific reference photograph of one complete subject with every requested physical target simultaneously visible: pollen (visible pollen grains on the flower's surface | COORDINATES_PENDING_APPROVED_IMAGE). Compose for precise later labeling: keep every required target in the same sharp focal plane, unobstructed, and visually distinct from lookalike structures. Foreground one clear representative of each target, place the representatives in separate non-overlapping image regions with meaningful space between them, and avoid an angle where repeated organs hide or merge with a target. Keep the complete subject inside the frame and reserve clear side margins for composited label boxes and leader lines. No embedded text, labels, arrows, captions, watermark, logo, border, infographic, cartoon style, or fantasy anatomy.",
+          "keywords": [
+            "pollen"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_08_segment_01.wav",
+          "start": 218.38199999999995,
+          "end": 225.80799999999994,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "When males attempt mate with the flower",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "pollen",
+                "position": "0",
+                "placement": "visible pollen grains on the flower's surface | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "pollen",
+                "position": "0",
+                "placement": "visible pollen grains on the flower's surface | COORDINATES_PENDING_APPROVED_IMAGE"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "When males attempt to mate with the flower, they inadvertently transfer pollen.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED"
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "When",
+              "start": 0.1,
+              "end": 0.428125
+            },
+            {
+              "text": "males",
+              "start": 0.44375,
+              "end": 0.88125
+            },
+            {
+              "text": "attempt",
+              "start": 0.896875,
+              "end": 1.396875
+            },
+            {
+              "text": "to",
+              "start": 1.4125,
+              "end": 1.5375
+            },
+            {
+              "text": "mate",
+              "start": 1.553125,
+              "end": 1.94375
+            },
+            {
+              "text": "with",
+              "start": 1.959375,
+              "end": 2.1625
+            },
+            {
+              "text": "the",
+              "start": 2.178125,
+              "end": 2.271875
+            },
+            {
+              "text": "flower",
+              "start": 2.2875,
+              "end": 2.975
+            },
+            {
+              "text": "they",
+              "start": 3.13125,
+              "end": 3.44375
+            },
+            {
+              "text": "inadvertently",
+              "start": 3.459375,
+              "end": 4.6625
+            },
+            {
+              "text": "transfer",
+              "start": 4.678125,
+              "end": 5.428125
+            },
+            {
+              "text": "pollen",
+              "start": 5.44375,
+              "end": 6.06875
+            }
+          ],
+          "speech_duration": 7.176,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 2,
+          "narration": "Fascinating, isn't it?",
+          "visual": "Source-faithful visible subject and action: Fascinating, isn't it? Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: Fascinating, isn't it?. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: Fascinating, isn't it? Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "fascinating",
+            "source-faithful",
+            "visible",
+            "subject",
+            "action",
+            "compose",
+            "principal",
+            "evidence"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_08_segment_02.wav",
+          "start": 225.80799999999994,
+          "end": 229.41799999999995,
+          "shot": {
+            "template": "photo",
+            "heading": "Fascinating isn",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_image",
+              "subtitle": "Fascinating, isn't it?",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Fascinating",
+              "start": 0.1,
+              "end": 1.25625
+            },
+            {
+              "text": "isn't",
+              "start": 1.428125,
+              "end": 1.896875
+            },
+            {
+              "text": "it",
+              "start": 1.9125,
+              "end": 2.25625
+            }
+          ],
+          "speech_duration": 3.36,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        },
+        {
+          "segment_number": 3,
+          "narration": "Continue exploring to learn more.",
+          "visual": "Source-faithful visible subject and action: Continue exploring to learn more. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.",
+          "image_prompt": "Show the current narration literally: Continue exploring to learn more.. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Source-faithful visible subject and action: Continue exploring to learn more. Compose the principal evidence large, unobscured, and physically credible in a stable 1920x1080 frame.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout. No unrelated substitute subject, no symbolic stand-in, no text, no labels.",
+          "keywords": [
+            "continue",
+            "exploring",
+            "learn",
+            "source-faithful",
+            "visible",
+            "subject",
+            "action",
+            "compose"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_08_segment_03.wav",
+          "start": 229.41799999999995,
+          "end": 233.16199999999995,
+          "shot": {
+            "template": "photo",
+            "heading": "Continue exploring learn more",
+            "learning_objective": "",
+            "asset_path": null,
+            "steps": [],
+            "subheading": "",
+            "labels": [],
+            "arrows": [],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_image",
+              "subtitle": "Continue exploring to learn more.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials. Source-coverage guard: generated because the LLM omitted this narration sentence. Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable. Animation disabled: storyboard is biased toward real HD imagery/photo labels and generated video instead of local card/diagram animation.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Continue",
+              "start": 0.1,
+              "end": 0.7875
+            },
+            {
+              "text": "exploring",
+              "start": 0.803125,
+              "end": 1.56875
+            },
+            {
+              "text": "to",
+              "start": 1.584375,
+              "end": 1.709375
+            },
+            {
+              "text": "learn",
+              "start": 1.725,
+              "end": 2.146875
+            },
+            {
+              "text": "more",
+              "start": 2.1625,
+              "end": 2.63125
+            }
+          ],
+          "speech_duration": 3.744,
+          "source_references": [
+            "Imported storyboard; verify against curriculum before publication."
+          ]
+        }
+      ]
+    }
+  ]
+}

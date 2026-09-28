@@ -28,6 +28,7 @@ def _generate_image_with_qa(
     output_dir: Path,
     config: AppConfig,
     lesson_context: str = "",
+    prior_fingerprints: set[str] | None = None,
 ) -> Path:
     temporal_targets = _temporal_label_targets(segment)
     if len(temporal_targets) >= 2:
@@ -39,23 +40,21 @@ def _generate_image_with_qa(
         return _generate_comparison_asset(
             comfy_client, segment, concepts, generated, prefix, output_dir, config, lesson_context
         )
-    if not config.vision_qa.enabled:
-        return comfy_client.generate_image(segment, generated, prefix)
-
+    from .asset_quality import inspect_image
     from .vision_qa import VisionQAClient, append_qa_audit
 
-    if segment.shot and segment.shot.template == "title_card":
+    if not config.vision_qa.enabled:
         result = comfy_client.generate_image(segment, generated, prefix)
-        comfy_client.free_memory()
+        technical = inspect_image(result, prior_fingerprints)
         append_qa_audit(output_dir / "vision_qa.json", {
             "segment": segment.segment_number,
             "attempt": 1,
-            "image": str(generated),
-            "accepted": True,
-            "qa_mode": "deterministic_title_background",
-            "reasons": ["Title typography is composited by the renderer; semantic image QA is not applicable."],
-            "coordinate_policy": "no_labels_on_title_card",
+            "image": str(result),
+            "qa_mode": "technical_image_gate",
+            **technical.to_dict(),
         })
+        if not technical.accepted:
+            raise ValueError(f"Technical image QA rejected {prefix}: {'; '.join(technical.reasons)}")
         return result
 
     qa_client = VisionQAClient(config)
@@ -64,6 +63,7 @@ def _generate_image_with_qa(
     best_core_result = None
     best_core_candidate = None
     retry_prompt = ""
+    attempt_fingerprints: set[str] = set()
     for attempt in range(1, attempts + 1):
         candidate = generated.with_stem(f"{generated.stem}_attempt_{attempt}")
         attempt_segment = segment.model_copy(deep=True)
@@ -71,6 +71,20 @@ def _generate_image_with_qa(
             attempt_segment.image_prompt = _qa_retry_prompt(segment, lesson_context, retry_prompt)
         comfy_client.generate_image(attempt_segment, candidate, f"{prefix}_attempt_{attempt}")
         comfy_client.free_memory()
+        comparison_fingerprints = set(prior_fingerprints or set()) | attempt_fingerprints
+        technical = inspect_image(candidate, comparison_fingerprints)
+        attempt_fingerprints.add(technical.fingerprint)
+        append_qa_audit(output_dir / "vision_qa.json", {
+            "segment": segment.segment_number,
+            "attempt": attempt,
+            "image": str(candidate),
+            "qa_mode": "technical_image_gate",
+            **technical.to_dict(),
+        })
+        if not technical.accepted:
+            retry_prompt = _corrective_retry_feedback(technical.reasons)
+            last_result = None
+            continue
         result = qa_client.analyze(segment, candidate)
         append_qa_audit(output_dir / "vision_qa.json", {
             "segment": segment.segment_number,
@@ -182,21 +196,16 @@ def _generate_image_with_qa(
             f"Vision QA accepted the base image for {prefix}, but rejected its label targets after "
             f"{attempts} attempts and open-license recovery found no approved asset: {reasons}"
         )
-    if config.vision_qa.block_on_failure:
-        reasons = "; ".join(last_result.reasons if last_result else []) or "quality thresholds not met"
-        raise ValueError(f"Vision QA rejected {prefix} after {attempts} attempts: {reasons}")
-    omitted_labels = _remove_unverified_labels(segment)
-    _render_neutral_fallback(generated, config)
+    reasons = "; ".join(last_result.reasons if last_result else []) or retry_prompt or "quality thresholds not met"
     append_qa_audit(output_dir / "vision_qa.json", {
         "segment": segment.segment_number,
-        "image": str(generated),
-        "qa_mode": "safe_draft_fallback",
-        "accepted_base_image": False,
-        "omitted_labels": omitted_labels,
+        "qa_mode": "production_asset_blocked",
+        "accepted": False,
         "rejected_attempts": attempts,
-        "action": "used a neutral text-free frame; no rejected subject or unverified annotation was published",
+        "reasons": [reasons],
+        "action": "render stopped; no neutral, repeated, or cross-topic fallback was published",
     })
-    return generated
+    raise ValueError(f"Vision QA rejected {prefix} after {attempts} attempts: {reasons}")
 
 
 def _qa_retry_prompt(segment: Segment, lesson_context: str, correction: str) -> str:
@@ -216,6 +225,74 @@ def _qa_retry_prompt(segment: Segment, lesson_context: str, correction: str) -> 
     )
 
 
+def _generate_video_with_qa(
+    comfy_client,
+    segment: Segment,
+    generated: Path,
+    prefix: str,
+    output_dir: Path,
+    config: AppConfig,
+) -> Path:
+    from .motion_qa import review_generated_motion
+    from .pipeline_state import PipelineState, stable_signature
+    from .vision_qa import append_qa_audit
+
+    if not config.vision_qa.enabled:
+        raise ValueError("Generated motion requires vision_qa.enabled=true for production rendering")
+    correction = ""
+    attempts = max(1, config.vision_qa.motion_max_attempts)
+    last_reasons: list[str] = []
+    state = PipelineState(output_dir)
+    key = prefix.replace("open_edu_video_", "")
+    signature = stable_signature(
+        segment.image_prompt, segment.visual, segment.narration,
+        segment.shot.model_dump() if segment.shot else None,
+        config.comfyui.model_dump(), config.vision_qa.model_dump(),
+    )
+    if state.reusable("generated_motion", key, signature, [generated]):
+        return generated
+    for attempt in range(1, attempts + 1):
+        candidate = generated.with_stem(f"{generated.stem}_attempt_{attempt}")
+        attempt_segment = segment.model_copy(deep=True)
+        if correction:
+            original = re.sub(
+                r"\s+", " ", segment.image_prompt or segment.visual or segment.narration
+            ).strip()[:1000]
+            attempt_segment.image_prompt = (
+                f"Original required action: {original}. SME correction: {correction}. "
+                "One stable coherent subject, restrained natural motion, fixed or gently moving camera, "
+                "consistent anatomy and environment, no text, no labels, no arrows, no formulas."
+            )
+        comfy_client.generate_video(attempt_segment, candidate, f"{prefix}_attempt_{attempt}")
+        comfy_client.free_memory()
+        result = review_generated_motion(
+            segment, candidate, output_dir / "motion_qa_frames", config
+        )
+        append_qa_audit(output_dir / "motion_qa.json", {
+            "segment": segment.segment_number,
+            "attempt": attempt,
+            "video": str(candidate),
+            "effective_prompt": attempt_segment.image_prompt,
+            **result.to_dict(),
+        })
+        if result.accepted:
+            candidate.replace(generated)
+            state.approved("generated_motion", key, signature, [generated], qa=result.to_dict())
+            return generated
+        last_reasons = result.reasons
+        correction = result.regeneration_prompt or "; ".join(result.reasons)
+    reasons = "; ".join(last_reasons) or "first/final-frame consistency gate failed"
+    append_qa_audit(output_dir / "motion_qa.json", {
+        "segment": segment.segment_number,
+        "accepted": False,
+        "qa_mode": "production_motion_blocked",
+        "rejected_attempts": attempts,
+        "reasons": [reasons],
+    })
+    state.failed("generated_motion", key, signature, reasons)
+    raise ValueError(f"Motion QA rejected {prefix} after {attempts} attempts: {reasons}")
+
+
 def _remove_unverified_labels(segment: Segment) -> list[str]:
     if not segment.shot:
         return []
@@ -227,26 +304,6 @@ def _remove_unverified_labels(segment: Segment) -> list[str]:
     segment.shot.labels = []
     segment.shot.arrows = []
     return omitted
-
-
-def _render_neutral_fallback(output: Path, config: AppConfig) -> None:
-    """Create a polished, claim-free draft frame without exposing production text."""
-    width = config.output_resolution.width
-    height = config.output_resolution.height
-    top = (22, 33, 43)
-    bottom = (43, 63, 70)
-    image = Image.new("RGB", (width, height), top)
-    draw = ImageDraw.Draw(image)
-    for y in range(height):
-        amount = y / max(1, height - 1)
-        color = tuple(round(a + (b - a) * amount) for a, b in zip(top, bottom))
-        draw.line((0, y, width, y), fill=color)
-    spacing = max(80, width // 16)
-    line = (62, 83, 88)
-    for x in range(-height, width + height, spacing):
-        draw.line((x, 0, x + height, height), fill=line, width=1)
-    output.parent.mkdir(parents=True, exist_ok=True)
-    image.save(output)
 
 
 def _corrective_retry_feedback(reasons: list[str], extra: list[str] | None = None) -> str:
@@ -674,11 +731,15 @@ def _compose_comparison_rows(
 
 def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config: AppConfig) -> list[Path]:
     from .label_overlay import is_label_template
+    from .asset_quality import inspect_image, reusable_asset, update_manifest
+    from .render_router import RenderKind, route_segment
 
     output_dir = Path(output_dir)
     frames_dir = Path(output_dir) / "frames"
     frames_dir.mkdir(parents=True, exist_ok=True)
     paths: list[Path] = []
+    approved_fingerprints: set[str] = set()
+    manifest_path = output_dir / "render_manifest.json"
 
     comfy_client = None
     availability_checked = False
@@ -689,8 +750,14 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
 
     for scene, segment in storyboard.all_segments():
         path = frames_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.png"
+        asset_key = f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}"
+        decision = route_segment(segment)
+        if decision.kind == RenderKind.LABELED_STILL and segment.shot and segment.shot.template in {"video", "video_broll", "short_motion_clip"}:
+            segment.shot.template = "realistic_labeled_image"
+        if decision.kind == RenderKind.DETERMINISTIC_GRAPHIC and segment.shot and segment.shot.formula_lines:
+            segment.shot.template = "formula"
         pro_asset_templates = {"split_screen", "title_card"}
-        if segment.shot and segment.shot.template in {"video", "video_broll", "short_motion_clip"} and not segment.shot.asset_path:
+        if decision.kind == RenderKind.GENERATED_MOTION:
             if not comfy_client or not config.comfyui.video_enabled:
                 raise ValueError(
                     f"Scene {scene.scene_number}.{segment.segment_number} requests generated video, "
@@ -702,19 +769,22 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
                     raise RuntimeError(f"ComfyUI is not available at {config.comfyui.api_url}")
             generated_dir = output_dir / "generated_videos"
             generated = generated_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.mp4"
-            comfy_client.generate_video(
+            _generate_video_with_qa(
+                comfy_client,
                 segment,
                 generated,
                 f"open_edu_video_scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}",
+                output_dir,
+                config,
             )
             paths.append(generated)
             continue
-        if segment.shot and segment.shot.template not in {"photo", "video", "video_broll", "short_motion_clip", *pro_asset_templates} and not is_label_template(segment.shot.template):
+        if decision.kind == RenderKind.DETERMINISTIC_GRAPHIC:
             from .animation_renderer import render_frame
             render_frame(segment, scene.title, 0, config).save(path)
             paths.append(path)
             continue
-        if segment.shot and segment.shot.asset_path:
+        if decision.kind == RenderKind.APPROVED_ASSET:
             asset = Path(segment.shot.asset_path)
             if not asset.is_file():
                 raise ValueError(f"Missing shot asset: {asset}")
@@ -753,15 +823,37 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
                     continue
             generated_dir = output_dir / "generated_images"
             generated = generated_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.png"
-            _generate_image_with_qa(
-                comfy_client,
-                segment,
-                generated,
-                f"open_edu_scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}",
-                output_dir,
-                config,
-                f"{storyboard.title}. Scene: {scene.title}",
-            )
+            resumed = reusable_asset(manifest_path, asset_key, generated)
+            if resumed:
+                if segment.shot and isinstance(resumed.get("labels"), list):
+                    segment.shot.labels = resumed["labels"]
+                approved_fingerprints.add(str(resumed["fingerprint"]))
+            else:
+                _generate_image_with_qa(
+                    comfy_client,
+                    segment,
+                    generated,
+                    f"open_edu_scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}",
+                    output_dir,
+                    config,
+                    f"{storyboard.title}. Scene: {scene.title}",
+                    prior_fingerprints=approved_fingerprints,
+                )
+                quality = inspect_image(generated, approved_fingerprints)
+                if not quality.accepted:
+                    raise ValueError(
+                        f"Final technical QA rejected {asset_key}: {'; '.join(quality.reasons)}"
+                    )
+                approved_fingerprints.add(quality.fingerprint)
+                update_manifest(manifest_path, asset_key, {
+                    "status": "approved",
+                    "path": str(generated.resolve()),
+                    "renderer": decision.kind.value,
+                    "route_reason": decision.reason,
+                    "fingerprint": quality.fingerprint,
+                    "quality": quality.to_dict(),
+                    "labels": segment.shot.labels if segment.shot else [],
+                })
             if segment.shot and is_label_template(segment.shot.template):
                 paths.append(generated)
                 continue

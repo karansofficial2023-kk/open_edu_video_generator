@@ -7,7 +7,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageOps
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 from .label_overlay import (
     allows_precise_arrows,
@@ -160,8 +160,8 @@ def _render_title_card(c: Canvas, shot, scene_title: str, source, t: float, dura
         c.overlay("#000000", 92)
     else:
         c.overlay("#0B1720", 255)
-    title = shot.heading or scene_title
-    sub = shot.subheading or shot.learning_objective
+    title = _safe_display_heading(shot.heading) or _safe_display_heading(scene_title) or "Educational Video"
+    sub = _safe_display_heading(shot.subheading or shot.learning_objective)
     c.text_center(title, (124, 230, 1164, 390), 64, "#000000", True)
     c.text_center(title, (120, 226, 1160, 386), 64, "#FFFFFF", True)
     if sub:
@@ -170,14 +170,10 @@ def _render_title_card(c: Canvas, shot, scene_title: str, source, t: float, dura
 
 
 def _render_labeled_image(c: Canvas, shot, source, t: float, duration: float, accent: str, gold: str):
-    if source is not None:
-        c.cover_image(source, _motion_zoom(t, duration, 0.05))
-        c.overlay("#000000", 22)
-    else:
-        c.box((70, 130, 1210, 585), "#FFFFFF", "#D8DFD9", 8)
-        display_heading = _safe_display_heading(shot.heading)
-        if display_heading:
-            c.text_center(display_heading, (90, 38, 1190, 102), 38, "#06153D", True)
+    if source is None:
+        raise ValueError("Labeled shots require an approved stable source image")
+    c.cover_image(source, _motion_zoom(t, duration, 0.05))
+    c.overlay("#000000", 22)
     if not allows_precise_arrows(shot.template):
         return
     if not shot.labels:
@@ -191,6 +187,8 @@ def _render_labeled_image(c: Canvas, shot, source, t: float, duration: float, ac
     )
     if review:
         setattr(shot, "_label_review", review)
+        details = "; ".join(f"{item['label']}: {item['reason']}" for item in review)
+        raise ValueError(f"Precision label rendering blocked: {details}")
     motion_type = str(shot.motion.get("type", "zoom"))
     label_style = str(shot.motion.get("label_style", ""))
     c.image = draw_label_overlay(c.image, plans, t, duration, motion_type, label_style, accent, gold)
@@ -233,17 +231,57 @@ def _render_split_screen(c: Canvas, shot, source, t: float, duration: float, acc
 
 
 def _render_formula(c: Canvas, shot, t: float, duration: float, accent: str, gold: str):
-    c.text_center(shot.heading or "Formula", (75, 38, 1205, 104), 40, "#06153D", True)
-    lines = shot.formula_lines or shot.steps
+    c.text_center(_safe_display_heading(shot.heading) or "Derivation", (75, 34, 1205, 100), 40, "#06153D", True)
+    # Formula content is rendered verbatim from the storyboard. It never passes
+    # through an image model, OCR round-trip, or text-rewriting step.
+    lines = [str(line) for line in (shot.formula_lines or shot.steps) if str(line).strip()]
+    if not lines:
+        raise ValueError("Formula renderer received no exact formula lines")
     visible = max(1, min(len(lines), int((t / max(duration, 0.1)) * (len(lines) + 0.8)) + 1))
-    top = 160
+    available_top = 132
+    available_bottom = 570 if shot.explain_steps else 620
+    gap = max(8, round(18 - min(len(lines), 8)))
+    row_height = min(82, max(48, (available_bottom - available_top - gap * (len(lines) - 1)) // len(lines)))
     for i, line in enumerate(lines[:visible]):
-        y = top + i * 92
+        y = available_top + i * (row_height + gap)
         active = i == visible - 1
-        c.box((130, y, 1150, y + 68), "#FFFFFF", gold if active else "#CFD8D2", 10)
-        c.text_center(line, (160, y + 8, 1120, y + 60), 28, "#06153D", True)
+        c.box((110, y, 1170, y + row_height), "#FFFFFF", gold if active else "#CFD8D2", 8)
+        c.box((128, y + 10, 178, y + row_height - 10), accent if active else "#728078", radius=6)
+        c.text_center(str(i + 1), (132, y + 10, 174, y + row_height - 10), 20, "#FFFFFF", True)
+        _formula_text_center(c, line, (200, y + 6, 1145, y + row_height - 6), 30, "#06153D")
     if shot.explain_steps:
-        c.text_center("  |  ".join(shot.explain_steps[:3]), (120, 548, 1160, 605), 22, accent, False)
+        explanation = "  |  ".join(str(item) for item in shot.explain_steps[:3])
+        c.text_center(explanation, (120, 586, 1160, 650), 22, accent, False)
+
+
+def _formula_text_center(c: Canvas, text: str, bounds, size: int, color: str) -> None:
+    left, top, right, bottom = [round(value * c.scale) for value in bounds]
+    preferred = [
+        "C:/Windows/Fonts/cambria.ttc",
+        "C:/Windows/Fonts/seguisym.ttf",
+        "C:/Windows/Fonts/arial.ttf",
+        "DejaVuSans.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+    ]
+    for candidate_size in range(round(size * c.scale), max(10, round(16 * c.scale)) - 1, -1):
+        font = None
+        for path in preferred:
+            try:
+                font = ImageFont.truetype(path, candidate_size)
+                if all(font.getmask(character).getbbox() for character in set(text) if not character.isspace()):
+                    break
+            except OSError:
+                font = None
+        if font is None:
+            continue
+        box = c.draw.textbbox((0, 0), text, font=font)
+        text_width, text_height = box[2] - box[0], box[3] - box[1]
+        if text_width <= right - left and text_height <= bottom - top:
+            x = left + (right - left - text_width) // 2
+            y = top + (bottom - top - text_height) // 2 - box[1]
+            c.draw.text((x, y), text, font=font, fill=color)
+            return
+    raise ValueError(f"Formula does not fit or uses unsupported glyphs: {text[:100]}")
 
 
 def flower(c: Canvas, x: float, y: float, highlight: str = ""):

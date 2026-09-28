@@ -6,16 +6,26 @@ from pathlib import Path
 
 from .config import AppConfig
 from .schema import Storyboard
+from .pipeline_state import PipelineState, stable_signature
 
 
 def synthesize_storyboard(storyboard: Storyboard, output_dir: str | Path, config: AppConfig) -> None:
     audio_dir = Path(output_dir) / "audio"
     audio_dir.mkdir(parents=True, exist_ok=True)
+    state = PipelineState(output_dir)
 
     for scene, segment in storyboard.all_segments():
         out = audio_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.wav"
+        key = f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}"
+        signature = stable_signature(
+            segment.narration, config.tts_provider, config.piper_model, config.piper_config
+        )
+        if state.reusable("audio", key, signature, [out]):
+            segment.audio_path = str(out)
+            continue
         synthesize_text(segment.narration, out, config)
         segment.audio_path = str(out)
+        state.approved("audio", key, signature, [out])
 
 
 def synthesize_text(text: str, output_path: str | Path, config: AppConfig) -> None:
@@ -48,4 +58,3 @@ def wav_duration(path: str | Path) -> float:
         frames = handle.getnframes()
         rate = handle.getframerate()
         return frames / float(rate)
-

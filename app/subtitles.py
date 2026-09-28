@@ -5,6 +5,12 @@ from pathlib import Path
 from .schema import Caption, Segment, Storyboard
 
 
+_METADATA_TERMS = (
+    "image requirement", "image_prompt", "visual notes", "label placement",
+    "review_notes", "asset_path", "camera description", "negative prompt",
+)
+
+
 def phrase_captions(segment: Segment) -> list[Caption]:
     """Group speech boundaries; proportional timing is the preview/legacy fallback."""
     subtitle = None
@@ -27,7 +33,7 @@ def phrase_captions(segment: Segment) -> list[Caption]:
     phrases = []
     group = []
     for word in words:
-        if group and (len(" ".join(x.text for x in group + [word])) > 64 or len(group) >= 9):
+        if group and (len(" ".join(x.text for x in group + [word])) > 70 or len(group) >= 11):
             phrases.append(Caption(text=" ".join(x.text for x in group),
                                    start=group[0].start, end=group[-1].end))
             group = []
@@ -39,7 +45,11 @@ def phrase_captions(segment: Segment) -> list[Caption]:
     if group:
         phrases.append(Caption(text=" ".join(x.text for x in group),
                                start=group[0].start, end=group[-1].end))
-    return phrases
+    formatted = []
+    for phrase in phrases:
+        _reject_metadata(phrase.text)
+        formatted.append(phrase.model_copy(update={"text": _two_line_text(phrase.text)}))
+    return formatted
 
 
 def write_srt(storyboard: Storyboard, output_path: str | Path) -> None:
@@ -63,3 +73,26 @@ def _srt_time(seconds: float) -> str:
     secs = millis // 1000
     millis %= 1000
     return f"{hours:02d}:{minutes:02d}:{secs:02d},{millis:03d}"
+
+
+def _two_line_text(text: str, max_line_chars: int = 42) -> str:
+    words = text.split()
+    lines = [""]
+    for word in words:
+        candidate = f"{lines[-1]} {word}".strip()
+        if len(candidate) <= max_line_chars or not lines[-1]:
+            lines[-1] = candidate
+        elif len(lines) < 2:
+            lines.append(word)
+        else:
+            raise ValueError(f"Subtitle exceeds the two-line limit: {text[:100]}")
+    if any(len(line) > max_line_chars and " " not in line for line in lines):
+        raise ValueError(f"Subtitle contains a word too long for the safe area: {text[:100]}")
+    return "\n".join(lines)
+
+
+def _reject_metadata(text: str) -> None:
+    lowered = text.casefold()
+    leaked = next((term for term in _METADATA_TERMS if term in lowered), None)
+    if leaked:
+        raise ValueError(f"Production metadata cannot appear in subtitles: {leaked}")

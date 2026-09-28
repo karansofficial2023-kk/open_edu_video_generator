@@ -15,6 +15,7 @@ from .visuals import render_segment_frames
 from .visual_planner import prepare_visual_prompts
 from .review import review_storyboard
 from .storyboard_cleanup import normalize_storyboard, promote_real_image_shots, promote_video_shots
+from .final_qa import run_final_video_qa
 
 
 def _is_deferred_render_error(message: str, config) -> bool:
@@ -141,6 +142,8 @@ def main() -> None:
     else:
         audio = concat_audio(storyboard, output_dir, config)
     video = render_video(storyboard, frames, audio, output_dir, config, subtitles_path)
+    if config.final_qa.enabled:
+        run_final_video_qa(storyboard, video, output_dir, config, subtitles_path)
     print(f"Done: {video}")
 
 

@@ -456,6 +456,30 @@ Judge the object that physically occupies the exact center of this image.
     def _ask_image_json(self, image: Image.Image, prompt: str, num_predict: int) -> dict[str, Any]:
         return self._ask_images_json([image], prompt, num_predict)
 
+    def compare_motion_frames(
+        self,
+        segment: Segment,
+        first: Image.Image,
+        final: Image.Image,
+    ) -> dict[str, Any]:
+        expected = segment.image_prompt or segment.visual or segment.narration
+        prompt = f"""You are a strict subject-matter expert reviewing the first and final frames of one
+short educational motion clip. Both frames must show the same intended subject with stable identity,
+credible structure, natural physical change, and no generated text. Reject subject replacement,
+cross-topic content, duplicated or disappearing parts, anatomical or apparatus morphing, and a final
+frame that no longer supports the lesson. Do not require labels or arrows; those are forbidden on
+generated motion footage.
+
+Narration: {segment.narration}
+Required visual action: {expected}
+
+Return JSON only:
+{{"same_subject": false, "subject_consistency": 0.0, "anatomy_morphing": false,
+  "text_present": false, "reasons": [], "regeneration_prompt": ""}}
+When rejecting, regeneration_prompt must be a fresh concise prompt for one stable subject performing
+one restrained natural action. Do not request text, labels, arrows, formulas, diagrams, or UI."""
+        return self._ask_images_json([first, final], prompt, 512)
+
     def _ask_images_json(
         self,
         images: list[Image.Image],
@@ -508,7 +532,7 @@ Judge the object that physically occupies the exact center of this image.
                 "This is only the background layer of a title card. Do not expect the title, subtitle, "
                 "labels, or any other typography inside this image. Do not reject it for being generated "
                 "below final delivery resolution; deterministic rendering and upscaling occur later. "
-                "A clearly relevant pollinator, flower, or subject placed behind a dark overlay is valid."
+                "A clearly relevant real subject, apparatus, environment, or phenomenon placed behind a dark overlay is valid."
             )
         return f"""You are a strict visual quality inspector and subject-matter expert for an educational video.
 Judge only what is visibly present. Do not assume that a structure exists because the

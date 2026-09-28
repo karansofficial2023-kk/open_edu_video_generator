@@ -138,6 +138,28 @@ class AnimationTests(unittest.TestCase):
         self.assertTrue(all(box and box[3] <= 600 for box in boxes))
         self.assertTrue(boxes[0][2] <= boxes[1][0] or boxes[1][2] <= boxes[0][0] or boxes[0][3] <= boxes[1][1] or boxes[1][3] <= boxes[0][1])
 
+    def test_label_boxes_do_not_cover_any_scientific_target(self):
+        shot = Shot(
+            template="realistic_labeled_image",
+            labels=[
+                {"text": "Source", "target_xy": "0.12,0.42"},
+                {"text": "Receiver", "target_xy": "0.88,0.42"},
+            ],
+        )
+        plans, review = build_label_plans(shot, (1280, 720))
+        self.assertFalse(review)
+        targets = [plan.target for plan in plans]
+        for plan in plans:
+            self.assertTrue(all(not (plan.box[0] <= x <= plan.box[2] and plan.box[1] <= y <= plan.box[3]) for x, y in targets))
+
+    def test_uncertain_label_blocks_rendering(self):
+        config = AppConfig()
+        segment = self.segment.model_copy(deep=True)
+        segment.shot = Shot(template="realistic_labeled_image", labels=[{"text": "Unknown target"}])
+        segment.end = segment.speech_duration = 4
+        with self.assertRaisesRegex(ValueError, "Precision label rendering blocked"):
+            render_frame(segment, "Scientific lesson", 2, config, Image.new("RGB", (1280, 720), "green"))
+
     def test_leader_line_crossing_detection(self):
         self.assertTrue(_segments_intersect((0, 0), (100, 100), (0, 100), (100, 0)))
         self.assertFalse(_segments_intersect((0, 0), (100, 0), (0, 40), (100, 40)))
@@ -167,7 +189,10 @@ class AnimationTests(unittest.TestCase):
             motion={"type": "arrow_draw_then_label_fade"},
         )
         segment.end = segment.speech_duration = 4
-        image = render_frame(segment, "Pollination", 2.5, config)
+        image = render_frame(
+            segment, "Pollination", 2.5, config,
+            Image.new("RGB", (1280, 720), "#7BA36A"),
+        )
         plans, _ = build_label_plans(segment.shot, image.size)
         overlay = draw_label_overlay(image, plans, 2.5, 4, "arrow_draw_then_label_fade")
         self.assertEqual(overlay.size, image.size)
@@ -188,7 +213,7 @@ class AnimationTests(unittest.TestCase):
         self.segment.captions = [Caption(text=w, start=i, end=i + .8)
                                  for i, w in enumerate(self.segment.narration.split())]
         cues = phrase_captions(self.segment)
-        self.assertEqual(' '.join(x.text for x in cues), self.segment.narration)
+        self.assertEqual(' '.join(x.text.replace('\n', ' ') for x in cues), self.segment.narration)
         self.assertEqual(cues[-1].end, self.segment.captions[-1].end)
 
     def test_explicit_blank_subtitle_suppresses_narration_caption(self):
@@ -199,6 +224,16 @@ class AnimationTests(unittest.TestCase):
         self.segment.shot.motion["subtitle"] = "Viewer-facing summary only."
         text = " ".join(cue.text for cue in phrase_captions(self.segment))
         self.assertEqual(text, "Viewer-facing summary only.")
+
+    def test_formula_renderer_preserves_exact_storyboard_lines(self):
+        config = AppConfig()
+        segment = self.segment.model_copy(deep=True)
+        exact = ["Λ°ₘ = λ°₊ + λ°₋", "CH₃COOH ⇌ H⁺ + CH₃COO⁻"]
+        segment.shot = Shot(template="formula", heading="Kohlrausch's law", formula_lines=exact)
+        segment.end = segment.speech_duration = 8
+        image = render_frame(segment, "Electrochemistry", 7, config)
+        self.assertEqual(image.size, (1280, 720))
+        self.assertEqual(segment.shot.formula_lines, exact)
 
     def test_review_rejects_known_bad_term(self):
         self.segment.narration = 'This is glystogamy.'

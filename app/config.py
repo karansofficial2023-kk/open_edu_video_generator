@@ -85,8 +85,10 @@ class VisionQAConfig(BaseModel):
     sam_model_type: str = "vit_b"
     sam_checkpoint: str | None = None
     max_attempts: int = 3
+    motion_max_attempts: int = 2
     minimum_relevance: float = 0.78
     minimum_subject_match: float = 0.72
+    minimum_motion_consistency: float = 0.78
     block_on_failure: bool = True
     timeout_seconds: int = 600
 
@@ -110,6 +112,13 @@ class AssetRetrievalConfig(BaseModel):
     ]
 
 
+class FinalQAConfig(BaseModel):
+    enabled: bool = True
+    block_on_failure: bool = True
+    max_samples: int = 24
+    duration_tolerance_seconds: float = 0.5
+
+
 class AppConfig(BaseModel):
     project_name: str = "Open Edu Video Generator"
     output_resolution: Resolution = Resolution()
@@ -131,6 +140,7 @@ class AppConfig(BaseModel):
     comfyui: ComfyUIConfig = ComfyUIConfig()
     vision_qa: VisionQAConfig = VisionQAConfig()
     asset_retrieval: AssetRetrievalConfig = AssetRetrievalConfig()
+    final_qa: FinalQAConfig = FinalQAConfig()
 
 
 def load_config(path: str | Path) -> AppConfig:

@@ -71,15 +71,32 @@ def build_label_plans(
     review: list[dict[str, Any]] = []
     occupied: list[tuple[int, int, int, int]] = []
     leader_lines: list[tuple[tuple[int, int], tuple[int, int]]] = []
-
+    resolved: list[tuple[int, dict[str, Any], str, tuple[int, int] | None, float, str]] = []
     for index, raw in enumerate(labels):
         text = _label_text(raw, index)
         target, confidence, reason = resolve_label_target(text, raw, width, height)
+        resolved.append((index, raw, text, target, confidence, reason))
+
+    target_radius = max(18, round(min(width, height) * 0.045))
+    subject_safe = [
+        (
+            max(0, target[0] - target_radius),
+            max(0, target[1] - target_radius),
+            min(width, target[0] + target_radius),
+            min(height, target[1] + target_radius),
+        )
+        for _, _, _, target, confidence, _ in resolved
+        if target is not None and confidence >= 0.7
+    ]
+
+    for index, raw, text, target, confidence, reason in resolved:
         if target is None or confidence < 0.7:
             plans.append(LabelPlan(text=text, target=None, box=None, confidence=confidence, reason=reason))
             review.append({"label": text, "reason": reason or "low-confidence target", "confidence": confidence})
             continue
-        box = place_label_box(text, target, width, height, forbidden + occupied, raw, index, leader_lines)
+        box = place_label_box(
+            text, target, width, height, forbidden + subject_safe + occupied, raw, index, leader_lines
+        )
         if box is None:
             plans.append(LabelPlan(text=text, target=target, box=None, confidence=confidence, reason="no clear label box position"))
             review.append({"label": text, "reason": "no clear label box position", "confidence": confidence})

@@ -1,0 +1,204 @@
+{
+  "title": "Types of Pollination e2e",
+  "source": "Sunflowers are among my favorite flowers. At this scale, we can observe them closely. Sunflowers are typically pollinated by bees. pollen grains from the anther are transferred to the receptive stigma, a process known as self-pollination.\nIn plants such as Oxalis, the anther and stigma reach maturity simultaneously, a phenomenon that facilitates self-pollination and is referred to as homogamy. Some species, like wood sorrel, produce small, unremarkable flowers in late summer that lack fragrance and remain closed. These bisexual flowers undergo self-pollination and fertilization without opening, a process termed cleistogamy. In such cases, pollen grains are already positioned on the stigma of the same flower, enabling self-pollination.\nFor cross-pollination, papaya is a dioecious plant, meaning male and female flowers grow on separate plants to promote cross-pollination. In contrast, sunflowers have bisexual flowers where the anther matures before the stigma, a process called protandry. However, in custard apple, the stigma matures first, a phenomenon known as protogyny. Certain flowers, like pansies, feature a hood-like structure covering the stigma, a structural adaptation called hercogamy.\nIn orchids, the pollen from the anther fails to germinate on the same flower's stigma. Primrose exhibits heterostyly, where the stigma is positioned at a different height relative to the anther. These adaptations enhance cross-pollination.\nTo summarize, self-pollination occurs in plants like Oxalis, where anther and stigma mature together (homogamy). Wood sorrel has bisexual, closed flowers where self-pollination and fertilization take place, termed cleistogamy. For cross-pollination, papaya is dioecious, encouraging cross-pollination.\nSunflowers have bisexual flowers with protandry (anther matures first). Pansies display hercogamy, with a stigma-covering hood. Primrose shows heterostyly, where the stigma is at a different height than the anther.\nThese floral adaptations support cross-pollination. Pollinators are drawn to flowers through various means-sometimes by sweet scents and nectar, or through deception. The bee orchid, for instance, mimics the appearance of a female bee, luring male bees seeking mates.\nWhen males attempt to mate with the flower, they inadvertently transfer pollen. Fascinating, isn't it? Continue exploring to learn more.",
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "Reviewed Primula heterostyly",
+      "narration": "Primrose exhibits heterostyly, where the stigma is positioned at a different height relative to the anther.",
+      "segments": [
+        {
+          "segment_number": 2,
+          "narration": "Primrose exhibits heterostyly, where the stigma is positioned at a different height relative to the anther.",
+          "visual": "Reviewed side-by-side longitudinal sections of Primula vulgaris pin and thrum flowers. The pin morph visibly has a high stigma and low anthers; the thrum morph visibly has high anthers and a low stigma.",
+          "image_prompt": "Reviewed scientific photograph of dissected pin and thrum Primula vulgaris flowers; no image generation required.",
+          "keywords": [
+            "stigma",
+            "anther"
+          ],
+          "audio_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\outputs\\transcribe_latest_full_retry_20260926_083902\\audio\\scene_04_segment_02.wav",
+          "start": 126.784,
+          "end": 136.178,
+          "shot": {
+            "template": "realistic_labeled_image",
+            "heading": "Primrose exhibits heterostyly where the stigma",
+            "learning_objective": "",
+            "asset_path": "D:\\Python\\open_edu_video_generator_PRO_STYLE\\assets\\reviewed\\pollination\\distyly_primula_restored_16x9.png",
+            "steps": [],
+            "subheading": "",
+            "labels": [
+              {
+                "text": "Pin: high stigma",
+                "placement": "Receptive stigma at the mouth of the pin flower corolla tube",
+                "target_xy": "0.430000,0.227000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "left"
+              },
+              {
+                "text": "Pin: low anthers",
+                "placement": "Yellow pollen-bearing anthers midway down the pin flower corolla tube",
+                "target_xy": "0.426000,0.378000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "left"
+              },
+              {
+                "text": "Thrum: high anthers",
+                "placement": "Yellow pollen-bearing anthers at the mouth of the thrum flower corolla tube",
+                "target_xy": "0.581000,0.174000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "right"
+              },
+              {
+                "text": "Thrum: low stigma",
+                "placement": "Receptive stigma midway down the thrum flower corolla tube",
+                "target_xy": "0.565000,0.457000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "right"
+              }
+            ],
+            "arrows": [
+              {
+                "text": "Pin: high stigma",
+                "placement": "Receptive stigma at the mouth of the pin flower corolla tube",
+                "target_xy": "0.430000,0.227000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "left"
+              },
+              {
+                "text": "Pin: low anthers",
+                "placement": "Yellow pollen-bearing anthers midway down the pin flower corolla tube",
+                "target_xy": "0.426000,0.378000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "left"
+              },
+              {
+                "text": "Thrum: high anthers",
+                "placement": "Yellow pollen-bearing anthers at the mouth of the thrum flower corolla tube",
+                "target_xy": "0.581000,0.174000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "right"
+              },
+              {
+                "text": "Thrum: low stigma",
+                "placement": "Receptive stigma midway down the thrum flower corolla tube",
+                "target_xy": "0.565000,0.457000",
+                "target_confidence": 1.0,
+                "target_source": "manual_reviewed_asset",
+                "box_side": "right"
+              }
+            ],
+            "highlights": [],
+            "columns": [],
+            "formula_lines": [],
+            "explain_steps": [],
+            "motion": {
+              "type": "arrow_draw_then_label_fade",
+              "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+              "visual_type": "realistic_labeled_image",
+              "subtitle": "Primrose exhibits heterostyly, where the stigma is positioned at a different height relative to the anther.",
+              "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+              "review_notes": "Reviewed Primula vulgaris pin/thrum asset with manually verified normalized coordinates. The two morphs are required to demonstrate reciprocal heterostyly; do not substitute a single generic flower. Attribution recorded beside the asset."
+            },
+            "cues": [],
+            "stage_fractions": []
+          },
+          "captions": [
+            {
+              "text": "Primrose",
+              "start": 0.1,
+              "end": 0.896875
+            },
+            {
+              "text": "exhibits",
+              "start": 0.9125,
+              "end": 1.56875
+            },
+            {
+              "text": "heterostyly",
+              "start": 1.584375,
+              "end": 2.771875
+            },
+            {
+              "text": "where",
+              "start": 2.94375,
+              "end": 3.209375
+            },
+            {
+              "text": "the",
+              "start": 3.225,
+              "end": 3.334375
+            },
+            {
+              "text": "stigma",
+              "start": 3.35,
+              "end": 3.990625
+            },
+            {
+              "text": "is",
+              "start": 4.00625,
+              "end": 4.209375
+            },
+            {
+              "text": "positioned",
+              "start": 4.225,
+              "end": 5.021875
+            },
+            {
+              "text": "at",
+              "start": 5.0375,
+              "end": 5.31875
+            },
+            {
+              "text": "a",
+              "start": 5.334375,
+              "end": 5.396875
+            },
+            {
+              "text": "different",
+              "start": 5.4125,
+              "end": 5.990625
+            },
+            {
+              "text": "height",
+              "start": 6.00625,
+              "end": 6.44375
+            },
+            {
+              "text": "relative",
+              "start": 6.459375,
+              "end": 7.021875
+            },
+            {
+              "text": "to",
+              "start": 7.0375,
+              "end": 7.1625
+            },
+            {
+              "text": "the",
+              "start": 7.178125,
+              "end": 7.365625
+            },
+            {
+              "text": "anther",
+              "start": 7.38125,
+              "end": 8.021875
+            }
+          ],
+          "speech_duration": 9.144,
+          "source_references": [
+            "https://commons.wikimedia.org/wiki/File:Distyly_primula.jpg",
+            "CC BY-SA 3.0; berru / Berrucomons",
+            "https://pmc.ncbi.nlm.nih.gov/articles/PMC6299000/"
+          ]
+        }
+      ]
+    }
+  ]
+}

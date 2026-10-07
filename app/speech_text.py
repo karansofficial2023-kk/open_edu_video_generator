@@ -36,6 +36,11 @@ _OPERATORS = [("=", " equals "), ("<", " is less than "), (">", " is greater tha
 
 def spoken_math(text: str, english: bool = True) -> str:
     """Replace $...$, $$...$$ and stray LaTeX commands in prose by words (or plain symbols when the lesson is not in English)."""
+    if text and english:
+        # a ratio "1:1.21" is read by the voice as "one one point twenty-one" and split by the subtitles at its decimal point;
+        # a teacher says "1 to 1.21" (clock times such as 10:30 are left alone)
+        text = re.sub(r"(?<![\d:])(\d+(?:\.\d+)?)\s*:\s*(\d+(?:\.\d+)?)(?![\d:])",
+                      lambda m: m.group(0) if re.fullmatch(r"\d{1,2}:\d{2}", m.group(0)) else f"{m.group(1)} to {m.group(2)}", text)
     if not text or ("$" not in text and "\\" not in text):
         return text
     inline = lambda match: " " + latex_to_words(match.group(1), english) + " "

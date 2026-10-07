@@ -74,10 +74,12 @@ class SpokenMathTests(unittest.TestCase):
         self.assertGreaterEqual(len(cues), 3)                       # one cue per sentence at least, not one block
         self.assertTrue(cues[0].text.endswith("we get:"))           # punctuation is back
         self.assertTrue(all(cue.text[-1] in ".:" for cue in cues[:-1]))
-        # mismatched word counts fall back to the engine's words
+        # when the engine split the words differently, the subtitles still show the narration's own words, over the spoken span
         broken = Segment(segment_number=2, narration=text, start=0.0, end=4.0, speech_duration=4.0,
                          captions=[Caption(text="only", start=0.0, end=1.0), Caption(text="three", start=1.0, end=2.0)])
-        self.assertEqual([c.text for c in build_cues(broken, cfg.production.subtitle, (1920, 1080))][0][:4], "only")
+        shown = build_cues(broken, cfg.production.subtitle, (1920, 1080))
+        self.assertTrue(shown[0].text.startswith("Setting f dash"))
+        self.assertEqual(" ".join(c.text for c in shown), text)
 
     def test_a_sentence_with_a_colon_is_not_split_into_term_and_body(self):
         """Real card: 'Let's now work through question number 176, which asks: Which of the following ...' lost its body to one line."""

@@ -50,6 +50,7 @@ class ShotPlan:
     backdrop: Image.Image | None = None
     steady: dict = field(default_factory=dict)       # frames that cannot change until the next reveal (cards, equations): drawn once, reused
     formula_step: float = 2.2                # seconds between equation lines; paced to the narration by render_clip (formula_pace)
+    board: dict | None = None                # physics/chemistry board page: {theme, previous, current} (board.py)
     duration: float = 0.0                    # on-screen seconds of the shot being rendered (set by render_clip)
 
 
@@ -199,6 +200,10 @@ class ShotRenderer:
     def steady_key(self, plan: ShotPlan, t: float):
         """Identifies a card / equation screen that has finished animating (it cannot change until the next reveal), else None."""
         segment, shot = plan.segment, plan.segment.shot
+        if plan.board is not None:
+            if (plan.board.get("anchor") or {}).get("kind") in {"molecule", "diagram"}:
+                return None                          # the molecule keeps turning: every frame is drawn
+            return ("board",) if t >= plan.board["done"] else None
         if shot.template in {"process", "comparison"}:
             times = stage_times(segment)
             stage = max(i for i, start in enumerate(times) if t >= start)
@@ -231,6 +236,16 @@ class ShotRenderer:
 
     def base_frame(self, plan: ShotPlan, t: float, duration: float) -> Image.Image:
         segment, shot = plan.segment, plan.segment.shot
+        if plan.board is not None:
+            from . import board as teacher_board
+            key = self.steady_key(plan, t)
+            if key is not None and key in plan.steady:
+                return plan.steady[key].copy()
+            image = teacher_board.frame(self.size, plan.board["theme"], plan.scene_title, plan.board["previous"], plan.board["current"],
+                                        t, plan.board["reveal_end"], plan.board.get("anchor"))
+            if key is not None:
+                plan.steady[key] = image
+            return image.copy()
         if plan.video is not None:
             frame = plan.video.frame_at(t).convert("RGB")
             clip_end = plan.video.duration

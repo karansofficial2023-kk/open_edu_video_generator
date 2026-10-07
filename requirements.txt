@@ -11,3 +11,4 @@ schemdraw>=0.19          # circuit schematics
 PySide6-Essentials>=6.7  # complex-script shaping (Indic / Arabic scripts) via Qt + HarfBuzz
 rapidocr-onnxruntime>=1.3  # stray-lettering detection on generated stills (optional)
 num2words>=0.5.13       # spells digits in Telugu/Kannada/Bengali for the open-source voices
+rdkit>=2024.3  # optional: molecule visuals for chemistry lessons (board.py)

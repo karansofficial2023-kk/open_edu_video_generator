@@ -99,6 +99,7 @@ class ProductionConfig(BaseModel):
     min_semantic_score: float = 0.65
     generate_title_backgrounds: bool = True    # False: title cards use the built-in gradient, so lessons without photos never load the image model
     ocr_text_check: bool = True            # reject stills with readable lettering found by OCR (needs rapidocr-onnxruntime)
+    gallery_thumbnails: bool = True        # board "uses" lists get one reviewed picture per item (physics/chemistry boards only)
     min_sharpness: float = 45.0            # Laplacian variance floor at 1024px
     image_workflow_path: str = "workflows/flux_schnell_txt2img_api.json"
     image_checkpoint: str = "flux1-schnell-fp8.safetensors"

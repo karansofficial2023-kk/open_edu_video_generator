@@ -37,10 +37,20 @@ def blank_screen(frame: np.ndarray) -> bool:
     """True when the middle of a screen (below the heading, above the subtitle band, inside the card or panel) shows nothing: an
     empty equation card or an empty board. Measured as the share of edge pixels; a photograph, an equation or card text is far above."""
     height, width = frame.shape[:2]
-    inner = frame[round(height * 0.25):round(height * 0.62), round(width * 0.12):round(width * 0.88)]
+    inner = frame[round(height * 0.17):round(height * 0.78), round(width * 0.05):round(width * 0.95)]      # all content below the heading, above subtitles (a board fills from the top)
     gray = cv2.cvtColor(inner, cv2.COLOR_BGR2GRAY) if inner.ndim == 3 else inner
     edges = cv2.Canny(gray, 20, 60)
-    return float((edges > 0).mean()) < 0.0008
+    # count small marks (letters, symbols, picture detail); the long straight edges of an empty card, panel or table frame do not count
+    count, _labels, stats, _centroids = cv2.connectedComponentsWithStats((edges > 0).astype(np.uint8), connectivity=8)
+    h, w = gray.shape[:2]
+    marks = sum(1 for i in range(1, count) if stats[i, cv2.CC_STAT_WIDTH] < w * 0.25 and stats[i, cv2.CC_STAT_HEIGHT] < h * 0.25
+                and stats[i, cv2.CC_STAT_AREA] >= 4)
+    if marks < 6:
+        return True
+    # an empty white card or panel in the middle of the screen (the note line under it does not make it a full screen)
+    middle = frame[round(height * 0.25):round(height * 0.62), round(width * 0.12):round(width * 0.88)]
+    middle = cv2.cvtColor(middle, cv2.COLOR_BGR2GRAY) if middle.ndim == 3 else middle
+    return bool(middle.mean() > 200 and middle.std() < 12)
 
 
 def near_identical(a: np.ndarray, b: np.ndarray) -> bool:

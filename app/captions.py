@@ -45,7 +45,19 @@ def segment_words(segment: Segment) -> list[Caption]:
     duration = segment.speech_duration or max(0.1, segment.end - segment.start)
     narration_words = segment.narration.split()
     if segment.captions and text == narration_words:
-        return _with_punctuation(list(segment.captions), narration_words)
+        timed = _with_punctuation(list(segment.captions), narration_words)
+        if [c.text for c in timed] == narration_words:
+            return timed
+        # the engine split the words differently ("1:1.21" -> "1", "1", ".", "21"): never show its pieces; show the narration's own
+        # words, timed across the span the voice actually spoke, in proportion to their length
+        start, end = segment.captions[0].start, segment.captions[-1].end
+        weights = [len(w) + 1 for w in narration_words]
+        total, cursor, words = float(sum(weights)), start, []
+        for word, weight in zip(narration_words, weights):
+            step = (end - start) * weight / total
+            words.append(Caption(text=word, start=cursor, end=cursor + step))
+            cursor += step
+        return words
     if not text:
         return []
     step = duration / len(text)

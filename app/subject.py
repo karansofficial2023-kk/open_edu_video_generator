@@ -54,6 +54,11 @@ def photos_first(subject: str) -> bool:
     return subject in {BIOLOGY, GENERAL}
 
 
+def board_style(subject: str) -> bool:
+    """Physics and chemistry: explanation and equation screens are a dark teacher's board that builds up (board.py)."""
+    return subject in {PHYSICS, CHEMISTRY}
+
+
 def plain_cards(subject: str) -> bool:
     """Mathematics: explanation cards sit on the plain notebook page, never on a blurred photograph."""
     return subject == MATHS

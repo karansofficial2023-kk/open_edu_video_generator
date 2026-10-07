@@ -80,6 +80,9 @@ class Segment(BaseModel):
     duration_hint: float = 0.0
     motion_prompt: str = ""
     animate: bool = False                 # the storyboard asks for the approved picture to be brought to life (LTX image-to-video)
+    layout: str = ""                      # board layout from the storyboard: definition, bullets, table, derivation, diagram, gallery, summary
+    table_rows: list[str] = Field(default_factory=list)       # "left | right", first row = column headers
+    gallery_items: list[str] = Field(default_factory=list)
     review_notes: str = ""
     heading: str = ""
     extra_hold: float = 0.0

@@ -78,6 +78,65 @@ def _clip_signature(segment, frame_count: int, config: AppConfig, backdrop: str 
     return hashlib.sha1(blob.encode()).hexdigest()
 
 
+BOARD_TEMPLATES = {"process", "comparison", "formula"}
+
+
+def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_dir: Path | None = None) -> None:
+    """Physics/chemistry: explanation and equation shots of one part build up on the same board (board.py). A picture, a scene change
+    or a full board starts a new page; a table keeps its header once per page. The part's main visual stays on the left of its board
+    pages: the picture the part showed, or in chemistry the molecule the narration names (it stays until another one is named)."""
+    from . import board as teacher_board
+    theme = teacher_board.theme_for(title)
+    page: list = []
+    scene_title = None
+    anchor = None
+    for plan in plans:
+        seg = plan.segment
+        if plan.scene_title != scene_title:
+            page, scene_title, anchor = [], plan.scene_title, None
+        if not (seg.shot and seg.shot.template in BOARD_TEMPLATES) or plan.video is not None:
+            page = []
+            asset = seg.shot.asset_path if seg.shot else None
+            if asset and Path(asset).is_file() and seg.shot.template in {"photo", "video"} and not seg.labels:
+                anchor = {"kind": "image", "path": str(asset)}         # the picture just shown stays beside the explanation
+            continue
+        current = teacher_board.items_for(seg)
+        if not current:
+            continue
+        if output_dir is not None:
+            from .gallery import thumbnail_for
+            for item in current:
+                if item["kind"] == "chips":
+                    pictures = [thumbnail_for(output_dir, label) for label in item["items"]]
+                    if sum(1 for p in pictures if p) >= 2:            # one picture among plain chips looks unfinished
+                        item.update(kind="thumbs", images=pictures)
+        if chemistry:
+            from . import molecules
+            named = molecules.first_molecule(seg.narration)
+            if named is not None and (anchor or {}).get("smiles") != named["smiles"]:
+                anchor, page = {"kind": "molecule", **named}, []           # a new molecule starts a page beside it
+        elif anchor is None:
+            from . import diagrams                                   # physics: a concept diagram drawn by code (wave, conductor)
+            part_text = " ".join(p.segment.narration for p in plans if p.scene_title == plan.scene_title)
+            concept = diagrams.concept_for(part_text)
+            if concept:
+                anchor = {"kind": "diagram", "concept": concept, "text": part_text[:600]}
+        split = anchor is not None
+        headers = [item for item in page if item["kind"] == "row" and item["header"]]
+        if current and current[0]["kind"] == "row" and current[0]["header"] and headers and headers[-1]["cells"] == current[0]["cells"]:
+            current = current[1:] or current               # the table continues: its header is already on the board
+        if not teacher_board.fits(page + current, split):
+            page = []
+            if not teacher_board.fits(current, split):     # a shot larger than a page shows its last items that fit
+                while len(current) > 1 and not teacher_board.fits(current, split):
+                    current = current[1:]
+        duration = max(0.5, seg.end - seg.start)
+        reveal_end = max(0.6, min(seg.speech_duration or duration, duration) * 0.9)
+        plan.board = {"theme": theme, "previous": list(page), "current": current, "reveal_end": reveal_end,
+                      "done": teacher_board.done_at(current, reveal_end), "anchor": anchor}
+        page = page + current
+
+
 def write_srt(board: Storyboard, path: Path, config: AppConfig) -> None:
     size = size_of(config)
     lines, index = [], 1
@@ -130,6 +189,10 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
     producer = StillProducer(board, output_dir, config)
     unresolved = producer.run()
     _write_licenses(output_dir)
+    from .subject import board_style as _board_style, subject_of as _subject_of
+    if _board_style(_subject_of(board)):
+        from .gallery import GalleryProducer
+        unresolved += GalleryProducer(board, output_dir, config).run()     # "uses" lists: one reviewed picture per item
     progress.stage(3, "Motion: bring approved pictures to life (only shots the storyboard marked)")
     from .motion import MotionProducer
     unresolved += MotionProducer(board, output_dir, config).run()
@@ -163,7 +226,9 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
     subject = subject_of(board)
     progress.note(f"subject: {subject}")
     # a soft photo of the lesson behind cards that replace a photograph; mathematics keeps the plain notebook page
-    backdrops = {} if plain_cards(subject) else choose_backdrops(board)
+    from .subject import board_style
+    use_board = board_style(subject)
+    backdrops = {} if plain_cards(subject) or use_board else choose_backdrops(board)
     for scene, seg in board.all_segments():
         plan = ShotPlan(segment=seg, scene_title=scene.title, backdrop_path=backdrops.get(id(seg)))
         renderer.prepare(plan)
@@ -181,6 +246,9 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
         assign_timing(board, config)
     write_srt(board, output_dir / "subtitles.srt", config)
     save_storyboard(board, output_dir / "storyboard.json")
+    if use_board:
+        from .subject import CHEMISTRY
+        _plan_board_pages(plans, board.title, chemistry=subject == CHEMISTRY, output_dir=output_dir)
 
     # 5. Render clips (resumable by content signature; one failure never erases the rest).
     progress.stage(6, f"Rendering {len(plans)} clip(s) (finished clips are reused)")
@@ -197,7 +265,9 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
         cursor += frame_count
         clip = clips_dir / f"clip_{index:04d}.mp4"
         sig_file = clip.with_suffix(".sig")
-        signature = _clip_signature(seg, frame_count, config, plan.backdrop_path)
+        board_key = json.dumps([plan.board["previous"], plan.board["current"], plan.board["theme"], plan.scene_title, plan.board.get("anchor"), "board4"],
+                               default=str) if plan.board else ""
+        signature = _clip_signature(seg, frame_count, config, (plan.backdrop_path or "") + ("|board2|" + board_key if board_key else ""))
         try:
             if clip.exists() and sig_file.exists() and sig_file.read_text() == signature:
                 last_png = clip.with_suffix(".last.png")

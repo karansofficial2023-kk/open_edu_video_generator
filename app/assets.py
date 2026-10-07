@@ -505,7 +505,7 @@ def _as_float(value, default: float = 0.0) -> float:
         return default
 
 
-REVIEWER_VERSION = 7  # bump whenever the semantic reviewer's criteria change: older accepted stills are judged again (no regeneration)
+REVIEWER_VERSION = 8  # 8: small printed labels are painted out instead of rejecting the picture. Bump whenever the semantic reviewer's criteria change: older accepted stills are judged again (no regeneration)
 
 
 def _accepts(semantic: dict, config: AppConfig) -> bool:
@@ -931,6 +931,14 @@ class StillProducer:
             return
         if self.config.production.ocr_text_check and not (job.segment.shot and job.segment.shot.template == "title_card"):
             words = ocr.stray_text(Path(attempt["path"]))
+            if ocr.has_stray_text(words) and semantic.get("score", 0) >= self.config.production.min_semantic_score:
+                # a good picture spoiled only by a small printed label (a medicine box, a bottle): paint the label out, verify again
+                erased = ocr.erase_text(Path(attempt["path"]))
+                if erased:
+                    attempt["text_erased"] = erased
+                    words = []
+                    semantic["contains_text"] = False
+                    semantic["issues"] = [i for i in semantic.get("issues", []) if not re.search(r"(?i)text|letter|label|word|writing", i)]
             if ocr.has_stray_text(words):
                 semantic["contains_text"] = True
                 semantic["issues"] = list(dict.fromkeys(semantic["issues"] + [f"lettering drawn in the picture: {', '.join(words[:4])}"]))[:6]

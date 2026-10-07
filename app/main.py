@@ -23,7 +23,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--input", required=True, nargs="+",
                         help="One or more .txt/.docx/.json files or folders (folders run every storyboard inside, isolated per lesson)")
     parser.add_argument("--output", required=True, help="Output folder (one sub-folder per lesson when several inputs are given)")
-    parser.add_argument("--config", default="config.yaml", help="Path to config YAML")
+    parser.add_argument("--config", default=None, help="Path to config YAML (default: config.yaml when present)")
     parser.add_argument("--title", default="Educational Video", help="Fallback title for plain text input")
     parser.add_argument("--skip-tts", action="store_true", help="Build visuals and storyboard without TTS audio")
     parser.add_argument("--limit-segments", type=int, help="Render only the first N segments for a quality preview")
@@ -54,7 +54,10 @@ def expand_inputs(paths: list[str]) -> list[Path]:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
-    config = load_config(args.config)
+    if args.config is not None and not Path(args.config).is_file():
+        # a mistyped --config must stop the run: silently rendering with default settings wastes an hour of GPU time
+        parser.error(f"config file not found: {args.config} (e.g. --config config.realistic.12gb.yaml)")
+    config = load_config(args.config or "config.yaml")
     if args.burn_captions:
         config.render.burn_captions = True
     if args.no_embed_subtitles:

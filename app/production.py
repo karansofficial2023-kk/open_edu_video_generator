@@ -79,6 +79,8 @@ def _clip_signature(segment, frame_count: int, config: AppConfig, backdrop: str 
 
 
 BOARD_TEMPLATES = {"process", "comparison", "formula"}
+# one-pass loudnorm can overshoot its true-peak target on short loud words; a limiter at -2 dBFS keeps the master below -1 dBTP
+_PEAK_LIMIT = "alimiter=limit=0.79:level=disabled:attack=5:release=50"
 
 
 def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_dir: Path | None = None) -> None:
@@ -90,6 +92,7 @@ def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_d
     page: list = []
     scene_title = None
     anchor = None
+    page_split = False
     for plan in plans:
         seg = plan.segment
         if plan.scene_title != scene_title:
@@ -115,13 +118,16 @@ def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_d
             named = molecules.first_molecule(seg.narration)
             if named is not None and (anchor or {}).get("smiles") != named["smiles"]:
                 anchor, page = {"kind": "molecule", **named}, []           # a new molecule starts a page beside it
-        elif anchor is None:
-            from . import diagrams                                   # physics: a concept diagram drawn by code (wave, conductor)
+        if anchor is None:
+            from . import diagrams                                   # a concept figure drawn by code (wave, wire, conductivity graph ...)
             part_text = " ".join(p.segment.narration for p in plans if p.scene_title == plan.scene_title)
-            concept = diagrams.concept_for(part_text)
+            concept = diagrams.concept_for(part_text, chemistry=chemistry)
             if concept:
                 anchor = {"kind": "diagram", "concept": concept, "text": part_text[:600]}
-        split = anchor is not None
+        split = anchor is not None and not teacher_board.wide(current)  # a long equation needs the whole board width
+        if split != (page_split if page else split):
+            page = []                                                 # the board's columns change: start a fresh page
+        page_split = split
         headers = [item for item in page if item["kind"] == "row" and item["header"]]
         if current and current[0]["kind"] == "row" and current[0]["header"] and headers and headers[-1]["cells"] == current[0]["cells"]:
             current = current[1:] or current               # the table continues: its header is already on the board
@@ -133,7 +139,7 @@ def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_d
         duration = max(0.5, seg.end - seg.start)
         reveal_end = max(0.6, min(seg.speech_duration or duration, duration) * 0.9)
         plan.board = {"theme": theme, "previous": list(page), "current": current, "reveal_end": reveal_end,
-                      "done": teacher_board.done_at(current, reveal_end), "anchor": anchor}
+                      "done": teacher_board.done_at(current, reveal_end), "anchor": anchor if split else None}
         page = page + current
 
 
@@ -331,10 +337,10 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
         command += ["-stream_loop", "-1", "-i", str(music), "-filter_complex",
                     f"[2:a]volume={config.production.music_volume_db}dB[bg];[1:a]asplit=2[voice][key];"
                     "[bg][key]sidechaincompress=threshold=0.03:ratio=9:attack=30:release=600[ducked];"
-                    "[voice][ducked]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11[a]",
+                    "[voice][ducked]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11," + _PEAK_LIMIT + "[a]",
                     "-map", "0:v:0", "-map", "[a]"]
     else:
-        command += ["-map", "0:v:0", "-map", "1:a:0", "-af", "loudnorm=I=-16:TP=-1.5:LRA=11"]
+        command += ["-map", "0:v:0", "-map", "1:a:0", "-af", "loudnorm=I=-16:TP=-1.5:LRA=11," + _PEAK_LIMIT]
     command += ["-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", "-shortest", str(video)]
     _run(command)
 

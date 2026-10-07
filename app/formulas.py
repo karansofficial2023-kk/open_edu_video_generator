@@ -92,6 +92,11 @@ def normalize_formula(line: str) -> str:
     return text
 
 
+def _star_to_dot(text: str) -> str:
+    """"A' * L'": a programmer's star is a multiplication dot on the board (only on the fallback path; the maths parser does it itself)."""
+    return re.sub(r"\s*(?<![\^_*])\*(?![*])\s*", r" \\cdot ", text)
+
+
 def _latex_species(text: str) -> str:
     r"""Inside an already-LaTeX line only one safe chemistry rewrite: a bare species in parentheses, "(CH3COOH)" ->
     "(\mathrm{CH_{3}COOH})", so it is upright with real subscripts instead of italic letters and a full-size 3."""
@@ -155,7 +160,7 @@ def _core_mathtext(line: str) -> str:
             return "$" + math_to_latex(line).replace("$", "") + "$"
         except Exception:        # fall back to the legacy symbol mapper below
             pass
-    text = line.strip()
+    text = _star_to_dot(line.strip())        # the parser above turns * into a dot; this fallback must too
     for src, dst in _ARROWS.items():
         text = text.replace(src, dst)
     text = re.sub(r"\((aq|s|l|g)\)", r"\\mathrm{(\1)}", text)

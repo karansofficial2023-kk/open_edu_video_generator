@@ -137,7 +137,9 @@ def read_contract_json(data: dict) -> Storyboard | None:
     scenes: list[Scene] = []
     for scene_data in data["scenes"]:
         shots = scene_data.get("shots") or scene_data.get("segments") or []
-        if not shots or not any("visual_type" in s or "shot_id" in s for s in shots):
+        if not shots:
+            continue                    # a scene left empty (all its shots removed as off-topic) has nothing to show
+        if not any("visual_type" in s or "shot_id" in s for s in shots):
             return None
         number = int(scene_data.get("scene_number") or scene_data.get("sceneNumber") or len(scenes) + 1)
         scene = Scene(scene_number=number, title=str(scene_data.get("scene_title") or scene_data.get("title") or f"Scene {number}"),

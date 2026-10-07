@@ -132,6 +132,9 @@ _DOCUMENTS = re.compile(r"(?i)\b(textbook|book|page|notebook|worksheet|chart|whi
                         r"graph|plotted|axes|x-axis|y-axis)s?\b")     # a graph must be plotted from data, never drawn by an image model
 
 
+_GRAPH_TALK = re.compile(r"(?i)\b(graph|graphs|plotted|plot of|asymptot\w*|extrapolat\w*|x-axis|y-axis)\b")
+
+
 def text_free_prompt(prompt: str) -> str:
     """Keep the picture free of lettering at the source (teacher's view: a picture of a medicine shows the medicine, not its label).
     Sentences about documents (a textbook page, a chart, a whiteboard) are dropped when the prompt has another subject, because an image
@@ -654,9 +657,27 @@ class StillProducer:
         if changed:
             atomic_write_text(cache_path, json.dumps(cache, indent=1))
 
+    def _no_drawn_graphs(self) -> None:
+        """A graph is data: an image model draws a pretty but wrong curve (a bell curve for molar conductivity against concentration).
+        Every subject: a shot about a graph never gets a generated picture or clip; the board shows a code-drawn figure where one
+        exists (diagrams.py), otherwise explanation cards. A teacher-supplied picture (asset_path) is kept."""
+        for scene, seg in self.board.all_segments():
+            shot = seg.shot
+            if shot is None or shot.asset_path or shot.template not in {"photo", "video"}:
+                continue
+            if not (_GRAPH_TALK.search(seg.narration or "") or _GRAPH_TALK.search(seg.image_prompt or "")):
+                continue
+            seg.animate = False
+            job = Job(seg.shot_id or f"{scene.scene_number}_{seg.segment_number}", seg, seg, scene.title)
+            if self._downgrade(job):
+                self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "info", "renderer": "concept_cards",
+                                    "reason": "the shot is about a graph; image models cannot draw correct graphs, so no generated picture",
+                                    "repair": "supply the real graph as asset_path if it must be shown"})
+
     def run(self) -> list[dict]:
         self._plan_continuations()
         self._cards_for_screen_moments()
+        self._no_drawn_graphs()
         self._cards_for_abstract_statements()
         jobs = self._jobs()
         records: dict[str, dict] = {}

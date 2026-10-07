@@ -70,7 +70,7 @@ def _sentences(text: str) -> list[str]:
 
 _LEAD_IN = re.compile(r"(?i)^(so|now|well|okay|ok|then|also|and|but|basically|actually|in fact|you see|as you can see|as we know|"
                       r"as we (?:have )?(?:saw|seen|discussed|learned|learnt)|we know that|we can (?:see|say) that|we see that|"
-                      r"it means that|this means that|that means|remember that|note that|notice that|let us see|let's see|here)\b[,:]?\s+")
+                      r"it means that|this means that|that means|remember that|note that|notice that|let(?:'s| us) (?:see|consider|look at|take)|here)\b[,:]?\s+")
 _CLAUSE = re.compile(r";\s|,\s|\s[-–—]\s")
 POINT_WORDS = 16
 
@@ -103,6 +103,10 @@ def layout_of(segment) -> str:
             return "bullets"
         if layout == "gallery" and len(segment.gallery_items) < 2:
             return "bullets"
+        if layout == "definition" and not re.search(r"(?i)(is|are|means|refers)", segment.narration or ""):
+            return "bullets"                    # "Now, let's consider resistivity" introduces a term, it does not define it
+        if layout == "summary" and not _SUMMARY.search(segment.narration or ""):
+            return "bullets"                    # only a real recap gets the "Summary" heading
         return layout
     text = segment.narration or ""
     if _SUMMARY.search(text):
@@ -141,6 +145,17 @@ def items_for(segment) -> list[dict]:
     return [{"kind": "bullet", "text": key_point(s)} for s in _sentences(segment.narration)]
 
 
+def _note_lines(note: str) -> list[str]:
+    """The words under an equation, at most two lines (a third is cut with an ellipsis)."""
+    if not note:
+        return []
+    lines = wrap_text(_probe, note, font(30), X1 - X0 - 70)
+    if len(lines) > 2:
+        lines = lines[:2]
+        lines[1] = lines[1].rstrip(" ,.;")[:-2].rstrip() + "…"
+    return lines
+
+
 def _chip_rows(items: list[str]) -> list[list[str]]:
     fnt, rows, row, width = font(30, True), [], [], 0
     for item in items:
@@ -165,7 +180,7 @@ def height_of(item: dict) -> int:
         lines = max(len(wrap_text(_probe, c, font(32, item["header"]), half)) for c in item["cells"])
         return lines * 42 + 30
     if kind == "eq":
-        return 132 + (44 if item.get("note") else 0)
+        return 132 + 40 * len(_note_lines(item.get("note", "")))
     if kind == "lead":
         return len(wrap_text(_probe, item["text"], font(38), X1 - X0 - 40)) * 50 + 16
     if kind == "heading":
@@ -183,6 +198,30 @@ def _thumb_width(count: int) -> int:
     return min(320, (X1 - X0 - 24 * (count - 1)) // max(1, count))
 
 
+MIN_EQ_HEIGHT = 62      # an equation squeezed below this height (at 1080p) cannot be read from the back of a class
+
+
+@lru_cache(maxsize=256)
+def _eq_size(text: str) -> tuple[int, int]:
+    from .formulas import render_line
+    try:
+        eq = render_line(text, "#FFFFFF", 84)
+        return eq.width, eq.height
+    except Exception:
+        return 0, 0
+
+
+def wide(items: list[dict]) -> bool:
+    """True when an equation of this shot would be too small in the right-hand column (it then gets the whole board)."""
+    room = X1 - SPLIT_X0 - 120                         # the equation's width in the right-hand column
+    for item in items:
+        if item["kind"] == "eq":
+            w, h = _eq_size(item["text"])
+            if w and h * min(room / w, 112 / h, 2.2) < MIN_EQ_HEIGHT:
+                return True
+    return False
+
+
 def fits(items: list[dict], split: bool = False) -> bool:
     with columns(split):
         return sum(height_of(i) for i in items) <= BOTTOM - TOP
@@ -191,7 +230,7 @@ def fits(items: list[dict], split: bool = False) -> bool:
 def _chars(item: dict) -> int:
     kind = item["kind"]
     if kind == "row":
-        return sum(len(c) for c in item["cells"])
+        return sum(len(c) + 4 for c in item["cells"])           # the drawing spends one extra per wrapped line: never cut a cell short
     if kind in {"chips", "thumbs"}:
         return 12 * len(item["items"])
     if kind == "eq":
@@ -295,12 +334,8 @@ def _draw_item(draw: ImageDraw.ImageDraw, image: Image.Image, item: dict, y: int
             draw.rounded_rectangle((x - px(18), yy - px(10), x + eq.width + px(18), yy + eq.height + px(10)), radius=px(12),
                                    outline=YELLOW if current else GREEN, width=max(1, px(3 if item.get("key") else 2)))
         if item.get("note") and fade >= 1:          # what the line says, in words, under it (as a teacher would add)
-            note_font, note = font(px(30)), item["note"]
-            while note and text_width(draw, note, note_font) > px(X1 - X0 - 70):
-                note = note[: max(0, len(note) - 6)].rstrip(" ,.;") + "…"
-                if note == "…":
-                    break
-            draw.text((px(X0 + 60), px(y + 132)), note, font=note_font, fill=(DIM if dim else (170, 205, 220)))
+            for i, line in enumerate(_note_lines(item["note"])):
+                draw.text((px(X0 + 60), px(y + 128 + i * 40)), line, font=font(px(30)), fill=(DIM if dim else (170, 205, 220)))
     elif kind == "lead":
         lines = wrap_text(_probe, item["text"], font(38), X1 - X0 - 40)
         left = shown

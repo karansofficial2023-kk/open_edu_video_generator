@@ -105,6 +105,45 @@ class BoardVisualTests(unittest.TestCase):
 
 
 class QualityGapTests(unittest.TestCase):
+    def test_an_empty_scene_in_a_contract_is_skipped_not_fatal(self):
+        from app.contract import read_contract_json
+        shot = {"shot_id": "1.1", "visual_type": "process_steps", "narration": "Ions carry the charge in a solution."}
+        board_ = read_contract_json({"schema_version": "2.0", "title": "T", "scenes": [
+            {"scene_number": 1, "scene_title": "Ions", "shots": [shot]},
+            {"scene_number": 2, "scene_title": "", "narration": "", "shots": []}]})
+        self.assertIsNotNone(board_)
+        self.assertEqual(len(board_.scenes), 1)
+        self.assertEqual(board.layout_of(_seg(1, "Therefore rho remains constant.", layout="summary")), "bullets")
+
+    def test_chemistry_figures_and_long_equations_get_room(self):
+        from app import diagrams
+        self.assertEqual(diagrams.concept_for("This graph shows molar conductivity of a weak electrolyte against concentration; "
+                                              "strong electrolytes fall in a line.", chemistry=True), "conductivity_graph")
+        self.assertEqual(diagrams.concept_for("Electrolysis is used in electroplating.", chemistry=True), "electrolysis")
+        self.assertIsNone(diagrams.concept_for("Weak acids are weak electrolytes.", chemistry=True))
+        for concept in diagrams.CHEM_CONCEPTS:
+            self.assertEqual(diagrams.render(concept, (700, 600), 2.0).size, (700, 600))
+        self.assertTrue(board.wide([{"kind": "eq", "text": "\\Lambda(CH3COOH) = \\Lambda(CH3COONa) + \\Lambda(HCl) - \\Lambda(NaCl)"}]))
+        self.assertFalse(board.wide([{"kind": "eq", "text": "V = IR"}]))
+
+    def test_a_shot_about_a_graph_never_gets_a_generated_picture(self):
+        import tempfile
+        from app.assets import StillProducer
+        from app.config import AppConfig
+        from app.schema import Scene, Storyboard
+        graph = Segment(segment_number=1, shot_id="3.1", animate=True, image_prompt="A blue curve rising on white",
+                        narration="For weak electrolytes, the graph approaches an asymptote at lower concentrations.",
+                        shot=Shot(template="video"))
+        beaker = Segment(segment_number=2, shot_id="3.2", narration="A conductivity cell dips into the solution in the beaker.",
+                         image_prompt="A conductivity cell in a beaker", shot=Shot(template="photo"))
+        board_ = Storyboard(title="Conductance", scenes=[Scene(scene_number=3, title="Graphs", narration="", segments=[graph, beaker])])
+        with tempfile.TemporaryDirectory() as tmp:
+            producer = StillProducer(board_, Path(tmp), AppConfig())
+            producer._no_drawn_graphs()
+        self.assertNotIn(graph.shot.template, {"photo", "video"})
+        self.assertFalse(graph.animate)
+        self.assertEqual(beaker.shot.template, "photo")
+
     def test_board_points_are_the_narrations_own_short_words(self):
         self.assertEqual(board.key_point("So, now we can see that the resistance increases with the length of the wire."),
                          "The resistance increases with the length of the wire")

@@ -34,8 +34,21 @@ CONCEPTS = {"wave": _WAVE, "conductor": _CONDUCTOR, "circuit": _CIRCUIT, "lens":
             "force": _FORCE, "pendulum": _PENDULUM}
 
 
-def concept_for(text: str) -> str | None:
-    """Which diagram fits the narration (the concept mentioned most, at least twice), or None."""
+_CONDUCTIVITY = re.compile(r"(?i)\b(molar conductivit\w*|conductance|equivalent conductivit\w*|limiting molar|dilution|square root of concentration|"
+                           r"strong electrolytes?|weak electrolytes?)\b")
+_GRAPH = re.compile(r"(?i)\b(graph|plot|curve|versus|vs\.?|concentration|extrapolat\w*|asymptot\w*)\b")
+_ELECTROLYSIS = re.compile(r"(?i)\b(electrolysis|electrolytic cell|electroplating|electrorefining|electrodes?|cathode|anode|electroly[sz]e\w*)\b")
+CHEM_CONCEPTS = {"conductivity_graph": _CONDUCTIVITY, "electrolysis": _ELECTROLYSIS}
+
+
+def concept_for(text: str, chemistry: bool = False) -> str | None:
+    """Which diagram fits the narration (the concept mentioned most, at least twice), or None. Chemistry has its own figures."""
+    if chemistry:
+        scores = {name: len(pattern.findall(text or "")) for name, pattern in CHEM_CONCEPTS.items()}
+        if not _GRAPH.search(text or ""):
+            scores["conductivity_graph"] = min(scores["conductivity_graph"], 1)     # conductivity talk without a graph: no figure
+        best = max(scores, key=scores.get)
+        return best if scores[best] >= 2 else None
     scores = {name: len(pattern.findall(text or "")) for name, pattern in CONCEPTS.items()}
     if scores["magnet"] and scores["wave"] and _EM.search(text or ""):
         scores["magnet"] = 0                                    # an electromagnetic wave is a wave, not a bar magnet
@@ -46,7 +59,7 @@ def concept_for(text: str) -> str | None:
 def render(concept: str, size: tuple[int, int], t: float, text: str = "") -> Image.Image | None:
     if concept == "wave":
         return _wave(size, t, bool(_EM.search(text or "")))
-    drawers = {"conductor": _conductor, "circuit": _circuit, "lens": _lens, "magnet": _magnet, "charge": _charges,
+    drawers = {"conductivity_graph": _conductivity_graph, "electrolysis": _electrolysis, "conductor": _conductor, "circuit": _circuit, "lens": _lens, "magnet": _magnet, "charge": _charges,
                "force": _force, "pendulum": _pendulum}
     if concept in drawers:
         return drawers[concept](size, t)
@@ -60,6 +73,79 @@ def _arrowhead(draw, tip, direction, color, size=14):
     x, y = tip
     draw.polygon([(x, y), (x - dx * size - dy * size * 0.55, y - dy * size + dx * size * 0.55),
                   (x - dx * size + dy * size * 0.55, y - dy * size - dx * size * 0.55)], fill=color)
+
+
+def _conductivity_graph(size, t):
+    """Molar conductivity against the square root of concentration: a strong electrolyte falls along a straight line (extrapolated
+    to the axis, dashed), a weak electrolyte rises steeply only at very low concentration. The curves draw themselves."""
+    width, height = size
+    image = Image.new("RGBA", size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    lab = font(max(14, round(height * 0.045)), True)
+    small = font(max(12, round(height * 0.038)))
+    ox, oy = width * 0.16, height * 0.82
+    w, h = width * 0.76, height * 0.70
+    axis = (210, 216, 226, 255)
+    draw.line((ox, oy, ox + w, oy), fill=axis, width=3)
+    draw.line((ox, oy, ox, oy - h), fill=axis, width=3)
+    _arrowhead(draw, (ox + w + 14, oy), (1, 0), axis, 14)
+    _arrowhead(draw, (ox, oy - h - 14), (0, -1), axis, 14)
+    draw.text((ox + w - 40, oy + 12), "√c", font=lab, fill=axis)
+    draw.text((ox - 56, oy - h - 6), "Λₘ", font=lab, fill=axis)
+    reveal = min(1.0, 0.2 + t * 0.3)
+    n = max(2, round(80 * reveal))
+    strong = [(ox + w * 0.06 + w * 0.88 * i / 79, oy - h * (0.78 - 0.30 * i / 79)) for i in range(80)][:n]
+    weak = [(ox + w * 0.03 + w * 0.91 * i / 79, oy - h * (0.10 + 0.80 * math.exp(-i / 6.0))) for i in range(80)][:n]
+    draw.line(strong, fill=(64, 210, 230, 255), width=5)
+    draw.line(weak, fill=(245, 214, 90, 255), width=5)
+    if reveal >= 1:
+        y0 = oy - h * 0.78 - (h * 0.30 / 0.88) * 0.06                    # the strong line extended to c = 0
+        for k in range(6):                                                 # dashed extrapolation to the axis
+            x = ox + w * 0.06 * k / 6
+            draw.line((x, y0 + (oy - h * 0.78 - y0) * k / 6, x + w * 0.006, y0 + (oy - h * 0.78 - y0) * (k + 0.5) / 6),
+                      fill=(64, 210, 230, 255), width=3)
+        draw.text((ox + w * 0.08, y0 - 52), "Λ°ₘ", font=lab, fill=(64, 210, 230, 255))
+    draw.text((ox + w * 0.52, oy - h * 0.52), "strong electrolyte", font=small, fill=(64, 210, 230, 255))
+    draw.text((ox + w * 0.30, oy - h * 0.22), "weak electrolyte", font=small, fill=(245, 214, 90, 255))
+    return image
+
+
+def _electrolysis(size, t):
+    """An electrolytic cell: a battery drives current through two electrodes in a solution; cations move to the cathode (-),
+    anions to the anode (+)."""
+    width, height = size
+    image = Image.new("RGBA", size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(image)
+    lab = font(max(14, round(height * 0.045)), True)
+    small = font(max(12, round(height * 0.04)), True)
+    bx0, bx1, by0, by1 = width * 0.12, width * 0.88, height * 0.36, height * 0.86
+    draw.rectangle((bx0, by0 + (by1 - by0) * 0.15, bx1, by1), fill=(80, 160, 230, 70))             # the solution
+    draw.line((bx0, by0, bx0, by1, bx1, by1, bx1, by0), fill=(200, 220, 240, 255), width=4)       # the beaker
+    ax, cx = width * 0.30, width * 0.70                                                           # anode left (+), cathode right (-)
+    for x, color in ((ax, (230, 110, 90, 255)), (cx, (150, 160, 180, 255))):
+        draw.rectangle((x - 14, by0 - height * 0.08, x + 14, by1 - height * 0.08), fill=color)
+    top = height * 0.12
+    draw.line((ax, by0 - height * 0.08, ax, top, cx, top, cx, by0 - height * 0.08), fill=(200, 210, 224, 255), width=3)
+    mid = width / 2
+    draw.rectangle((mid - 50, top - 22, mid + 50, top + 22), fill=(20, 30, 50, 255), outline=(245, 214, 90, 255), width=3)
+    draw.line((mid - 14, top - 16, mid - 14, top + 16), fill=(245, 214, 90, 255), width=4)
+    draw.line((mid + 14, top - 9, mid + 14, top + 9), fill=(245, 214, 90, 255), width=7)
+    draw.text((ax - 60, by0 - height * 0.15), "+", font=lab, fill=(230, 110, 90, 255))
+    draw.text((cx + 34, by0 - height * 0.15), "−", font=lab, fill=(190, 200, 220, 255))
+    draw.text((ax - 40, by1 + 8), "anode", font=small, fill=(230, 110, 90, 255))
+    draw.text((cx - 50, by1 + 8), "cathode", font=small, fill=(190, 200, 220, 255))
+    span = cx - ax - 60
+    for k in range(5):                                                                            # ions drifting to their electrodes
+        u = ((k / 5) + t * 0.15) % 1.0
+        y = by0 + (by1 - by0) * (0.30 + 0.12 * k)
+        xp = ax + 30 + span * u                                                                   # cation -> cathode
+        xn = cx - 30 - span * u                                                                   # anion -> anode
+        draw.ellipse((xp - 15, y - 15, xp + 15, y + 15), fill=(230, 80, 80, 255))
+        draw.text((xp - 7, y - 15), "+", font=small, fill=(255, 255, 255, 255))
+        yn = y + (by1 - by0) * 0.06
+        draw.ellipse((xn - 15, yn - 15, xn + 15, yn + 15), fill=(70, 120, 235, 255))
+        draw.text((xn - 6, yn - 17), "−", font=small, fill=(255, 255, 255, 255))
+    return image
 
 
 def _circuit(size, t):

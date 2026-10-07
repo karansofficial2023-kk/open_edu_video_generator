@@ -12,8 +12,8 @@ dependencies in `.runtime-deps`. It does not install anything into ComfyUI.
 
 ```powershell
 cd D:\Python\open_edu_video_generator
-powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input samples/pollination_animated.json --output outputs/my_animation_preview --preview
-powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input samples/pollination_animated.json --output outputs/my_animation_voice
+powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input samples/example_lesson.json --output outputs/my_animation_preview --preview
+powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input samples/example_lesson.json --output outputs/my_animation_voice
 ```
 
 The first command creates a silent MP4 with approximate timing. The second uses
@@ -21,14 +21,10 @@ your Edge voice and real word timestamps. Neither command needs Ollama or ComfyU
 the sample uses only built-in animation templates. Open `final.mp4` in the chosen
 output directory. Use separate directories for previews and final renders.
 
-For this pollination topic, use the teacher-approved Word storyboard or a
-coverage-passing JSON storyboard. The LLM-generated storyboard can be useful as a
-draft, but the current checked copy misses several required topic areas.
-
-Run the teacher storyboard like this:
+For any topic, pass your own text, Word storyboard, or storyboard JSON. Example:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input "C:\Users\User\Downloads\1788516588515_5913833 - Types of Pollination.docx" --output outputs/pollination_quality_animation
+powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input "path\to\your_storyboard.docx" --output outputs/my_lesson
 ```
 
 ## Standard installation on another computer
@@ -38,7 +34,7 @@ Install Python 3.12 and FFmpeg/FFprobe. In the project directory:
 ```powershell
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m app.main --config config.12gb.yaml --input samples/pollination_animated.json --output outputs/demo --preview
+.\.venv\Scripts\python.exe -m app.main --config config.12gb.yaml --input samples/example_lesson.json --output outputs/demo --preview
 ```
 
 Set `ffmpeg_path` and `ffprobe_path` in your config to the installed executables.
@@ -50,7 +46,7 @@ Keep the resolution 16:9, e.g. 1920x1080 or 1280x720, with even dimensions.
 2. Run planning only:
 
    ```powershell
-   powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input samples/pollination.txt --output outputs/my_plan --plan-only
+   powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input your_lesson.txt --output outputs/my_plan --plan-only
    ```
 
 3. Edit `outputs/my_plan/storyboard.json`. Check narration, terminology, sources,
@@ -65,19 +61,26 @@ their narration. For best quality, review and refine those `shot` objects in
 JSON. JSON is the authoritative editable format: the legacy DOCX export does not
 preserve the new shot fields.
 
-For files whose name contains `Types of Pollination`, the review also writes
-`coverage.json` and warns if the storyboard misses too many core
-topics: definition, self-pollination, cross-pollination, wind, water, insects,
-birds, bats, animals, and advantages/disadvantages.
-For final lessons, add `--strict-coverage` to block incomplete storyboards.
+The review can also check topic coverage. List the topics your lesson must cover
+in `config.yaml` (`coverage_topics`) or in the storyboard JSON (`required_topics`):
+
+```yaml
+coverage_topics:
+  "definition": ["is defined as", "refers to"]
+  "example": ["for example", "such as"]
+coverage_min_ratio: 0.75
+```
+
+Each topic counts as covered when any of its marker phrases appears in the
+narration. Results go to `coverage.json`; add `--strict-coverage` to block
+rendering when coverage is below the threshold. With no checklist, no coverage
+check runs. Likewise `text_replacements` in the config can fix recurring
+misspellings of subject terms during import.
 
 ## Templates and fields
 
 | Template | Behavior | Required fields |
 |---|---|---|
-| `pollination` | Pollen travels between two schematic flowers | None |
-| `protandry` | Highlights anthers, then stigma | None |
-| `protogyny` | Highlights stigma, then anthers | None |
 | `process` | 2-4 ordered cards, highlighted in sequence | `steps` |
 | `comparison` | 2-4 comparison cards, highlighted in sequence | `steps` |
 | `photo` | Contained artwork with a short heading and timed captions | `asset_path`, reviewed asset, or ComfyUI |

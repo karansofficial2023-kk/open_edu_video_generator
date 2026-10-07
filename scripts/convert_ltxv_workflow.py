@@ -28,7 +28,7 @@ for node in data['nodes']:
         if 'negative' in title:
             item['inputs']['text'] = 'text, letters, typography, labels, captions, watermark, logo, signature, diagram, infographic, chart, collage, grid, panels, border, blurry, distorted anatomy, duplicate parts, oversaturated, bad motion, flicker, low quality, worst quality, deformed, distorted, disfigured, motion artifacts'
         else:
-            item['inputs']['text'] = 'realistic educational nature video, stable camera, gentle natural motion, coherent subject, a bee slowly visiting a bright flower, pollen visible on the bee body, realistic petals and anthers, soft daylight, shallow depth of field, no text, no subtitles, no watermark'
+            item['inputs']['text'] = 'realistic educational nature video, stable camera, gentle natural motion, coherent subject, placeholder subject (replaced per segment), soft daylight, shallow depth of field, no text, no subtitles, no watermark'
     elif ctype == 'LTXVConditioning':
         item['inputs']['frame_rate'] = 16
     elif ctype == 'LTXVScheduler':

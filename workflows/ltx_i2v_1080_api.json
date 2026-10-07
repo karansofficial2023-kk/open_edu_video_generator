@@ -1,0 +1,166 @@
+{
+ "44": {
+  "class_type": "CheckpointLoaderSimple",
+  "inputs": {
+   "ckpt_name": "ltxv-2b-0.9.8-distilled-fp8.safetensors"
+  }
+ },
+ "38": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "t5xxl_fp16.safetensors",
+   "type": "ltxv",
+   "device": "default"
+  }
+ },
+ "10": {
+  "class_type": "LoadImage",
+  "inputs": {
+   "image": "poll_shot_1_1.png"
+  }
+ },
+ "6": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "38",
+    0
+   ],
+   "text": "sunflowers in a field gently swaying in a light breeze, soft sunlight, slow subtle camera push in, realistic nature documentary, stable subject, no text"
+  }
+ },
+ "7": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "38",
+    0
+   ],
+   "text": "text, letters, watermark, logo, blurry, distorted, flicker, morphing, bad anatomy, low quality, jitter"
+  }
+ },
+ "11": {
+  "class_type": "LTXVImgToVideo",
+  "inputs": {
+   "positive": [
+    "6",
+    0
+   ],
+   "negative": [
+    "7",
+    0
+   ],
+   "vae": [
+    "44",
+    2
+   ],
+   "image": [
+    "10",
+    0
+   ],
+   "width": 1920,
+   "height": 1088,
+   "length": 65,
+   "batch_size": 1,
+   "strength": 1.0
+  }
+ },
+ "69": {
+  "class_type": "LTXVConditioning",
+  "inputs": {
+   "positive": [
+    "11",
+    0
+   ],
+   "negative": [
+    "11",
+    1
+   ],
+   "frame_rate": 24
+  }
+ },
+ "71": {
+  "class_type": "LTXVScheduler",
+  "inputs": {
+   "latent": [
+    "11",
+    2
+   ],
+   "steps": 8,
+   "max_shift": 2.05,
+   "base_shift": 0.95,
+   "stretch": true,
+   "terminal": 0.1
+  }
+ },
+ "73": {
+  "class_type": "KSamplerSelect",
+  "inputs": {
+   "sampler_name": "euler"
+  }
+ },
+ "72": {
+  "class_type": "SamplerCustom",
+  "inputs": {
+   "model": [
+    "44",
+    0
+   ],
+   "positive": [
+    "69",
+    0
+   ],
+   "negative": [
+    "69",
+    1
+   ],
+   "sampler": [
+    "73",
+    0
+   ],
+   "sigmas": [
+    "71",
+    0
+   ],
+   "latent_image": [
+    "11",
+    2
+   ],
+   "add_noise": true,
+   "noise_seed": 1234,
+   "cfg": 1.0
+  }
+ },
+ "8": {
+  "inputs": {
+   "working_dtype": "auto",
+   "latents": [
+    "72",
+    0
+   ],
+   "last_frame_fix": false,
+   "vae": [
+    "44",
+    2
+   ],
+   "overlap": 2,
+   "horizontal_tiles": 2,
+   "vertical_tiles": 2,
+   "working_device": "auto"
+  },
+  "class_type": "LTXVTiledVAEDecode"
+ },
+ "77": {
+  "class_type": "SaveWEBM",
+  "inputs": {
+   "images": [
+    "8",
+    0
+   ],
+   "filename_prefix": "video/ltx_i2v_1080",
+   "codec": "vp9",
+   "fps": 24,
+   "crf": 15
+  }
+ }
+}

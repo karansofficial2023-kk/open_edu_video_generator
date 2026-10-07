@@ -13,10 +13,17 @@ def read_input(path: str | Path) -> tuple[str, Storyboard | None]:
     input_path = Path(path)
     suffix = input_path.suffix.lower()
     if suffix == ".json":
+        import json as _json
+        from .contract import read_contract_json
+        raw = _json.loads(input_path.read_text(encoding="utf-8"))
+        contract = read_contract_json(raw) if raw.get("schema_version") else None
+        if contract:
+            return contract.source or contract.title, contract
         storyboard = Storyboard.model_validate_json(input_path.read_text(encoding="utf-8"))
         return storyboard.source or storyboard.title, storyboard
     if suffix == ".docx":
-        storyboard = _try_read_storyboard_docx(input_path)
+        from .contract import read_contract_docx
+        storyboard = read_contract_docx(input_path) or _try_read_storyboard_docx(input_path)
         if storyboard:
             return storyboard.source or _storyboard_text(storyboard), storyboard
         return _read_docx_text(input_path), None

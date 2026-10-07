@@ -1,0 +1,11 @@
+{
+  "1": {"class_type": "UNETLoader", "inputs": {"unet_name": "flux1-schnell-fp8-unet.safetensors", "weight_dtype": "default"}},
+  "8": {"class_type": "DualCLIPLoader", "inputs": {"clip_name1": "flux_clip_l.safetensors", "clip_name2": "flux_t5xxl_fp8_e4m3fn.safetensors", "type": "flux", "device": "default"}},
+  "9": {"class_type": "VAELoader", "inputs": {"vae_name": "flux_ae_schnell.safetensors"}},
+  "2": {"class_type": "CLIPTextEncode", "inputs": {"text": "", "clip": ["8", 0]}},
+  "3": {"class_type": "CLIPTextEncode", "inputs": {"text": "", "clip": ["8", 0]}},
+  "4": {"class_type": "EmptySD3LatentImage", "inputs": {"width": 1344, "height": 768, "batch_size": 1}},
+  "5": {"class_type": "KSampler", "inputs": {"model": ["1", 0], "positive": ["2", 0], "negative": ["3", 0], "latent_image": ["4", 0], "seed": 1, "steps": 4, "cfg": 1.0, "sampler_name": "euler", "scheduler": "simple", "denoise": 1.0}},
+  "6": {"class_type": "VAEDecode", "inputs": {"samples": ["5", 0], "vae": ["9", 0]}},
+  "7": {"class_type": "SaveImage", "inputs": {"images": ["6", 0], "filename_prefix": "edu_still"}}
+}

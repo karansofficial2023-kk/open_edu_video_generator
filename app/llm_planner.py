@@ -66,15 +66,12 @@ Rules:
 - Use educational documentary style.
 - image_prompt describes one text-free image; never ask for labels, diagrams, collages or typography.
 - keywords are short topic labels for software to render separately.
-- Add a shot object to each segment. Supported templates: photo, process, comparison,
-  pollination (generic anther-to-stigma transfer), protandry, protogyny.
+- Add a shot object to each segment. Supported templates: photo, process, comparison.
 - shot fields: template, heading (short), learning_objective, steps, cues.
-- process/comparison require 2-4 short steps. Use these for general educational topics.
-- pollination/protandry/protogyny are schematic flower templates, not species-specific anatomy.
-  Only choose them when the narration explicitly teaches that exact mechanism.
-- cues are optional exact phrases from narration, one per stage (2 for flower templates).
+- process/comparison require 2-4 short steps. Use these for any explanation of a mechanism, sequence or contrast.
+- cues are optional exact phrases from narration, one per stage.
 - photo is only for context. Never substitute a photograph for an explanation of a mechanism.
-- Use standard scientific terminology. Preserve uncertainty and do not add unsupported examples.
+- Use standard terminology for the subject. Preserve uncertainty and do not add unsupported examples.
 - No markdown. No explanation.
 
 TEXT:

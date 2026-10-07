@@ -1,0 +1,49 @@
+{
+  "title": "Example lesson: any topic works",
+  "source": "Replace this file with your own storyboard, or pass a .txt / .docx to generate one.",
+  "required_topics": {},
+  "scenes": [
+    {
+      "scene_number": 1,
+      "title": "A process, step by step",
+      "narration": "First the input is prepared. Then it is processed into the result.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "First the input is prepared. Then it is processed into the result.",
+          "visual": "Two-stage process animation.",
+          "image_prompt": "",
+          "source_references": ["Add your curriculum or textbook reference here"],
+          "shot": {
+            "template": "process",
+            "heading": "From input to result",
+            "learning_objective": "Follow the two stages in order.",
+            "steps": ["Prepare the input", "Process it into the result"],
+            "cues": ["First the input", "Then it is processed"]
+          }
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "title": "Comparing two ideas",
+      "narration": "Idea A works this way, whereas idea B works another way.",
+      "segments": [
+        {
+          "segment_number": 1,
+          "narration": "Idea A works this way, whereas idea B works another way.",
+          "visual": "Side-by-side comparison.",
+          "image_prompt": "",
+          "source_references": ["Add your curriculum or textbook reference here"],
+          "shot": {
+            "template": "comparison",
+            "heading": "Idea A versus idea B",
+            "learning_objective": "Tell the two ideas apart.",
+            "steps": ["Idea A works this way", "Idea B works another way"],
+            "cues": ["Idea A works", "whereas idea B"]
+          }
+        }
+      ]
+    }
+  ]
+}

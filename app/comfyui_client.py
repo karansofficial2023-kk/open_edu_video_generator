@@ -13,7 +13,16 @@ from urllib.parse import urlencode
 import requests
 
 from .config import AppConfig
+from .resilience import retry, wait_for
 from .schema import Segment
+
+
+MOTION_NEGATIVE = ("text, letters, watermark, logo, blurry, distorted, flicker, morphing, jitter, bad anatomy, "
+                   "duplicate parts, scene change, sudden cut, low quality")
+
+
+class WorkflowRejected(RuntimeError):
+    """ComfyUI refused the workflow (HTTP 4xx): retrying the same request cannot help."""
 
 
 class ComfyUIClient:
@@ -21,6 +30,7 @@ class ComfyUIClient:
         self.config = config
         self.base_url = config.comfyui.api_url.rstrip("/")
         self.client_id = str(uuid.uuid4())
+        self._down = False
 
     def generate_image(self, segment: Segment, output_path: str | Path, filename_prefix: str) -> Path:
         workflow = self._load_workflow()
@@ -37,6 +47,108 @@ class ComfyUIClient:
         prompt_id = self._queue_prompt(workflow)
         video_info = self._wait_for_media(prompt_id, ("videos", "gifs", "animated", "images"))
         return self._download_media(video_info, output_path)
+
+    def generate_motion(self, image: str | Path, prompt: str, output_path: str | Path, filename_prefix: str, seed: int | None = None) -> Path:
+        """Image-to-video: bring one approved still to life with the configured LTX workflow (first frame = the picture)."""
+        path = Path(self.config.production.motion_workflow_path)
+        if not path.is_absolute():
+            path = Path.cwd() / path
+        workflow = json.loads(path.read_text(encoding="utf-8"))
+        uploaded = self._upload_image(Path(image))
+        workflow = self.patch_motion_workflow(workflow, uploaded, prompt, MOTION_NEGATIVE, filename_prefix, seed if seed is not None else self._seed())
+        prompt_id = self._queue_prompt(workflow)
+        return self._download_media(self._wait_for_media(prompt_id, ("videos", "gifs", "animated", "images")), output_path)
+
+    def patch_motion_workflow(self, workflow: dict[str, Any], image_name: str, prompt: str, negative: str,
+                              filename_prefix: str, seed: int) -> dict[str, Any]:
+        """Fills an LTX image-to-video API workflow by node type and by conditioning links (not by node numbers)."""
+        production = self.config.production
+        patched = deepcopy(workflow)
+        for node in patched.values():
+            kind, inputs = node.get("class_type"), node.setdefault("inputs", {})
+            if kind == "LoadImage":
+                inputs["image"] = image_name
+            elif kind == "LTXVImgToVideo":
+                inputs.update(width=production.motion_width, height=production.motion_height, length=production.motion_frames, batch_size=1)
+                for polarity, text in (("positive", prompt), ("negative", negative)):
+                    link = inputs.get(polarity)
+                    if isinstance(link, list) and patched.get(str(link[0]), {}).get("class_type") == "CLIPTextEncode":
+                        patched[str(link[0])]["inputs"]["text"] = text
+            elif kind == "LTXVConditioning":
+                inputs["frame_rate"] = production.motion_fps
+            elif kind in {"SamplerCustom", "RandomNoise"}:
+                for key in ("noise_seed", "seed"):
+                    if key in inputs:
+                        inputs[key] = seed
+            elif kind in {"SaveWEBM", "SaveVideo", "SaveAnimatedWEBP", "VHS_VideoCombine"}:
+                inputs["filename_prefix"] = filename_prefix
+                for key in ("fps", "frame_rate"):
+                    if key in inputs:
+                        inputs[key] = production.motion_fps
+        return patched
+
+    def _upload_image(self, image: Path) -> str:
+        """ComfyUI loads LoadImage files from its own input folder; the HTTP upload works wherever the server runs."""
+        with image.open("rb") as handle:
+            response = requests.post(f"{self.base_url}/upload/image", files={"image": (f"edu_{image.stem}{image.suffix}", handle)},
+                                     data={"overwrite": "true"}, timeout=60)
+        response.raise_for_status()
+        return response.json()["name"]
+
+    def generate_still(self, prompt: str, negative: str, output_path: str | Path, seed: int,
+                       workflow_path: str, checkpoint: str, width: int, height: int, steps: int) -> Path:
+        """Text-to-image using an explicit production workflow (e.g. FLUX Schnell FP8)."""
+        path = Path(workflow_path)
+        if not path.is_absolute():
+            path = Path.cwd() / path
+        workflow = json.loads(path.read_text(encoding="utf-8"))
+        for node in workflow.values():
+            kind, inputs = node.get("class_type"), node.setdefault("inputs", {})
+            if kind == "CheckpointLoaderSimple":
+                inputs["ckpt_name"] = checkpoint
+            elif kind in {"EmptySD3LatentImage", "EmptyLatentImage"}:
+                inputs.update(width=width, height=height, batch_size=1)
+            elif kind == "KSampler":
+                inputs["seed"] = seed
+                inputs["steps"] = steps
+        for node in workflow.values():
+            if node.get("class_type") != "KSampler":
+                continue
+            for polarity, text in (("positive", prompt), ("negative", negative)):
+                link = node["inputs"].get(polarity)
+                if isinstance(link, list) and workflow[str(link[0])].get("class_type") == "CLIPTextEncode":
+                    workflow[str(link[0])]["inputs"]["text"] = text
+        return self._resilient(lambda: self._download_image(self._wait_for_image(self._queue_prompt(workflow)), output_path), "still")
+
+    def _resilient(self, action, label: str):
+        """ComfyUI closed, restarting or out of memory is a pause, not a failure: wait for it to answer, free the GPU, try again.
+        A workflow the server rejects (HTTP 4xx) is a real error and is raised at once."""
+        def attempt():
+            if self._down and not self.is_available():
+                raise WorkflowRejected("ComfyUI is not reachable (it did not come back within 5 minutes earlier in this run)")
+            try:
+                result = action()
+                self._down = False
+                return result
+            except WorkflowRejected:
+                raise
+            except (requests.ConnectionError, requests.Timeout):
+                if not wait_for(self.is_available, timeout=300, interval=5):   # one long wait per outage, later pictures fail fast
+                    self._down = True
+                raise
+            except (RuntimeError, TimeoutError) as exc:
+                if "out of memory" in str(exc).lower() or "oom" in str(exc).lower():
+                    self.free_memory()
+                raise
+        return retry(attempt, attempts=3, base_delay=5.0, label=f"ComfyUI {label}",
+                     retry_on=(requests.RequestException, RuntimeError, TimeoutError), stop_on=(WorkflowRejected,))
+
+    def free_memory(self) -> None:
+        """Best-effort model unload; a failure never invalidates media already written."""
+        try:
+            requests.post(f"{self.base_url}/free", json={"unload_models": True, "free_memory": True}, timeout=15)
+        except requests.RequestException:
+            pass
 
     def is_available(self) -> bool:
         try:
@@ -83,7 +195,7 @@ class ComfyUIClient:
             inputs = node.setdefault("inputs", {})
             if class_type == "CheckpointLoaderSimple" and not video:
                 inputs["ckpt_name"] = self.config.comfyui.checkpoint
-            elif class_type == "EmptyLatentImage":
+            elif class_type in {"EmptyLatentImage", "EmptySD3LatentImage"}:
                 inputs["width"] = self.config.comfyui.video_width if video else self.config.comfyui.width
                 inputs["height"] = self.config.comfyui.video_height if video else self.config.comfyui.height
                 inputs["batch_size"] = 1
@@ -189,11 +301,15 @@ class ComfyUIClient:
             timeout=30,
         )
         if not response.ok:
+            if 400 <= response.status_code < 500:
+                _raise = WorkflowRejected
+            else:
+                _raise = RuntimeError
             try:
                 details = json.dumps(response.json(), indent=2, ensure_ascii=False)
             except ValueError:
                 details = response.text
-            raise RuntimeError(
+            raise _raise(
                 f"ComfyUI rejected the workflow (HTTP {response.status_code}).\n"
                 f"Server: {self.base_url}\n"
                 f"Configured checkpoint: {self.config.comfyui.checkpoint}\n"

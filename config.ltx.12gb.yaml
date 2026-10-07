@@ -71,9 +71,6 @@ comfyui:
   video_cfg: 1.0
   video_sampler_name: "euler"
   video_scheduler: "simple"
-  real_image_auto_promote: true
-  video_auto_promote: false
-  video_max_segments: 1
   video_prompt_prefix: "realistic educational nature video, stable camera, gentle natural motion, coherent subject,"
   video_prompt_suffix: "short cinematic b-roll, natural motion, coherent anatomy, no text, no subtitles, no watermark"
 

@@ -3,508 +3,66 @@ from __future__ import annotations
 import re
 
 from .schema import Shot, Storyboard
+from .speech_text import spoken_math
+
+_CONTRAST = re.compile(r"\b(versus|vs\.?|whereas|compared (?:to|with)|in contrast|on the other hand|unlike)\b", re.I)
 
 
-REPLACEMENTS = {
-    "glystogamy": "cleistogamy",
-    "gystogamy": "cleistogamy",
-    "gynostegy": "cleistogamy",
-    "Glystogamy": "Cleistogamy",
-    "Gystogamy": "Cleistogamy",
-    "Gynostegy": "Cleistogamy",
-    "protogenic": "protogynous",
-    "Protogenic": "Protogynous",
-    "hetrostyle": "heterostyly",
-    "Hetrostyle": "Heterostyly",
-    "Xora": "Ixora",
-}
-
-UNSAFE_CURL_CLAIM = re.compile(
-    r"the\s+male\s+anther\s+curls\s+in\s+on\s+itself\s+to\s+deposit\s+pollen\s+on\s+the\s+sticky\s+female\s+stigma",
-    re.IGNORECASE,
-)
-
-
-def normalize_storyboard(storyboard: Storyboard) -> None:
-    """Make imported legacy storyboards renderable without silently executing source instructions."""
-    storyboard.title = _clean_text(storyboard.title)
-    storyboard.source = _clean_text(storyboard.source)
+def normalize_storyboard(storyboard: Storyboard, config=None) -> None:
+    """Make imported storyboards renderable. Topic-specific fixes come from config.text_replacements."""
+    replacements = dict(getattr(config, "text_replacements", {}) or {})
+    english = ((getattr(storyboard, "language", None) or {}).get("bcp47", "en") or "en").split("-")[0].lower() == "en"
+    clean = lambda text: spoken_math(_clean_text(text, replacements), english)       # no LaTeX in anything that is spoken or shown as prose
+    storyboard.title = clean(storyboard.title)
+    storyboard.source = clean(storyboard.source)
     for scene, segment in storyboard.all_segments():
-        scene.title = _clean_text(scene.title)
-        scene.narration = _clean_text(scene.narration)
-        segment.narration = _clean_text(segment.narration)
-        segment.visual = _clean_text(segment.visual)
-        segment.image_prompt = _clean_text(segment.image_prompt)
-        segment.keywords = [_clean_text(keyword).lower() for keyword in segment.keywords]
+        scene.title = clean(scene.title)
+        scene.narration = clean(scene.narration)
+        segment.narration = clean(segment.narration)
+        segment.subtitle = clean(segment.subtitle)           # shown on screen instead of the narration whenever it differs from it
+        segment.formula_lines = [line for line in segment.formula_lines if re.search(r"\w|\\", line)]    # a lone "=" is a fragment; "Λ₀ = Λ⁺ + Λ⁻" is not
+        segment.visual = clean(segment.visual)
+        segment.image_prompt = clean(segment.image_prompt)
+        segment.keywords = [clean(keyword).lower() for keyword in segment.keywords]
         if not segment.source_references:
             segment.source_references = ["Imported storyboard; verify against curriculum before publication."]
         if segment.shot is None:
             segment.shot = _infer_shot(scene.title, segment.narration)
         else:
-            segment.shot.heading = _clean_text(segment.shot.heading)
-            segment.shot.learning_objective = _clean_text(segment.shot.learning_objective)
-            segment.shot.steps = [_clean_text(step) for step in segment.shot.steps]
-            segment.shot.cues = [_clean_text(cue) for cue in segment.shot.cues]
-            segment.shot = _refine_imported_shot(scene.title, segment)
+            segment.shot.heading = clean(segment.shot.heading)
+            segment.shot.learning_objective = clean(segment.shot.learning_objective)
+            segment.shot.steps = [clean(step) for step in segment.shot.steps]
+            segment.shot.cues = [clean(cue) for cue in segment.shot.cues]
+        if segment.shot is not None and segment.shot.template == "formula" and not segment.formula_lines:
+            segment.shot = _infer_shot(segment.shot.heading or scene.title, segment.narration)     # never an empty equation card
+    merge_filler_shots(storyboard)
+    merge_repeated_formulas(storyboard)
 
 
-
-def _refine_imported_shot(scene_title: str, segment) -> Shot:
-    """Replace generic imported card shots with safer subject-specific visuals."""
-    shot = segment.shot
-    text = " ".join([
-        scene_title or "",
-        segment.narration or "",
-        segment.visual or "",
-        segment.image_prompt or "",
-        " ".join(segment.keywords or []),
-        shot.heading if shot else "",
-        shot.learning_objective if shot else "",
-        " ".join(shot.steps if shot else []),
-    ]).lower()
-
-    if "self-pollination" in text and "cross-pollination" in text and ("summary" in text or "comparing" in text):
-        return Shot(
-            template="classification",
-            heading="Types Of Pollination",
-            learning_objective="Separate self-pollination from cross-pollination.",
-            steps=["Self-pollination", "Cross-pollination"],
-            stage_fractions=[0, 0.5],
-        )
-    if "cleistogamy" in text or "unopened flower" in text or "closed flower" in text:
-        return Shot(
-            template="process",
-            heading="Cleistogamy",
-            learning_objective="Show self-pollination inside a closed flower.",
-            steps=["Flower remains closed", "Self-pollination occurs inside"],
-            stage_fractions=[0, 0.52],
-        )
-    if "protandry" in text or "anther matures first" in text or "anthers mature before" in text:
-        return Shot(
-            template="protandry",
-            heading="Protandry",
-            learning_objective="Show that anthers release pollen before the stigma becomes receptive.",
-            stage_fractions=[0, 0.52],
-        )
-    if "protogyn" in text or "stigma matures first" in text or "stigma maturation first" in text:
-        return Shot(
-            template="protogyny",
-            heading="Protogyny",
-            learning_objective="Show that the stigma becomes receptive before anthers release pollen.",
-            stage_fractions=[0, 0.52],
-        )
-    if "bee orchid" in text or "female bee mimic" in text:
-        segment.image_prompt = (
-            "Macro documentary photograph of a bee orchid flower that resembles a female bee, "
-            "with a male bee nearby, realistic botanical detail, natural daylight, no text, no labels."
-        )
-        return Shot(
-            template="photo",
-            heading="Bee Orchid Mimicry",
-            learning_objective="Show how deceptive mimicry can attract a pollinator.",
-        )
-    return shot
-
-
-REAL_IMAGE_TEMPLATES = {"pollination", "insect", "wind", "water", "agents", "life_cycle"}
-VIDEO_TEMPLATES = {"insect", "wind"}
-VIDEO_KEYWORDS = {
-    "bee": 7,
-    "bees": 7,
-    "insect": 7,
-    "insects": 7,
-    "butterfly": 6,
-    "butterflies": 6,
-    "bird": 6,
-    "birds": 6,
-    "bat": 6,
-    "bats": 6,
-    "animal": 5,
-    "animals": 5,
-    "pollinator": 7,
-    "pollinators": 7,
-    "entomophily": 7,
-    "anemophily": 6,
-    "hydrophily": 6,
-    "wind": 5,
-    "water": 5,
-    "aquatic": 5,
-    "flower": 3,
-    "flowers": 3,
-    "pollen": 3,
-    "nectar": 4,
-    "orchid": 5,
-    "meadow": 4,
-    "sunflower": 4,
-    "cross-pollination": 5,
-}
-DIAGRAM_FIRST_TERMS = {
-    "classification",
-    "classified",
-    "compare",
-    "advantages",
-    "disadvantages",
-    "protandry",
-    "protogyny",
-    "cleistogamy",
-    "autogamy",
-    "geitonogamy",
-    "sequence",
-    "earlier",
-    "later",
-}
-
-
-def promote_real_image_shots(storyboard: Storyboard, config) -> None:
-    """Use HD generated photos for real-world biology scenes from imported storyboards."""
-    comfy = getattr(config, "comfyui", None)
-    if not comfy or not comfy.enabled or not getattr(comfy, "real_image_auto_promote", True):
-        return
-    for scene, segment in storyboard.all_segments():
-        shot = segment.shot
-        if shot is None or shot.template in {"photo", "video"} or shot.asset_path:
-            continue
-        if shot.template not in REAL_IMAGE_TEMPLATES:
-            continue
-        score = _real_image_candidate_score(scene.title, segment)
-        if score <= 0:
-            continue
-        segment.image_prompt = _photo_prompt_from_segment(scene.title, segment)
-        segment.shot = Shot(
-            template="photo",
-            heading=shot.heading or _heading_from_text(segment.narration),
-            learning_objective=shot.learning_objective or "Show this concept with a realistic educational visual.",
-        )
-
-
-def promote_video_shots(storyboard: Storyboard, config) -> None:
-    """Use Wan only for a small number of simple motion shots.
-
-    Wan text-to-video can look impressive, but it is unreliable for exact labelled
-    science. Real HD images and deterministic diagrams are safer for most educational
-    scenes. Automatic Wan promotion is limited to biology/pollination-style natural
-    motion; other subjects use Wan only if the source storyboard explicitly requests it.
-    """
-    _keep_only_explicit_video_shots_for_non_nature_topic(storyboard)
-    comfy = getattr(config, "comfyui", None)
-    if not comfy or not comfy.enabled or not comfy.video_enabled or not comfy.video_auto_promote:
-        return
-    max_segments = max(0, int(comfy.video_max_segments or 0))
-    if max_segments == 0 or not comfy.video_workflow_path:
-        return
-    if not _allows_automatic_wan(storyboard):
-        return
-
-    candidates = []
-    for order, (scene, segment) in enumerate(storyboard.all_segments()):
-        shot = segment.shot
-        if shot is None or shot.template == "video" or shot.asset_path:
-            continue
-        score = _video_candidate_score(scene.title, segment)
-        if score > 0:
-            candidates.append((score, order, segment, shot))
-
-    candidates.sort(key=lambda item: (-item[0], item[1]))
-    for _, _, segment, shot in candidates[:max_segments]:
-        prompt = _video_prompt_from_segment(segment)
-        if prompt:
-            segment.image_prompt = prompt
-        segment.shot = Shot(
-            template="video",
-            heading=shot.heading or _heading_from_text(segment.narration),
-            learning_objective=shot.learning_objective or "Show the idea as a short cinematic educational clip.",
-        )
-
-
-def _demote_unreliable_generated_video(scene_title: str, segment) -> None:
-    """Prefer stable photo visuals where local T2V is likely to hallucinate anatomy."""
-    shot = segment.shot
-    if shot is None or shot.template != "video" or shot.asset_path:
-        return
-    text = " ".join([
-        scene_title or "",
-        segment.narration or "",
-        segment.visual or "",
-        segment.image_prompt or "",
-        shot.heading or "",
-        shot.learning_objective or "",
-    ]).lower()
-    risky_terms = {
-        "template: video", "bee", "bees", "insect", "insects", "butterfly", "pollinator", "pollinators",
-        "orchid", "mimicry", "diagram", "label", "labeled", "anther", "stigma",
-    }
-    if not any(term in text for term in risky_terms):
-        return
-    segment.image_prompt = _photo_prompt_from_segment(scene_title, segment)
-    segment.shot = Shot(
-        template="photo",
-        heading=shot.heading or _heading_from_text(segment.narration),
-        learning_objective=shot.learning_objective or "Show this concept with a realistic educational visual.",
-    )
-def _contains_term(text: str, term: str) -> bool:
-    pattern = r"(?<![a-z])" + re.escape(term.lower()).replace(r"\ ", r"\s+") + r"(?![a-z])"
-    return re.search(pattern, text.lower()) is not None
-
-
-def _keep_only_explicit_video_shots_for_non_nature_topic(storyboard: Storyboard) -> None:
-    if _allows_automatic_wan(storyboard):
-        return
-    for _, segment in storyboard.all_segments():
-        if segment.shot and segment.shot.template == "video" and not _source_explicitly_requested_video(segment):
-            segment.shot = Shot(
-                template="photo",
-                heading=segment.shot.heading or _heading_from_text(segment.narration),
-                learning_objective=segment.shot.learning_objective or "Show this segment with a realistic educational visual.",
-            )
-
-
-def _allows_automatic_wan(storyboard: Storyboard) -> bool:
-    text = " ".join([storyboard.title or "", storyboard.source or ""]).lower()
-    return any(_contains_term(text, term) for term in [
-        "pollination", "flower", "bee", "insect", "butterfly", "wind pollination", "plant"
-    ])
-
-
-def _source_explicitly_requested_video(segment) -> bool:
-    text = " ".join([segment.visual or "", segment.image_prompt or ""]).lower()
-    return "wan video" in text or "template: video" in text
-
-
-def _real_image_candidate_score(scene_title: str, segment) -> int:
-    shot = segment.shot
-    text = " ".join([
-        scene_title or "",
-        segment.narration or "",
-        segment.visual or "",
-        segment.image_prompt or "",
-        " ".join(segment.keywords or []),
-        shot.heading if shot else "",
-        shot.learning_objective if shot else "",
-    ]).lower()
-    score = 0
-    if shot and shot.template in REAL_IMAGE_TEMPLATES:
-        score += 4
-    for word, weight in VIDEO_KEYWORDS.items():
-        if _contains_term(text, word):
-            score += max(1, weight // 2)
-    for term in DIAGRAM_FIRST_TERMS:
-        if term in text:
-            score -= 6
-    return score
-
-
-def _photo_prompt_from_segment(scene_title: str, segment) -> str:
-    text = " ".join([scene_title or "", segment.narration or "", segment.visual or "", segment.image_prompt or ""]).lower()
-    if "hydrophily" in text or "water" in text or "aquatic" in text:
-        subject = "macro documentary photograph of aquatic flowering plants at the water surface, small pollen grains floating across calm water toward another flower"
-    elif "anemophily" in text or "wind" in text:
-        subject = "documentary photograph of grass flowers releasing fine pollen into a light breeze, natural outdoor daylight, shallow depth of field"
-    elif "entomophily" in text or "bee" in text or "insect" in text or "butterfl" in text:
-        subject = "macro documentary photograph of a bee visiting a bright flower, pollen grains visible on its body, realistic petals and anthers"
-    elif "bird" in text or "ornithophily" in text:
-        subject = "documentary photograph of a sunbird or hummingbird feeding from a tubular flower, pollen transfer suggested naturally"
-    elif "bat" in text or "chiropterophily" in text:
-        subject = "night documentary photograph of a bat pollinating a pale night-blooming flower, realistic natural history lighting"
-    elif "cross-pollination" in text:
-        subject = "realistic educational photograph of two flowering plants of the same species, pollinator moving between flowers, pollen transfer implied"
-    elif "life cycle" in text or "seed" in text or "fruit" in text:
-        subject = "realistic photograph of a flowering plant with developing fruit and seeds nearby, natural daylight, educational biology context"
-    else:
-        subject = segment.image_prompt or segment.visual or segment.narration
-    return (
-        f"{subject}. High resolution realistic educational biology photograph, accurate natural flower structures, "
-        "single clear scene, no labels, no text, no arrows, no diagram, no collage."
-    )
-
-
-def _video_candidate_score(scene_title: str, segment) -> int:
-    shot = segment.shot
-    text = " ".join([
-        scene_title or "",
-        segment.narration or "",
-        segment.visual or "",
-        segment.image_prompt or "",
-        " ".join(segment.keywords or []),
-        shot.heading if shot else "",
-        shot.learning_objective if shot else "",
-    ]).lower()
-    score = 0
-    if shot and shot.template in VIDEO_TEMPLATES:
-        score += 3
-    if shot and shot.template == "photo" and any(_contains_term(text, word) for word in ["bee", "insect", "butterfly", "butterflies", "wind"]):
-        score += 4
-    if any(_contains_term(text, word) for word in ["hydrophily", "aquatic", "floating pollen", "water surface", "water pollination"]):
-        score -= 20
-    for word, weight in VIDEO_KEYWORDS.items():
-        if _contains_term(text, word):
-            score += weight
-    for term in DIAGRAM_FIRST_TERMS:
-        if term in text:
-            score -= 5
-    if shot and shot.template in {"classification", "comparison", "process", "pros_cons", "protandry", "protogyny"}:
-        score -= 4
-    return score
-
-
-def _video_prompt_from_segment(segment) -> str:
-    text = " ".join([segment.narration or "", segment.visual or "", segment.image_prompt or ""]).lower()
-    if "bee" in text or "insect" in text or "entomophily" in text or "butterfl" in text:
-        return (
-            "Macro nature video of a bee slowly visiting a single bright flower, pollen dust visible on the bee body, "
-            "realistic petals and anthers, shallow depth of field, gentle natural movement, no text."
-        )
-    if "wind" in text or "anemophily" in text:
-        return (
-            "Realistic nature video of grass flowers in a light breeze releasing fine pollen, soft daylight, "
-            "stable close camera, gentle plant movement, no text."
-        )
-    return (
-        "Realistic macro nature video of a flower with subtle natural movement, soft daylight, stable camera, "
-        "accurate plant details, no text."
-    )
-
-
-def _clean_text(text: str) -> str:
+def _clean_text(text: str, replacements: dict[str, str]) -> str:
     if not text:
         return text
-    cleaned = text.replace("\ufffd", "-")
-    for old, new in REPLACEMENTS.items():
-        cleaned = re.sub(rf"\b{re.escape(old)}\b", new, cleaned)
-    cleaned = UNSAFE_CURL_CLAIM.sub(
-        "pollen grains from the anther are transferred to the receptive stigma",
-        cleaned,
-    )
+    cleaned = text.replace("�", "-")
+    for old, new in replacements.items():
+        cleaned = re.sub(rf"\b{re.escape(old)}\b", _keep_case(new), cleaned, flags=re.I)
     return cleaned
 
 
+def _keep_case(replacement: str):
+    def apply(match: re.Match) -> str:
+        return replacement.capitalize() if match.group(0)[:1].isupper() else replacement
+    return apply
+
+
 def _infer_shot(scene_title: str, narration: str) -> Shot:
-    text = f"{scene_title} {narration}".lower()
-    if "life cycle" in text or "seed" in text or "fruit" in text or "fertilization" in text:
-        return Shot(
-            template="life_cycle",
-            heading="Pollination In The Plant Life Cycle",
-            learning_objective="Connect pollination to fertilization, seeds, and fruits.",
-            stage_fractions=[0, 0.52],
-        )
-    if "classified" in text or "classification" in text or ("self-pollination" in text and "cross-pollination" in text):
-        return Shot(
-            template="classification",
-            heading="Types Of Pollination",
-            learning_objective="Separate self-pollination from cross-pollination.",
-            steps=["Self-pollination", "Cross-pollination"],
-            stage_fractions=[0, 0.5],
-        )
-    if "autogamy" in text or "geitonogamy" in text or "same flower" in text or "same plant" in text:
-        return Shot(
-            template="classification",
-            heading="Self-Pollination",
-            learning_objective="Compare autogamy and geitonogamy.",
-            steps=["Autogamy: same flower", "Geitonogamy: same plant"],
-            stage_fractions=[0, 0.5],
-        )
-    if "cross-pollination" in text or "different plant" in text or "different flowers" in text:
-        return Shot(
-            template="pollination",
-            heading="Cross-Pollination",
-            learning_objective="Show pollen transfer between flowers on different plants.",
-            stage_fractions=[0, 0.52],
-        )
-    if "anemophily" in text or "wind" in text or "feathery" in text or "airborne" in text:
-        return Shot(
-            template="wind",
-            heading="Anemophily",
-            learning_objective="Show how wind carries light pollen to a feathery stigma.",
-            stage_fractions=[0, 0.52],
-        )
-    if "hydrophily" in text or "vallisneria" in text or "hydrilla" in text or "water" in text:
-        return Shot(
-            template="water",
-            heading="Hydrophily",
-            learning_objective="Show pollen transfer through water in aquatic plants.",
-            stage_fractions=[0, 0.52],
-        )
-    if "entomophily" in text or "insect" in text or "bee" in text or "butterfl" in text:
-        return Shot(
-            template="insect",
-            heading="Entomophily",
-            learning_objective="Show insect attraction and pollen attachment.",
-            stage_fractions=[0, 0.52],
-        )
-    if any(word in text for word in ["ornithophily", "chiropterophily", "zoophily", "agents", "birds", "bats", "animals"]):
-        return Shot(
-            template="agents",
-            heading="Pollination Agents",
-            learning_objective="Compare major agents of cross-pollination.",
-            steps=["Wind", "Water", "Insects", "Birds, bats, animals"],
-            stage_fractions=[0, 0.25, 0.5, 0.75],
-        )
-    if "advantages" in text or "disadvantages" in text or "genetic diversity" in text or "pure lines" in text:
-        return Shot(
-            template="pros_cons",
-            heading="Advantages And Limits",
-            learning_objective="Compare benefits and limitations.",
-            steps=["Advantages", "Disadvantages"],
-            stage_fractions=[0, 0.5],
-        )
-    if "protandry" in text or "anther matures first" in text:
-        return Shot(
-            template="protandry",
-            heading="Protandry",
-            learning_objective="Show that the male part matures before the female part.",
-            stage_fractions=[0, 0.52],
-        )
-    if "protogyn" in text or "stigma matures first" in text:
-        return Shot(
-            template="protogyny",
-            heading="Protogyny",
-            learning_objective="Show that the female part matures before the male part.",
-            stage_fractions=[0, 0.52],
-        )
-    if "pollination" in text or "pollen" in text or "anther" in text or "stigma" in text:
-        return Shot(
-            template="pollination",
-            heading="Pollination",
-            learning_objective="Show pollen transfer to a receptive stigma.",
-            stage_fractions=[0, 0.55],
-        )
-    if "unisexual" in text or ("male" in text and "female" in text):
-        return Shot(
-            template="comparison",
-            heading="Flower Types",
-            learning_objective="Compare male and female flower roles.",
-            steps=["Male flower produces pollen", "Female flower bears stigma and ovary"],
-            stage_fractions=[0, 0.5],
-        )
-    if "cleistogamy" in text or "closed" in text:
-        return Shot(
-            template="process",
-            heading="Cleistogamy",
-            learning_objective="Show self-pollination inside a closed flower.",
-            steps=["Flower remains closed", "Self-pollination occurs inside"],
-            stage_fractions=[0, 0.52],
-        )
-    if "bee orchid" in text or "mimics" in text:
-        return Shot(
-            template="process",
-            heading="Pollinator Mimicry",
-            learning_objective="Show how mimicry can attract pollinators.",
-            steps=["Flower resembles a pollinator signal", "Visitor transfers pollen"],
-            stage_fractions=[0, 0.52],
-        )
-    if "water" in text:
-        return Shot(
-            template="process",
-            heading="Water And Pollination",
-            learning_objective="Separate pollination agents from nectar attraction.",
-            steps=["Some pollen moves by water", "Many flowers attract animals with nectar"],
-            stage_fractions=[0, 0.52],
-        )
+    """Subject-independent fallback: a two-stage comparison or process built from the narration itself."""
+    heading = scene_title.strip() or _heading_from_text(narration)
+    template = "comparison" if _CONTRAST.search(narration) else "process"
     return Shot(
-        template="process",
-        heading=_heading_from_text(narration),
+        template=template,
+        heading=heading,
         learning_objective="Explain the key idea in this segment.",
-        steps=_two_steps(narration),
-        stage_fractions=[0, 0.52],
+        steps=_two_steps(narration) if template == "comparison" else _card_steps(narration, heading),     # the two sides / complete statements
     )
 
 
@@ -514,16 +72,120 @@ def _heading_from_text(text: str) -> str:
 
 
 def _two_steps(text: str) -> list[str]:
-    clauses = [part.strip(" .") for part in re.split(r",|\band\b|\bbut\b|\bthen\b", text) if part.strip()]
-    if len(clauses) >= 2:
+    parts = _CONTRAST.split(text)
+    if len(parts) >= 3:  # split() keeps the captured connector at odd positions
+        clauses = [parts[0].strip(" .,;"), parts[2].strip(" .,;")]
+    else:
+        clauses = [part.strip(" .") for part in re.split(r",|;|\band\b|\bbut\b|\bthen\b", text) if part.strip()]
+    if len(clauses) >= 2 and all(clauses[:2]):
         return [_short_step(clauses[0]), _short_step(clauses[1])]
     return [_short_step(text), "Connect it to the main concept"]
 
 
 def _short_step(text: str) -> str:
-    words = re.findall(r"[A-Za-z][A-Za-z-]{1,}", text)
+    words = re.findall(r"[A-Za-z0-9][A-Za-z0-9-]*", text)
     return " ".join(words[:8]) or "Observe the idea"
 
 
+def _card_steps(narration: str, heading: str = "") -> list[str]:
+    from .assets import complete_cards          # complete statements, never a sentence cut in half
+    return complete_cards(narration, heading)[:4]
 
 
+def _content_words(text: str) -> int:
+    return len([w for w in re.findall(r"[^\W\d_][\w'-]*", text or "") if len(w) > 2])
+
+
+def merge_filler_shots(storyboard: Storyboard) -> int:
+    """A teacher does not change the board for "Clear?", "Fascinating, isn't it?" or "Keep learning": such lines are spoken over the
+    picture that is already showing. Sign-offs, encouragements, rhetorical checks and very short remarks (two content words or
+    fewer) are appended to the previous shot's narration instead of getting a screen of their own. Shots that carry their own
+    content (formulas, labels, steps from the storyboard) are never merged away. Returns the number of shots merged."""
+    from .assets import is_filler_narration
+    merged = 0
+    previous = None
+    for scene in storyboard.scenes:
+        kept = []
+        for segment in scene.segments:
+            own_content = bool(segment.formula_lines or segment.labels or segment.steps or segment.columns)
+            filler = is_filler_narration(segment.narration) or _content_words(segment.narration) <= 2
+            if previous is not None and filler and not own_content and segment.narration.strip():
+                previous.narration = f"{previous.narration.rstrip()} {segment.narration.strip()}".strip()
+                if previous.subtitle or segment.subtitle:
+                    previous.subtitle = f"{(previous.subtitle or '').rstrip()} {(segment.subtitle or segment.narration).strip()}".strip()
+                previous.duration_hint = (previous.duration_hint or 0) + (segment.duration_hint or 0)
+                if previous.shot is not None and previous.shot.template in {"process", "comparison"} and not previous.steps:
+                    previous.shot.steps = _card_steps(previous.narration, previous.shot.heading)       # cards follow the longer narration
+                    previous.shot.stage_fractions, previous.shot.cues = [], []
+                merged += 1
+                continue
+            kept.append(segment)
+            previous = segment
+        scene.segments = kept
+    # a scene made only of remarks (a sign-off scene) is now spoken over the previous scene's last picture
+    storyboard.scenes = [scene for scene in storyboard.scenes if scene.segments]
+    return merged
+
+
+def _formula_key(lines: list[str]) -> str:
+    """The same equation written two ways ("x + 1/x" and "x + \\frac{1}{x}") is one equation."""
+    def norm(line: str) -> str:
+        line = re.sub(r"\\[dt]?frac\s*\{([^{}]*)\}\s*\{([^{}]*)\}", r"(\1)/(\2)", line)
+        line = re.sub(r"\\(left|right|,|;|!|quad)", "", line).replace("\\cdot", "*").replace("\\times", "*")
+        line = re.sub(r"[\s{}$]", "", line)
+        return re.sub(r"\((\w+)\)", r"\1", line)          # (1)/(x) -> 1/x
+    return "|".join(norm(line) for line in lines if line.strip())
+
+
+def merge_repeated_formulas(storyboard: Storyboard) -> int:
+    """A teacher writes an equation on the board once and keeps talking about it; the same equation is not rewritten on a fresh board
+    every sentence. A formula shot that repeats the equation(s) of the formula shot before it is merged into that shot,
+    together with any short explanation cards in between (cards that carry no labels, photographs or equation of their own). The
+    narration is kept in order; the explanation steps are kept too, so the note under the equation changes as the talk goes on.
+    A photograph, a labelled picture or a different equation ends the run. Returns the number of shots merged away."""
+    from .subject import MATHS, subject_of
+    # In mathematics a planned photograph between two writings of the same equation is only a spoken step ("Let the given number be
+    # x"): it becomes a card anyway (subject.py), so it does not interrupt the board. In other subjects a photograph ends the run.
+    maths = subject_of(storyboard) == MATHS
+    merged = 0
+    # the board is not wiped at a scene boundary: the run continues into the next scene (an equation that ends one scene and opens
+    # the next is written once); everything else that stands between two writings still ends the run
+    kept_in: dict[int, list] = {id(scene): [] for scene in storyboard.scenes}
+    order: list = []                     # (scene, segment) kept so far, in lesson order
+    pending: list = []                   # (scene, segment) plain cards seen after the last formula shot
+    blocked = True
+    for scene in storyboard.scenes:
+        for segment in scene.segments:
+            shot = segment.shot
+            anchor = next((seg for _sc, seg in reversed(order) if seg.shot and seg.shot.template == "formula"), None)
+            is_formula = bool(shot and shot.template == "formula" and segment.formula_lines)
+            if is_formula and anchor is not None and _formula_key(segment.formula_lines) == _formula_key(anchor.formula_lines)                     and not blocked:
+                for _sc, between in pending + [(scene, segment)]:
+                    anchor.narration = f"{anchor.narration.rstrip()} {between.narration.strip()}".strip()
+                    if anchor.subtitle or between.subtitle:
+                        anchor.subtitle = f"{(anchor.subtitle or '').rstrip()} {(between.subtitle or between.narration).strip()}".strip()
+                    anchor.duration_hint = (anchor.duration_hint or 0) + (between.duration_hint or 0)
+                    for step in between.explain_steps:
+                        if step not in anchor.explain_steps:
+                            anchor.explain_steps.append(step)
+                for sc, between in pending:
+                    kept_in[id(sc)].remove(between)
+                    order.remove((sc, between))
+                merged += len(pending) + 1
+                pending = []
+                continue
+            card_like = {"process", "comparison"} | ({"photo"} if maths else set())
+            plain_card = bool(shot and shot.template in card_like and not segment.labels and not segment.formula_lines
+                              and not (shot.asset_path or segment.asset_path))
+            if is_formula:
+                pending, blocked = [], False
+            elif plain_card:
+                pending.append((scene, segment))
+            else:
+                pending, blocked = [], True
+            kept_in[id(scene)].append(segment)
+            order.append((scene, segment))
+    for scene in storyboard.scenes:
+        scene.segments = kept_in[id(scene)]
+    storyboard.scenes = [scene for scene in storyboard.scenes if scene.segments]
+    return merged

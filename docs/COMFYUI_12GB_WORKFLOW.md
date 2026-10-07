@@ -127,13 +127,13 @@ ollama pull llama3.1:8b
 3. Run the generator:
 
 ```powershell
-python -m app.main --input "C:\Users\admin\Downloads\5913833-Types of Pollination_storyboard.docx" --output ".\outputs\pollination_12gb" --config ".\config.yaml"
+python -m app.main --input "path\to\your_storyboard.docx" --output ".\outputs/my_lesson" --config ".\config.yaml"
 ```
 
 ## Output
 
 ```text
-outputs/pollination_12gb/
+outputs/my_lesson/
   generated_images/
   frames/
   clips/

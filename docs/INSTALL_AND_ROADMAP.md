@@ -125,19 +125,19 @@ Plain text input:
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
-python -m app.main --input ".\samples\pollination.txt" --output ".\outputs\pollination" --config ".\config.yaml"
+python -m app.main --input ".\your_lesson.txt" --output ".\outputs/my_lesson" --config ".\config.yaml"
 ```
 
 Storyboard DOCX input:
 
 ```powershell
-python -m app.main --input "C:\Users\karan\Downloads\5913833-Types of Pollination_storyboard.docx" --output ".\outputs\pollination_docx" --config ".\config.yaml"
+python -m app.main --input "path\to\your_storyboard.docx" --output ".\outputs/my_lesson" --config ".\config.yaml"
 ```
 
 Debug without audio:
 
 ```powershell
-python -m app.main --input ".\samples\pollination.txt" --output ".\outputs\debug_frames" --skip-tts
+python -m app.main --input ".\your_lesson.txt" --output ".\outputs\debug_frames" --skip-tts
 ```
 
 ## What The Project Produces

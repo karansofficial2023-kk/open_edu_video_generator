@@ -17,7 +17,6 @@ from app.input_reader import _shot_from_media_type
 from app.renderer import render_video
 from app.schema import Scene, Segment, Shot, Storyboard
 from app.visual_planner import prepare_visual_prompts
-from app.storyboard_cleanup import normalize_storyboard, promote_real_image_shots, promote_video_shots
 from app.visuals import _font, _pixel_wrap, render_ai_image_frame, render_segment_frames
 
 
@@ -25,10 +24,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def storyboard():
-    segment = Segment(segment_number=1, narration="Pollen is transferred to the stigma.",
-                      visual="Label the anther and stigma on a flower diagram.",
-                      image_prompt="A flower with labels", keywords=["Pollen", "Stigma"], end=0.6)
-    return Storyboard(title="Pollination", scenes=[Scene(scene_number=1, title="Pollen transfer",
+    segment = Segment(segment_number=1, narration="Current flows through the circuit.",
+                      visual="Label the battery and bulb on a circuit diagram.",
+                      image_prompt="A circuit with labels", keywords=["Current", "Circuit"], end=0.6)
+    return Storyboard(title="Circuits", scenes=[Scene(scene_number=1, title="Current flow",
                      narration=segment.narration, segments=[segment])])
 
 
@@ -93,16 +92,16 @@ class QualityTests(unittest.TestCase):
         workflow = json.loads((ROOT / "workflows/sdxl_txt2img_api.json").read_text())
         workflow = dict(reversed(list(workflow.items())))
         config = AppConfig()
-        result = ComfyUIClient(config)._patch_workflow(workflow, "A flower", "test")
-        self.assertEqual(result["6"]["inputs"]["text"], "A flower")
+        result = ComfyUIClient(config)._patch_workflow(workflow, "A subject", "test")
+        self.assertEqual(result["6"]["inputs"]["text"], "A subject")
         self.assertEqual(result["7"]["inputs"]["text"], config.comfyui.negative_prompt)
-        self.assertNotEqual(workflow["6"]["inputs"]["text"], "A flower")
+        self.assertNotEqual(workflow["6"]["inputs"]["text"], "A subject")
 
     def test_raw_label_instructions_are_not_appended(self):
         segment = storyboard().all_segments()[0][1]
-        segment.image_prompt = "One flower outdoors"
+        segment.image_prompt = "One subject outdoors"
         prompt = ComfyUIClient(AppConfig())._build_prompt(segment)
-        self.assertIn("One flower outdoors", prompt)
+        self.assertIn("One subject outdoors", prompt)
         self.assertNotIn(segment.visual, prompt)
 
     def test_video_workflow_patches_common_video_nodes(self):
@@ -121,7 +120,7 @@ class QualityTests(unittest.TestCase):
             "5": {"class_type": "VHS_VideoCombine", "inputs": {"filename_prefix": "", "frame_rate": 1}},
             "9": {"class_type": "CreateVideo", "inputs": {"fps": 24}},
         }
-        patched = ComfyUIClient(config)._patch_workflow(workflow, "A moving flower", "lesson_video", video=True)
+        patched = ComfyUIClient(config)._patch_workflow(workflow, "A moving subject", "lesson_video", video=True)
         self.assertEqual(patched["4"]["inputs"]["width"], 832)
         self.assertEqual(patched["4"]["inputs"]["height"], 480)
         self.assertEqual(patched["4"]["inputs"]["length"], 81)
@@ -132,16 +131,16 @@ class QualityTests(unittest.TestCase):
         self.assertEqual(patched["3"]["inputs"]["cfg"], config.comfyui.video_cfg)
         self.assertEqual(patched["3"]["inputs"]["sampler_name"], config.comfyui.video_sampler_name)
         self.assertEqual(patched["3"]["inputs"]["scheduler"], config.comfyui.video_scheduler)
-        self.assertEqual(patched["1"]["inputs"]["text"], "A moving flower")
+        self.assertEqual(patched["1"]["inputs"]["text"], "A moving subject")
 
     def test_existing_storyboard_prompts_are_rewritten_and_audited(self):
         config = load_config(ROOT / "config.12gb.yaml")
         board = storyboard()
         response = Mock()
-        response.json.return_value = {"response": json.dumps({"image_prompt": "A single flower outdoors."})}
+        response.json.return_value = {"response": json.dumps({"image_prompt": "A single subject outdoors."})}
         with tempfile.TemporaryDirectory() as directory, patch("app.visual_planner.requests.post", return_value=response) as post:
             prepare_visual_prompts(board, Path(directory), config)
-            self.assertEqual(board.all_segments()[0][1].image_prompt, "A single flower outdoors.")
+            self.assertEqual(board.all_segments()[0][1].image_prompt, "A single subject outdoors.")
             audit = json.loads((Path(directory) / "visual_plan.json").read_text())
             self.assertTrue(audit[0]["scientific_review_recommended"])
             self.assertEqual(post.call_args.kwargs["json"]["keep_alive"], 0)
@@ -149,7 +148,7 @@ class QualityTests(unittest.TestCase):
     def test_pixel_wrap_preserves_long_words_without_overflow(self):
         draw = ImageDraw.Draw(Image.new("RGB", (500, 500)))
         font = _font(30)
-        text = "WWWWWWWWWWWWWWWWWWWW pollen transfer"
+        text = "WWWWWWWWWWWWWWWWWWWW current flow"
         lines = _pixel_wrap(draw, text, font, 150)
         self.assertEqual("".join(lines).replace(" ", ""), text.replace(" ", ""))
         self.assertTrue(all(draw.textlength(line, font=font) <= 150 for line in lines))
@@ -190,7 +189,7 @@ class QualityTests(unittest.TestCase):
         config.comfyui.video_enabled = True
         board = storyboard()
         segment = board.all_segments()[0][1]
-        segment.shot = Shot(template="video", heading="Moving flower")
+        segment.shot = Shot(template="video", heading="Moving subject")
         with tempfile.TemporaryDirectory() as directory, patch.object(ComfyUIClient, "is_available", return_value=True), \
              patch.object(ComfyUIClient, "generate_video") as generate_video:
             generated = Path(directory) / "generated_videos" / "scene_01_segment_01.mp4"
@@ -218,64 +217,6 @@ class QualityTests(unittest.TestCase):
         self.assertNotIn("local animation", teaching_text)
         self.assertIn("electron flow", teaching_text)
 
-    def test_chemistry_storyboard_does_not_auto_promote_generic_wan(self):
-        config = load_config(ROOT / "config.12gb.yaml")
-        config.comfyui.enabled = True
-        config.comfyui.video_enabled = True
-        config.comfyui.video_max_segments = 1
-        segment = Segment(
-            segment_number=1,
-            narration="Kohlrausch law determines limiting molar conductivity of weak electrolytes.",
-            visual="Diagram | Static image | Formula with ion contributions",
-            image_prompt="Educational diagram of Kohlrausch law formula with ion contributions",
-            keywords=["Kohlrausch law", "limiting molar conductivity"],
-            shot=Shot(template="photo", heading="Kohlrausch law"),
-        )
-        board = Storyboard(title="Applications of Kohlrausch Law", source=segment.narration,
-                           scenes=[Scene(scene_number=1, title="Conductivity", narration=segment.narration, segments=[segment])])
-        promote_video_shots(board, config)
-        self.assertEqual(board.all_segments()[0][1].shot.template, "photo")
-
-    def test_electroplating_terms_do_not_trigger_bat_video_keyword(self):
-        config = load_config(ROOT / "config.12gb.yaml")
-        config.comfyui.enabled = True
-        config.comfyui.video_enabled = True
-        config.comfyui.video_max_segments = 1
-        segment = Segment(
-            segment_number=1,
-            narration="The red wire is connected to the battery positive terminal.",
-            visual="Animation with labels | A diagram showing the red and blue wires connected to the battery terminals.",
-            image_prompt="Electroplating setup with battery, wires, switch, anode and cathode.",
-            keywords=["battery", "red wire", "blue wire"],
-            shot=Shot(template="photo", heading="Battery wiring"),
-        )
-        board = Storyboard(title="Electroplating", scenes=[Scene(scene_number=1, title="Setup", narration=segment.narration, segments=[segment])])
-        promote_video_shots(board, config)
-        self.assertEqual(board.all_segments()[0][1].shot.template, "photo")
-
-    def test_word_storyboard_prefers_hd_photos_and_limits_wan_video(self):
-        config = load_config(ROOT / "config.12gb.yaml")
-        config.comfyui.enabled = True
-        config.comfyui.video_enabled = True
-        config.comfyui.real_image_auto_promote = True
-        config.comfyui.video_auto_promote = True
-        config.comfyui.video_max_segments = 1
-        config.comfyui.video_workflow_path = "workflows/wan2_2_5b_video_api.json"
-        bee = Segment(segment_number=1, narration="Entomophily uses bees to carry pollen between flowers.", visual="Bee visiting a flower", image_prompt="Bee carrying pollen between flowers")
-        hydro = Segment(segment_number=2, narration="Hydrophily carries floating pollen across water to a receptive flower.", visual="Floating pollen on water", image_prompt="Floating pollen moving across water to aquatic flowers")
-        proto = Segment(segment_number=3, narration="In protandry, anthers release pollen earlier and stigma becomes receptive later.", visual="Two step timing diagram", image_prompt="Protandry timing diagram")
-        board = Storyboard(title="Pollination", scenes=[Scene(scene_number=1, title="Types", narration="Pollination types", segments=[bee, hydro, proto])])
-        normalize_storyboard(board)
-        promote_real_image_shots(board, config)
-        promote_video_shots(board, config)
-        templates = [segment.shot.template for _, segment in board.all_segments()]
-        self.assertEqual(templates.count("video"), 1)
-        self.assertEqual(templates.count("photo"), 1)
-        self.assertEqual(board.all_segments()[2][1].shot.template, "protandry")
-        self.assertEqual(board.all_segments()[1][1].shot.template, "photo")
-        self.assertIn("high resolution", board.all_segments()[1][1].image_prompt.lower())
-        self.assertIn("bee slowly visiting", board.all_segments()[0][1].image_prompt.lower())
-
     def test_impossible_narration_fails_instead_of_disappearing(self):
         config = AppConfig()
         segment = storyboard().all_segments()[0][1]
@@ -299,7 +240,7 @@ class QualityTests(unittest.TestCase):
         config.render.subtitle_bg = "#FFFFFF"
         board = storyboard()
         first = board.all_segments()[0][1]
-        first.shot = Shot(template="photo", heading="Real flower")
+        first.shot = Shot(template="photo", heading="Real photo")
         first.end = 1.0
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -312,7 +253,7 @@ class QualityTests(unittest.TestCase):
             frame = root / "frame.png"
             Image.new("RGB", (640, 360), "white").save(frame)
             subtitles = root / "subtitles.srt"
-            subtitles.write_text("1\n00:00:00,000 --> 00:00:01,000\nPollen transfer\n", encoding="utf-8")
+            subtitles.write_text("1\n00:00:00,000 --> 00:00:01,000\nCurrent flow\n", encoding="utf-8")
             output = render_video(board, [frame], audio, root, config, subtitles)
             probe = subprocess.run(["ffprobe", "-v", "error", "-show_streams", "-of", "json", str(output)],
                                    capture_output=True, text=True, check=True)
@@ -328,7 +269,7 @@ class QualityTests(unittest.TestCase):
         config.render.video_preset = "ultrafast"
         board = storyboard()
         first = board.all_segments()[0][1]
-        first.shot = Shot(template="photo", heading="Real flower")
+        first.shot = Shot(template="photo", heading="Real photo")
         first.end = 1.0
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -368,7 +309,7 @@ class QualityTests(unittest.TestCase):
             frame = root / "frame.png"
             Image.new("RGB", (640, 360), "green").save(frame)
             subtitles = root / "subtitles.srt"
-            subtitles.write_text("1\n00:00:00,000 --> 00:00:01,000\nPollen transfer\n", encoding="utf-8")
+            subtitles.write_text("1\n00:00:00,000 --> 00:00:01,000\nCurrent flow\n", encoding="utf-8")
             output = render_video(board, [frame, frame], audio, root, config, subtitles)
             probe = subprocess.run(["ffprobe", "-v", "error", "-show_streams", "-of", "json", str(output)],
                                    capture_output=True, text=True, check=True)

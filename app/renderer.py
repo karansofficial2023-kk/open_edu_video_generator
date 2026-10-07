@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import subprocess
 import shutil
 from pathlib import Path
@@ -19,6 +20,7 @@ def assign_timing(storyboard: Storyboard, config: AppConfig) -> None:
         next_scene = items[index + 1][0] if index + 1 < len(items) else None
         if next_scene is not None:
             duration += config.voice.scene_gap_seconds if next_scene.scene_number != scene.scene_number else config.voice.sentence_gap_seconds
+        duration += segment.extra_hold   # reading hold for labels/formulas; audio gets matching silence
         segment.start = cursor
         segment.end = cursor + duration
         cursor = segment.end
@@ -28,10 +30,14 @@ def concat_audio(storyboard: Storyboard, output_dir: str | Path, config: AppConf
     output_dir = Path(output_dir).resolve()
     audio_ext = _audio_ext(storyboard)
     output = output_dir / f"narration{audio_ext}"
-    sentence_silence = output_dir / f"silence_sentence{audio_ext}"
-    scene_silence = output_dir / f"silence_scene{audio_ext}"
-    _make_silence(sentence_silence, config.voice.sentence_gap_seconds, config)
-    _make_silence(scene_silence, config.voice.scene_gap_seconds, config)
+    silences: dict[int, Path] = {}
+
+    def silence(seconds: float) -> Path:
+        key = round(seconds * 1000)
+        if key not in silences:
+            silences[key] = output_dir / f"silence_{key}ms{audio_ext}"
+            _make_silence(silences[key], key / 1000, config)
+        return silences[key]
 
     audio_files: list[Path] = []
     items = storyboard.all_segments()
@@ -40,11 +46,11 @@ def concat_audio(storyboard: Storyboard, output_dir: str | Path, config: AppConf
             continue
         audio_files.append(Path(segment.audio_path).resolve())
         next_scene = items[index + 1][0] if index + 1 < len(items) else None
-        if next_scene is None:
-            continue
-        gap = config.voice.scene_gap_seconds if next_scene.scene_number != scene.scene_number else config.voice.sentence_gap_seconds
+        gap = segment.extra_hold
+        if next_scene is not None:
+            gap += config.voice.scene_gap_seconds if next_scene.scene_number != scene.scene_number else config.voice.sentence_gap_seconds
         if gap > 0:
-            audio_files.append(scene_silence if next_scene.scene_number != scene.scene_number else sentence_silence)
+            audio_files.append(silence(gap))
 
     if not audio_files:
         raise ValueError("No narration audio is available")
@@ -330,6 +336,9 @@ def _ffconcat_path(path: Path) -> str:
     return path.resolve().as_posix().replace("'", "'\\''")
 
 
+FFMPEG_TIMEOUT_SECONDS = int(os.environ.get("EDU_FFMPEG_TIMEOUT", "1800"))
+
+
 def _run(command: list[str]) -> None:
     proc = _run_capture(command)
     if proc.returncode != 0:
@@ -338,7 +347,9 @@ def _run(command: list[str]) -> None:
 
 def _run_capture(command: list[str]) -> subprocess.CompletedProcess[str]:
     try:
-        return subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace")
+        return subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=FFMPEG_TIMEOUT_SECONDS)
+    except subprocess.TimeoutExpired as exc:       # a hung encoder must fail this step (which is retried), not freeze the run forever
+        raise RuntimeError(f"Command timed out after {FFMPEG_TIMEOUT_SECONDS}s: {' '.join(command)[:300]}") from exc
     except FileNotFoundError as exc:
         raise RuntimeError(
             f"Tool not found: {command[0]}\n"

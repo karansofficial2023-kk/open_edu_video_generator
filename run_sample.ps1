@@ -1,3 +1,2 @@
 & .\.venv\Scripts\Activate.ps1
-python -m app.main --input ".\samples\pollination.txt" --output ".\outputs\pollination"
-
+python -m app.main --input ".\samples\example_lesson.json" --output ".\outputs\example_lesson" --preview

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import traceback
 from pathlib import Path
 
 from .config import load_config
@@ -14,38 +15,83 @@ from .tts import synthesize_storyboard
 from .visuals import render_segment_frames
 from .visual_planner import prepare_visual_prompts
 from .review import review_storyboard
-from .storyboard_cleanup import normalize_storyboard, promote_real_image_shots, promote_video_shots
+from .storyboard_cleanup import normalize_storyboard
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Generate an educational video from text, DOCX, or storyboard JSON.")
-    parser.add_argument("--input", required=True, help="Path to .txt, .docx, or storyboard .json")
-    parser.add_argument("--output", required=True, help="Output folder")
+    parser.add_argument("--input", required=True, nargs="+",
+                        help="One or more .txt/.docx/.json files or folders (folders run every storyboard inside, isolated per lesson)")
+    parser.add_argument("--output", required=True, help="Output folder (one sub-folder per lesson when several inputs are given)")
     parser.add_argument("--config", default="config.yaml", help="Path to config YAML")
     parser.add_argument("--title", default="Educational Video", help="Fallback title for plain text input")
     parser.add_argument("--skip-tts", action="store_true", help="Build visuals and storyboard without TTS audio")
     parser.add_argument("--limit-segments", type=int, help="Render only the first N segments for a quality preview")
     parser.add_argument("--plan-only", action="store_true", help="Save storyboard and review findings without TTS or image generation")
     parser.add_argument("--preview", action="store_true", help="Render a silent MP4 with approximate timing; no TTS required")
-    parser.add_argument("--burn-captions", action="store_true", help="Burn captions into video pixels")
+    parser.add_argument("--burn-captions", action="store_true", help="Burn captions into video pixels (legacy path)")
     parser.add_argument("--no-embed-subtitles", action="store_true", help="Write subtitles.srt without embedding a subtitle track in MP4")
-    parser.add_argument("--allow-incomplete", action="store_true", help="Render even when coverage lint says the topic is incomplete")
-    parser.add_argument("--strict-coverage", action="store_true", help="Block rendering when coverage lint says the topic is incomplete")
-    args = parser.parse_args()
+    parser.add_argument("--allow-incomplete", action="store_true", help="Render even when review/QA reports unresolved issues (draft)")
+    parser.add_argument("--strict-coverage", action="store_true", help="Treat an unmet coverage checklist as blocking")
+    parser.add_argument("--preflight-only", action="store_true", help="Validate the storyboard contract and services, then stop")
+    return parser
 
+
+def expand_inputs(paths: list[str]) -> list[Path]:
+    result: list[Path] = []
+    for raw in paths:
+        path = Path(raw)
+        if path.is_dir():
+            contracts = sorted(path.glob("*_contract.json"))
+            covered = {c.name.replace("_contract.json", "") for c in contracts}
+            docs = [d for d in sorted(path.glob("*_storyboard.docx")) if d.name.replace("_storyboard.docx", "") not in covered]
+            result.extend(contracts + docs)
+        else:
+            result.append(path)
+    return result
+
+
+def main() -> None:
+    parser = build_parser()
+    args = parser.parse_args()
     config = load_config(args.config)
     if args.burn_captions:
         config.render.burn_captions = True
     if args.no_embed_subtitles:
         config.render.embed_subtitles = False
-    output_dir = Path(args.output)
-    output_dir.mkdir(parents=True, exist_ok=True)
+    inputs = expand_inputs(args.input)
+    if not inputs:
+        parser.error("No storyboard inputs found")
+    output_root = Path(args.output)
+    if len(inputs) == 1:
+        run_job(parser, args, config, inputs[0], output_root)
+        return
+    # Queue: one failed lesson never blocks later lessons; each keeps a diagnostic package.
+    summary = []
+    for path in inputs:
+        job_dir = output_root / path.stem.replace("_contract", "").replace("_storyboard", "")
+        job_dir.mkdir(parents=True, exist_ok=True)
+        try:
+            run_job(parser, args, config, path, job_dir)
+            summary.append({"input": str(path), "output": str(job_dir), "status": "done"})
+        except (Exception, SystemExit) as exc:
+            (job_dir / "production_issues.json").write_text(json.dumps(
+                {"error": str(exc), "trace": traceback.format_exc()[-2000:]}, indent=2), encoding="utf-8")
+            summary.append({"input": str(path), "output": str(job_dir), "status": "unresolved", "error": str(exc)[:300]})
+    output_root.mkdir(parents=True, exist_ok=True)
+    (output_root / "queue_summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    print(json.dumps(summary, indent=2))
 
-    text, existing_storyboard = read_input(args.input)
+
+def run_job(parser, args, config, input_path: Path, output_dir: Path) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    try:        # which contract this lesson came from (the verifier looks for its storyboard DOCX beside it)
+        (output_dir / "source.json").write_text(json.dumps({"input": str(Path(input_path).resolve())}, ensure_ascii=False), encoding="utf-8")
+    except OSError:
+        pass
+    text, existing_storyboard = read_input(input_path)
     storyboard = existing_storyboard or plan_storyboard(text, config, title=args.title)
-    normalize_storyboard(storyboard)
-    promote_real_image_shots(storyboard, config)
-    promote_video_shots(storyboard, config)
+    normalize_storyboard(storyboard, config)
     if not storyboard.all_segments():
         parser.error("The storyboard contains no narration segments")
     if args.limit_segments is not None:
@@ -64,30 +110,37 @@ def main() -> None:
     storyboard_path = output_dir / "storyboard.json"
     save_storyboard(storyboard, storyboard_path)
     export_storyboard_docx(storyboard, output_dir / "storyboard.docx")
-    expected_topic = Path(args.input).stem.replace("_", " ").replace("-", " ")
-    findings = review_storyboard(storyboard, output_dir, expected_topic)
+    findings = review_storyboard(storyboard, output_dir, config, strict_coverage=args.strict_coverage)
     if args.plan_only:
         print(f"Plan: {storyboard_path}; review: {output_dir / 'review.json'}")
         return
     errors = [item for item in findings if item["level"] == "error"]
-    blocking_errors = [
-        item for item in errors
-        if args.strict_coverage or "does not cover the full Types of Pollination topic" not in item["message"]
-    ]
-    if blocking_errors and not args.allow_incomplete:
-        messages = "\n".join(f"- {item['message']}" for item in blocking_errors)
+    if errors and not args.allow_incomplete:
+        messages = "\n".join(f"- {item['message']}" for item in errors)
         coverage_path = output_dir / "coverage.json"
         if coverage_path.exists():
-            coverage = json.loads(coverage_path.read_text(encoding="utf-8"))
-            missing = coverage.get("missing_topics") or []
+            missing = json.loads(coverage_path.read_text(encoding="utf-8")).get("missing_topics") or []
             if missing:
                 messages += "\nMissing topics: " + ", ".join(missing)
-        parser.exit(
-            2,
-            f"Storyboard review blocked rendering.\n{messages}\n"
-            f"Review file: {output_dir / 'review.json'}\n"
-            f"Use the teacher-approved storyboard for final output, or pass --allow-incomplete for a draft render.\n"
-        )
+        parser.exit(2, f"Storyboard review blocked rendering.\n{messages}\nReview file: {output_dir / 'review.json'}\n"
+                       f"Fix the storyboard, or pass --allow-incomplete for a draft render.\n")
+
+    if any(segment.visual_type for _, segment in storyboard.all_segments()):
+        if args.preflight_only:
+            from .preflight import run_preflight
+            print(json.dumps(run_preflight(storyboard, config, output_dir), indent=2))
+            return
+        from .production import run_production
+        outcome = run_production(storyboard, output_dir, config, preview=args.preview, skip_tts=args.skip_tts,
+                                 allow_incomplete=args.allow_incomplete)
+        if outcome["status"] in {"blocked", "failed"}:
+            parser.exit(2, f"Production {outcome['status']}. See {output_dir / 'production_issues.json'}\n")
+        qa = outcome.get("qa", {})
+        print(f"{outcome['status'].upper()}: {outcome['video']} (critical QA findings: {qa.get('critical', '?')}) - {output_dir / 'final_qa.json'}")
+        if outcome["status"] == "qa_failed":
+            parser.exit(3, "Final QA found critical problems; this video must not be released.\n")      # scripts and queues must see a failure
+        return
+
     prepare_visual_prompts(storyboard, output_dir, config)
     write_prompt_pack(storyboard, output_dir)
 

@@ -74,9 +74,20 @@ comfyui:
   video_sampler_name: "uni_pc"
   video_scheduler: "simple"
   # Automatically send the best cinematic storyboard segments to Wan.
-  # Diagrams such as classification/protandry/protogyny stay as clean vector-style teaching frames.
-  real_image_auto_promote: true
-  video_auto_promote: true
-  video_max_segments: 1
+  # Diagrams such as process/comparison stay as clean vector-style teaching frames.
   video_prompt_prefix: "realistic macro nature video, gentle camera motion, stable subject,"
   video_prompt_suffix: "natural motion, coherent anatomy, no text, no subtitles, no watermark"
+
+production:
+  # Contract-driven (Transcribe) storyboards render through the production pipeline.
+  vision_model: "qwen3-vl:8b-instruct"
+  director_model: "qwen3:8b"
+  prompt_director: true          # rewrite generic image prompts from approved narration only
+  retrieval_enabled: true        # try open-licensed Wikimedia Commons imagery before generating
+  semantic_qa: true
+  retry_rejected: true           # rerun shots that exhausted attempts under an older prompt/QA version
+  max_attempts: 3
+  logo_path: ""                  # optional brand logo (PNG) drawn top-right, e.g. "assets/brand/logo.png"
+  subtitle:
+    font_px: 42
+    band_opacity: 0.55

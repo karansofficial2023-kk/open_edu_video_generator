@@ -72,9 +72,6 @@ comfyui:
   video_cfg: 5.0
   video_sampler_name: "uni_pc"
   video_scheduler: "simple"
-  real_image_auto_promote: true
-  video_auto_promote: true
-  video_max_segments: 1
   video_prompt_prefix: "realistic macro nature video, gentle camera motion, stable subject,"
   video_prompt_suffix: "natural motion, coherent anatomy, no text, no subtitles, no watermark"
 

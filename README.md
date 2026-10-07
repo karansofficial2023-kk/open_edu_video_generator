@@ -3,8 +3,8 @@
 Educational video generator for Windows. It turns text, DOCX, or storyboard JSON
 into narrated MP4 lessons with timed captions and 2D educational animation.
 
-The current quality path is the `hybrid` renderer: structured biology/process
-shots are animated locally with Python, Pillow, and FFmpeg. ComfyUI is optional
+The current quality path is the `hybrid` renderer: structured process/comparison
+shots (any subject) are animated locally with Python, Pillow, and FFmpeg. ComfyUI is optional
 and is used only for photo-style shots that need generated images.
 
 Your voice setting is unchanged:
@@ -17,6 +17,19 @@ edge_tts:
 
 Edge TTS needs internet access. No paid API key is required.
 
+## Production pipeline (Transcribe contract -> 1080p lesson)
+
+Storyboards produced by the Transcribe project (`*_contract.json`) render through the production pipeline: preflight, licensed/generated
+stills with vision QA, verified labels, typeset formulas, graphs and function plots, circuit schematics, concept cards, shaped Indic
+subtitles, loudness-normalised narration, final QA and a release package (`release/review.html`, manifest, sign-off).
+
+```powershell
+python -m app.main --config config.12gb.yaml --input "path	o\lesson_contract.json" --output outputs\lesson
+python tools\storyboard_scorecard.py "path	o\lesson_contract.json" --transcript "path	o\lesson_transcript.txt"
+```
+
+See `docs/PRODUCTION_PIPELINE.md` (stages, gates, VRAM policy) and `docs/CONTRACT_REFERENCE.md` (every visual type and field).
+
 ## Quick Run
 
 On this computer, use the launcher. It tries the project `.venv` first, then uses
@@ -25,18 +38,17 @@ the existing ComfyUI portable Python with project-local dependencies from
 
 ```powershell
 cd D:\Python\open_edu_video_generator
-powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input samples/pollination_animated.json --output outputs/my_animation_preview --preview
-powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input samples/pollination_animated.json --output outputs/my_animation_voice
+powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input samples/example_lesson.json --output outputs/my_animation_preview --preview
+powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input samples/example_lesson.json --output outputs/my_animation_voice
 ```
 
 The preview command makes a silent MP4 quickly. The voice command uses Edge TTS
 word timings and writes `final.mp4`.
 
-For this pollination topic, use the teacher-approved Word storyboard or a
-coverage-passing JSON storyboard:
+For any topic, pass your own text, Word storyboard, or storyboard JSON:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input "C:\Users\User\Downloads\1788516588515_5913833 - Types of Pollination.docx" --output outputs/pollination_quality_animation
+powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input "path\to\your_storyboard.docx" --output outputs/my_lesson
 ```
 
 ## Normal Setup
@@ -58,7 +70,7 @@ executables. Keep output resolution 16:9, such as 1920x1080 or 1280x720.
 Use `--plan-only` when creating a storyboard from raw text:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input samples/pollination.txt --output outputs/my_plan --plan-only
+powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.12gb.yaml --input your_lesson.txt --output outputs/my_plan --plan-only
 ```
 
 Then edit `outputs/my_plan/storyboard.json`. The JSON is the main editable
@@ -66,17 +78,26 @@ format for animation. Existing Word storyboards are normalized into safer wordin
 and structured animation shots automatically. The legacy DOCX export is still
 written for reading, but it does not preserve the new animation fields.
 
-For `Types of Pollination` files, the review also writes `coverage.json` and
-warns when the storyboard misses important topic areas. Use `--strict-coverage`
-when you want to block incomplete final lessons.
+The review can also check topic coverage. List the topics your lesson must cover
+in `config.yaml` (`coverage_topics`) or in the storyboard JSON (`required_topics`):
+
+```yaml
+coverage_topics:
+  "definition": ["is defined as", "refers to"]
+  "example": ["for example", "such as"]
+coverage_min_ratio: 0.75
+```
+
+Each topic counts as covered when any of its marker phrases appears in the
+narration. Results go to `coverage.json`; add `--strict-coverage` to block
+rendering when coverage is below the threshold. With no checklist, no coverage
+check runs. Likewise `text_replacements` in the config can fix recurring
+misspellings of subject terms during import.
 
 Useful shot templates:
 
 | Template | Use |
 |---|---|
-| `pollination` | Animated pollen movement between two flower diagrams |
-| `protandry` | Highlights anthers first, then stigma |
-| `protogyny` | Highlights stigma first, then anthers |
 | `process` | 2-4 ordered teaching cards |
 | `comparison` | 2-4 comparison cards |
 | `photo` | Reviewed image or generated photo with captions |

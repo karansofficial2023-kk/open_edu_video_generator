@@ -62,7 +62,7 @@ From the updated project folder on your rendering machine:
 
 ```powershell
 python -m pip install -r requirements.txt
-python -m app.main --input "C:\Users\admin\Downloads\5913833-Types of Pollination_storyboard.docx" --output ".\outputs\quality_preview" --config ".\config.12gb.yaml" --limit-segments 6 --skip-tts
+python -m app.main --input "path\to\your_storyboard.docx" --output ".\outputs\quality_preview" --config ".\config.12gb.yaml" --limit-segments 6 --skip-tts
 ```
 
 Inspect `frames/` for the actual composition; `generated_images/` contains raw AI
@@ -73,7 +73,7 @@ when prompts discourage it; reject and replace those images.
 
 ## Accurate diagrams and labels
 
-For flower cross-sections, stigma/anther identification, ovules, and fertilization,
+For anatomical cross-sections, labelled structures, circuits, and other exact diagrams,
 use a teacher-reviewed diagram. Create it with an open-source drawing tool such
 as Inkscape or Blender, or use a suitably licensed educational asset. Export at
 least 1600 pixels wide with clear labels and generous margins.
@@ -98,7 +98,7 @@ Set `render.font_path` to a TTF file (for example Noto Sans) for another languag
 ## Full render
 
 ```powershell
-python -m app.main --input "C:\Users\admin\Downloads\5913833-Types of Pollination_storyboard.docx" --output ".\outputs\pollination_quality_v2" --config ".\config.12gb.yaml"
+python -m app.main --input "path\to\your_storyboard.docx" --output ".\outputs/my_lesson" --config ".\config.12gb.yaml"
 ```
 
 Use a new output folder. Existing malformed images are not repaired. The render

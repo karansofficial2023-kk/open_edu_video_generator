@@ -38,7 +38,7 @@ def prepare_visual_prompts(storyboard: Storyboard, output_dir: Path, config: App
                     "panels, comparison charts, slide layouts or multiple stages in one image. "
                     "Remove editing and animation instructions. Text is drawn separately by software. "
                     "For abstract topics choose one representative real-world example. "
-                    "Do not invent biological structures or combine species."
+                    "Do not invent facts, structures or mechanisms."
                 ),
                 "prompt": json.dumps({"topic": storyboard.title, "scene": scene.title,
                                       "narration": segment.narration, "direction": segment.visual,
@@ -52,7 +52,7 @@ def prepare_visual_prompts(storyboard: Storyboard, output_dir: Path, config: App
             raise ValueError("Visual planner returned an empty image_prompt; rerun with Ollama available.")
         segment.image_prompt = prompt.strip()
         review = bool(re.search(
-            r"\b(diagram|anatomy|cross.section|fertili[sz]ation|ovule|stigma|anther|label\w*)\b",
+            r"\b(diagram|anatomy|cross.section|schematic|formula|equation|circuit|structure|label\w*)\b",
             " ".join([segment.narration, segment.visual, original]), re.I,
         ))
         audit.append({"scene": scene.scene_number, "segment": segment.segment_number,

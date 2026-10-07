@@ -8,7 +8,7 @@ Recommended command:
 
 ```powershell
 cd D:\Python\open_edu_video_generator_LTX
-powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.ltx.12gb.yaml --input samples/pollination_animated.json --output outputs/ltx_test --limit-segments 3
+powershell -ExecutionPolicy Bypass -File .\run_video.ps1 --config config.ltx.12gb.yaml --input samples/example_lesson.json --output outputs/ltx_test --limit-segments 3
 ```
 
 ComfyUI requirements:

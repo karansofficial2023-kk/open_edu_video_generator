@@ -27,9 +27,12 @@ class Anchor:
     description: str
     box: tuple[float, float, float, float]     # normalized 0..1 (x1, y1, x2, y2)
     confidence: float
+    spot: tuple[float, float] | None = None     # where the arrow points: a spot ON the target (the box centre can be on something else)
 
     @property
     def point(self) -> tuple[float, float]:
+        if self.spot is not None:
+            return self.spot
         return ((self.box[0] + self.box[2]) / 2, (self.box[1] + self.box[3]) / 2)
 
 
@@ -71,11 +74,12 @@ def locate(image_path: Path, segment: Segment, config: AppConfig, cache_dir: Pat
         return [], []
     digest = hashlib.sha1(Path(image_path).read_bytes()).hexdigest()[:12]
     cache = cache_dir / f"anchors_{segment.shot_id.replace('.', '_')}_{digest}.json"
-    key = json.dumps(targets)
+    key = json.dumps([ANCHOR_CHECK_VERSION, targets])          # a new check version re-verifies anchors cached by older code
     if cache.exists():
         stored = json.loads(cache.read_text(encoding="utf-8"))
         if stored.get("key") == key:
-            return [Anchor(**{**a, "box": tuple(a["box"])}) for a in stored["anchors"]], stored["omitted"]
+            return [Anchor(**{**a, "box": tuple(a["box"]), "spot": tuple(a["spot"]) if a.get("spot") else None})
+                    for a in stored["anchors"]], stored["omitted"]
     anchors: list[Anchor] = []
     omitted: list[dict] = []
     with Image.open(image_path) as source:
@@ -93,9 +97,13 @@ def locate(image_path: Path, segment: Segment, config: AppConfig, cache_dir: Pat
     vision.unload(config)
     if any(str(o["reason"]).startswith("vision unavailable") for o in omitted):
         return anchors, omitted         # a failure of the review model is not a verdict on the picture: do not cache it, retry next run
-    cache.write_text(json.dumps({"key": key, "anchors": [{**a.__dict__, "box": list(a.box)} for a in anchors], "omitted": omitted},
-                                indent=2), encoding="utf-8")
+    cache.write_text(json.dumps({"key": key, "anchors": [{**a.__dict__, "box": list(a.box), "spot": list(a.spot) if a.spot else None}
+                                                         for a in anchors], "omitted": omitted}, indent=2), encoding="utf-8")
     return anchors, omitted
+
+
+ANCHOR_CHECK_VERSION = 2      # 2: the arrow's own spot is checked (a liquid's box centre was on the electrode standing in it)
+SPOT_CROP = 0.16              # side of the spot check crop, as a share of the picture
 
 
 def _locate_one(image: Image.Image, label: str, description: str, config: AppConfig) -> Anchor | str:
@@ -103,8 +111,9 @@ def _locate_one(image: Image.Image, label: str, description: str, config: AppCon
     proposal = vision.ask(image, (
         "Locate ONE visible physical structure in this image.\n"
         f"Target: {label} - {description}\n"
-        "Return JSON: {\"visible\": bool, \"box\": [x1, y1, x2, y2], \"confidence\": 0..1, \"evidence\": \"what you see\"} "
-        "where box is a tight bounding box in coordinates normalised to 0-1000 on both axes. "
+        "Return JSON: {\"visible\": bool, \"box\": [x1, y1, x2, y2], \"point\": [x, y], \"confidence\": 0..1, "
+        "\"evidence\": \"what you see\"} where box is a tight bounding box and point is one spot that lies ON the target itself "
+        "(not on any object in front of it or inside it), both in coordinates normalised to 0-1000 on both axes. "
         "If the structure is not clearly visible, set visible=false. Do not guess."),
         config, purpose=f"locate:{label}")
     if not _flag(proposal.get("visible")):
@@ -126,7 +135,47 @@ def _locate_one(image: Image.Image, label: str, description: str, config: AppCon
         config, purpose=f"verify:{label}")
     if not _flag(verdict.get("shows_target")) or _num(verdict.get("confidence")) < threshold:
         return f"verification rejected ({verdict.get('what_is_shown', 'unrelated region')})"
-    return Anchor(label=label, description=description, box=box, confidence=min(confidence, _num(verdict.get("confidence"))))
+    # The arrow points at one spot, so that spot itself is checked: a small crop centred on it with a cross marked.
+    spot = _norm_point(proposal.get("point"), box)
+    marked = spot_crop(image, spot)
+    at_spot = vision.ask(marked, (
+        f"Look at the red cross in the CENTRE of this crop. Is the thing directly under the cross: {label} - {description}?\n"
+        "Answer about the cross only, not about other things in the crop.\n"
+        "Return JSON: {\"under_cross_is_target\": bool, \"under_cross\": \"short phrase\"}."),
+        config, purpose=f"spot:{label}")
+    if not _flag(at_spot.get("under_cross_is_target")):
+        return f"arrow spot is on something else ({at_spot.get('under_cross', 'another object')})"
+    return Anchor(label=label, description=description, box=box, confidence=min(confidence, _num(verdict.get("confidence"))),
+                  spot=spot)
+
+
+def _norm_point(raw, box) -> tuple[float, float]:
+    """The model's spot on the target (0-1000 or 0-1), kept inside the box; the box centre when none was given."""
+    centre = ((box[0] + box[2]) / 2, (box[1] + box[3]) / 2)
+    try:
+        x, y = [float(v) for v in raw]
+    except (TypeError, ValueError):
+        return centre
+    scale = 1000.0 if max(x, y) > 1.5 else 1.0
+    x, y = x / scale, y / scale
+    if not (box[0] <= x <= box[2] and box[1] <= y <= box[3]):
+        return centre
+    return (x, y)
+
+
+def spot_crop(image: Image.Image, spot: tuple[float, float]) -> Image.Image:
+    """A small square around the spot with a red cross on it, enlarged for the vision model."""
+    w, h = image.size
+    side = round(SPOT_CROP * min(w, h) * 1.6)
+    cx, cy = round(spot[0] * w), round(spot[1] * h)
+    left, top = max(0, min(w - side, cx - side // 2)), max(0, min(h - side, cy - side // 2))
+    crop = image.crop((left, top, left + side, top + side)).resize((512, 512), Image.Resampling.LANCZOS)
+    draw = ImageDraw.Draw(crop)
+    x, y = (cx - left) * 512 / side, (cy - top) * 512 / side
+    for width, color in ((7, (255, 255, 255)), (3, (230, 20, 20))):
+        draw.line((x - 22, y, x + 22, y), fill=color, width=width)
+        draw.line((x, y - 22, x, y + 22), fill=color, width=width)
+    return crop
 
 
 def _flag(value) -> bool:

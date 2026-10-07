@@ -62,6 +62,7 @@ def normalize_formula(line: str) -> str:
     """Make storyboard formulas typeset-friendly: Unicode scripts, label prefixes, ions, chemical species, word subscripts."""
     text = line.strip()
     text = _script_runs(_script_runs(text, _SUP, "^"), _SUB, "_")
+    text = re.sub("([Λλ])m(?=[°^\\s(_]|$)", r"\1_m", text)      # "Λm°" -> Λ with subscript m (molar), as in textbooks
     # "Kohlrausch's law: x = y" -> keep only the mathematics (a short caption before a colon is not part of the equation)
     head, colon, tail = text.partition(":")
     if colon and "=" in tail and not re.search(r"[=<>+*/^_]", head) and len(head.split()) <= 6:
@@ -79,17 +80,28 @@ def normalize_formula(line: str) -> str:
         return r"\mathrm{" + base + "}^{" + match.group(2) + "}"
 
     text = _ION.sub(ion, text)                       # H+ -> \mathrm{H}^{+}, CH3COO- -> \mathrm{CH_{3}COO}^{-}
+    text = _CHARGED.sub(_charged_species, text)      # H^{+} (written H⁺), CH3COO^{-} -> upright species with real subscripts
     text = re.sub(r"_\{([A-Za-z]{2,})\}", r"_{\\mathrm{\1}}", text)                         # _{cation} -> upright word subscript
     text = re.sub(r"_([A-Za-z]{2,})", r"_{\\mathrm{\1}}", text)                              # _cation
-    if "mathrm" not in text:
-        def species(match):
-            token = match.group(1)
-            pieces = re.findall(r"[A-Z][a-z]?", token)
-            if all(piece in _ELEMENTS for piece in pieces) and (re.search(r"\d", token) or len(token) >= 3):
-                return r"\mathrm{" + re.sub(r"([A-Za-z)])(\d+)", r"\1_{\2}", token) + "}"
-            return token
-        text = _SPECIES_TOKEN.sub(species, text)
-    return text
+    def species(match):
+        token = match.group(1)
+        pieces = re.findall(r"[A-Z][a-z]?", token)
+        if all(piece in _ELEMENTS for piece in pieces) and (re.search(r"\d", token) or len(token) >= 3):
+            return r"\mathrm{" + re.sub(r"([A-Za-z)])(\d+)", r"\1_{\2}", token) + "}"
+        return token
+    # every species gets real subscripts, also when another part of the line was formatted already (one ion used to block the rest)
+    parts = re.split(r"(\\mathrm\{(?:[^{}]|\{[^{}]*\})*\}(?:_\{[^{}]*\})?)", text)     # one level of inner braces: CH_{3}
+    return "".join(part if i % 2 else _SPECIES_TOKEN.sub(species, part) for i, part in enumerate(parts))
+
+
+_CHARGED = re.compile(r"(?<![A-Za-z\\{])((?:[A-Z][a-z]?\d*)+)\^\{(\d?[+-])\}")
+
+
+def _charged_species(match) -> str:
+    token = match.group(1)
+    if not all(piece in _ELEMENTS for piece in re.findall(r"[A-Z][a-z]?", token)):
+        return match.group(0)
+    return r"\mathrm{" + re.sub(r"([A-Za-z)])(\d+)", r"\1_{\2}", token) + "}^{" + match.group(2) + "}"
 
 
 def _star_to_dot(text: str) -> str:
@@ -107,7 +119,24 @@ def _latex_species(text: str) -> str:
                 and all(re.match(r"[A-Z][a-z]?", piece).group() in _ELEMENTS for piece in pieces):
             return "(" + r"\mathrm{" + re.sub(r"([A-Za-z])(\d+)", r"\1_{\2}", token) + "})"
         return match.group(0)
-    return re.sub(r"\(([A-Za-z0-9]+)\)", species, text)
+    text = re.sub(r"\(([A-Za-z0-9]+)\)", species, text)
+    # "(CH_3COOH)", "(CH_3COO^-)", "(H^+)" in LaTeX lines: the same upright textbook form as a subscripted species
+    text = re.sub(r"\(([A-Za-z0-9_{}]+?)(\^\{?\d?[+-]\}?|\d?[+-])?\)",
+                  lambda m: "(" + _subscript_species(m)[2:-1] + ")" if _subscript_species(m) != m.group(0) else m.group(0), text)
+    # a compound written as a subscript ("\Lambda^\circ_{CH_3COOH}") is upright with proper small numbers
+    return re.sub(r"_\{([A-Za-z0-9_{}]+?)(\^\{?\d?[+-]\}?)?\}", _subscript_species, text)
+
+
+def _subscript_species(match) -> str:
+    plain = re.sub(r"[_{}]", "", match.group(1))
+    pieces = re.findall(r"[A-Z][a-z]?\d*", plain)
+    if not pieces or "".join(pieces) != plain or not all(re.match(r"[A-Z][a-z]?", p).group() in _ELEMENTS for p in pieces):
+        return match.group(0)
+    if len(pieces) < 2 and not re.search(r"\d", plain) and not match.group(2):
+        return match.group(0)                         # "_{C}" may be a symbol (capacitance), not carbon
+    charge = re.sub(r"[\^{}]", "", match.group(2) or "")
+    body = r"\mathrm{" + re.sub(r"([A-Za-z])(\d+)", r"\1_{\2}", plain) + "}"
+    return "_{" + body + ("^{" + charge + "}" if charge else "") + "}"
 
 
 def looks_chemical(line: str) -> bool:
@@ -173,7 +202,8 @@ def _core_mathtext(line: str) -> str:
             return r"\mathrm{" + spaced + "}"
         reaction = re.search(r"\\mathrm\{\((aq|s|l|g)\)\}|\\rightarrow|\\rightleftharpoons", text)
         if reaction or re.search(r"[A-Z][a-z]?\d", text):
-            text = _SPECIES.sub(species, text)
+            parts = re.split(r"(\\mathrm\{(?:[^{}]|\{[^{}]*\})*\})", text)      # species formatted by normalize_formula stay as they are
+            text = "".join(part if i % 2 else _SPECIES.sub(species, part) for i, part in enumerate(parts))
     return "$" + text.replace("$", "") + "$"
 
 

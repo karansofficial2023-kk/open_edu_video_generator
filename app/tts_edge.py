@@ -142,8 +142,17 @@ def _synthesize_open(storyboard: Storyboard, audio_dir: Path, config: AppConfig,
             voice.close()
 
 
+VOICE_TIMEOUT_MIN = 60.0     # seconds; longer narration gets more (about 4 characters a second of allowance)
+
+
 def synthesize_text(text: str, output_path: str | Path, config: AppConfig) -> list[Caption]:
-    return asyncio.run(_synthesize_text(text, Path(output_path), config))
+    # A voice request whose connection stalls mid-stream never ends by itself (a lesson once waited 30+ minutes on one shot):
+    # a time limit turns it into an error, which the caller's retry with backoff then repeats.
+    limit = max(VOICE_TIMEOUT_MIN, len(text) / 4)
+    try:
+        return asyncio.run(asyncio.wait_for(_synthesize_text(text, Path(output_path), config), timeout=limit))
+    except asyncio.TimeoutError as exc:
+        raise TimeoutError(f"voice service did not finish within {limit:.0f} s") from exc
 
 
 async def _synthesize_text(text: str, output_path: Path, config: AppConfig) -> list[Caption]:

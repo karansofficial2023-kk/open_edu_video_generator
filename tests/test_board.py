@@ -144,6 +144,54 @@ class QualityGapTests(unittest.TestCase):
         self.assertFalse(graph.animate)
         self.assertEqual(beaker.shot.template, "photo")
 
+    def test_chemical_formulas_get_textbook_subscripts_everywhere(self):
+        from app.formulas import to_mathtext
+        mixed = to_mathtext("Λ°(CH3COOH) = Λ°(H+) + Λ°(CH3COO⁻)")
+        self.assertIn(r"\mathrm{CH_{3}COOH}", mixed)          # one formatted ion (H+) no longer blocks the other species
+        self.assertIn(r"\mathrm{H}^{+}", mixed)
+        self.assertIn(r"\Lambda _m", to_mathtext("Λm°(CH3COOH) = Λm°(H⁺)"))   # molar subscript m
+        self.assertIn(r"\mathrm{H}^{+}", to_mathtext("Λm°(H⁺)"))
+        latex = to_mathtext(r"\Lambda^\circ_{CH_3COOH} = \Lambda^\circ_{H^+}")
+        self.assertIn(r"_{\mathrm{CH_{3}COOH}}", latex)
+        self.assertIn(r"_{\mathrm{H}^{+}}", latex)
+        self.assertIn(r"_{C}", to_mathtext(r"Q = V_{C} \cdot C"))   # a single-letter symbol subscript is not chemistry
+        self.assertIn("A_{0}", to_mathtext("V = A0 * L0"))
+
+    def test_a_label_is_dropped_when_its_arrow_spot_is_on_something_else(self):
+        from unittest import mock
+        from app import labels
+        from app.config import AppConfig
+        image = Image.new("RGB", (800, 600), (40, 120, 200))
+        locate = {"visible": True, "box": [200, 300, 800, 900], "point": [300, 800], "confidence": 0.9}
+        crop_ok = {"shows_target": True, "confidence": 0.9}
+
+        def answers(spot_answer):
+            replies = iter([locate, crop_ok, spot_answer])
+            return lambda *args, **kwargs: next(replies)
+
+        with mock.patch.object(labels.vision, "ask", side_effect=answers({"under_cross_is_target": False, "under_cross": "metal electrode"})):
+            result = labels._locate_one(image, "Electrolyte", "the blue liquid", AppConfig())
+        self.assertIn("metal electrode", result)                                   # dropped, with the reason
+        with mock.patch.object(labels.vision, "ask", side_effect=answers({"under_cross_is_target": True})):
+            anchor = labels._locate_one(image, "Electrolyte", "the blue liquid", AppConfig())
+        self.assertEqual(anchor.point, (0.3, 0.8))                                 # the arrow uses the checked spot, not the box centre
+        self.assertEqual(labels.spot_crop(image, anchor.point).size, (512, 512))
+
+    def test_a_stalled_voice_request_times_out_instead_of_hanging(self):
+        import asyncio
+        import tempfile
+        from unittest import mock
+        from app import tts_edge
+        from app.config import AppConfig
+
+        async def stalled(*args, **kwargs):
+            await asyncio.sleep(30)
+
+        with tempfile.TemporaryDirectory() as tmp, mock.patch.object(tts_edge, "_synthesize_text", stalled), \
+                mock.patch.object(tts_edge, "VOICE_TIMEOUT_MIN", 0.2):
+            with self.assertRaises(TimeoutError):
+                tts_edge.synthesize_text("Hi.", Path(tmp) / "a.mp3", AppConfig())
+
     def test_board_points_are_the_narrations_own_short_words(self):
         self.assertEqual(board.key_point("So, now we can see that the resistance increases with the length of the wire."),
                          "The resistance increases with the length of the wire")

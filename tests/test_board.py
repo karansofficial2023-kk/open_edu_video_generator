@@ -156,6 +156,9 @@ class QualityGapTests(unittest.TestCase):
         self.assertIn(r"_{\mathrm{H}^{+}}", latex)
         self.assertIn(r"_{C}", to_mathtext(r"Q = V_{C} \cdot C"))   # a single-letter symbol subscript is not chemistry
         self.assertIn("A_{0}", to_mathtext("V = A0 * L0"))
+        from app.formulas import validate
+        self.assertIsNone(validate("Λ° = Λ°⁺ + Λ°⁻"))      # degree + charge (ion) now typesets
+        self.assertIn(r"^{\circ+}", to_mathtext("Λ°⁺"))
 
     def test_a_label_is_dropped_when_its_arrow_spot_is_on_something_else(self):
         from unittest import mock

@@ -104,6 +104,20 @@ def _charged_species(match) -> str:
     return r"\mathrm{" + re.sub(r"([A-Za-z)])(\d+)", r"\1_{\2}", token) + "}^{" + match.group(2) + "}"
 
 
+def _merge_superscripts(text: str) -> str:
+    """"^{\\circ}^{+}" or "^\\circ^{-}" (a degree mark followed by a charge, Λ°⁺) -> "^{\\circ +}": one raised group, as printed."""
+    pattern = re.compile(r"\^(\{[^{}]*\}|\\[A-Za-z]+|[^\s{\\])\s*\^(\{[^{}]*\}|\\[A-Za-z]+|[^\s{\\])")
+    while True:
+        def join(m):
+            first, second = m.group(1).strip("{}"), m.group(2).strip("{}")
+            gap = " " if first.startswith("\\") and second[:1].isalpha() else ""      # "\circ x" needs a space, "\circ+" does not
+            return "^{" + first + gap + second + "}"
+        merged = pattern.sub(join, text)
+        if merged == text:
+            return text
+        text = merged
+
+
 def _star_to_dot(text: str) -> str:
     """"A' * L'": a programmer's star is a multiplication dot on the board (only on the fallback path; the maths parser does it itself)."""
     return re.sub(r"\s*(?<![\^_*])\*(?![*])\s*", r" \\cdot ", text)
@@ -192,6 +206,7 @@ def _core_mathtext(line: str) -> str:
     text = _star_to_dot(line.strip())        # the parser above turns * into a dot; this fallback must too
     for src, dst in _ARROWS.items():
         text = text.replace(src, dst)
+    text = _merge_superscripts(text)          # "Λ°⁺" -> one raised group (two in a row cannot be typeset)
     text = re.sub(r"\((aq|s|l|g)\)", r"\\mathrm{(\1)}", text)
     if "\\" not in text.replace("\\mathrm", "").replace("\\rightarrow", "").replace("\\rightleftharpoons", ""):
         def species(match):

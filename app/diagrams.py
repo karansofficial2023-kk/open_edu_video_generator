@@ -41,8 +41,11 @@ _ELECTROLYSIS = re.compile(r"(?i)\b(electrolysis|electrolytic cell|electroplatin
 CHEM_CONCEPTS = {"conductivity_graph": _CONDUCTIVITY, "electrolysis": _ELECTROLYSIS}
 
 
-def concept_for(text: str, chemistry: bool = False) -> str | None:
-    """Which diagram fits the narration (the concept mentioned most, at least twice), or None. Chemistry has its own figures."""
+def concept_for(text: str, chemistry: bool = False, biology: bool = False) -> str | None:
+    """Which diagram fits the narration (the concept mentioned most, at least twice), or None. Chemistry and biology have their own figures."""
+    if biology:
+        from . import bio_diagrams
+        return bio_diagrams.concept_for(text)
     if chemistry:
         scores = {name: len(pattern.findall(text or "")) for name, pattern in CHEM_CONCEPTS.items()}
         if not _GRAPH.search(text or ""):
@@ -57,6 +60,9 @@ def concept_for(text: str, chemistry: bool = False) -> str | None:
 
 
 def render(concept: str, size: tuple[int, int], t: float, text: str = "") -> Image.Image | None:
+    from . import bio_diagrams
+    if concept in bio_diagrams.BIO_CONCEPTS:
+        return bio_diagrams.render(concept, size, t)
     if concept == "wave":
         return _wave(size, t, bool(_EM.search(text or "")))
     drawers = {"conductivity_graph": _conductivity_graph, "electrolysis": _electrolysis, "conductor": _conductor, "circuit": _circuit, "lens": _lens, "magnet": _magnet, "charge": _charges,

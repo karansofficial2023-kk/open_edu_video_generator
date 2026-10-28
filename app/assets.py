@@ -771,6 +771,34 @@ class StillProducer:
                                     "reason": "the shot names external genital anatomy or menstrual bleeding; school-student rule: no generated picture or label, shown as explanation cards",
                                     "repair": "supply an approved diagram as asset_path if a picture is required"})
 
+    def _diagrams_for_body_shots(self) -> None:
+        """Biology: a shot about an organ system, a hormone loop or the menstrual cycle is explained by a diagram drawn by code (bio_diagrams.py)
+        beside the text - labels at known positions, no body, nothing for the image model to get wrong or the safety check to reject - so
+        it never spends three picture rounds. Only shots whose own narration names a part of the concept; a teacher-supplied picture is kept."""
+        from . import bio_diagrams
+        from .subject import photos_first, subject_of
+        if not photos_first(subject_of(self.board)):
+            return
+        scenes: dict[str, str] = {}
+        for scene, seg in self.board.all_segments():
+            scenes[scene.title] = (scenes.get(scene.title, "") + " " + (seg.narration or "")).strip()
+        for scene, seg in self.board.all_segments():
+            shot = seg.shot
+            if shot is None or shot.asset_path or shot.template not in {"photo", "video", "split_screen"}:
+                continue
+            if id(seg) in getattr(self, "_continuation_ids", ()):
+                continue
+            concept = bio_diagrams.concept_for(scenes.get(scene.title, ""))
+            if concept not in {"female_system", "male_system", "hormone_loop", "menstrual_cycle"}:
+                continue
+            if not bio_diagrams.BIO_CONCEPTS[concept].search(seg.narration or ""):
+                continue
+            job = Job(seg.shot_id or f"{scene.scene_number}_{seg.segment_number}", seg, seg, scene.title)
+            if self._downgrade(job):
+                self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "info", "renderer": "diagram",
+                                    "reason": f"the part is about the {concept.replace('_', ' ')}: explained by a diagram drawn by code beside the text",
+                                    "repair": "supply an approved picture as asset_path if a photograph or render is required"})
+
     def _blocked_to_cards(self) -> None:
         """Shots the final safety check rejected in an earlier pass (assets/_blocked_shots.json, written by main.run_job) never get a
         picture again: they are explained by text cards. A teacher-supplied picture (asset_path) is kept."""
@@ -792,6 +820,7 @@ class StillProducer:
         self._plan_continuations()
         self._blocked_to_cards()
         self._no_pictures_of_external_genitals()
+        self._diagrams_for_body_shots()
         self._cards_for_screen_moments()
         self._no_drawn_graphs()
         self._cards_for_abstract_statements()

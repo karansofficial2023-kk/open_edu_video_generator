@@ -108,17 +108,19 @@ SPOT_CROP = 0.16              # side of the spot check crop, as a share of the p
 
 def _locate_one(image: Image.Image, label: str, description: str, config: AppConfig) -> Anchor | str:
     threshold = config.production.label_min_confidence
-    proposal = vision.ask(image, (
-        "Locate ONE visible physical structure in this image.\n"
-        f"Target: {label} - {description}\n"
-        "Return JSON: {\"visible\": bool, \"box\": [x1, y1, x2, y2], \"point\": [x, y], \"confidence\": 0..1, "
-        "\"evidence\": \"what you see\"} where box is a tight bounding box and point is one spot that lies ON the target itself "
-        "(not on any object in front of it or inside it), both in coordinates normalised to 0-1000 on both axes. "
-        "If the structure is not clearly visible, set visible=false. Do not guess."),
-        config, purpose=f"locate:{label}")
-    if not _flag(proposal.get("visible")):
-        return "target not visible in image"
-    box = _norm_box(proposal.get("box"))
+    ask = ("Locate ONE visible physical structure in this image.\n"
+           f"Target: {label} - {description}\n"
+           "Return JSON: {\"visible\": bool, \"box\": [x1, y1, x2, y2], \"point\": [x, y], \"confidence\": 0..1, "
+           "\"evidence\": \"what you see\"} where box is a tight bounding box and point is one spot that lies ON the target itself "
+           "(not on any object in front of it or inside it), both in coordinates normalised to 0-1000 on both axes. "
+           "If the structure is not clearly visible, set visible=false. Do not guess.")
+    for attempt in (1, 2):
+        proposal = vision.ask(image, ask, config, purpose=f"locate:{label}" if attempt == 1 else f"locate-retry:{label}")
+        if not _flag(proposal.get("visible")):
+            return "target not visible in image"
+        box = _norm_box(proposal.get("box"))
+        if box is not None:
+            break                           # an unusable box is a formatting slip of the model, not a verdict on the picture: ask once more
     confidence = _num(proposal.get("confidence"))
     if box is None:
         return "invalid box returned"

@@ -3,6 +3,7 @@ subjects (spec section 6.1); a candidate is only a candidate - it still has to p
 from __future__ import annotations
 
 import json
+import os
 import re
 import time
 from datetime import date
@@ -15,7 +16,8 @@ from .config import AppConfig
 API = "https://commons.wikimedia.org/w/api.php"
 ALLOWED = re.compile(r"(?i)^(cc0|public domain|pd\b|cc[- ]by(?:[- ]sa)?(?:[- ]\d(?:\.\d)?)?|cc[- ]by[- ]\d)")
 BLOCKED = re.compile(r"(?i)(nc|nd|non-?commercial|no derivatives|fair use|nonfree)")
-HEADERS = {"User-Agent": "OpenEduVideoGenerator/1.0 (educational; contact: local)"}
+# Wikimedia's policy asks for a contact in the User-Agent: set EDU_COMMONS_CONTACT (an email address or project URL) before long runs.
+HEADERS = {"User-Agent": f"OpenEduVideoGenerator/1.0 (educational; contact: {os.environ.get('EDU_COMMONS_CONTACT', 'local')})"}
 
 
 def search_query(text: str, config: AppConfig) -> str:

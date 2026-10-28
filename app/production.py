@@ -88,7 +88,8 @@ _GENERIC_TITLE_WORDS = {"about", "types", "process", "introduction", "between", 
 _PEAK_LIMIT = "alimiter=limit=0.71:level=disabled:attack=5:release=50"
 
 
-def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_dir: Path | None = None, figures: bool = True) -> None:
+def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_dir: Path | None = None, figures: bool = True,
+                      bio_diagrams: bool = False) -> None:
     """Physics/chemistry: explanation and equation shots of one part build up on the same board (board.py). A picture, a scene change
     or a full board starts a new page; a table keeps its header once per page. The part's main visual stays on the left of its board
     pages: the picture the part showed, or in chemistry the molecule the narration names (it stays until another one is named)."""
@@ -130,10 +131,10 @@ def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_d
             named = molecules.first_molecule(seg.narration)
             if named is not None and (anchor or {}).get("smiles") != named["smiles"]:
                 anchor, page = {"kind": "molecule", **named}, []           # a new molecule starts a page beside it
-        if anchor is None and figures:
-            from . import diagrams                                  # a concept figure drawn by code (wave, wire, conductivity graph ...)
+        if anchor is None and (figures or bio_diagrams):
+            from . import diagrams                                  # a concept figure drawn by code (wave, wire, conductivity graph, organ system ...)
             part_text = " ".join(p.segment.narration for p in plans if p.scene_title == plan.scene_title)
-            concept = diagrams.concept_for(part_text, chemistry=chemistry)
+            concept = diagrams.concept_for(part_text, chemistry=chemistry, biology=bio_diagrams and not figures)
             if concept:
                 anchor = {"kind": "diagram", "concept": concept, "text": part_text[:600]}
         split = anchor is not None and not teacher_board.wide(current)  # a long equation needs the whole board width
@@ -265,9 +266,11 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
     write_srt(board, output_dir / "subtitles.srt", config)
     save_storyboard(board, output_dir / "storyboard.json")
     if use_board:
-        from .subject import CHEMISTRY, PHYSICS
-        # a board stands for a shot that has no picture: physics/chemistry keep their figure beside it, other subjects show text only
-        _plan_board_pages(plans, board.title, chemistry=subject == CHEMISTRY, output_dir=output_dir, figures=subject in {PHYSICS, CHEMISTRY})
+        from .subject import BIOLOGY, CHEMISTRY, PHYSICS
+        # a board stands for a shot that has no picture: physics/chemistry keep their figure beside it; biology gets a code-drawn
+        # diagram (organ system, hormone loop, cycle, flower ...) when the part is about one, and shows text only otherwise
+        _plan_board_pages(plans, board.title, chemistry=subject == CHEMISTRY, output_dir=output_dir, figures=subject in {PHYSICS, CHEMISTRY},
+                          bio_diagrams=subject == BIOLOGY)
 
     # 5. Render clips (resumable by content signature; one failure never erases the rest).
     progress.stage(6, f"Rendering {len(plans)} clip(s) (finished clips are reused)")

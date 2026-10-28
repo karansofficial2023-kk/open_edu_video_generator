@@ -23,6 +23,7 @@ from .resilience import atomic_write_text, read_json_or_none
 from . import commons, ocr, vision
 from .comfyui_client import ComfyUIClient
 from .config import AppConfig
+from .safety import unsafe_reason
 from .schema import Segment, Shot, Storyboard
 
 TARGET = (1920, 1080)
@@ -34,8 +35,33 @@ TEXT_INDUCING = re.compile(r"(?i)\b(title[- ]?cards?|titles?|headings?|captions?
                            r"infographics?|diagrams?|posters?|banners?|slides?|logos?|watermarks?|words?|letters?|arrows?)\b")
 STYLE_SUFFIX = ("photorealistic high-resolution educational documentary photograph, natural lighting, sharp focus, "
                 "rich natural colour, clean uncluttered composition, plain unmarked surfaces with no writing of any kind, no text, no letters, no labels, no arrows, "
-                "no captions, no watermark, no logo")
-NEGATIVE = "text, letters, words, labels, captions, arrows, watermark, logo, signature, infographic, collage, blurry, distorted, deformed"
+                "no captions, no watermark, no logo, suitable for school students, strictly no nudity and no adult content, "
+                "any people fully and modestly clothed")
+NEGATIVE = ("text, letters, words, labels, captions, arrows, watermark, logo, signature, infographic, collage, blurry, distorted, deformed, "
+            "nude, nudity, naked, topless, shirtless, bare chest, exposed genitals, breasts, underwear, lingerie, bikini, sexual, erotic, "
+            "suggestive, adult content, gore, blood splatter, human torso, body outline, bare skin, bare shoulders, abdomen, navel, midriff")
+SENSITIVE_TOPIC = re.compile(r"(?i)\b(breasts?|mammary|chest|torso|nipples?|genital\w*|penis|vagina\w*|vulva|scrot\w+|testes|testicles?|testosterone|"
+                             r"buttocks?|pubic|pelvi\w*|puberty|adolescen\w*|menstru\w+|menopause|reproductive|sexual\w*|sex hormones?|"
+                             r"hormones?|uterus|ovar(?:y|ies|ian)|womb|fetus|foetus|pregnan\w+|nude|naked|shirtless|bare|"
+                             r"liver|kidneys?|stomach|intestin\w*|lungs?|heart|skin|wound\w*|limbs?)\b")
+SAFE_FRAMING = ("A single isolated organ, cell or molecule model, or a diagram-style cutaway of one organ, floating alone in empty space; "
+                "if a person must appear, a fully covered cartoon figure in a high-necked long-sleeved top, only face and hands visible.")
+# Style for body / reproduction / hormone shots, taken from the reference videos (sample_bio_videos): never a photograph of a body. Stylised
+# false-colour 3D medical animation, ONE glowing organ or cell cluster isolated on a dark background, no skin tones, no human figure.
+# Shots naming these never get a generated picture (see StillProducer._no_pictures_of_external_genitals).
+EXTERNAL_GENITAL = re.compile(r"(?i)\b(penis|penile|scrot\w+|vulva\w*|labia|clitor\w+|glans|foreskin|genital\w*|pubic|"
+                              r"menstrua\w+|sanitary|bleeding)\b")      # + menstruation: an image model draws blood-soaked pads, which the final check rejects
+# Words that make the image model draw a body around an organ; removed from the prompts of sensitive shots.
+BODY_WORDS = re.compile(r"(?i)\b(?:(?:human|female|male|woman'?s|man'?s|whole|entire|full)[- ]body|bod(?:y|ies)|torso|abdomen|abdominal|pelvi[cs]|"
+                        r"silhouettes?|outlines?|figures?|women|woman|men|man|girls?|boys?|persons?|people|skin|naked|nude|shirtless|bare|"
+                        r"chest|hips?|thighs?|waist|buttocks?|breasts?|nipples?)\b[ ,]*")
+# Positive wording only: an image model reads "no torso, no body outline" as a request for them, so nothing here names what must be absent.
+MEDICAL_STYLE = ("stylised false-colour 3D medical animation render of one glowing translucent organ, gland, cell or molecule model floating alone "
+                 "in empty pure black space, centred, vivid orange, teal, blue and violet colours, soft rim light, smooth clean surfaces, "
+                 "plain uncluttered educational illustration without any lettering, suitable for school students")
+# Educational video for school students: nothing nude, sexual or suggestive may reach the screen, whatever the topic (reproduction, anatomy).
+UNSAFE_TITLE = re.compile(r"(?i)\b(nude|nudes|nudity|naked|topless|shirtless|erotic\w*|porn\w*|sexy|sensual|lingerie|bikini|underwear|"
+                          r"panties|bra|breasts?|nipples?|cleavage|fetish|stripper|strip ?tease|intercourse|orgasm|adult|xxx|nsfw|gore)\b")
 _STOP = set("the a an of and to in on with for from is are was were that this these those it its by as at or be can which their".split())
 
 
@@ -120,6 +146,21 @@ def is_continuation(text: str) -> bool:
     if not words or len(words) > 12:
         return False
     return bool(_NAMING.search(text)) or len(words) <= 2
+
+
+_VIEWER_ADDRESS = re.compile(r"(?i)^\W*(?:(?:are|do|did|have|can|could|would|will)\s+you\b|(?:what|why|how|when|where|who)\b.*\?|let'?s\b|"
+                             r"don'?t\s+worry|you\s+(?:might|may|must)\s+(?:be\s+)?(?:wonder|curious)|have\s+you\s+ever|ready\b|so\b,?\s+(?:let'?s|are|do))")
+
+
+def is_viewer_address(text: str) -> bool:
+    """A short rhetorical question or invitation to the viewer ('What triggers such transformations?', 'Are you also curious about this?',
+    "Let's help Aaron ..."): there is nothing to draw, so the image model only wastes three rounds on it. Biology and unknown subjects only:
+    in mathematics a question can be the content of the lesson (see StillProducer._plan_continuations)."""
+    text = (text or "").strip()
+    words = re.findall(r"[^\W\d_][\w'-]*", text)
+    if not words or len(words) > 14 or re.search(r"[\d=^+*/]", text):
+        return False
+    return bool(_VIEWER_ADDRESS.search(text))
 
 
 # Things an image model covers in writing unless told otherwise (packaged products, medicines) and things that ARE writing (documents).
@@ -369,16 +410,21 @@ def _split_clauses(narration: str, strong_only: bool = False) -> list[str] | Non
 
 def technical_qa(image: Image.Image, config: AppConfig) -> dict:
     gray = np.asarray(image.convert("L").resize((1024, round(1024 * image.height / image.width))))
-    sharp = float(cv2.Laplacian(gray, cv2.CV_64F).var())
+    lap = cv2.Laplacian(gray, cv2.CV_64F)
+    sharp = float(lap.var())
+    # A smooth 3D render or macro shot on a plain background has little detail overall but crisp edges on its subject: judge the
+    # sharpest tiles too, so only a picture that is soft everywhere counts as blurry.
+    tiles = [lap[y:y + 64, x:x + 64].var() for y in range(0, lap.shape[0] - 63, 64) for x in range(0, lap.shape[1] - 63, 64)]
+    edge = float(np.percentile(tiles, 95)) if tiles else sharp
     spread = float(gray.std())
     reasons = []
     if spread < 12:
         reasons.append("blank_or_flat")
-    if sharp < config.production.min_sharpness:
+    if sharp < config.production.min_sharpness and edge < config.production.min_edge_sharpness:
         reasons.append("blurry")
     if image.width < 1024:
         reasons.append("too_small")
-    return {"ok": not reasons, "sharpness": round(sharp, 1), "contrast": round(spread, 1), "reasons": reasons}
+    return {"ok": not reasons, "sharpness": round(sharp, 1), "edge_sharpness": round(edge, 1), "contrast": round(spread, 1), "reasons": reasons}
 
 
 def finish_image(image: Image.Image) -> Image.Image:
@@ -398,11 +444,11 @@ def semantic_qa(path: Path, segment: Segment, scene_title: str, config: AppConfi
             f"This image is the background for a title card of the lesson topic: {segment.shot.heading or scene_title}.\n"
             f"Lesson context: {segment.narration}\n"
             "Return JSON: matches (bool: the scene is plausibly related to the topic AND the central third of the frame is calm and uncluttered so a large title can be read over it), "
-            "score (0..1), contains_text (bool: any letters/words visible), missing (list), issues (list of visual defects).")
+            f"score (0..1), contains_text (bool: any letters/words visible), {_SAFETY_ASK}, missing (list), issues (list of visual defects).")
         result = vision.ask(path, prompt, config, purpose=f"semantic:{segment.shot_id}")
-        return {"matches": _is_true(result.get("matches")), "score": _as_float(result.get("score")),
-                "contains_text": _is_true(result.get("contains_text")),
-                "missing": [], "issues": [str(x) for x in result.get("issues", [])][:6]}
+        return _apply_safety({"matches": _is_true(result.get("matches")), "score": _as_float(result.get("score")),
+                              "contains_text": _is_true(result.get("contains_text")),
+                              "missing": [], "issues": [str(x) for x in result.get("issues", [])][:6]}, result)
     # The reviewer reads English: for a lesson in another script it gets the planned English visual requirement, not the native narration.
     native = bool(segment.narration) and sum(1 for c in segment.narration if c.isalpha() and ord(c) >= 0x0590) > len(segment.narration) * 0.3
     narration_line = "" if native else f"Narration: {segment.narration}\n"
@@ -423,14 +469,44 @@ def semantic_qa(path: Path, segment: Segment, scene_title: str, config: AppConfi
         "score (0..1), contains_text (bool: true only if words or letters that a viewer would notice at normal viewing size are visible - "
         "titles, captions, signs, labels, logos, watermarks or clearly garbled lettering; IGNORE tiny incidental markings, scale ticks, "
         "dial graduations, +/- symbols on a battery and textures), "
+        f"{_SAFETY_ASK}, "
         "missing (list of required things not visible), issues (list of visual defects such as distorted anatomy)."
     )
     result = vision.ask(path, prompt, config, purpose=f"semantic:{segment.shot_id}")
-    return apply_checklist({"matches": _is_true(result.get("matches")), "score": _as_float(result.get("score")),
-                            "contains_text": _is_true(result.get("contains_text")),
-                            "missing": [str(x) for x in result.get("missing", [])][:6],
-                            "issues": [str(x) for x in result.get("issues", [])][:6]}, result.get("checks"),
-                           grounding=grounding_text(segment, structures, prompt))
+    checked = apply_checklist({"matches": _is_true(result.get("matches")), "score": _as_float(result.get("score")),
+                               "contains_text": _is_true(result.get("contains_text")),
+                               "missing": [str(x) for x in result.get("missing", [])][:6],
+                               "issues": [str(x) for x in result.get("issues", [])][:6]}, result.get("checks"),
+                              grounding=grounding_text(segment, structures, prompt))
+    return _apply_safety(checked, result)
+
+
+_SAFETY_ASK = ("unsafe (bool: TRUE if the image shows ANY human torso, chest, abdomen, back or body with visible bare skin - even when organs, lungs, glands or a diagram are drawn over or inside it - or a nude, shirtless or partly undressed person, breasts, buttocks, genitals, or anything sexual, suggestive, erotic or graphic gore. This video is for school students. NOT unsafe: isolated organs, cells or molecules, a cut-away or schematic with no body outline, hands, a face, or a person fully covered in clothing with shoulders and arms covered)")
+
+
+_BODY_ASK = ("Look carefully at this image. Answer with JSON keys: "
+             "body_visible (bool: TRUE if ANY part of a human body is visible other than a face or hands - for example a torso, abdomen, hips, waist, chest, "
+             "back, legs, bare skin, or a body silhouette/outline around or behind drawn organs, or a statue/engraving/painting of a bare body; FALSE if the "
+             "picture shows only isolated organs, cells, molecules, plants, animals, a diagram on a plain background, or objects), "
+             "clothed_only (bool: TRUE only if every visible person is fully covered by clothing with shoulders, arms and legs covered), "
+             "blood_visible (bool: TRUE if blood is visible on fabric, skin or objects). Be strict.")
+
+
+def body_unsafe(path: Path, config: AppConfig) -> str | None:
+    """Dedicated yes/no safety check (app/safety.py, fails closed): adult content, a human body that is not fully clothed, or visible blood
+    makes the picture unusable in a school-student video. Returns the reason, or None when it is fine."""
+    return unsafe_reason(path, config, purpose="body-check", passes=2)    # asked twice: the vision model is not deterministic, one unsafe answer rejects
+
+
+def _apply_safety(semantic: dict, result: dict) -> dict:
+    """An image the reviewer calls unsafe can never be used: it fails outright, whatever else it shows."""
+    unsafe = _is_true(result.get("unsafe"))
+    semantic["unsafe"] = unsafe
+    if unsafe:
+        semantic["matches"], semantic["score"] = False, 0.0
+        semantic["issues"] = list(dict.fromkeys(["unsafe: nudity or adult content; school-student video"] + semantic.get("issues", [])))[:6]
+        semantic["missing"] = list(semantic.get("missing") or [])
+    return semantic
 
 
 def grounding_text(segment: Segment, structures: str, prompt: str = "") -> str:
@@ -508,11 +584,12 @@ def _as_float(value, default: float = 0.0) -> float:
         return default
 
 
-REVIEWER_VERSION = 8  # 8: small printed labels are painted out instead of rejecting the picture. Bump whenever the semantic reviewer's criteria change: older accepted stills are judged again (no regeneration)
+REVIEWER_VERSION = 13  # 13: a human body outline around drawn organs is unsafe on its own and every picture is safety-checked twice; 12: every picture gets the fail-closed safety check (app/safety.py); 11: dedicated body/blood check for stock photos and body-related shots; 10: bare torso/body with an organ overlay is unsafe; 9: the reviewer also rejects nudity / adult content (school-student video); 8:small printed labels are painted out instead of rejecting the picture. Bump whenever the semantic reviewer's criteria change: older accepted stills are judged again (no regeneration)
 
 
 def _accepts(semantic: dict, config: AppConfig) -> bool:
-    return semantic["matches"] and semantic["score"] >= config.production.min_semantic_score and not semantic["contains_text"]
+    return (semantic["matches"] and semantic["score"] >= config.production.min_semantic_score and not semantic["contains_text"]
+            and not semantic.get("unsafe"))
 
 
 @dataclass
@@ -536,12 +613,14 @@ class StillProducer:
 
     def _plan_continuations(self) -> None:
         """Shots that only name or close what the previous picture shows are not generated: they reuse the nearest earlier photo."""
+        from .subject import photos_first, subject_of
+        asks_viewer = is_viewer_address if photos_first(subject_of(self.board)) else (lambda _text: False)
         self._continuations = []
         for scene, seg in self.board.all_segments():
             shot = seg.shot
             if shot is None or shot.asset_path or shot.template not in {"photo", "video"} or seg.labels or seg.formula_lines:
                 continue
-            if is_continuation(seg.narration) or is_filler_narration(seg.narration):
+            if is_continuation(seg.narration) or is_filler_narration(seg.narration) or asks_viewer(seg.narration):
                 self._continuations.append((scene, seg))
         self._continuation_ids = {id(seg) for _scene, seg in self._continuations}
 
@@ -674,8 +753,45 @@ class StillProducer:
                                     "reason": "the shot is about a graph; image models cannot draw correct graphs, so no generated picture",
                                     "repair": "supply the real graph as asset_path if it must be shown"})
 
+    def _no_pictures_of_external_genitals(self) -> None:
+        """School-student rule: a shot whose narration or labels name external genital anatomy never gets a generated picture or labels.
+        An image model draws an ambiguous, phallic or explicit shape for it (a red bulb labelled "Penis" was flagged by the final safety
+        check); the shot is explained by text cards instead. A teacher-supplied picture (asset_path) is kept."""
+        for scene, seg in self.board.all_segments():
+            shot = seg.shot
+            if shot is None or shot.asset_path or shot.template not in {"photo", "video", "split_screen"}:
+                continue
+            if id(seg) in getattr(self, "_continuation_ids", ()):
+                continue
+            if not EXTERNAL_GENITAL.search(" ".join([seg.narration or "", *(seg.labels or [])])):
+                continue
+            job = Job(seg.shot_id or f"{scene.scene_number}_{seg.segment_number}", seg, seg, scene.title)
+            if self._downgrade(job):
+                self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "info", "renderer": "concept_cards",
+                                    "reason": "the shot names external genital anatomy or menstrual bleeding; school-student rule: no generated picture or label, shown as explanation cards",
+                                    "repair": "supply an approved diagram as asset_path if a picture is required"})
+
+    def _blocked_to_cards(self) -> None:
+        """Shots the final safety check rejected in an earlier pass (assets/_blocked_shots.json, written by main.run_job) never get a
+        picture again: they are explained by text cards. A teacher-supplied picture (asset_path) is kept."""
+        try:
+            blocked = {str(x) for x in json.loads((self.dir / "_blocked_shots.json").read_text(encoding="utf-8-sig"))}      # tolerates a BOM
+        except (OSError, ValueError):
+            return
+        for scene, seg in self.board.all_segments():
+            shot = seg.shot
+            if shot is None or shot.asset_path or str(seg.shot_id) not in blocked or shot.template not in {"photo", "video", "split_screen"}:
+                continue
+            job = Job(seg.shot_id or f"{scene.scene_number}_{seg.segment_number}", seg, seg, scene.title)
+            if self._downgrade(job):
+                self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "info", "renderer": "concept_cards",
+                                    "reason": "the final safety check rejected the picture of this shot; school-student rule: shown as explanation cards",
+                                    "repair": "supply an approved picture as asset_path if one is required"})
+
     def run(self) -> list[dict]:
         self._plan_continuations()
+        self._blocked_to_cards()
+        self._no_pictures_of_external_genitals()
         self._cards_for_screen_moments()
         self._no_drawn_graphs()
         self._cards_for_abstract_statements()
@@ -754,6 +870,26 @@ class StillProducer:
                 record["exhausted"] = True       # remembered so reruns do not burn GPU time on the same failing shot
                 self._save(job, record)
             best = self._best(record)
+            soft = self._soft_but_right(record)
+            if soft is not None:
+                # the picture shows the right thing and only the sharpness gate objected: a slightly soft picture teaches better than cards
+                record["accepted"], record["soft_accepted"] = True, soft["path"]
+                self._save(job, record)
+                best = soft
+                self.issues.append({"shot_id": job.owner.shot_id or job.key, "field": "image", "severity": "info", "renderer": "flux",
+                                    "reason": "picture is correct but soft; kept instead of explanation cards",
+                                    "repair": "none needed unless the picture looks out of focus"})
+            loose = None if soft is not None or record["accepted"] else self._loose_match(record)
+            if loose is not None and job.panel is None and job.owner.shot.template in {"photo", "video"}:
+                # related but incomplete (a detail of the sentence is not drawn): still better than text cards; no labels on it
+                job.owner.labels, job.owner.label_placement = [], []
+                job.owner.shot.asset_path = loose["path"]
+                record["loose_accepted"] = loose["path"]
+                self._save(job, record)
+                self.issues.append({"shot_id": job.owner.shot_id or job.key, "field": "image", "severity": "warning", "renderer": "flux",
+                                    "reason": f"picture only partly matches (score {loose['score']:.2f}, missing {loose['missing']}); kept instead of cards",
+                                    "repair": "SME: give a more specific image_requirement if this shot needs the missing detail"})
+                continue
             if best is None and job.panel is None and self._downgrade(job):
                 self.issues.append({"shot_id": job.owner.shot_id or job.key, "field": "image_prompt", "severity": "warning", "renderer": "flux",
                                     "reason": "no picture could be made; the shot shows explanation cards instead",
@@ -817,12 +953,15 @@ class StillProducer:
 
     def _retrieve(self, job: Job, record: dict) -> None:
         """Try the best open-licensed Wikimedia Commons image first; it must still pass QA like any candidate."""
+        if SENSITIVE_TOPIC.search(f"{job.segment.narration} {record.get('prompt', '')}"):
+            return      # real photographs of reproductive anatomy (clinical close-ups) are not for school students: generate an illustration instead
         try:
             query = job.caption or commons.search_query(job.segment.narration, self.config)
             grounding = grounding_text(job.segment, "; ".join(job.segment.labels), record.get("prompt", ""))
             # A stock photo whose own title shares no subject word with the shot ("Anaconda Copper converters" for a silver rod in a
             # solution) is an accident of the search engine, and a vision reviewer can still be fooled by it: skip it unseen.
-            relevant = [c for c in commons.find(query, self.config, limit=6) if title_relevant(c.get("title", ""), grounding)]
+            relevant = [c for c in commons.find(query, self.config, limit=6)
+                        if title_relevant(c.get("title", ""), grounding) and not UNSAFE_TITLE.search(c.get("title", ""))]
             for candidate in relevant[:2]:
                 raw = self.dir / f"shot_{job.key}_commons_raw.jpg"
                 commons.download(candidate, raw)
@@ -881,7 +1020,7 @@ class StillProducer:
     def _content_key(self, job: Job) -> str:
         """What the picture must show: if the approved text changes, an old still was judged against something else."""
         segment = job.segment
-        blob = json.dumps([segment.narration, segment.image_prompt, segment.image_requirement, list(segment.labels or []), STYLE_SUFFIX],
+        blob = json.dumps([segment.narration, segment.image_prompt, segment.image_requirement, list(segment.labels or []), STYLE_SUFFIX, MEDICAL_STYLE],
                           ensure_ascii=False)
         return hashlib.sha1(blob.encode()).hexdigest()[:16]
 
@@ -920,9 +1059,13 @@ class StillProducer:
     def _generate(self, job: Job, record: dict, round_no: int) -> None:
         seed = random.Random(f"{job.key}:{round_no}:{len(record['attempts'])}:{record['prompt']}").randint(1, 2**31 - 1)   # a retry never repeats a seed
         base = text_free_prompt(record["prompt"]) or record["prompt"]
-        prompt = f"{base.rstrip('. ')}. {STYLE_SUFFIX}"
+        style = STYLE_SUFFIX
+        if SENSITIVE_TOPIC.search(f"{base} {job.segment.narration}"):
+            base = f"{SAFE_FRAMING} {BODY_WORDS.sub('', base)}"       # reproduction, puberty, anatomy: organs and diagrams, never a naked or shirtless body
+            style = MEDICAL_STYLE                 # and drawn like the reference videos: glowing false-colour models, not photographs of flesh
+        prompt = f"{base.rstrip('. ')}. {style}"
         if record["attempts"] and record["attempts"][-1].get("correction"):
-            prompt = f"{base.rstrip('. ')}. {record['attempts'][-1]['correction']}. {STYLE_SUFFIX}"
+            prompt = f"{base.rstrip('. ')}. {record['attempts'][-1]['correction']}. {style}"
         raw = self.dir / f"shot_{job.key}_a{round_no}_raw.png"
         final = self.dir / f"shot_{job.key}_a{round_no}.png"
         p = self.config.production
@@ -941,6 +1084,7 @@ class StillProducer:
     def _review(self, job: Job, record: dict) -> None:
         attempt = record["attempts"][-1]
         attempt["reviewed"] = True
+        attempt["rv"] = REVIEWER_VERSION        # only pictures judged under the current safety rules may ever be used
         try:
             semantic = semantic_qa(Path(attempt["path"]), job.segment, job.scene_title, self.config, record.get("prompt", ""))
         except (RuntimeError, ValueError, TypeError, KeyError) as exc:          # also malformed model output (e.g. a text score)
@@ -950,6 +1094,11 @@ class StillProducer:
             self._note_unreviewed(job, f"the visual review failed ({str(exc)[:80]})")
             self._save(job, record)
             return
+        if True:                                                   # every picture (generated or stock, any topic) gets the safety check
+            reason = body_unsafe(Path(attempt["path"]), self.config)
+            if reason:
+                semantic = _apply_safety(semantic, {"unsafe": True})
+                semantic["issues"] = list(dict.fromkeys([reason] + semantic.get("issues", [])))[:6]
         if self.config.production.ocr_text_check and not (job.segment.shot and job.segment.shot.template == "title_card"):
             words = ocr.stray_text(Path(attempt["path"]))
             if ocr.has_stray_text(words) and semantic.get("score", 0) >= self.config.production.min_semantic_score:
@@ -987,10 +1136,33 @@ class StillProducer:
             attempt["correction"] = "; ".join(fixes) or "make the required subject large, central and unambiguous"
         self._save(job, record)
 
+    def _soft_but_right(self, record: dict) -> dict | None:
+        """The best attempt that passed the semantic review and failed only the sharpness gate, if any."""
+        if record.get("accepted"):
+            return None
+        fits = [a for a in record["attempts"] if a.get("semantic") and "matches" in a["semantic"] and _accepts(a["semantic"], self.config)
+                and a.get("rv") == REVIEWER_VERSION and set(a["technical"].get("reasons") or []) <= {"blurry"}]
+        if not fits:
+            return None
+        chosen = max(fits, key=lambda a: (a.get("score") or 0, (a["technical"].get("edge_sharpness") or 0)))
+        return {"path": chosen["path"], "score": chosen.get("score") or 0, "missing": [], "issues": []}
+
+    def _loose_match(self, record: dict) -> dict | None:
+        """Best attempt that is on topic (reviewer score at least loose_picture_min_score), has no lettering and is not flat/tiny."""
+        floor = self.config.production.loose_picture_min_score
+        fits = [a for a in record["attempts"] if a.get("semantic") and (a.get("score") or 0) >= floor and a.get("rv") == REVIEWER_VERSION
+                and not a["semantic"].get("contains_text") and not a["semantic"].get("unsafe")
+                and not set(a["technical"].get("reasons") or []) - {"blurry"}]
+        if not fits:
+            return None
+        chosen = max(fits, key=lambda a: (a.get("score") or 0))
+        return {"path": chosen["path"], "score": chosen.get("score") or 0, "missing": (chosen["semantic"].get("missing") or [])[:3]}
+
     @staticmethod
     def _best(record: dict) -> dict | None:
-        usable = [a for a in record["attempts"] if a["technical"]["ok"]] or record["attempts"]
-        clean = [a for a in usable if not (a.get("semantic") or {}).get("contains_text")]
+        safe = [a for a in record["attempts"] if not (a.get("semantic") or {}).get("unsafe") and a.get("rv") == REVIEWER_VERSION]     # never an unsafe or unjudged picture
+        usable = [a for a in safe if a["technical"]["ok"]] or safe
+        clean =[a for a in usable if not (a.get("semantic") or {}).get("contains_text")]
         usable = clean or usable
         if not usable:
             return None

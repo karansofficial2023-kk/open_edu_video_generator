@@ -175,6 +175,17 @@ def cards_frame(size: tuple[int, int], config: AppConfig, heading: str, steps: l
     tile_h = min(round(460 * s), (area_bottom - top - gap * (rows - 1)) // rows)
     top += max(0, (area_bottom - top - (tile_h * rows + gap * (rows - 1))) // 2)   # centre the block in the free area
     number_font = font(round(40 * s), True)
+    # Cards still to come are drawn as faint placeholders, so the screen shows the whole sequence instead of one card and empty space.
+    ghosts = Image.new("RGBA", size, (0, 0, 0, 0))
+    ghost_draw = ImageDraw.Draw(ghosts)
+    for index in range(stage + 1, count):
+        row, col = divmod(index, cols)
+        x0, y0 = margin + col * (tile_w + gap), top + row * (tile_h + gap)
+        ghost_draw.rounded_rectangle((x0, y0, x0 + tile_w, y0 + tile_h), radius=round(28 * s), fill=(255, 255, 255, 105),
+                                     outline=(255, 255, 255, 190), width=max(2, round(3 * s)))
+        badge = round(56 * s)
+        ghost_draw.ellipse((x0 + round(30 * s), y0 + round(28 * s), x0 + round(30 * s) + badge, y0 + round(28 * s) + badge), fill=(120, 134, 126, 120))
+    image = Image.alpha_composite(image.convert("RGBA"), ghosts).convert("RGB")
     for index, step in enumerate(steps):
         if index > stage:
             continue
@@ -189,27 +200,34 @@ def cards_frame(size: tuple[int, int], config: AppConfig, heading: str, steps: l
         image.paste(patch, origin, patch)
         draw = ImageDraw.Draw(image)
         color = accent if index % 2 == 0 else second
-        draw.rounded_rectangle(box, radius=round(28 * s), fill=(255, 255, 255), outline=color if active else (214, 222, 216),
-                               width=max(3, round((7 if active else 3) * s)))
+        draw.rounded_rectangle(box, radius=round(28 * s), fill=(255, 255, 255), outline=color if active else tuple((c + 255 * 2) // 3 for c in color),
+                               width=max(3, round((7 if active else 4) * s)))
+        draw.rounded_rectangle((box[0] + round(34 * s), box[1] + round(10 * s), box[0] + round(34 * s) + round(110 * s), box[1] + round(10 * s) + round(8 * s)),
+                               radius=round(4 * s), fill=color)
         badge = round(64 * s)
-        bx, by = box[0] + round(30 * s), box[1] + round(28 * s)
+        bx, by = box[0] + round(30 * s), box[1] + round(34 * s)
         draw.ellipse((bx, by, bx + badge, by + badge), fill=color)
         label = str(index + 1)
         put_text(draw, (bx + (badge - text_width(draw, label, number_font)) / 2, by + badge * 0.12), label, number_font, (255, 255, 255))
-        text_box = (box[0] + round(34 * s), by + badge + round(24 * s), box[2] - round(34 * s), box[3] - round(30 * s))
+        text_box = (box[0] + round(34 * s), by + badge + round(18 * s), box[2] - round(34 * s), box[3] - round(34 * s))
+        body_ink = ink if active else (40, 54, 48)
         term, sep, body = step.partition(": ")
         # "Term: explanation" takeaway card - only for a genuinely short term; a sentence that merely contains a colon
         # ("... which asks: Which of the following ...") is one block of text, not a term with a squeezed body
         if sep and term and body and len(term.split()) <= 4 and len(term) <= 40:
             term_box = (text_box[0], text_box[1], text_box[2], text_box[1] + round(120 * s))
-            tf, tl, th = fit_text(draw, term, term_box, round(54 * s), round(32 * s), bold=True, max_lines=2)
-            draw_lines(draw, tl, tf, th, text_box[0], text_box[1], color)
-            body_top = text_box[1] + len(tl) * th + round(14 * s)
-            bf, bl, bh = fit_text(draw, body, (text_box[0], body_top, text_box[2], text_box[3]), round(38 * s), round(26 * s), max_lines=5)
-            draw_lines(draw, bl, bf, bh, text_box[0], body_top, ink if active else (70, 84, 76))
+            tf, tl, th = fit_text(draw, term, term_box, round(58 * s), round(32 * s), bold=True, max_lines=2)
+            body_h = text_box[3] - text_box[1] - len(tl) * th - round(14 * s)
+            bf, bl, bh = fit_text(draw, body, (text_box[0], text_box[1], text_box[2], text_box[1] + max(body_h, round(60 * s))), round(42 * s), round(26 * s), max_lines=5)
+            used = len(tl) * th + round(14 * s) + len(bl) * bh
+            start = text_box[1] + max(0, (text_box[3] - text_box[1] - used) // 2)
+            draw_lines(draw, tl, tf, th, text_box[0], start, color)
+            body_top = start + len(tl) * th + round(14 * s)
+            draw_lines(draw, bl, bf, bh, text_box[0], body_top, body_ink)
         else:
-            tf, tl, th = fit_text(draw, step, text_box, round(50 * s), round(28 * s), bold=active, max_lines=5)
-            draw_lines(draw, tl, tf, th, text_box[0], text_box[1], ink if active else (70, 84, 76))
+            tf, tl, th = fit_text(draw, step, text_box, round(68 * s), round(30 * s), bold=True, max_lines=5)
+            start = text_box[1] + max(0, (text_box[3] - text_box[1] - len(tl) * th) // 2)     # centred in the card instead of hanging from the top
+            draw_lines(draw, tl, tf, th, text_box[0], start, body_ink)
         if sequential and col < cols - 1 and index < count - 1 and index < stage:
             cx, cy = box[2] + gap // 2, (box[1] + box[3]) // 2
             arrow = round(16 * s)

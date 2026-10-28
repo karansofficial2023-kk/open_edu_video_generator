@@ -86,7 +86,7 @@ def main() -> None:
     print(json.dumps(summary, indent=2))
 
 
-def run_job(parser, args, config, input_path: Path, output_dir: Path) -> None:
+def run_job(parser, args, config, input_path: Path, output_dir: Path, heal: int = 0) -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
     try:        # which contract this lesson came from (the verifier looks for its storyboard DOCX beside it)
         (output_dir / "source.json").write_text(json.dumps({"input": str(Path(input_path).resolve())}, ensure_ascii=False), encoding="utf-8")
@@ -139,6 +139,20 @@ def run_job(parser, args, config, input_path: Path, output_dir: Path) -> None:
         if outcome["status"] in {"blocked", "failed"}:
             parser.exit(2, f"Production {outcome['status']}. See {output_dir / 'production_issues.json'}\n")
         qa = outcome.get("qa", {})
+        if outcome["status"] == "qa_failed" and heal < 2:
+            # self-repair: a frame the final safety check rejects is never shown again; its shot becomes text cards and the lesson re-renders
+            bad = {str(f.get("shot_id")) for f in qa.get("findings", []) if f.get("level") == "critical" and f.get("gate") == "unsafe_content" and f.get("shot_id")}
+            if bad:
+                blocked = output_dir / "assets" / "_blocked_shots.json"
+                known = set()
+                try:
+                    known = set(json.loads(blocked.read_text(encoding="utf-8")))
+                except (OSError, ValueError):
+                    pass
+                blocked.parent.mkdir(parents=True, exist_ok=True)
+                blocked.write_text(json.dumps(sorted(known | bad)), encoding="utf-8")
+                print(f"SELF-REPAIR {heal + 1}/2: final safety check rejected shot(s) {', '.join(sorted(bad))}; they become text cards and the lesson re-renders")
+                return run_job(parser, args, config, input_path, output_dir, heal + 1)
         print(f"{outcome['status'].upper()}: {outcome['video']} (critical QA findings: {qa.get('critical', '?')}) - {output_dir / 'final_qa.json'}")
         if outcome["status"] == "qa_failed":
             parser.exit(3, "Final QA found critical problems; this video must not be released.\n")      # scripts and queues must see a failure

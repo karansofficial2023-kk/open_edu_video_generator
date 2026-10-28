@@ -55,8 +55,9 @@ def photos_first(subject: str) -> bool:
 
 
 def board_style(subject: str) -> bool:
-    """Physics and chemistry: explanation and equation screens are a dark teacher's board that builds up (board.py)."""
-    return subject in {PHYSICS, CHEMISTRY}
+    """Every subject except mathematics: explanation screens are a dark teacher's board that builds up (board.py) - never the old white
+    concept cards. Biology keeps photographs first; the board is only what an explanation shot (one with no usable picture) shows."""
+    return subject in {PHYSICS, CHEMISTRY, BIOLOGY, GENERAL}
 
 
 def plain_cards(subject: str) -> bool:

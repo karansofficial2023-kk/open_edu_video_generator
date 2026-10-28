@@ -47,7 +47,41 @@ def columns(split: bool):
     finally:
         X0 = previous
 BODY_PX, LINE_H = 42, 56
-TYPE_RATE = 60          # characters per second: the line is on the board quickly, the voice then explains it
+AIRY_BODY_PX, AIRY_LINE_H = 58, 78                 # a text-only board (no figure): larger writing, key terms highlighted, framed panel
+_AIRY = False
+
+
+@contextmanager
+def airy(on: bool):
+    """Geometry for a text-only board: larger text. Everything that measures or draws text inside the block uses it."""
+    global BODY_PX, LINE_H, _AIRY
+    saved = (BODY_PX, LINE_H, _AIRY)
+    if on:
+        BODY_PX, LINE_H, _AIRY = AIRY_BODY_PX, AIRY_LINE_H, True
+    try:
+        yield
+    finally:
+        BODY_PX, LINE_H, _AIRY = saved
+
+
+def _stem(word: str) -> str:
+    return re.sub(r"[^a-z]", "", word.lower())[:5]
+
+
+def _draw_marked(draw, xy: tuple, line: str, fnt, ink, marks, left: int, dim: bool) -> None:
+    """One line of writing; words whose 5-letter stem is in `marks` (the lesson's key terms) are yellow. Only `left` characters show."""
+    x, y = xy
+    shown = line[:max(0, left)]
+    for token in re.split(r"(\s+)", shown):
+        if not token:
+            continue
+        key = _stem(token)
+        color = YELLOW if (marks and not dim and len(key) >= 4 and key in marks) else ink
+        draw.text((x, y), token, font=fnt, fill=color)
+        x += text_width(draw, token, fnt)
+
+
+TYPE_RATE = 60         # characters per second: the line is on the board quickly, the voice then explains it
 
 _DEFINITION = re.compile(r"(?i)\b(is|are) (called|known as|defined as|termed|referred to as)\b|\bis the (property|ability|process|measure|ratio)\b|\brefers to\b")
 _CONTRAST = re.compile(r"(?i)\b(whereas|unlike|in contrast|on the other hand|compared (to|with)|versus|vs\.?)\b")
@@ -222,9 +256,9 @@ def wide(items: list[dict]) -> bool:
     return False
 
 
-def fits(items: list[dict], split: bool = False) -> bool:
-    with columns(split):
-        return sum(height_of(i) for i in items) <= BOTTOM - TOP
+def fits(items: list[dict], split: bool = False, airy_on: bool = False) -> bool:
+    with columns(split), airy(airy_on):
+        return sum(height_of(i) for i in items) <= BOTTOM - TOP - (60 if airy_on else 0)
 
 
 def _chars(item: dict) -> int:
@@ -273,7 +307,10 @@ def _draw_item(draw: ImageDraw.ImageDraw, image: Image.Image, item: dict, y: int
         for i, line in enumerate(lines):
             if left <= 0:
                 break
-            draw.text((px(X0 + 40), px(y + i * LINE_H)), line[:left], font=body, fill=ink)
+            if _AIRY:
+                _draw_marked(draw, (px(X0 + 40), px(y + i * LINE_H)), line, body, ink, item.get("marks"), left, dim)
+            else:
+                draw.text((px(X0 + 40), px(y + i * LINE_H)), line[:left], font=body, fill=ink)
             left -= len(line) + 1
     elif kind == "box":
         lines = wrap_text(_probe, item["text"], font(BODY_PX), X1 - X0 - 120)
@@ -285,7 +322,10 @@ def _draw_item(draw: ImageDraw.ImageDraw, image: Image.Image, item: dict, y: int
         for i, line in enumerate(lines):
             if left <= 0:
                 break
-            draw.text((px(X0 + 60), px(y + 20 + i * LINE_H)), line[:left], font=body, fill=ink)
+            if _AIRY:
+                _draw_marked(draw, (px(X0 + 60), px(y + 20 + i * LINE_H)), line, body, ink, item.get("marks"), left, dim)
+            else:
+                draw.text((px(X0 + 60), px(y + 20 + i * LINE_H)), line[:left], font=body, fill=ink)
             left -= len(line) + 1
     elif kind == "row":
         half = (X1 - X0) // 2
@@ -451,9 +491,9 @@ def _anchor_picture(path: str, size: tuple) -> Image.Image:
 
 
 def frame(size: tuple[int, int], theme: tuple, title: str, previous: list[dict], current: list[dict], t: float, reveal_end: float,
-          anchor: dict | None = None) -> Image.Image:
+          anchor: dict | None = None, airy_on: bool = False) -> Image.Image:
     """The board at time t: earlier items dimmed, the shot's own items typed in between 0.25 s and reveal_end."""
-    with columns(anchor is not None):
+    with columns(anchor is not None), airy(airy_on):
         image = _frame(size, theme, title, previous, current, t, reveal_end)
         if anchor is not None:
             _draw_anchor(image, anchor, t, size[1] / 1080)
@@ -472,6 +512,12 @@ def _frame(size: tuple[int, int], theme: tuple, title: str, previous: list[dict]
     draw.text((px(FULL_X0 - 24), px(58)), heading, font=hfont, fill=INK)          # the section title always spans the screen
     draw.rounded_rectangle((px(FULL_X0 - 24), px(124), px(FULL_X0 + 156), px(130)), radius=px(3), fill=CYAN)
     y = TOP
+    if _AIRY:
+        # a framed classroom board: the writing sits on a soft panel with a cyan edge, so the open space reads as a board, not a gap
+        draw.rounded_rectangle((px(X0 - 40), px(TOP - 22), px(X1 + 40), px(BOTTOM + 16)), radius=px(22), fill=(255, 255, 255, 9),
+                               outline=(70, 110, 130, 170), width=max(1, px(2)))
+        draw.rounded_rectangle((px(X0 - 40), px(TOP - 22), px(X0 - 33), px(BOTTOM + 16)), radius=px(3), fill=CYAN)
+        y = TOP + 30
     for item in previous:
         _draw_item(draw, image, item, y, 10 ** 6, False, True, scale)
         y += height_of(item)

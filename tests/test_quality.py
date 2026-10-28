@@ -94,7 +94,8 @@ class QualityTests(unittest.TestCase):
         config = AppConfig()
         result = ComfyUIClient(config)._patch_workflow(workflow, "A subject", "test")
         self.assertEqual(result["6"]["inputs"]["text"], "A subject")
-        self.assertEqual(result["7"]["inputs"]["text"], config.comfyui.negative_prompt)
+        self.assertTrue(result["7"]["inputs"]["text"].startswith(config.comfyui.negative_prompt))
+        self.assertIn("nude", result["7"]["inputs"]["text"])
         self.assertNotEqual(workflow["6"]["inputs"]["text"], "A subject")
 
     def test_raw_label_instructions_are_not_appended(self):

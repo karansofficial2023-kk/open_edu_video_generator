@@ -45,7 +45,7 @@ def _get(url: str, **kwargs) -> requests.Response:
             response.raise_for_status()
             return response
         wait = response.headers.get("Retry-After", "")
-        time.sleep(float(wait) if wait.isdigit() else delay)
+        time.sleep(min(float(wait), 20.0) if wait.isdigit() else min(delay, 20.0))     # a huge Retry-After must not freeze a render for an hour
         delay *= 2
     response.raise_for_status()
     return response

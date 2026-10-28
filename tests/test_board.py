@@ -144,6 +144,53 @@ class QualityGapTests(unittest.TestCase):
         self.assertFalse(graph.animate)
         self.assertEqual(beaker.shot.template, "photo")
 
+    def test_shots_the_final_safety_check_rejected_become_cards_on_the_next_pass(self):
+        import tempfile
+        from app.assets import StillProducer
+        from app.config import AppConfig
+        from app.schema import Scene, Storyboard
+        flagged = Segment(segment_number=1, shot_id="8.2", image_prompt="A glowing organ", narration="Hormones guide development.",
+                          shot=Shot(template="photo"))
+        fine = Segment(segment_number=2, shot_id="8.3", image_prompt="A cell", narration="Cells respond to hormones.", shot=Shot(template="photo"))
+        board_ = Storyboard(title="Hormones", scenes=[Scene(scene_number=8, title="Puberty", narration="", segments=[flagged, fine])])
+        with tempfile.TemporaryDirectory() as tmp:
+            producer = StillProducer(board_, Path(tmp), AppConfig())
+            (producer.dir / "_blocked_shots.json").write_text('["8.2"]', encoding="utf-8")      # what main.run_job writes after a failed final check
+            producer._blocked_to_cards()
+        self.assertNotIn(flagged.shot.template, {"photo", "video"})
+        self.assertEqual(fine.shot.template, "photo")
+
+    def test_rhetorical_questions_to_the_viewer_are_not_pictured_but_real_content_is(self):
+        from app.assets import is_viewer_address
+        for line in ("What triggers such transformations?", "Are you also curious about this?", "Let's help Aaron by learning more.",
+                     "Don't worry, this video may provide answers.", "Have you ever wondered why?"):
+            self.assertTrue(is_viewer_address(line), line)
+        for line in ("Testosterone is produced by the testes.", "What is the value of f(2) = 4?",
+                     "The ovary releases an egg each month, which is called ovulation?"):
+            self.assertFalse(is_viewer_address(line), line)
+
+    def test_a_shot_naming_external_genitals_never_gets_a_picture_or_label(self):
+        import tempfile
+        from app.assets import StillProducer
+        from app.config import AppConfig
+        from app.schema import Scene, Storyboard
+        penis = Segment(segment_number=1, shot_id="5.3", image_prompt="A glowing urethra", labels=["Urethra", "Penis"],
+                        label_placement=["Urethra - centre", "Penis - top"],
+                        narration="The urethra is the passage that transports semen out of the body through the penis.",
+                        shot=Shot(template="photo"))
+        gland = Segment(segment_number=2, shot_id="5.4", narration="The prostate gland adds fluid to the semen.",
+                        image_prompt="A glowing prostate gland", shot=Shot(template="photo"))
+        period = Segment(segment_number=3, shot_id="5.5", narration="A menstrual period typically lasts between two to five days.",
+                         image_prompt="A calendar", shot=Shot(template="photo"))
+        board_ = Storyboard(title="Male system", scenes=[Scene(scene_number=5, title="Ducts", narration="", segments=[penis, gland, period])])
+        with tempfile.TemporaryDirectory() as tmp:
+            producer = StillProducer(board_, Path(tmp), AppConfig())
+            producer._no_pictures_of_external_genitals()
+        self.assertNotIn(penis.shot.template, {"photo", "video"})
+        self.assertEqual(penis.labels, [])
+        self.assertEqual(gland.shot.template, "photo")
+        self.assertNotIn(period.shot.template, {"photo", "video"})       # blood is never left to the vision model's mood
+
     def test_chemical_formulas_get_textbook_subscripts_everywhere(self):
         from app.formulas import to_mathtext
         mixed = to_mathtext("Λ°(CH3COOH) = Λ°(H+) + Λ°(CH3COO⁻)")

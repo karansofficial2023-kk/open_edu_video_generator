@@ -242,7 +242,7 @@ class ShotRenderer:
             if key is not None and key in plan.steady:
                 return plan.steady[key].copy()
             image = teacher_board.frame(self.size, plan.board["theme"], plan.scene_title, plan.board["previous"], plan.board["current"],
-                                        t, plan.board["reveal_end"], plan.board.get("anchor"))
+                                        t, plan.board["reveal_end"], plan.board.get("anchor"), bool(plan.board.get("airy")))
             if key is not None:
                 plan.steady[key] = image
             return image.copy()
@@ -465,6 +465,7 @@ class ShotRenderer:
         fade_frames = round(self.config.production.crossfade_seconds * fps) if previous_last is not None and smooth else 0
         command = [_tool_path(self.config.ffmpeg_path, "ffmpeg"), "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "rgb24",
                    "-s", f"{self.size[0]}x{self.size[1]}", "-r", str(fps), "-i", "pipe:0", "-an", "-frames:v", str(frame_count),
+                   *(["-vf", f"unsharp=5:5:{self.config.render.sharpen}:5:5:0.0"] if self.config.render.sharpen > 0 else []),
                    "-c:v", "libx264", "-preset", self.config.render.video_preset, "-crf", str(self.config.render.video_crf),
                    "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(clip)]
         last = None

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 import wave
 from pathlib import Path
 
@@ -79,11 +80,15 @@ def _clip_signature(segment, frame_count: int, config: AppConfig, backdrop: str 
 
 
 BOARD_TEMPLATES = {"process", "comparison", "formula"}
+# words of a section title that are not the lesson's subject, so they are never highlighted as key terms on the board
+_GENERIC_TITLE_WORDS = {"about", "types", "process", "introduction", "between", "their", "there", "which", "basic", "overview", "meaning",
+                        "following", "important", "general", "other", "these", "those", "where", "while", "examples", "example", "summary"}
 # one-pass loudnorm can overshoot its true-peak target on short loud words; a limiter at -2 dBFS keeps the master below -1 dBTP
-_PEAK_LIMIT = "alimiter=limit=0.79:level=disabled:attack=5:release=50"
+# The AAC encode then adds up to ~2 dB of its own overshoot, so the limiter sits at -3 dBFS (0.71) to keep the delivered file under -2 dB.
+_PEAK_LIMIT = "alimiter=limit=0.71:level=disabled:attack=5:release=50"
 
 
-def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_dir: Path | None = None) -> None:
+def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_dir: Path | None = None, figures: bool = True) -> None:
     """Physics/chemistry: explanation and equation shots of one part build up on the same board (board.py). A picture, a scene change
     or a full board starts a new page; a table keeps its header once per page. The part's main visual stays on the left of its board
     pages: the picture the part showed, or in chemistry the molecule the narration names (it stays until another one is named)."""
@@ -100,12 +105,19 @@ def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_d
         if not (seg.shot and seg.shot.template in BOARD_TEMPLATES) or plan.video is not None:
             page = []
             asset = seg.shot.asset_path if seg.shot else None
-            if asset and Path(asset).is_file() and seg.shot.template in {"photo", "video"} and not seg.labels:
+            if figures and asset and Path(asset).is_file() and seg.shot.template in {"photo", "video"} and not seg.labels:
                 anchor = {"kind": "image", "path": str(asset)}         # the picture just shown stays beside the explanation
             continue
         current = teacher_board.items_for(seg)
         if not current:
             continue
+        airy = not figures                      # a text-only board: larger writing, the lesson's key terms in yellow
+        if airy:
+            marks = {teacher_board._stem(w) for w in re.findall(r"[A-Za-z]{5,}", f"{plan.scene_title} {' '.join(seg.keywords or [])}")
+                     if w.lower() not in _GENERIC_TITLE_WORDS}
+            for item in current:
+                if item["kind"] in {"bullet", "dot", "box"}:
+                    item["marks"] = sorted(marks)
         if output_dir is not None:
             from .gallery import thumbnail_for
             for item in current:
@@ -118,8 +130,8 @@ def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_d
             named = molecules.first_molecule(seg.narration)
             if named is not None and (anchor or {}).get("smiles") != named["smiles"]:
                 anchor, page = {"kind": "molecule", **named}, []           # a new molecule starts a page beside it
-        if anchor is None:
-            from . import diagrams                                   # a concept figure drawn by code (wave, wire, conductivity graph ...)
+        if anchor is None and figures:
+            from . import diagrams                                  # a concept figure drawn by code (wave, wire, conductivity graph ...)
             part_text = " ".join(p.segment.narration for p in plans if p.scene_title == plan.scene_title)
             concept = diagrams.concept_for(part_text, chemistry=chemistry)
             if concept:
@@ -131,15 +143,15 @@ def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_d
         headers = [item for item in page if item["kind"] == "row" and item["header"]]
         if current and current[0]["kind"] == "row" and current[0]["header"] and headers and headers[-1]["cells"] == current[0]["cells"]:
             current = current[1:] or current               # the table continues: its header is already on the board
-        if not teacher_board.fits(page + current, split):
+        if not teacher_board.fits(page + current, split, airy):
             page = []
-            if not teacher_board.fits(current, split):     # a shot larger than a page shows its last items that fit
-                while len(current) > 1 and not teacher_board.fits(current, split):
+            if not teacher_board.fits(current, split, airy):     # a shot larger than a page shows its last items that fit
+                while len(current) > 1 and not teacher_board.fits(current, split, airy):
                     current = current[1:]
         duration = max(0.5, seg.end - seg.start)
         reveal_end = max(0.6, min(seg.speech_duration or duration, duration) * 0.9)
         plan.board = {"theme": theme, "previous": list(page), "current": current, "reveal_end": reveal_end,
-                      "done": teacher_board.done_at(current, reveal_end), "anchor": anchor if split else None}
+                      "done": teacher_board.done_at(current, reveal_end), "anchor": anchor if split else None, "airy": airy}
         page = page + current
 
 
@@ -195,8 +207,8 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
     producer = StillProducer(board, output_dir, config)
     unresolved = producer.run()
     _write_licenses(output_dir)
-    from .subject import board_style as _board_style, subject_of as _subject_of
-    if _board_style(_subject_of(board)):
+    from .subject import CHEMISTRY as _CHEM, PHYSICS as _PHYS, subject_of as _subject_of
+    if _subject_of(board) in {_PHYS, _CHEM}:           # extra gallery pictures only where the board has a figure column
         from .gallery import GalleryProducer
         unresolved += GalleryProducer(board, output_dir, config).run()     # "uses" lists: one reviewed picture per item
     progress.stage(3, "Motion: bring approved pictures to life (only shots the storyboard marked)")
@@ -253,8 +265,9 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
     write_srt(board, output_dir / "subtitles.srt", config)
     save_storyboard(board, output_dir / "storyboard.json")
     if use_board:
-        from .subject import CHEMISTRY
-        _plan_board_pages(plans, board.title, chemistry=subject == CHEMISTRY, output_dir=output_dir)
+        from .subject import CHEMISTRY, PHYSICS
+        # a board stands for a shot that has no picture: physics/chemistry keep their figure beside it, other subjects show text only
+        _plan_board_pages(plans, board.title, chemistry=subject == CHEMISTRY, output_dir=output_dir, figures=subject in {PHYSICS, CHEMISTRY})
 
     # 5. Render clips (resumable by content signature; one failure never erases the rest).
     progress.stage(6, f"Rendering {len(plans)} clip(s) (finished clips are reused)")
@@ -271,7 +284,7 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
         cursor += frame_count
         clip = clips_dir / f"clip_{index:04d}.mp4"
         sig_file = clip.with_suffix(".sig")
-        board_key = json.dumps([plan.board["previous"], plan.board["current"], plan.board["theme"], plan.scene_title, plan.board.get("anchor"), "board4"],
+        board_key = json.dumps([plan.board["previous"], plan.board["current"], plan.board["theme"], plan.scene_title, plan.board.get("anchor"), plan.board.get("airy"), "board5"],
                                default=str) if plan.board else ""
         signature = _clip_signature(seg, frame_count, config, (plan.backdrop_path or "") + ("|board2|" + board_key if board_key else ""))
         try:

@@ -164,7 +164,8 @@ def derive_motion_prompt(seg: Segment) -> str:
     """What moves, for a picture that has no motion prompt of its own: the scene described by the shot, kept stable and gentle."""
     scene = (seg.motion_prompt or seg.image_prompt or seg.image_requirement or seg.visual or seg.narration).strip()
     return (scene.rstrip(".") + ". Gentle natural motion of the scene, slow smooth camera push-in, subjects keep their shape and position, "
-            "realistic educational documentary footage, no text.")
+            "realistic educational documentary footage, no text, suitable for school students, no nudity, no adult content, "
+            "any people fully and modestly clothed.")
 
 
 def motion_candidates(board: Storyboard, config: AppConfig) -> list[Segment]:
@@ -215,6 +216,10 @@ class MotionProducer:
         if last < p.motion_end_match:
             reasons.append("drifted_from_the_picture")
         semantic = None
+        if not reasons and metrics["middle"] is not None:
+            from .safety import unsafe_reason
+            if unsafe_reason(Image.fromarray(metrics["middle"]), self.config, purpose=f"motion-safety:{seg.shot_id}", passes=2):
+                reasons.append("unsafe_content")
         if not reasons and metrics["middle"] is not None and p.semantic_qa and vision.available(self.config):
             frame_path = clip.with_suffix(".mid.png")
             Image.fromarray(metrics["middle"]).save(frame_path)

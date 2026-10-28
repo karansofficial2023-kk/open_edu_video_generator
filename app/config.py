@@ -32,6 +32,7 @@ class RenderConfig(BaseModel):
     seconds_per_segment_without_audio: float = 5.0
     video_crf: int = 18
     video_preset: str = "slow"
+    sharpen: float = 0.0                 # luma unsharp amount applied when each clip is encoded (0 = off, 0.5-0.8 = visibly crisper)
     font_path: str = ""
     reviewed_assets_dir: str = ""
     layout: str = "legacy"
@@ -101,6 +102,8 @@ class ProductionConfig(BaseModel):
     ocr_text_check: bool = True            # reject stills with readable lettering found by OCR (needs rapidocr-onnxruntime)
     gallery_thumbnails: bool = True        # board "uses" lists get one reviewed picture per item (physics/chemistry boards only)
     min_sharpness: float = 45.0            # Laplacian variance floor at 1024px
+    loose_picture_min_score: float = 0.3   # an on-topic but incomplete picture is kept (no labels) instead of falling back to text cards
+    min_edge_sharpness: float = 20.0      # a picture is only "blurry" if its sharpest tiles (95th percentile) are below this too
     image_workflow_path: str = "workflows/flux_schnell_txt2img_api.json"
     image_checkpoint: str = "flux1-schnell-fp8.safetensors"
     image_width: int = 1344

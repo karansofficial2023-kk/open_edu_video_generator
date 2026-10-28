@@ -182,6 +182,15 @@ def run_qa(video: Path, board: Storyboard, config: AppConfig, output_dir: Path, 
     if audio["long_silences"]:
         add("warning", "audio", f"{audio['long_silences']} silence(s) longer than 2.5 s")
 
+    if samples:                      # school-student safety: every sampled frame of the finished video (fails closed)
+        from PIL import Image as _Image
+        from .safety import unsafe_reason
+        for sid, seg, frame in samples:
+            reason = unsafe_reason(_Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)), config, purpose=f"final-safety:{sid}")
+            if reason:
+                add("critical", "unsafe_content", reason, sid)
+        vision.unload(config)
+
     if config.production.semantic_qa and vision.available(config):
         for sid, seg, frame in samples:
             rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)

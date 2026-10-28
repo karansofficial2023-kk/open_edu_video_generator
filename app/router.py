@@ -10,7 +10,7 @@ APPROVED_VISUAL_TYPES = {
     "process_steps", "split_screen", "formula", "graph", "circuit", "short_motion_clip",
 }
 METADATA_PATTERN = re.compile(
-    r"(?i)\b(sharp\s+1920x1080|production asset|no generated text|renderer|placement|prompt|\.png|\.jpg|"
+    r"(?i)\b(sharp\s+1920x1080|production asset|no generated text|renderer|placement|(?:image|video|flux)\s+prompt|prompt\s*[:=]|\.png|\.jpg|"
     r"asset[_ ]path|lorem|todo|tbd)\b")
 
 

@@ -14,11 +14,13 @@ import requests
 
 from .config import AppConfig
 from .resilience import retry, wait_for
+from .safety import with_safety_negative
 from .schema import Segment
 
 
-MOTION_NEGATIVE = ("text, letters, watermark, logo, blurry, distorted, flicker, morphing, jitter, bad anatomy, "
-                   "duplicate parts, scene change, sudden cut, low quality")
+MOTION_NEGATIVE_BASE = ("text, letters, watermark, logo, blurry, distorted, flicker, morphing, jitter, bad anatomy, "
+                   "duplicate parts, scene change, sudden cut, low quality, nude, nudity, naked, shirtless, sexual, erotic, suggestive, gore")
+MOTION_NEGATIVE = with_safety_negative(MOTION_NEGATIVE_BASE)
 
 
 class WorkflowRejected(RuntimeError):
@@ -231,7 +233,7 @@ class ComfyUIClient:
         for node in patched.values():
             if node.get("class_type") != "KSampler":
                 continue
-            for polarity, text in [("positive", prompt), ("negative", self.config.comfyui.negative_prompt)]:
+            for polarity, text in [("positive", prompt), ("negative", with_safety_negative(self.config.comfyui.negative_prompt))]:
                 link = node["inputs"].get(polarity)
                 if not isinstance(link, list):
                     continue
@@ -271,7 +273,7 @@ class ComfyUIClient:
                 if normalized in prompt_keys and isinstance(inputs[key], str):
                     inputs[key] = prompt
                 elif normalized in negative_keys and isinstance(inputs[key], str):
-                    inputs[key] = self.config.comfyui.negative_prompt
+                    inputs[key] = with_safety_negative(self.config.comfyui.negative_prompt)
                 elif normalized in width_keys and isinstance(inputs[key], int):
                     inputs[key] = self.config.comfyui.video_width
                 elif normalized in height_keys and isinstance(inputs[key], int):

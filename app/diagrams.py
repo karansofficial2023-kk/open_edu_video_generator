@@ -62,7 +62,7 @@ def concept_for(text: str, chemistry: bool = False, biology: bool = False) -> st
 def render(concept: str, size: tuple[int, int], t: float, text: str = "") -> Image.Image | None:
     from . import bio_diagrams
     if concept in bio_diagrams.BIO_CONCEPTS:
-        return bio_diagrams.render(concept, size, t)
+        return bio_diagrams.render(concept, size, t, text)
     if concept == "wave":
         return _wave(size, t, bool(_EM.search(text or "")))
     drawers = {"conductivity_graph": _conductivity_graph, "electrolysis": _electrolysis, "conductor": _conductor, "circuit": _circuit, "lens": _lens, "magnet": _magnet, "charge": _charges,

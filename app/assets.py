@@ -772,9 +772,10 @@ class StillProducer:
                                     "repair": "supply an approved diagram as asset_path if a picture is required"})
 
     def _diagrams_for_body_shots(self) -> None:
-        """Biology: a shot about an organ system, a hormone loop or the menstrual cycle is explained by a diagram drawn by code (bio_diagrams.py)
-        beside the text - labels at known positions, no body, nothing for the image model to get wrong or the safety check to reject - so
-        it never spends three picture rounds. Only shots whose own narration names a part of the concept; a teacher-supplied picture is kept."""
+        """Biology: a shot that NAMES TWO OR MORE PARTS of an organ system, a hormone loop or the menstrual cycle ("the reproductive organs include
+        the vagina, cervix, uterus") is explained by a diagram drawn by code (bio_diagrams.py) beside the text - labels at known positions, no
+        body, nothing for the image model to get wrong or the safety check to reject - so it never spends three picture rounds. Every other
+        shot keeps its picture (and falls back to the same diagram beside text when no picture passes). A teacher-supplied picture is kept."""
         from . import bio_diagrams
         from .subject import photos_first, subject_of
         if not photos_first(subject_of(self.board)):
@@ -791,8 +792,8 @@ class StillProducer:
             concept = bio_diagrams.concept_for(scenes.get(scene.title, ""))
             if concept not in {"female_system", "male_system", "hormone_loop", "menstrual_cycle"}:
                 continue
-            if not bio_diagrams.BIO_CONCEPTS[concept].search(seg.narration or ""):
-                continue
+            if len({m.lower().rstrip("s") for m in bio_diagrams.BIO_CONCEPTS[concept].findall(seg.narration or "")}) < 2:
+                continue        # only a sentence that names two or more parts: a diagram labels them, a picture cannot; other shots keep their picture
             job = Job(seg.shot_id or f"{scene.scene_number}_{seg.segment_number}", seg, seg, scene.title)
             if self._downgrade(job):
                 self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "info", "renderer": "diagram",

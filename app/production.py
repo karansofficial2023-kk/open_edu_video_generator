@@ -151,8 +151,11 @@ def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_d
                     current = current[1:]
         duration = max(0.5, seg.end - seg.start)
         reveal_end = max(0.6, min(seg.speech_duration or duration, duration) * 0.9)
+        shown = anchor
+        if split and anchor and anchor.get("kind") == "diagram" and bio_diagrams:
+            shown = {**anchor, "text": seg.narration}          # the diagram stays for the whole part; the sentence being spoken lights its parts
         plan.board = {"theme": theme, "previous": list(page), "current": current, "reveal_end": reveal_end,
-                      "done": teacher_board.done_at(current, reveal_end), "anchor": anchor if split else None, "airy": airy}
+                      "done": teacher_board.done_at(current, reveal_end), "anchor": shown if split else None, "airy": airy}
         page = page + current
 
 

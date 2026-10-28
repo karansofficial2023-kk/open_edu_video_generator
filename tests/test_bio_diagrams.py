@@ -32,6 +32,14 @@ class BioDiagramTests(unittest.TestCase):
             self.assertEqual(late.size, (710, 662), concept)
             self.assertNotEqual(early.tobytes(), late.tobytes(), concept)       # parts appear one after the other
 
+    def test_the_part_named_in_the_spoken_sentence_is_lit(self):
+        plain = bio_diagrams.render("female_system", (710, 662), 9.0)
+        cervix = bio_diagrams.render("female_system", (710, 662), 9.0, "The cervix leads into the cervical canal.")
+        ovary = bio_diagrams.render("female_system", (710, 662), 9.0, "The ovaries are oval-shaped.")
+        self.assertNotEqual(plain.tobytes(), cervix.tobytes())
+        self.assertNotEqual(cervix.tobytes(), ovary.tobytes())          # a different sentence lights a different part
+        self.assertEqual(plain.tobytes(), bio_diagrams.render("female_system", (710, 662), 9.0).tobytes())     # nothing sticks between renders
+
     def test_body_shots_are_explained_by_a_diagram_without_asking_the_image_model(self):
         uterus = Segment(segment_number=1, shot_id="2.1", narration="The uterus is connected to the ovary by the fallopian tube.",
                          image_prompt="x", shot=Shot(template="photo"))

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import math
 import re
+import threading
 
 from PIL import Image, ImageDraw
 
@@ -46,10 +47,25 @@ def concept_for(text: str) -> str | None:
     return best if scores[best] >= 2 else None
 
 
-def render(concept: str, size: tuple[int, int], t: float) -> Image.Image | None:
+_focus = threading.local()
+
+
+def render(concept: str, size: tuple[int, int], t: float, focus: str = "") -> Image.Image | None:
+    """`focus` is the sentence being spoken: the labelled parts it names are lit in yellow, so a diagram that stays on screen for a whole
+    part still shows which structure the voice is talking about."""
     drawer = {"female_system": _female, "male_system": _male, "hormone_loop": _hormone, "menstrual_cycle": _cycle, "flower": _flower,
               "fertilisation": _fertilisation, "seed_germination": _seed}.get(concept)
-    return drawer(size, t) if drawer else None
+    _focus.text = (focus or "").lower()
+    try:
+        return drawer(size, t) if drawer else None
+    finally:
+        _focus.text = ""
+
+
+def _is_focus(label: str) -> bool:
+    spoken = getattr(_focus, "text", "")
+    key = label.lower()
+    return bool(spoken) and (key in spoken or key.split()[0].rstrip("s") in spoken and len(key.split()[0]) > 3)
 
 
 # ---- helpers ----------------------------------------------------------------------------------------------------------------------
@@ -67,12 +83,15 @@ def _shown(index: int, t: float, step: float = 0.45) -> bool:
 def _label(draw, size, text: str, target: tuple, at: tuple, anchor: str = "lm", color=INK):
     """A name with a thin leader line to the part it names (all positions are fractions of the canvas)."""
     w, h = size
-    fnt = font(max(15, round(h * 0.043)), True)
+    hot = _is_focus(text)
+    fnt = font(max(15, round(h * 0.043)) + (3 if hot else 0), True)
     tx, ty = target[0] * w, target[1] * h
     ax, ay = at[0] * w, at[1] * h
-    draw.line((tx, ty, ax, ay), fill=(220, 228, 238, 150), width=2)
-    draw.ellipse((tx - 5, ty - 5, tx + 5, ty + 5), fill=CYAN)
-    draw.text((ax + (8 if anchor.startswith("l") else -8), ay), text, font=fnt, fill=color, anchor=anchor)
+    draw.line((tx, ty, ax, ay), fill=YELLOW if hot else (220, 228, 238, 150), width=4 if hot else 2)
+    if hot:
+        draw.ellipse((tx - 16, ty - 16, tx + 16, ty + 16), outline=YELLOW, width=4)        # the structure being spoken about
+    draw.ellipse((tx - 5, ty - 5, tx + 5, ty + 5), fill=YELLOW if hot else CYAN)
+    draw.text((ax + (8 if anchor.startswith("l") else -8), ay), text, font=fnt, fill=YELLOW if hot else color, anchor=anchor)
 
 
 def _blob(draw, box, fill, outline=OUTLINE, width=3):

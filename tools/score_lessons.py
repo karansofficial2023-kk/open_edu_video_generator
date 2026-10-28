@@ -78,8 +78,11 @@ def collect(contracts_dir: Path, outputs: Path) -> dict:
     return result
 
 
+NEW_STYLE_FOLDERS = ("safe_v3", "rerender_old", "test_pilot")      # renders made with the organ-model style, diagrams and self-repair
+
+
 def era(r):
-    if r["folder"].startswith("safe_v3"):
+    if r["folder"].startswith(NEW_STYLE_FOLDERS):
         return "safe"
     return "gate" if r["when"] >= GATE else "old"
 
@@ -118,7 +121,7 @@ def score(name, r):
     a = r.get("audio") or {}
     audio = clamp(9 - min(3, a.get("long_silences", 0)) - (1.5 if a.get("max_db", -3) > -1.0 else 0) - (0.5 if not -20 <= a.get("mean_db", -16) <= -14 else 0))
     structure = 4.0 if r["when"] < "2026-10-22" else 5.5 if r["when"] < GATE else 6.0
-    if r["folder"].startswith("safe_v3"):
+    if r["folder"].startswith(NEW_STYLE_FOLDERS):
         structure = 6.5
     safe = safety(name, r)
     quality = 0.25 * visual + 0.25 * content + 0.2 * under + 0.1 * audio + 0.2 * structure

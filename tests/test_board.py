@@ -162,12 +162,18 @@ class QualityGapTests(unittest.TestCase):
 
     def test_rhetorical_questions_to_the_viewer_are_not_pictured_but_real_content_is(self):
         from app.assets import is_viewer_address
-        for line in ("What triggers such transformations?", "Are you also curious about this?", "Let's help Aaron by learning more.",
+        for line in ("But why take this modification so far?", "There are many questions that need answers.",
+                     "What triggers such transformations?", "Are you also curious about this?", "Let's help Aaron by learning more.",
                      "Don't worry, this video may provide answers.", "Have you ever wondered why?"):
             self.assertTrue(is_viewer_address(line), line)
         for line in ("Testosterone is produced by the testes.", "What is the value of f(2) = 4?",
                      "The ovary releases an egg each month, which is called ovulation?"):
             self.assertFalse(is_viewer_address(line), line)
+
+    def test_closing_invitations_are_filler_not_pictures(self):
+        from app.assets import is_filler_narration
+        self.assertTrue(is_filler_narration("Explore our other videos for the answer. We believe in you."))
+        self.assertFalse(is_filler_narration("Explore the structure of the flower in detail."))
 
     def test_a_shot_naming_external_genitals_never_gets_a_picture_or_label(self):
         import tempfile
@@ -190,6 +196,56 @@ class QualityGapTests(unittest.TestCase):
         self.assertEqual(penis.labels, [])
         self.assertEqual(gland.shot.template, "photo")
         self.assertNotIn(period.shot.template, {"photo", "video"})       # blood is never left to the vision model's mood
+
+    def test_one_picture_never_illustrates_two_shots(self):
+        import tempfile
+        from app.assets import StillProducer, Job, REVIEWER_VERSION
+        from app.config import AppConfig
+        from app.schema import Scene, Storyboard
+        from PIL import Image, ImageDraw
+        with tempfile.TemporaryDirectory() as tmp:
+            def make(name, box):
+                im = Image.new("RGB", (64, 64), (0, 0, 0))
+                ImageDraw.Draw(im).rectangle(box, fill=(255, 255, 255))
+                path = str(Path(tmp) / name)
+                im.save(path)
+                return path
+            same, other = make("a.png", (0, 0, 40, 64)), make("b.png", (30, 0, 64, 20))
+            first = Segment(segment_number=1, shot_id="1.1", narration="One.", shot=Shot(template="photo", asset_path=same))
+            second = Segment(segment_number=2, shot_id="1.2", narration="Two.", shot=Shot(template="photo", asset_path=same))
+            board_ = Storyboard(title="T", scenes=[Scene(scene_number=1, title="S", narration="", segments=[first, second])])
+            producer = StillProducer(board_, Path(tmp), AppConfig())
+            jobs = [Job("1_1", first, first, "S"), Job("1_2", second, second, "S")]
+            attempt = lambda p: {"path": p, "rv": REVIEWER_VERSION, "score": 0.9, "technical": {"ok": True}, "semantic": {"unsafe": False}}
+            records = {"1_1": {"attempts": [attempt(same)]}, "1_2": {"attempts": [attempt(same), attempt(other)]}}
+            producer._no_repeated_pictures(jobs, records)
+        self.assertEqual(first.shot.asset_path, same)
+        self.assertEqual(second.shot.asset_path, other)
+
+    def test_a_repeated_picture_is_rejected_so_the_shot_gets_a_fresh_one(self):
+        import tempfile
+        from app.assets import StillProducer, Job, REVIEWER_VERSION
+        from app.config import AppConfig
+        from app.schema import Scene, Storyboard
+        from PIL import Image, ImageDraw
+        with tempfile.TemporaryDirectory() as tmp:
+            im = Image.new("RGB", (64, 64), (0, 0, 0))
+            ImageDraw.Draw(im).rectangle((0, 0, 40, 64), fill=(255, 255, 255))
+            path = str(Path(tmp) / "a.png")
+            im.save(path)
+            first = Segment(segment_number=1, shot_id="1.1", narration="One.", shot=Shot(template="photo"))
+            second = Segment(segment_number=2, shot_id="1.2", narration="Two.", shot=Shot(template="photo"))
+            board_ = Storyboard(title="T", scenes=[Scene(scene_number=1, title="S", narration="", segments=[first, second])])
+            producer = StillProducer(board_, Path(tmp), AppConfig())
+            jobs = [Job("1_1", first, first, "S"), Job("1_2", second, second, "S")]
+            att = lambda: {"path": path, "rv": REVIEWER_VERSION, "score": 0.9, "technical": {"ok": True},
+                           "semantic": {"matches": True, "score": 0.9, "missing": [], "issues": [], "contains_text": False, "unsafe": False}}
+            records = {k: {"shot_id": k, "prompt": "p", "narration": "n", "attempts": [att()], "accepted": True, "path": ""} for k in ("1_1", "1_2")}
+            producer._reject_repeats(jobs, records)
+        self.assertTrue(records["1_1"]["accepted"])
+        self.assertFalse(records["1_2"]["accepted"])
+        self.assertEqual(records["1_2"]["attempts"][0]["rv"], -1)
+        self.assertIn("different composition", records["1_2"]["attempts"][0]["correction"])
 
     def test_chemical_formulas_get_textbook_subscripts_everywhere(self):
         from app.formulas import to_mathtext

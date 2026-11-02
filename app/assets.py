@@ -119,7 +119,8 @@ _FILLER = re.compile(
     # rhetorical checks and encouragement: spoken over the current picture, never a screen of their own
     r"(?:is\s+(?:that|it)\s+)?clear\b|right\s*\?|got\s+it|understood|any\s+questions|fascinating|interesting,?\s+isn'?t\s+it|amazing|"
     r"isn'?t\s+(?:it|that)\s+(?:fascinating|interesting|amazing)|keep\s+(?:it\s+up|going)|you\s+can\s+do\s+it|"
-    r"(?:we|i)\s+believe\s+in\s+your|happy\s+learning)")
+    r"(?:we|i)\s+believe\s+in\s+your|happy\s+learning|explore\s+(?:our|more)\s+(?:other\s+)?(?:videos?|lessons?|topics?)|"
+    r"(?:watch|check\s+out)\s+(?:our|the)\s+(?:other|next|more)\s+(?:videos?|lessons?))")
 
 
 # Hindi/Marathi sign-offs and transitions (no \b: Devanagari vowel signs are not word characters to the regex engine)
@@ -148,7 +149,7 @@ def is_continuation(text: str) -> bool:
     return bool(_NAMING.search(text)) or len(words) <= 2
 
 
-_VIEWER_ADDRESS = re.compile(r"(?i)^\W*(?:(?:are|do|did|have|can|could|would|will)\s+you\b|(?:what|why|how|when|where|who)\b.*\?|let'?s\b|"
+_VIEWER_ADDRESS = re.compile(r"(?i)^\W*(?:(?:are|do|did|have|can|could|would|will)\s+you\b|(?:(?:but|and|so|now),?\s+)?(?:what|why|how|when|where|who)\b.*\?|let'?s\b|there\s+(?:are|is)\s+(?:still\s+|so\s+)?(?:many|more|several)\s+questions?\b|"
                              r"don'?t\s+worry|you\s+(?:might|may|must)\s+(?:be\s+)?(?:wonder|curious)|have\s+you\s+ever|ready\b|so\b,?\s+(?:let'?s|are|do))")
 
 
@@ -358,7 +359,8 @@ _DANGLING = set("a an the of and or to in on at for from with by as is are was w
                 "let let's us we you they he she it i very also just only such many much few".split())
 # never a card title on their own: question words, pointers and conversational words ("What draws", "Here", "Now")
 _NOT_A_TERM = set("what why how when where who whom whose here there now then okay ok yes no right clear isn't aren't don't "
-                  "means mean say says said given called known like".split())
+                  "means mean say says said given called known like imagine consider suppose assume recall remember note notice observe "
+                  "look draw find use take try think let's that's it's there's here's what's".split())
 
 
 def _key_term(words: list[str]) -> str:
@@ -367,7 +369,8 @@ def _key_term(words: list[str]) -> str:
     run: list[str] = []
     for word in words:
         bare = word.lower().strip(",;:.!?\"")
-        if bare in _DANGLING or bare in _STOP or bare in _NOT_A_TERM or len(bare) < 3 or not re.search(r"[^\W\d_]", bare):
+        if bare in _DANGLING or bare in _STOP or bare in _NOT_A_TERM or len(bare) < 3 or not re.search(r"[^\W\d_]", bare) \
+                or bare.endswith(("'s", "’s", "n't", "'re", "'ll")):          # a contraction ("That's") never names a thing
             if run:
                 runs.append(run)
             run = []
@@ -790,9 +793,14 @@ class StillProducer:
             if id(seg) in getattr(self, "_continuation_ids", ()):
                 continue
             concept = bio_diagrams.concept_for(scenes.get(scene.title, ""))
-            if concept not in {"female_system", "male_system", "hormone_loop", "menstrual_cycle"}:
+            narration = seg.narration or ""
+            if bio_diagrams.PLANT_MICRO.search(narration) and len(bio_diagrams.parts_named("plant_fertilisation", narration)) >= 2:
+                concept = "plant_fertilisation"          # pollen germinating, a tube growing, fusion with the ovule: far too small to photograph
+            elif concept == "plant_fertilisation":
+                continue                                  # a scene about plants only diagrams its micro-process shots; a flower or a bee is photographed
+            if concept not in {"female_system", "male_system", "hormone_loop", "menstrual_cycle", "plant_fertilisation"}:
                 continue
-            if len({m.lower().rstrip("s") for m in bio_diagrams.BIO_CONCEPTS[concept].findall(seg.narration or "")}) < 2:
+            if len(bio_diagrams.parts_named(concept, narration)) < 2:
                 continue        # only a sentence that names two or more parts: a diagram labels them, a picture cannot; other shots keep their picture
             job = Job(seg.shot_id or f"{scene.scene_number}_{seg.segment_number}", seg, seg, scene.title)
             if self._downgrade(job):
@@ -866,6 +874,7 @@ class StillProducer:
                         and not (job.segment.shot and job.segment.shot.template == "title_card"):
                     self._retrieve(job, record)
         self._review_pending(jobs, records)         # also judges stills whose approval predates the current reviewer
+        self._reject_repeats(jobs, records)
         for round_no in range(1, self.config.production.max_attempts + 1):
             pending = [j for j in jobs if not records[j.key]["accepted"] and self._generated(records[j.key]) < round_no]
             if not pending:
@@ -892,6 +901,7 @@ class StillProducer:
             self.client.free_memory()
             time.sleep(1.5)
             self._review_pending(jobs, records)
+            self._reject_repeats(jobs, records)
         for job in jobs:
             if id(job.owner) in self._downgraded:
                 continue
@@ -946,8 +956,73 @@ class StillProducer:
                                               f"{len(record['attempts'])} attempts (best score {best.get('score', 0):.2f}; "
                                               f"missing={best.get('missing')}, issues={best.get('issues')})",
                                     "repair": "revise image_requirement / image_prompt so the required subject is explicit"})
+        self._no_repeated_pictures(jobs, records)
         self._apply_continuations()
         return self.issues
+
+    @staticmethod
+    def _ahash(path: str) -> int | None:
+        """64-bit average hash: pictures that look the same to a viewer differ in only a few bits."""
+        try:
+            with Image.open(path) as im:
+                px = np.asarray(im.convert("L").resize((8, 8), Image.LANCZOS), dtype=np.float32)
+        except (OSError, ValueError):
+            return None
+        return sum(1 << i for i, bit in enumerate((px > px.mean()).flatten()) if bit)
+
+    def _reject_repeats(self, jobs: list[Job], records: dict, max_bits: int = 4) -> None:
+        """A picture already accepted for an earlier shot is not accepted again: the later shot gets a fresh picture in the next round
+        (new seed, told to use a different composition) while it still has attempts left; cards only as the very last resort."""
+        used: list[int] = []
+        for job in jobs:
+            record = records[job.key]
+            if job.panel is not None or not record["accepted"] or job.owner.shot.template not in {"photo", "video"}:
+                continue
+            chosen = next((a for a in reversed(record["attempts"]) if a.get("rv") == REVIEWER_VERSION and a.get("semantic")
+                           and a["technical"].get("ok") and _accepts(a["semantic"], self.config)), None)
+            h = self._ahash(chosen["path"]) if chosen else None
+            if h is None:
+                continue
+            if all(bin(h ^ u).count("1") > max_bits for u in used):
+                used.append(h)
+            elif self._generated(record) < self.config.production.max_attempts:
+                chosen["rv"] = -1               # no longer a candidate for this or any later pass
+                chosen["correction"] = "a clearly different composition, viewpoint and framing from any earlier picture of this lesson"
+                record["accepted"] = False
+                self._save(job, record)
+
+    def _no_repeated_pictures(self, jobs: list[Job], records: dict, max_bits: int = 4) -> None:
+        """One picture must not illustrate two different shots: a later shot takes another judged attempt, else explanation cards."""
+        used: list[int] = []
+        floor = self.config.production.loose_picture_min_score
+        for job in jobs:
+            if (job.panel is not None or id(job.owner) in self._downgraded or not job.owner.shot.asset_path
+                    or job.owner.shot.template not in {"photo", "video"}):
+                continue
+            h = self._ahash(job.owner.shot.asset_path)
+            if h is None:
+                continue
+            if all(bin(h ^ u).count("1") > max_bits for u in used):
+                used.append(h)
+                continue
+            record = records[job.key]
+            for a in sorted(record["attempts"], key=lambda x: -(x.get("score") or 0)):
+                ah = self._ahash(a["path"]) if a.get("path") else None
+                if (ah is None or a.get("rv") != REVIEWER_VERSION or not a.get("semantic") or a["semantic"].get("unsafe")
+                        or a["semantic"].get("contains_text") or (a.get("score") or 0) < floor or not a["technical"].get("ok")
+                        or any(bin(ah ^ u).count("1") <= max_bits for u in used)):
+                    continue
+                job.owner.shot.asset_path = a["path"]
+                used.append(ah)
+                self.issues.append({"shot_id": job.owner.shot_id or job.key, "field": "image", "severity": "info", "renderer": "flux",
+                                    "reason": "the chosen picture repeated an earlier shot; another judged attempt was used",
+                                    "repair": "none needed"})
+                break
+            else:
+                if self._downgrade(job):
+                    self.issues.append({"shot_id": job.owner.shot_id or job.key, "field": "image", "severity": "warning", "renderer": "concept_cards",
+                                        "reason": "the only acceptable picture repeated an earlier shot; shown as explanation cards instead",
+                                        "repair": "SME: a more specific image_requirement would give this shot its own picture"})
 
     def _note_unreviewed(self, job: Job, why: str) -> None:
         """A still accepted on technical checks alone must be visible in the report, never silent (policy: no unverified picture)."""
@@ -1013,7 +1088,7 @@ class StillProducer:
         """Concept-card text is stored per shot. The language model words the cards differently on every run, which changed the clips (so
         nothing stayed cached) and the text viewers saw; a re-run now reuses the cards unless the narration changed."""
         narration = strip_ui_clause(owner.narration)
-        key = hashlib.sha1(f"cards6|{narration}".encode()).hexdigest()[:16]        # bump "cards6" when the card logic changes
+        key = hashlib.sha1(f"cards7|{narration}".encode()).hexdigest()[:16]        # bump "cards7" when the card logic changes
         path = self.dir / f"cards_{job.key}.json"
         if path.exists():
             try:

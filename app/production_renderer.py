@@ -11,6 +11,7 @@ from pathlib import Path
 
 from PIL import Image, ImageDraw, ImageFilter
 
+from . import figures
 from . import labels as label_engine
 from .animation_renderer import stage_times
 from .charts import cards_frame, graph_frame, is_sequential, panels_frame, parse_function, parse_rows, plot_frame
@@ -51,6 +52,7 @@ class ShotPlan:
     steady: dict = field(default_factory=dict)       # frames that cannot change until the next reveal (cards, equations): drawn once, reused
     formula_step: float = 2.2                # seconds between equation lines; paced to the narration by render_clip (formula_pace)
     board: dict | None = None                # physics/chemistry board page: {theme, previous, current} (board.py)
+    figure: dict | None = None               # a teaching figure drawn by code instead of text cards: {concept, light} (figures.py)
     duration: float = 0.0                    # on-screen seconds of the shot being rendered (set by render_clip)
 
 
@@ -182,6 +184,8 @@ class ShotRenderer:
         shot, p = plan.segment.shot, self.config.production
         if shot.template == "title_card":
             return 3.0
+        if plan.figure:
+            return figures.FIGURE_SECONDS
         if shot.template == "formula":
             return 1.0 + 2.2 * max(1, len(plan.segment.formula_lines)) + 1.5
         if shot.template == "graph":
@@ -200,6 +204,8 @@ class ShotRenderer:
     def steady_key(self, plan: ShotPlan, t: float):
         """Identifies a card / equation screen that has finished animating (it cannot change until the next reveal), else None."""
         segment, shot = plan.segment, plan.segment.shot
+        if plan.figure:
+            return ("figure",) if t >= figures.REVEAL_SECONDS else None
         if plan.board is not None:
             if (plan.board.get("anchor") or {}).get("kind") in {"molecule", "diagram"}:
                 return None                          # the molecule keeps turning: every frame is drawn
@@ -252,6 +258,15 @@ class ShotRenderer:
             if t > clip_end and duration - clip_end > 1.0:          # the clip is over: keep moving gently instead of freezing
                 frame = slow_push(frame, (t - clip_end) / (duration - clip_end), HOLD_DRIFT_SCALE)
             return self._title_overlay(frame, plan, t) if shot.template == "title_card" else frame     # the title is drawn over the moving picture
+        if plan.figure:
+            key = self.steady_key(plan, t)
+            if key is not None and key in plan.steady:
+                return plan.steady[key].copy()
+            image = figures.frame(self.size, self.config, plan.figure["concept"], plan.segment.shot.heading or plan.scene_title,
+                                  t, plan.segment.narration, plan.figure["light"])
+            if key is not None:
+                plan.steady[key] = image
+            return image.copy()
         frame = self._board_frame(plan, t, duration)
         if frame is not None:
             return slow_push(frame, t / duration, STATIC_DRIFT_SCALE) if self.drifting(plan) and duration > 0 else frame

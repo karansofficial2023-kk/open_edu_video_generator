@@ -78,7 +78,7 @@ def collect(contracts_dir: Path, outputs: Path) -> dict:
     return result
 
 
-NEW_STYLE_FOLDERS = ("safe_v3", "rerender_old", "test_pilot")      # renders made with the organ-model style, diagrams and self-repair
+NEW_STYLE_FOLDERS = ("safe_v3", "rerender_old", "test_pilot", "pilot_v14", "pilot_v15", "pilot_v16", "pilot_v17", "pilot_v18", "class10_batch1")      # renders made with the organ-model style, diagrams and self-repair
 
 
 def era(r):

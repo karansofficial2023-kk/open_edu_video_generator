@@ -88,6 +88,16 @@ _GENERIC_TITLE_WORDS = {"about", "types", "process", "introduction", "between", 
 _PEAK_LIMIT = "alimiter=limit=0.71:level=disabled:attack=5:release=50"
 
 
+def _figure_for(seg, scene_title: str, subject: str) -> dict | None:
+    """A card shot whose sentence a code-drawn figure can explain (tangent, lens, circuit ...) shows that figure instead of text cards."""
+    from . import figures
+    shot = seg.shot
+    if not shot or shot.template not in {"process", "comparison"} or seg.labels:
+        return None
+    concept = figures.concept_for(seg.narration, scene_title, subject)
+    return {"concept": concept, "light": subject == "maths"} if concept else None
+
+
 def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_dir: Path | None = None, figures: bool = True,
                       bio_diagrams: bool = False) -> None:
     """Physics/chemistry: explanation and equation shots of one part build up on the same board (board.py). A picture, a scene change
@@ -103,7 +113,7 @@ def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_d
         seg = plan.segment
         if plan.scene_title != scene_title:
             page, scene_title, anchor = [], plan.scene_title, None
-        if not (seg.shot and seg.shot.template in BOARD_TEMPLATES) or plan.video is not None:
+        if getattr(plan, "figure", None) or not (seg.shot and seg.shot.template in BOARD_TEMPLATES) or plan.video is not None:
             page = []
             asset = seg.shot.asset_path if seg.shot else None
             if figures and asset and Path(asset).is_file() and seg.shot.template in {"photo", "video"} and not seg.labels:
@@ -253,6 +263,7 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
     backdrops = {} if plain_cards(subject) or use_board else choose_backdrops(board)
     for scene, seg in board.all_segments():
         plan = ShotPlan(segment=seg, scene_title=scene.title, backdrop_path=backdrops.get(id(seg)))
+        plan.figure = _figure_for(seg, scene.title, subject)
         renderer.prepare(plan)
         for omission in plan.omitted:
             unresolved.append({"shot_id": seg.shot_id, "field": "labels", "severity": "info" if seg.labels_auto else "warning", "renderer": "labels",
@@ -292,7 +303,7 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
         sig_file = clip.with_suffix(".sig")
         board_key = json.dumps([plan.board["previous"], plan.board["current"], plan.board["theme"], plan.scene_title, plan.board.get("anchor"), plan.board.get("airy"), "board5"],
                                default=str) if plan.board else ""
-        signature = _clip_signature(seg, frame_count, config, (plan.backdrop_path or "") + ("|board2|" + board_key if board_key else ""))
+        signature = _clip_signature(seg, frame_count, config, (plan.backdrop_path or "") + ("|board2|" + board_key if board_key else "") + ("|fig1|" + json.dumps(plan.figure) if plan.figure else ""))
         try:
             if clip.exists() and sig_file.exists() and sig_file.read_text() == signature:
                 last_png = clip.with_suffix(".last.png")

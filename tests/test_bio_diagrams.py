@@ -68,3 +68,49 @@ class BioDiagramTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class PlantDiagramTests(unittest.TestCase):
+    def test_plant_text_gets_the_pollen_tube_figure_never_sperm_and_egg(self):
+        from app import bio_diagrams as b
+        text = "The pollen tube grows down the style and carries the male gamete to the ovule for fertilisation of the egg cell."
+        self.assertEqual(b.concept_for(text), "plant_fertilisation")
+        self.assertEqual(b.render("plant_fertilisation", (700, 600), 9.0).size, (700, 600))
+        self.assertEqual(b.concept_for("The sperm fertilises the ovum and forms a zygote."), "fertilisation")
+
+
+class PlantMicroTests(unittest.TestCase):
+    def test_pollen_tube_steps_get_the_diagram_but_a_pollinator_shot_keeps_its_picture(self):
+        from app import bio_diagrams as b
+        for line in ("Once pollen lands on the stigma, it can germinate.",
+                     "When the pollen lands on the stigma, a tube-like structure grows from it.",
+                     "Upon reaching the ovary, the pollen tube fuses with an ovule and fertilizes it."):
+            self.assertTrue(b.PLANT_MICRO.search(line), line)
+            self.assertGreaterEqual(len(b.parts_named("plant_fertilisation", line)), 2, line)
+        for line in ("The merging of pollen and ovule in the ovary is referred to as fertilization.",
+                     "The pollen tube travels downward, enters the ovary and fuses with the ovule."):
+            self.assertTrue(b.PLANT_MICRO.search(line), line)
+        for line in ("The ovary appears swollen because it contains an ovule.",          # anatomy and aftermath keep their pictures
+                     "Once the ovule has been fertilized, the ovary begins to grow and develops into a fruit.",
+                     "It is attached to a long tube-like structure called the style, which leads to the ovary that contains ovules."):
+            self.assertFalse(b.PLANT_MICRO.search(line), line)
+        carry = "Pollen grains from the anther transfer to the stigma of another flower."
+        self.assertFalse(b.PLANT_MICRO.search(carry))        # a bee carrying pollen is drawn, not diagrammed
+        self.assertEqual(len(b.parts_named("plant_fertilisation", "The sperm fertilises the ovum.")), 0)      # animal text never gets the plant figure
+
+
+    def test_only_micro_process_shots_of_a_plant_scene_become_diagrams(self):
+        import tempfile
+        from app.assets import StillProducer
+        from app.config import AppConfig
+        from app.schema import Scene, Segment, Shot, Storyboard
+        micro = Segment(segment_number=1, shot_id="1.1", image_prompt="x", shot=Shot(template="photo"),
+                        narration="When the pollen lands on the stigma, a tube-like structure grows from it.")
+        bee = Segment(segment_number=2, shot_id="1.2", image_prompt="a bee", shot=Shot(template="photo"),
+                      narration="Pollen from the anther sticks to the bee and reaches the stigma of the next flower.")
+        scene = Scene(scene_number=1, title="Fertilisation", narration="", segments=[micro, bee])
+        board_ = Storyboard(title="Pollination and Fertilisation in Flowering Plants", scenes=[scene])
+        with tempfile.TemporaryDirectory() as tmp:
+            StillProducer(board_, Path(tmp), AppConfig())._diagrams_for_body_shots()
+        self.assertNotIn(micro.shot.template, {"photo", "video"})
+        self.assertEqual(bee.shot.template, "photo")

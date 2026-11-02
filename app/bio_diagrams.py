@@ -24,9 +24,16 @@ _HORMONE = re.compile(r"(?i)\b(hormones?|pituitary|hypothalam\w*|endocrine|gland
 _CYCLE = re.compile(r"(?i)\b(menstru\w*|ovulat\w*|follicular|luteal|menstrual cycle|menarche|menopause|28 days?)\b")
 _FLOWER = re.compile(r"(?i)\b(petals?|sepals?|stamens?|anthers?|stigma|pistil|filament|carpels?|style|receptacle|pollen)\b")
 _FERTILISE = re.compile(r"(?i)\b(fertili[sz]\w*|zygote|sperm|ovum|egg cell|embryo|implant\w*)\b")
+_PLANT_FERT = re.compile(r"(?i)\b(pollen tubes?|double fertili[sz]ation|endosperm|embryo sacs?|polar nuclei|micropyle|synergids?|generative nucleus|"
+                         r"pollen grains?|male gametes?|pollen|ovules?|ovary|stigma|tube)\b")
+# the sentence is about something too small to photograph (a tube growing, a nucleus fusing): this diagram, not three picture rounds
+PLANT_MICRO = re.compile(r"(?i)\b(pollen tubes?|germinat\w*|fus(?:es?|ion|ing)|merg\w*|double fertili[sz]ation|endosperm|"
+                         r"embryo sacs?|polar nuclei|egg cell|male gametes?)\b|\btube\b.{0,40}\bgrows?\b|\bgrows?\b.{0,40}\btube\b")
+_PLANT_WORDS = re.compile(r"(?i)\b(pollen|ovules?|anthers?|stigma|style|endosperm|embryo sacs?|seeds?|petals?|pollination|plants?|flowers?|"
+                          r"micropyle|stamens?|carpels?)\b")
 _SEED = re.compile(r"(?i)\b(germinat\w*|radicle|plumule|cotyledons?|seedling|seed coat|sprout\w*)\b")
 BIO_CONCEPTS = {"female_system": _FEMALE, "male_system": _MALE, "hormone_loop": _HORMONE, "menstrual_cycle": _CYCLE,
-                "flower": _FLOWER, "fertilisation": _FERTILISE, "seed_germination": _SEED}
+                "flower": _FLOWER, "plant_fertilisation": _PLANT_FERT, "fertilisation": _FERTILISE, "seed_germination": _SEED}
 
 INK = (232, 238, 246, 255)
 CYAN = (64, 210, 230, 255)
@@ -40,9 +47,16 @@ BROWN = (176, 128, 84, 255)
 OUTLINE = (255, 255, 255, 70)
 
 
+def parts_named(concept: str, text: str) -> set[str]:
+    """The distinct parts of this diagram that the text names."""
+    return {m.lower().rstrip("s") for m in BIO_CONCEPTS[concept].findall(text or "")}
+
+
 def concept_for(text: str) -> str | None:
     """The biology concept the part is about (the concept named most, at least twice), or None."""
     scores = {name: len(pattern.findall(text or "")) for name, pattern in BIO_CONCEPTS.items()}
+    if len(_PLANT_WORDS.findall(text or "")) >= 2:
+        scores["fertilisation"] = 0          # the sperm-meets-egg figure is the animal one: plant text gets the pollen-tube figure or none
     best = max(scores, key=scores.get)                   # ties keep the order above
     return best if scores[best] >= 2 else None
 
@@ -54,7 +68,7 @@ def render(concept: str, size: tuple[int, int], t: float, focus: str = "") -> Im
     """`focus` is the sentence being spoken: the labelled parts it names are lit in yellow, so a diagram that stays on screen for a whole
     part still shows which structure the voice is talking about."""
     drawer = {"female_system": _female, "male_system": _male, "hormone_loop": _hormone, "menstrual_cycle": _cycle, "flower": _flower,
-              "fertilisation": _fertilisation, "seed_germination": _seed}.get(concept)
+              "plant_fertilisation": _plant_fertilisation, "fertilisation": _fertilisation, "seed_germination": _seed}.get(concept)
     _focus.text = (focus or "").lower()
     try:
         return drawer(size, t) if drawer else None
@@ -231,6 +245,36 @@ def _flower(size, t):
     if _shown(4, t): _label(d, size, "Style", (0.46, 0.40), (0.02, 0.52), "lm")
     if _shown(5, t): _label(d, size, "Ovary", (0.46, 0.54), (0.64, 0.64), "lm")
     if _shown(6, t): _label(d, size, "Sepal", (0.34, 0.61), (0.02, 0.70), "lm")
+    return image
+
+
+def _plant_fertilisation(size, t):
+    """A pollen grain on the stigma, its tube growing down the style to the ovule, and the two male gametes of double fertilisation:
+    one joins the egg cell (zygote), the other the two polar nuclei (endosperm)."""
+    w, h = size
+    image, d = _canvas(size)
+    cx = w * 0.40
+    d.rounded_rectangle((cx - w * 0.022, h * 0.16, cx + w * 0.022, h * 0.56), radius=8, fill=(150, 220, 150, 255))               # style
+    _blob(d, (cx - w * 0.055, h * 0.11, cx + w * 0.055, h * 0.19), YELLOW)                                                         # stigma
+    _blob(d, (cx - w * 0.19, h * 0.54, cx + w * 0.19, h * 0.94), (244, 170, 150, 255))                                            # ovary
+    _blob(d, (cx - w * 0.10, h * 0.62, cx + w * 0.10, h * 0.88), (214, 120, 100, 255))                                            # ovule
+    _blob(d, (cx - w * 0.065, h * 0.67, cx + w * 0.065, h * 0.83), (255, 238, 200, 255))                                          # embryo sac
+    _blob(d, (cx - w * 0.045, h * 0.745, cx - w * 0.005, h * 0.80), (250, 190, 90, 255))                                          # egg cell
+    for y in (0.69, 0.725):
+        _blob(d, (cx + w * 0.012, h * y, cx + w * 0.05, h * (y + 0.032)), (120, 190, 235, 255))                                    # polar nuclei
+    if _shown(0, t): _blob(d, (cx - w * 0.026, h * 0.05, cx + w * 0.026, h * 0.10), (240, 200, 60, 255))                          # pollen grain
+    if _shown(1, t): d.line((cx, h * 0.10, cx, h * 0.64), fill=(60, 200, 150, 255), width=6)                                       # pollen tube
+    if _shown(2, t):
+        for dx in (-0.012, 0.012):
+            d.ellipse((cx + w * dx - 6, h * 0.60 - 6, cx + w * dx + 6, h * 0.60 + 6), fill=CYAN)                                   # the two male gametes
+    if _shown(0, t): _label(d, size, "Pollen grain", (0.40, 0.075), (0.66, 0.04), "lm")
+    if _shown(1, t): _label(d, size, "Stigma", (0.44, 0.15), (0.66, 0.15), "lm")
+    if _shown(1, t): _label(d, size, "Pollen tube", (0.40, 0.34), (0.66, 0.30), "lm")
+    if _shown(2, t): _label(d, size, "Style", (0.42, 0.46), (0.66, 0.46), "lm")
+    if _shown(3, t): _label(d, size, "Ovary", (0.24, 0.70), (0.02, 0.58), "lm")
+    if _shown(3, t): _label(d, size, "Ovule", (0.31, 0.64), (0.02, 0.50), "lm")
+    if _shown(4, t): _label(d, size, "Egg cell", (0.37, 0.77), (0.02, 0.86), "lm")
+    if _shown(4, t): _label(d, size, "Polar nuclei", (0.425, 0.72), (0.62, 0.76), "lm")
     return image
 
 

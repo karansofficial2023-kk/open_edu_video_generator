@@ -61,7 +61,11 @@ def _script_runs(text: str, table: dict, marker: str) -> str:
 def normalize_formula(line: str) -> str:
     """Make storyboard formulas typeset-friendly: Unicode scripts, label prefixes, ions, chemical species, word subscripts."""
     text = line.strip()
+    # LaTeX operators written by the language model (\times, \cdot): the maths parser reads a backslash-t as a TAB and drew "imes", so a
+    # whole equation came out blank. They are the same symbols as the Unicode ones that are parsed correctly.
+    text = re.sub(r"\\(times|cdot|div|pm)(?![A-Za-z])", lambda m: {"times": "×", "cdot": "·", "div": "÷", "pm": "±"}[m.group(1)], text)
     text = _script_runs(_script_runs(text, _SUP, "^"), _SUB, "_")
+    text = re.sub(r"(?<=[A-Za-z\)])([_^])(\d{2,})(?![\d}])", r"\1{\2}", text)      # a_10 is a with subscript ten, not subscript 1 then a plain 0
     text = re.sub("([Λλ])m(?=[°^\\s(_]|$)", r"\1_m", text)      # "Λm°" -> Λ with subscript m (molar), as in textbooks
     # "Kohlrausch's law: x = y" -> keep only the mathematics (a short caption before a colon is not part of the equation)
     head, colon, tail = text.partition(":")

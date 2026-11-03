@@ -324,3 +324,63 @@ def draw(overlay: Image.Image, placed: list[PlacedLabel], t: float, start_times:
                                     outline=accent + (a,), width=max(2, round(3 * scale)))
             lfnt = font(fnt.size, True, is_complex_script(label.text))
             draw_lines(draw_, label.lines, lfnt, sum(lfnt.getmetrics()) + 2, label.box[0] + pad_x, label.box[1] + pad_y, (20, 24, 28, a))
+
+
+# ---------------------------------------------------------------------------
+# Named layout grid & occupancy verification (Research Item #9)
+# ---------------------------------------------------------------------------
+
+GRID_NAMES = [
+    ["top_left", "top_center", "top_right"],
+    ["mid_left", "center", "mid_right"],
+    ["bottom_left", "bottom_center", "bottom_right"],
+]
+
+
+class OccupancyGrid:
+    """3x3 Named layout grid for deterministic screen occupancy and collision verification."""
+
+    def __init__(self, size: tuple[int, int]):
+        self.width, self.height = size
+        self.cols = [0, self.width // 3, 2 * self.width // 3, self.width]
+        self.rows = [0, self.height // 3, 2 * self.height // 3, self.height]
+        self.occupied: dict[str, list[dict]] = {name: [] for row in GRID_NAMES for name in row}
+
+    def cells_for_box(self, box: tuple[int, int, int, int]) -> list[str]:
+        bx0, by0, bx1, by1 = box
+        matched = []
+        for r in range(3):
+            for c in range(3):
+                cx0, cx1 = self.cols[c], self.cols[c + 1]
+                cy0, cy1 = self.rows[r], self.rows[r + 1]
+                ix0, iy0 = max(bx0, cx0), max(by0, cy0)
+                ix1, iy1 = min(bx1, cx1), min(by1, cy1)
+                if ix1 > ix0 and iy1 > iy0:
+                    matched.append(GRID_NAMES[r][c])
+        return matched
+
+    def register(self, tag: str, box: tuple[int, int, int, int]) -> list[str]:
+        cells = self.cells_for_box(box)
+        for cell in cells:
+            self.occupied[cell].append({"tag": tag, "box": box})
+        return cells
+
+    def check_conflicts(self, max_per_cell: int = 2) -> list[str]:
+        conflicts = []
+        for cell, items in self.occupied.items():
+            if len(items) > max_per_cell:
+                tags = [i["tag"] for i in items]
+                conflicts.append(f"Grid cell {cell!r} over-occupied by {tags}")
+        return conflicts
+
+
+def verify_occupancy(boxes: list[tuple[int, int, int, int]], size: tuple[int, int],
+                     keepout: list[tuple[int, int, int, int]]) -> dict:
+    """Verifies that visual boxes do not cause layout grid density violations."""
+    grid = OccupancyGrid(size)
+    for idx, k in enumerate(keepout):
+        grid.register(f"keepout_{idx}", k)
+    for idx, b in enumerate(boxes):
+        grid.register(f"item_{idx}", b)
+    conflicts = grid.check_conflicts(max_per_cell=2)
+    return {"ok": len(conflicts) == 0, "conflicts": conflicts, "grid": grid}

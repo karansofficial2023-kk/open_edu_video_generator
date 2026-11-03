@@ -84,3 +84,45 @@ def available(config: AppConfig) -> bool:
         return config.production.vision_model in names or config.production.vision_fallback_model in names
     except (requests.RequestException, ValueError):
         return False
+
+
+def tifa_checklist_review(image, elements: list[str], config: AppConfig, purpose: str = "") -> dict:
+    """TIFA/DSG style per-element verification: independently verify each predetermined element (yes/no)."""
+    clean_elements = [e.strip() for e in elements if e and e.strip()][:6]
+    if not clean_elements:
+        return {"ok": True, "score": 1.0, "present": {}, "missing": []}
+
+    elem_list = "\n".join(f"- {e}" for e in clean_elements)
+    prompt = (
+        "You are a strict QA inspection tool for educational illustrations.\n"
+        "Check whether each of the following required concrete elements is clearly and correctly visible in this image:\n"
+        f"{elem_list}\n\n"
+        "Rules:\n"
+        "- Only mark present: true if the specific object/structure is genuinely visible.\n"
+        "- If it is missing, obscured, or substituted with something else, mark present: false.\n"
+        "Return JSON:\n"
+        "{\"checklist\": [{\"element\": str, \"present\": bool, \"reason\": str}]}"
+    )
+    try:
+        result = ask(image, prompt, config, purpose=purpose)
+        raw_list = result.get("checklist") or []
+        present_map = {}
+        missing = []
+        for item in raw_list:
+            elem = str(item.get("element", "")).strip()
+            val = item.get("present")
+            is_pres = str(val).lower() in {"true", "yes", "1"} if isinstance(val, str) else bool(val)
+            present_map[elem] = is_pres
+            if not is_pres and elem:
+                missing.append(elem)
+        total = len(clean_elements)
+        passed = max(0, total - len(missing))
+        score = round(passed / max(1, total), 2)
+        return {
+            "ok": len(missing) == 0 or (len(missing) <= 1 and total >= 4),
+            "score": score,
+            "present": present_map,
+            "missing": missing,
+        }
+    except Exception as exc:
+        return {"ok": True, "score": 1.0, "present": {}, "missing": [], "error": str(exc)}

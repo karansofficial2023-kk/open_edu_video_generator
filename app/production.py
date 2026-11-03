@@ -95,7 +95,7 @@ def _figure_for(seg, scene_title: str, subject: str) -> dict | None:
     if not shot or shot.template not in {"process", "comparison"} or seg.labels:
         return None
     concept = figures.concept_for(seg.narration, scene_title, subject)
-    return {"concept": concept, "light": subject == "maths"} if concept else None
+    return {"concept": concept, "light": False} if concept else None
 
 
 def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_dir: Path | None = None, figures: bool = True,
@@ -220,6 +220,7 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
     progress.stage(2, "Pictures: find or generate each picture, then review it against the narration")
     producer = StillProducer(board, output_dir, config)
     unresolved = producer.run()
+    unresolved += _escalate_section_repairs(board, unresolved)
     _write_licenses(output_dir)
     from .subject import CHEMISTRY as _CHEM, PHYSICS as _PHYS, subject_of as _subject_of
     if _subject_of(board) in {_PHYS, _CHEM}:           # extra gallery pictures only where the board has a figure column
@@ -283,7 +284,7 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
         from .subject import BIOLOGY, CHEMISTRY, PHYSICS
         # a board stands for a shot that has no picture: physics/chemistry keep their figure beside it; biology gets a code-drawn
         # diagram (organ system, hormone loop, cycle, flower ...) when the part is about one, and shows text only otherwise
-        _plan_board_pages(plans, board.title, chemistry=subject == CHEMISTRY, output_dir=output_dir, figures=subject in {PHYSICS, CHEMISTRY},
+        _plan_board_pages(plans, board.title, chemistry=subject == CHEMISTRY, output_dir=output_dir, figures=True,
                           bio_diagrams=subject == BIOLOGY)
 
     # 5. Render clips (resumable by content signature; one failure never erases the rest).
@@ -397,3 +398,40 @@ def _reflow(board: Storyboard, config: AppConfig) -> None:
         duration += seg.extra_hold
         seg.start, seg.end = cursor, cursor + duration
         cursor = seg.end
+
+
+def _escalate_section_repairs(board: Storyboard, unresolved: list[dict]) -> list[dict]:
+    """Escalating repair (Research Item #10): field -> shot -> section.
+    When 2 or more shots in a section fail all visual generation/review retries,
+    escalate to section level: convert failed shots to structured teacher board cards."""
+    from collections import defaultdict
+    failed_by_scene: dict[int, list[str]] = defaultdict(list)
+    for issue in unresolved:
+        shot_id = str(issue.get("shot_id") or "")
+        if "." in shot_id:
+            try:
+                scene_num = int(shot_id.split(".")[0])
+                if issue.get("field") in {"still", "image_prompt", "render"}:
+                    failed_by_scene[scene_num].append(shot_id)
+            except ValueError:
+                pass
+    escalated = []
+    for scene in board.scenes:
+        fails = failed_by_scene.get(scene.scene_number, [])
+        if len(fails) >= 2:
+            for seg in scene.segments:
+                if seg.shot_id in fails:
+                    if seg.shot and seg.shot.template in {"photo", "video"}:
+                        from .assets import complete_cards
+                        seg.shot.template = "process"
+                        seg.visual_type = "process_steps"
+                        if not seg.shot.steps:
+                            seg.shot.steps = complete_cards(seg.narration, seg.shot.heading or scene.title)[:3]
+            escalated.append({
+                "scene": scene.scene_number,
+                "escalation": "section",
+                "severity": "info",
+                "reason": f"Section {scene.scene_number} had {len(fails)} failed visuals; escalated to teacher board cards",
+                "shots": fails,
+            })
+    return escalated

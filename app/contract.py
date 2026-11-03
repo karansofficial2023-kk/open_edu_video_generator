@@ -72,6 +72,10 @@ def segment_from_fields(fields: dict, fallback_number: int = 1) -> Segment:
         asset_path=get("asset_path"),
         steps=split_list(fields.get("steps")),
         columns=split_list(fields.get("columns")),
+        reasoning=get("reasoning"),
+        pronunciations=fields.get("pronunciations") if isinstance(fields.get("pronunciations"), dict) else {},
+        manim_code=get("manim_code"),
+        mermaid_code=get("mermaid_code"),
     )
 
 

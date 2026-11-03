@@ -55,11 +55,11 @@ def photos_first(subject: str) -> bool:
 
 
 def board_style(subject: str) -> bool:
-    """Every subject except mathematics: explanation screens are a dark teacher's board that builds up (board.py) - never the old white
-    concept cards. Biology keeps photographs first; the board is only what an explanation shot (one with no usable picture) shows."""
-    return subject in {PHYSICS, CHEMISTRY, BIOLOGY, GENERAL}
+    """All subjects: explanation screens use the dark teacher's board that builds up (board.py) - the physics/chemistry style.
+    Never the old white concept cards."""
+    return True
 
 
 def plain_cards(subject: str) -> bool:
-    """Mathematics: explanation cards sit on the plain notebook page, never on a blurred photograph."""
-    return subject == MATHS
+    """All subjects use the dark teacher's board style now."""
+    return False

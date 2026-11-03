@@ -90,6 +90,10 @@ class Segment(BaseModel):
     asset_path: str = ""
     steps: list[str] = Field(default_factory=list)
     columns: list[str] = Field(default_factory=list)
+    reasoning: str = ""
+    pronunciations: dict[str, str] = Field(default_factory=dict)
+    manim_code: str = ""
+    mermaid_code: str = ""
 
 
 class Scene(BaseModel):

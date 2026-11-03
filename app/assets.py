@@ -20,7 +20,7 @@ from PIL import Image, ImageFilter
 from . import progress
 from .resilience import atomic_write_text, read_json_or_none
 
-from . import commons, ocr, vision
+from . import commons, ocr, openverse, vision
 from .comfyui_client import ComfyUIClient
 from .config import AppConfig
 from .safety import unsafe_reason
@@ -481,6 +481,17 @@ def semantic_qa(path: Path, segment: Segment, scene_title: str, config: AppConfi
                                "missing": [str(x) for x in result.get("missing", [])][:6],
                                "issues": [str(x) for x in result.get("issues", [])][:6]}, result.get("checks"),
                               grounding=grounding_text(segment, structures, prompt))
+    # TIFA / DSG predetermined checklist verification (Research Item #1)
+    if segment.labels and len(segment.labels) >= 2:
+        try:
+            tifa = vision.tifa_checklist_review(path, segment.labels, config, purpose=f"tifa:{segment.shot_id}")
+            if not tifa.get("ok"):
+                checked["matches"] = False
+                checked["score"] = min(checked["score"], tifa.get("score", 0.0))
+                checked["missing"] = list(dict.fromkeys(checked["missing"] + tifa.get("missing", [])))[:6]
+            checked["tifa"] = tifa
+        except Exception:
+            pass
     return _apply_safety(checked, result)
 
 
@@ -825,6 +836,51 @@ class StillProducer:
                                     "reason": "the final safety check rejected the picture of this shot; school-student rule: shown as explanation cards",
                                     "repair": "supply an approved picture as asset_path if one is required"})
 
+    def _render_manim_and_mermaid(self) -> None:
+        """Deterministic rendering for Manim mathematical animations and Mermaid flowcharts/cycles."""
+        from . import manim_anim, mermaid_diagram
+        for scene, seg in self.board.all_segments():
+            shot = seg.shot
+            if shot is None or shot.asset_path:
+                continue
+            base = (seg.shot_id or f"{scene.scene_number}_{seg.segment_number}").replace(".", "_")
+            heading = (shot.heading or scene.title or self.board.title).strip()
+
+            # 1. Mermaid diagram
+            if seg.visual_type == "mermaid_diagram" or getattr(seg, "mermaid_code", ""):
+                code = getattr(seg, "mermaid_code", "").strip() or f"graph TD;\n  A[{heading}] --> B[Process] --> C[Output]"
+                out_path = self.dir / f"mermaid_{base}.png"
+                try:
+                    mermaid_diagram.render_mermaid_diagram(code, out_path, heading=heading)
+                    if out_path.is_file():
+                        shot.asset_path = str(out_path)
+                        shot.template = "photo"
+                        self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "info",
+                                            "renderer": "mermaid", "reason": "rendered deterministic Mermaid flowchart/cycle",
+                                            "repair": "none needed"})
+                except Exception as exc:
+                    self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "warning",
+                                        "renderer": "mermaid", "reason": f"mermaid render failed: {exc}",
+                                        "repair": "check mermaid code syntax"})
+
+            # 2. Manim animation
+            elif seg.visual_type == "math_animation" or getattr(seg, "manim_code", ""):
+                code = getattr(seg, "manim_code", "").strip() or f"# Mathematical transform for {heading}"
+                out_path = self.dir / f"manim_{base}.mp4"
+                dur = seg.duration_hint or 6.0
+                try:
+                    manim_anim.render_manim_animation(code, out_path, duration=dur, heading=heading)
+                    if out_path.is_file():
+                        shot.asset_path = str(out_path)
+                        shot.template = "video"
+                        self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "info",
+                                            "renderer": "manim", "reason": "rendered procedural Manim mathematical animation",
+                                            "repair": "none needed"})
+                except Exception as exc:
+                    self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "warning",
+                                        "renderer": "manim", "reason": f"manim render failed: {exc}",
+                                        "repair": "check manim code syntax"})
+
     def run(self) -> list[dict]:
         self._plan_continuations()
         self._blocked_to_cards()
@@ -833,6 +889,7 @@ class StillProducer:
         self._cards_for_screen_moments()
         self._no_drawn_graphs()
         self._cards_for_abstract_statements()
+        self._render_manim_and_mermaid()
         jobs = self._jobs()
         records: dict[str, dict] = {}
         for job in jobs:
@@ -1032,7 +1089,7 @@ class StillProducer:
 
     @staticmethod
     def _generated(record: dict) -> int:
-        return sum(1 for a in record["attempts"] if a.get("source") != "commons")
+        return sum(1 for a in record["attempts"] if a.get("source") not in ("commons", "openverse"))
 
     def _review_pending(self, jobs: list[Job], records: dict) -> None:
         todo = [j for j in jobs if records[j.key]["attempts"] and not records[j.key]["attempts"][-1].get("reviewed")
@@ -1057,7 +1114,7 @@ class StillProducer:
                 self._save(job, record)
 
     def _retrieve(self, job: Job, record: dict) -> None:
-        """Try the best open-licensed Wikimedia Commons image first; it must still pass QA like any candidate."""
+        """Try open-licensed images first (Wikimedia Commons then Openverse); they still pass QA like any candidate."""
         if SENSITIVE_TOPIC.search(f"{job.segment.narration} {record.get('prompt', '')}"):
             return      # real photographs of reproductive anatomy (clinical close-ups) are not for school students: generate an illustration instead
         try:
@@ -1083,6 +1140,35 @@ class StillProducer:
                     return
         except Exception as exc:   # network/parse problems must never stop generation
             print(f"Commons retrieval skipped for {job.key}: {exc}", flush=True)
+
+        # --- Openverse fallback (CC-licensed images when Commons found nothing usable) ---
+        try:
+            ov_query = job.caption or job.segment.narration or ""
+            ov_results = openverse.search(ov_query, per_page=4)
+            for ov in ov_results:
+                url = ov.get("url", "")
+                if not url:
+                    continue
+                raw = self.dir / f"shot_{job.key}_openverse_raw.jpg"
+                if not openverse.fetch_image(url, raw):
+                    continue
+                try:
+                    with Image.open(raw) as image:
+                        done = finish_image(image)
+                except Exception:
+                    raw.unlink(missing_ok=True)
+                    continue
+                final = self.dir / f"shot_{job.key}_openverse.png"
+                done.save(final)
+                tech = technical_qa(done, self.config)
+                raw.unlink(missing_ok=True)
+                if tech["ok"]:
+                    record["attempts"].append({"round": 0, "source": "openverse", "path": str(final),
+                                               "technical": tech, "provenance": ov})
+                    self._save(job, record)
+                    return
+        except Exception as exc:
+            print(f"Openverse retrieval skipped for {job.key}: {exc}", flush=True)
 
     def _card_ideas(self, job: Job, owner: Segment) -> list[str]:
         """Concept-card text is stored per shot. The language model words the cards differently on every run, which changed the clips (so

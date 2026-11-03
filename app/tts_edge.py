@@ -39,8 +39,11 @@ def synthesize_storyboard(storyboard: Storyboard, output_dir: str | Path, config
 
     for scene, segment in storyboard.all_segments():
         out = audio_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.mp3"
+        from . import tts_indic
+        prons = getattr(segment, "pronunciations", {}) or {}
+        spoken = tts_indic.apply_pronunciations(segment.narration, prons) if prons else segment.narration
         # Audio is cached by narration + voice + rate + provider so reruns never resynthesize (spec section 11).
-        signature = hashlib.sha1(f"edge2|{config.edge_tts.voice}|{config.edge_tts.rate}|{segment.narration}".encode()).hexdigest()   # edge2: silence trimmed
+        signature = hashlib.sha1(f"edge2|{config.edge_tts.voice}|{config.edge_tts.rate}|{spoken}".encode()).hexdigest()   # edge2: silence trimmed
         meta = out.with_suffix(".json")
         wav = out.with_suffix(".wav")
         if meta.exists() and wav.exists():
@@ -51,7 +54,7 @@ def synthesize_storyboard(storyboard: Storyboard, output_dir: str | Path, config
                 continue
         print(f"Synthesizing voice {scene.scene_number}.{segment.segment_number}...", flush=True)
         meta.unlink(missing_ok=True)            # the cache entry is invalid until the new audio is fully converted
-        segment.captions = _retry(lambda: synthesize_text(segment.narration, out, config))
+        segment.captions = _retry(lambda: synthesize_text(spoken, out, config))
         # Measure decoded PCM, avoiding MP3 encoder-padding drift between sentences.
         from .renderer import _run, _tool_path
         wav = out.with_suffix(".wav")
@@ -117,7 +120,8 @@ def _synthesize_open(storyboard: Storyboard, audio_dir: Path, config: AppConfig,
     try:
         for scene, segment in storyboard.all_segments():
             base = audio_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}"
-            text = tts_indic.prepare_text(segment.narration, lang, table)
+            prons = {**table, **(getattr(segment, "pronunciations", {}) or {})}
+            text = tts_indic.prepare_text(segment.narration, lang, prons)
             signature = hashlib.sha1(f"open2|{lang}|{speaker}|{text}".encode()).hexdigest()
             meta, wav = base.with_suffix(".json"), base.with_suffix(".wav")
             if meta.exists() and wav.exists():
@@ -131,7 +135,7 @@ def _synthesize_open(storyboard: Storyboard, audio_dir: Path, config: AppConfig,
             print(f"Synthesizing open voice {scene.scene_number}.{segment.segment_number}...", flush=True)
             raw = base.with_suffix(".raw.wav")
             info = voice.speak(lang, text, raw)
-            segment.captions = tts_indic.distribute_captions(segment.narration, info["seconds"], info["lead"], info["tail"], lang, table)
+            segment.captions = tts_indic.distribute_captions(segment.narration, info["seconds"], info["lead"], info["tail"], lang, prons)
             _run([_tool_path(config.ffmpeg_path, "ffmpeg"), "-v", "error", "-y", "-i", str(raw), "-ar", "24000", "-ac", "1",
                   "-c:a", "pcm_s16le", str(wav)])
             raw.unlink(missing_ok=True)

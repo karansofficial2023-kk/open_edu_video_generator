@@ -66,3 +66,55 @@ def board_style(subject: str) -> bool:
 def plain_cards(subject: str) -> bool:
     """All subjects use the dark teacher's board style now."""
     return False
+
+
+def is_primary_grade(target: Storyboard | str | None) -> bool:
+    """Returns True ONLY for primary school (LKG/UKG through 5th standard).
+    Higher grades (6th-12th, college, engineering, adult) MUST return False.
+    """
+    if target is None:
+        return False
+
+    if isinstance(target, Storyboard):
+        # 1. Any segment explicitly calling for primary karaoke?
+        for _scene, seg in target.all_segments():
+            if getattr(seg, "subtitle_style", "") == "primary_karaoke":
+                return True
+        fields = [
+            getattr(target, "grade_level", ""),
+            getattr(target, "academic_level", ""),
+            getattr(target, "subject", ""),
+            getattr(target, "title", ""),
+        ]
+        combined = " ".join(f for f in fields if f).strip().lower()
+    else:
+        combined = str(target).strip().lower()
+
+    if not combined:
+        return False
+
+    # Check negative / higher grade indicators first
+    higher_patterns = [
+        r"\b(?:class|std|grade|standard)\s*(?:[6-9]|1[0-2]|[6-9]th|1[0-2]th)\b",
+        r"\b(?:6th|7th|8th|9th|10th|11th|12th)\s*(?:std|grade|class|standard)\b",
+        r"\b(?:middle\s*school|high\s*school|secondary|higher\s*secondary|college|university|undergraduate|postgraduate|phd|b\.?tech|m\.?tech|engineering)\b",
+        r"\b(?:thermodynamics|combustion|electroplating|calculus|quantum|relativity)\b",
+    ]
+    for hp in higher_patterns:
+        if re.search(hp, combined):
+            return False
+
+    # Check positive primary indicators (LKG through 5th standard)
+    primary_patterns = [
+        r"\b(?:lkg|ukg|nursery|kindergarten|kg|pre-?k|preschool)\b",
+        r"\b(?:class|std|grade|standard)\s*(?:[1-5]|1st|2nd|3rd|4th|5th)\b",
+        r"\b(?:1st|2nd|3rd|4th|5th)\s*(?:std|grade|class|standard)\b",
+        r"\b(?:primary|elementary|lower\s*primary)\b",
+        r"\b(?:evs|environmental\s*studies)\b",
+    ]
+    for pp in primary_patterns:
+        if re.search(pp, combined):
+            return True
+
+    return False
+

@@ -20,7 +20,7 @@ from .config import AppConfig
 from .formulas import render_line
 from .renderer import _tool_path
 from .schema import Segment, Shot
-from .typography import (draw_lines, fit_text, font, hex_rgb, parse_style, set_font_override, subtitle_band, text_width,
+from .typography import (draw_lines, fit_text, font, hex_rgb, parse_style, primary_karaoke_band, primary_scene_banner, set_font_override, subtitle_band, text_width,
                          wrap_text)
 
 
@@ -54,6 +54,8 @@ class ShotPlan:
     board: dict | None = None                # physics/chemistry board page: {theme, previous, current} (board.py)
     figure: dict | None = None               # a teaching figure drawn by code instead of text cards: {concept, light} (figures.py)
     duration: float = 0.0                    # on-screen seconds of the shot being rendered (set by render_clip)
+    is_primary: bool = False                 # primary grade (<= 5th standard): cartoon art, karaoke highlights
+    scene_number: int = 1
 
 
 LONG_STATIC_SECONDS = 14.0     # a card or equation screen longer than this drifts very slowly so the board is never frozen
@@ -455,14 +457,24 @@ class ShotRenderer:
             label_engine.draw(layer, plan.placed, t, plan.label_starts, self.config, parse_style(plan.segment.label_style))
         cue = next((c for c in cues if c.start <= t < c.end), cues[-1] if cues and t >= cues[-1].start else None)
         if cue is not None:
-            opacity = self.band_opacity(base)
-            key = (cue.text, round(opacity, 2))
-            if key not in self._cue_cache:
-                built = subtitle_band(self.size, cue.text, self.style, opacity)
-                self._cue_cache[key] = built[0] if built else None
-            band = self._cue_cache[key]
+            if plan.is_primary or plan.segment.subtitle_style == "primary_karaoke":
+                built = primary_karaoke_band(self.size, cue, t, self.style)
+                band = built[0] if built else None
+            else:
+                opacity = self.band_opacity(base)
+                key = (cue.text, round(opacity, 2))
+                if key not in self._cue_cache:
+                    built = subtitle_band(self.size, cue.text, self.style, opacity)
+                    self._cue_cache[key] = built[0] if built else None
+                band = self._cue_cache[key]
             if band is not None:
                 layer = Image.alpha_composite(layer, band)
+        if (plan.is_primary or plan.segment.subtitle_style == "primary_karaoke") and plan.scene_title:
+            if plan.segment.shot_id != "1.1" and plan.segment.visual_type != "title_card":
+                banner_text = f"{plan.scene_number}. {plan.scene_title}"
+                banner_layer = primary_scene_banner(self.size, banner_text)
+                if banner_layer is not None:
+                    layer = Image.alpha_composite(layer, banner_layer)
         if self.logo is not None:
             margin = round(30 * self.size[1] / 1080)
             layer.alpha_composite(self.logo, (self.size[0] - self.logo.width - margin, margin))

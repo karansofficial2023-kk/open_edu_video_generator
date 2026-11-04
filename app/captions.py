@@ -73,7 +73,7 @@ def build_cues(segment: Segment, style, size: tuple[int, int]) -> list[Caption]:
         nonlocal group
         if group:
             text = re.sub(r"\s+([.,;:!?])", r"\1", " ".join(w.text for w in group))        # the speech engine can report a full stop as its own word
-            cues.append(Caption(text=text, start=group[0].start, end=group[-1].end))
+            cues.append(Caption(text=text, start=group[0].start, end=group[-1].end, words=list(group)))
             group = []
 
     for word in words:
@@ -99,5 +99,5 @@ def _extend_to_next(cues: list[Caption], segment: Segment) -> list[Caption]:
     result = []
     for i, cue in enumerate(cues):
         end = cues[i + 1].start if i + 1 < len(cues) else min(total, cue.end + 1.5)
-        result.append(Caption(text=cue.text, start=cue.start, end=max(end, cue.start + 0.05)))
+        result.append(Caption(text=cue.text, start=cue.start, end=max(end, cue.start + 0.05), words=cue.words))
     return result

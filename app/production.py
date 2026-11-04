@@ -271,7 +271,9 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
     use_board = board_style(subject)
     backdrops = {} if plain_cards(subject) or use_board else choose_backdrops(board)
     for scene, seg in board.all_segments():
-        plan = ShotPlan(segment=seg, scene_title=scene.title, backdrop_path=backdrops.get(id(seg)))
+        is_primary = board.is_primary()
+        plan = ShotPlan(segment=seg, scene_title=scene.title, backdrop_path=backdrops.get(id(seg)),
+                        is_primary=is_primary, scene_number=scene.scene_number)
         plan.figure = _figure_for(seg, scene.title, subject)
         renderer.prepare(plan)
         for omission in plan.omitted:
@@ -329,7 +331,7 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
             try:       # safe stand-in: the shot's heading over the plain themed background, with its narration subtitles, so the video completes
                 spare = seg.model_copy(update={"shot": Shot(template="title_card", heading=seg.shot.heading or plan.scene_title or "Lesson"),
                                                "labels": [], "label_placement": [], "formula_lines": [], "panel_assets": [], "animate": False})
-                spare_plan = ShotPlan(segment=spare, scene_title=plan.scene_title)
+                spare_plan = ShotPlan(segment=spare, scene_title=plan.scene_title, is_primary=plan.is_primary, scene_number=plan.scene_number)
                 renderer.prepare(spare_plan)
                 previous_last = renderer.render_clip(spare_plan, clip, frame_count, previous_last, previous_template)
                 atomic_write_text(sig_file, "stand-in")        # never matches a real signature: the next run renders the real shot again

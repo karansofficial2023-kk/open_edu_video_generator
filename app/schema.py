@@ -9,6 +9,7 @@ class Caption(BaseModel):
     text: str
     start: float = Field(ge=0)
     end: float = Field(gt=0)
+    words: list[Caption] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def ordered(self):
@@ -112,7 +113,13 @@ class Storyboard(BaseModel):
     # Language package: {"bcp47": "en-IN", "script": "Latn", "direction": "ltr", "voice": "", "glossary": []}
     language: dict = Field(default_factory=dict)
     subject: str = ""                     # as named by the storyboard ("Chemistry"); see subject.py for how it is used
+    grade_level: str = ""                 # e.g. "5th standard", "Class 3", "primary"
+    academic_level: str = ""              # e.g. "primary", "elementary"
     scenes: List[Scene] = Field(default_factory=list)
+
+    def is_primary(self) -> bool:
+        from .subject import is_primary_grade
+        return is_primary_grade(self)
 
     def all_segments(self) -> list[tuple[Scene, Segment]]:
         items: list[tuple[Scene, Segment]] = []

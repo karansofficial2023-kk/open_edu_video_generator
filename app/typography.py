@@ -197,3 +197,168 @@ def subtitle_band(size: tuple[int, int], text: str, style, opacity: float | None
     fr, fg, fb = hex_rgb(style.text_color)
     draw_lines(draw, lines, fnt, line_h, margin_x, band[1] + pad, (fr, fg, fb, 255), "center", width - 2 * margin_x)
     return overlay, band
+
+
+def primary_karaoke_band(
+    size: tuple[int, int],
+    cue: object,
+    t: float,
+    style=None,
+    opacity: float | None = None
+) -> tuple[Image.Image, tuple[int, int, int, int]] | None:
+    """Card overlay with word-by-word karaoke highlight for primary school (<= 5th standard).
+    Renders warm ivory rounded card with drop shadow and yellow pill highlight behind active word."""
+    text = getattr(cue, "text", str(cue or "")).strip()
+    if not text:
+        return None
+    width, height = size
+    scale = height / 1080
+    overlay = Image.new("RGBA", size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+
+    margin_x = round(100 * scale)
+    card_w = width - 2 * margin_x
+    card_bottom = height - round(40 * scale)
+    card_h = round(135 * scale)
+    card_top = card_bottom - card_h
+    card_box = (margin_x, card_top, margin_x + card_w, card_bottom)
+
+    # Soft drop shadow
+    shadow_offset = round(4 * scale)
+    shadow_box = (margin_x, card_top + shadow_offset, margin_x + card_w, card_bottom + shadow_offset)
+    draw.rounded_rectangle(shadow_box, radius=round(18 * scale), fill=(0, 0, 0, 40))
+
+    # Warm cream / ivory card body with soft golden border
+    draw.rounded_rectangle(
+        card_box,
+        radius=round(18 * scale),
+        fill=(255, 253, 245, 250),
+        outline=(226, 207, 172, 255),
+        width=round(2.5 * scale)
+    )
+
+    # Typography
+    font_size = round(32 * scale)
+    complex_script = is_complex_script(text)
+    fnt = font(font_size, bold=False, complex_script=complex_script)
+    fnt_bold = font(font_size, bold=True, complex_script=complex_script)
+
+    ascent, descent = fnt.getmetrics()
+    line_h = ascent + descent + round(8 * scale)
+    max_text_w = card_w - round(60 * scale)
+
+    # Words and timings
+    cue_words = getattr(cue, "words", []) or []
+    raw_words = text.split()
+    space_w = text_width(draw, " ", fnt)
+
+    lines: list[list[dict]] = []
+    current_line: list[dict] = []
+    current_line_w = 0.0
+
+    for i, w_text in enumerate(raw_words):
+        w_len = text_width(draw, w_text, fnt)
+        if current_line and (current_line_w + space_w + w_len > max_text_w):
+            lines.append(current_line)
+            current_line = []
+            current_line_w = 0.0
+
+        w_caption = cue_words[i] if i < len(cue_words) else None
+        current_line.append({
+            "text": w_text,
+            "width": w_len,
+            "caption": w_caption,
+            "index": i,
+        })
+        current_line_w += (space_w if current_line_w > 0 else 0) + w_len
+
+    if current_line:
+        lines.append(current_line)
+
+    total_text_h = len(lines) * line_h
+    start_y = card_top + (card_h - total_text_h) / 2
+
+    active_idx = -1
+    for i, c in enumerate(cue_words):
+        if c.start <= t < c.end:
+            active_idx = i
+            break
+
+    for line_idx, line in enumerate(lines):
+        line_w = sum(item["width"] for item in line) + max(0, len(line) - 1) * space_w
+        line_x = margin_x + (card_w - line_w) / 2
+        line_y = start_y + line_idx * line_h
+
+        cursor_x = line_x
+        for item in line:
+            is_active = (item["index"] == active_idx)
+            w_w = item["width"]
+
+            if is_active:
+                pill_pad_x = round(6 * scale)
+                pill_pad_y = round(3 * scale)
+                pill_box = (
+                    cursor_x - pill_pad_x,
+                    line_y - pill_pad_y,
+                    cursor_x + w_w + pill_pad_x,
+                    line_y + line_h - round(5 * scale) + pill_pad_y,
+                )
+                draw.rounded_rectangle(
+                    pill_box,
+                    radius=round(6 * scale),
+                    fill=(255, 224, 80, 255),
+                    outline=(235, 195, 45, 255),
+                    width=round(1.5 * scale)
+                )
+                put_text(draw, (cursor_x, line_y), item["text"], fnt_bold, (15, 15, 15, 255))
+            else:
+                put_text(draw, (cursor_x, line_y), item["text"], fnt, (35, 38, 42, 255))
+
+            cursor_x += w_w + space_w
+
+    return overlay, card_box
+
+
+def primary_scene_banner(size: tuple[int, int], text: str) -> Image.Image | None:
+    """Top cream pill banner showing scene index and title for primary school lessons."""
+    clean = text.strip()
+    if not clean:
+        return None
+    width, height = size
+    scale = height / 1080
+    overlay = Image.new("RGBA", size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+
+    font_size = round(24 * scale)
+    fnt = font(font_size, bold=True, complex_script=is_complex_script(clean))
+    text_w = text_width(draw, clean, fnt)
+
+    pad_x = round(28 * scale)
+    pad_y = round(10 * scale)
+    banner_w = text_w + 2 * pad_x
+    banner_h = round(44 * scale)
+
+    banner_x = round(60 * scale)
+    banner_y = round(32 * scale)
+    banner_box = (banner_x, banner_y, banner_x + banner_w, banner_y + banner_h)
+
+    shadow_offset = round(3 * scale)
+    draw.rounded_rectangle(
+        (banner_x, banner_y + shadow_offset, banner_x + banner_w, banner_y + banner_h + shadow_offset),
+        radius=round(14 * scale),
+        fill=(0, 0, 0, 35)
+    )
+
+    draw.rounded_rectangle(
+        banner_box,
+        radius=round(14 * scale),
+        fill=(255, 253, 245, 240),
+        outline=(226, 207, 172, 240),
+        width=round(2 * scale)
+    )
+
+    ascent, descent = fnt.getmetrics()
+    ty = banner_y + (banner_h - (ascent + descent)) / 2
+    put_text(draw, (banner_x + pad_x, ty), clean, fnt, (28, 36, 48, 255))
+    return overlay
+

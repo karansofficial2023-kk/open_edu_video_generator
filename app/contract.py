@@ -164,4 +164,6 @@ def _finish(title: str, scenes: list[Scene], data: dict | None = None) -> Storyb
         board.required_topics = {k: list(v) for k, v in (data.get("required_topics") or {}).items()}
         board.language = data.get("language") or board.language
         board.subject = str(data.get("subject") or "").strip()
+        board.grade_level = str(data.get("grade_level") or data.get("gradeLevel") or "").strip()
+        board.academic_level = str(data.get("academic_level") or data.get("academicLevel") or "").strip()
     return board

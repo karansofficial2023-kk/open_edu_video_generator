@@ -167,7 +167,7 @@ def run_qa(video: Path, board: Storyboard, config: AppConfig, output_dir: Path, 
         size = (config.output_resolution.width, config.output_resolution.height)
         try:
             for cue in build_cues(seg, config.production.subtitle, size):
-                if storyboard.is_primary() or seg.subtitle_style == "primary_karaoke":
+                if board.is_primary() or seg.subtitle_style == "primary_karaoke":
                     from .typography import primary_karaoke_band
                     primary_karaoke_band(size, cue, cue.start, config.production.subtitle)
                 else:

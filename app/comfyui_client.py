@@ -135,7 +135,7 @@ class ComfyUIClient:
             except WorkflowRejected:
                 raise
             except (requests.ConnectionError, requests.Timeout):
-                if not wait_for(self.is_available, timeout=300, interval=5):   # one long wait per outage, later pictures fail fast
+                if not wait_for(self.is_available, timeout=10, interval=2):   # one long wait per outage, later pictures fail fast
                     self._down = True
                 raise
             except (RuntimeError, TimeoutError) as exc:

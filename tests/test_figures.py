@@ -42,6 +42,72 @@ class FigureTests(unittest.TestCase):
         spoken = tts_indic.apply_pronunciations("Reaction of CO2 and H2O", {"CO2": "carbon dioxide", "H2O": "water"})
         self.assertEqual(spoken, "Reaction of carbon dioxide and water")
 
+    def test_electroplating_scientific_figures(self):
+        # 1. Wiring & Electrodes (Points 1, 2, 3)
+        self.assertEqual(
+            figures.concept_for("The red wire is connected to the positive terminal of the battery, while the blue wire is linked to the negative terminal through a switch.", "", "chemistry"),
+            "electrolysis_cell"
+        )
+        self.assertEqual(
+            figures.concept_for("The terminal connected to the battery's positive side is called the anode, while the one connected to the negative side is known as the cathode.", "", "chemistry"),
+            "electrolysis_cell"
+        )
+
+        # 2. Outermost shell with empty electrons (Point 7)
+        self.assertEqual(
+            figures.concept_for("Notice that the silver ion has an empty spot in its outermost shell. It attracts an electron into this position.", "", "chemistry"),
+            "silver_ion_shell"
+        )
+
+        # 3. Dual redox reaction balance (Point 6)
+        self.assertEqual(
+            figures.concept_for("Since reduction occurs at the cathode and oxidation takes place at the anode, the net reaction is a redox reaction.", "", "chemistry"),
+            "redox_reaction_board"
+        )
+
+        # 4. Verify rendering on dark teacher board
+        cell_img = figures.frame((1920, 1080), CONFIG, "electrolysis_cell", "Electroplating Setup", 2.0, "The red wire is connected to positive terminal, blue wire to negative terminal through switch.", False)
+        self.assertEqual(cell_img.size, (1920, 1080))
+
+        shell_img = figures.frame((1920, 1080), CONFIG, "silver_ion_shell", "Silver Ion Shell", 2.0, "empty spot in outermost shell", False)
+        self.assertEqual(shell_img.size, (1920, 1080))
+
+        redox_img = figures.frame((1920, 1080), CONFIG, "redox_reaction_board", "Redox Reactions", 2.0, "net reaction is a redox reaction", False)
+        self.assertEqual(redox_img.size, (1920, 1080))
+
+    def test_combustion_and_equivalence_ratio_figures(self):
+        # 1. Equivalence ratio spectrum analyzer matching
+        self.assertEqual(
+            figures.concept_for("The equivalence ratio phi compares the actual fuel-to-air ratio with the stoichiometric ratio.", "", "engineering"),
+            "equivalence_ratio_dial"
+        )
+        self.assertEqual(
+            figures.concept_for("In a lean mixture, excess air leads to lower peak temperatures and high fuel economy.", "", "thermodynamics"),
+            "equivalence_ratio_dial"
+        )
+        self.assertEqual(
+            figures.concept_for("A rich mixture contains excess fuel that cannot completely burn, producing soot.", "", "general"),
+            "equivalence_ratio_dial"
+        )
+
+        # 2. Combustion chamber cylinder dynamics matching
+        self.assertEqual(
+            figures.concept_for("Inside the internal combustion engine cylinder, the spark plug ignites the compressed mixture.", "", "engineering"),
+            "combustion_chamber"
+        )
+        self.assertEqual(
+            figures.concept_for("A high-pressure flame front propagates rapidly across the chamber, forcing the piston down in the power stroke.", "", "thermodynamics"),
+            "combustion_chamber"
+        )
+
+        # 3. Verify high quality rendering at 1080p
+        dial_img = figures.frame((1920, 1080), CONFIG, "equivalence_ratio_dial", "Equivalence Ratio", 2.5, "lean mixture excess air", False)
+        self.assertEqual(dial_img.size, (1920, 1080))
+
+        chamber_img = figures.frame((1920, 1080), CONFIG, "combustion_chamber", "Combustion Dynamics", 2.5, "flame front power stroke piston", False)
+        self.assertEqual(chamber_img.size, (1920, 1080))
+
+
 
 if __name__ == "__main__":
     unittest.main()

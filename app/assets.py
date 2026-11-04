@@ -881,6 +881,28 @@ class StillProducer:
                                         "renderer": "manim", "reason": f"manim render failed: {exc}",
                                         "repair": "check manim code syntax"})
 
+            # 3. Deterministic scientific teaching figures (electrolysis cell, atom shell, redox reaction balance, etc.)
+            else:
+                from . import figures
+                from .subject import subject_of
+                subject = subject_of(self.board)
+                concept = figures.concept_for(seg.narration, scene.title, subject)
+                if concept and (not shot.asset_path or not Path(shot.asset_path).is_file()):
+                    out_path = self.dir / f"figure_{base}.png"
+                    try:
+                        rendered = figures.frame((1920, 1080), self.config, concept, heading, 2.5, seg.narration, False)
+                        rendered.save(out_path)
+                        if out_path.is_file():
+                            shot.asset_path = str(out_path)
+                            shot.template = "photo"
+                            self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "info",
+                                                "renderer": "figures", "reason": f"rendered deterministic scientific teaching figure ({concept})",
+                                                "repair": "none needed"})
+                    except Exception as exc:
+                        self.issues.append({"shot_id": seg.shot_id, "field": "visual", "severity": "warning",
+                                            "renderer": "figures", "reason": f"figure render failed: {exc}",
+                                            "repair": "check figure drawer function"})
+
     def run(self) -> list[dict]:
         self._plan_continuations()
         self._blocked_to_cards()
@@ -1199,9 +1221,27 @@ class StillProducer:
         owner.labels, owner.label_placement = [], []       # labels need a verified picture; cards need none
         if job.panel is not None and owner.shot.template != "split_screen":
             return False
+        heading = shot.heading if shot.heading and not is_screen_interaction(shot.heading) and not is_filler_narration(shot.heading) else job.scene_title
+        # Check if a deterministic scientific figure is applicable before pure text cards
+        from . import figures
+        from .subject import subject_of
+        subject = subject_of(self.board)
+        concept = figures.concept_for(owner.narration, job.scene_title, subject)
+        if concept:
+            fig_path = self.dir / f"figure_{job.key}.png"
+            try:
+                rendered = figures.frame((1920, 1080), self.config, concept, heading, 2.5, owner.narration, False)
+                rendered.save(fig_path)
+                if fig_path.is_file():
+                    owner.shot = Shot(template="photo", heading=heading, asset_path=str(fig_path))
+                    owner.panel_assets = []
+                    self._downgraded.add(id(owner))
+                    return True
+            except Exception:
+                pass
+
         ideas = self._card_ideas(job, owner)
         vision.unload(self.config)
-        heading = shot.heading if shot.heading and not is_screen_interaction(shot.heading) and not is_filler_narration(shot.heading) else job.scene_title
         owner.shot = Shot(template="process", heading=heading, steps=ideas[:4],
                           stage_fractions=[round(i / len(ideas[:4]), 3) for i in range(len(ideas[:4]))])
         owner.panel_assets = []

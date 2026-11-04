@@ -13,13 +13,14 @@ import re
 
 from .schema import Storyboard
 
-MATHS, PHYSICS, CHEMISTRY, BIOLOGY, GENERAL = "maths", "physics", "chemistry", "biology", "general"
+MATHS, PHYSICS, CHEMISTRY, BIOLOGY, ENGINEERING, GENERAL = "maths", "physics", "chemistry", "biology", "engineering", "general"
 
 _NAMES = {
     MATHS: ("math", "maths", "mathematics", "algebra", "calculus", "geometry", "trigonometry", "statistics", "arithmetic"),
-    PHYSICS: ("physics",),
+    PHYSICS: ("physics", "thermodynamics"),
     CHEMISTRY: ("chemistry", "chemical"),
     BIOLOGY: ("biology", "botany", "zoology", "life science", "physiology", "anatomy", "pharmacology", "medicine", "health"),
+    ENGINEERING: ("engineering", "thermodynamics", "mechanical", "combustion", "automotive", "aeronautical", "thermal", "propulsion"),
 }
 
 # Vocabulary typical of each subject, used only when the storyboard does not name its subject.
@@ -32,6 +33,8 @@ _WORDS = {
                r"conductivity|solution|bond|atom\w*|molecul\w*|electrod\w*|catalyst|ph\b",
     BIOLOGY: r"cell|cells|plant|flower|pollin\w*|organism|species|tissue|organ|gene|dna|protein|enzyme|disease|blood|"
              r"bacteri\w*|virus|seed|fruit|leaf|root|animal|insect|human body|hormone|cholesterol|drug",
+    ENGINEERING: r"combustion|equivalence ratio|fuel-?air|air-?fuel|stoichiometric|piston|cylinder|engine|spark plug|flame|"
+                r"heat engine|thermal|turbine|nozzle|intake|exhaust|power stroke|manifold",
 }
 
 

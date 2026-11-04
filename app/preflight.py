@@ -34,7 +34,7 @@ def check_services(config: AppConfig) -> list[dict]:
             issues.append(issue("*", "image_checkpoint", "error", "comfyui", f"{config.production.image_checkpoint} is not installed in ComfyUI",
                                 "install the checkpoint or change production.image_checkpoint"))
     except (requests.RequestException, KeyError, ValueError):
-        issues.append(issue("*", "comfyui", "error", "comfyui", f"ComfyUI is not reachable at {config.comfyui.api_url}",
+        issues.append(issue("*", "comfyui", "warning", "comfyui", f"ComfyUI is not reachable at {config.comfyui.api_url}",
                             "start ComfyUI before rendering (fails before voice synthesis by design)"))
     if not Path(config.production.image_workflow_path).exists():
         issues.append(issue("*", "image_workflow_path", "error", "comfyui", "image workflow JSON missing", "restore workflows/flux_schnell_txt2img_api.json"))

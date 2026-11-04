@@ -89,13 +89,18 @@ _PEAK_LIMIT = "alimiter=limit=0.71:level=disabled:attack=5:release=50"
 
 
 def _figure_for(seg, scene_title: str, subject: str) -> dict | None:
-    """A card shot whose sentence a code-drawn figure can explain (tangent, lens, circuit ...) shows that figure instead of text cards."""
+    """A shot whose sentence a code-drawn figure can explain (tangent, lens, circuit, electrolysis, atom shell, redox board ...)
+    shows that figure instead of text cards or hallucinatory photo prompts."""
     from . import figures
     shot = seg.shot
-    if not shot or shot.template not in {"process", "comparison"} or seg.labels:
+    if not shot or seg.labels:
         return None
     concept = figures.concept_for(seg.narration, scene_title, subject)
-    return {"concept": concept, "light": False} if concept else None
+    if not concept:
+        return None
+    if shot.template in {"process", "comparison", "circuit"} or not (shot.asset_path and Path(shot.asset_path).is_file()):
+        return {"concept": concept, "light": False}
+    return None
 
 
 def _plan_board_pages(plans: list, title: str, chemistry: bool = False, output_dir: Path | None = None, figures: bool = True,

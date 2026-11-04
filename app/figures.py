@@ -698,8 +698,9 @@ def concept_for(narration: str, context: str, subject: str) -> str | None:
     low = f"{text} {context or ''}".lower()
     best, score = None, 0
     for name, (strong, weak, _drawer, subjects) in {**FIGURES, **figures_sci.FIGURES}.items():
-        if subjects and subject not in subjects:
-            continue
+        if subjects and subject and subject not in subjects:
+            if subject != "general" and not any(s in subject or subject in s for s in subjects):
+                continue
         s, w = len(re.findall(strong, text, re.I)), len(re.findall(weak, text, re.I))
         if name == "tangent_circle" and "circle" not in low:
             continue
@@ -739,7 +740,7 @@ def frame(size: tuple[int, int], config, concept: str, heading: str, t: float, f
         ink, accent = hex_rgb(config.render.ink), hex_rgb(config.render.accent)
     else:
         from . import board as teacher_board
-        image = teacher_board._background(size, teacher_board.theme_for(heading))
+        image = teacher_board._background(size, teacher_board.theme_for(heading)).copy()
         ink, accent = (236, 242, 250), (90, 200, 230)
     draw = ImageDraw.Draw(image)
     top = round(40 * s)

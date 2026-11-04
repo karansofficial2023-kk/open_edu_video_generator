@@ -91,79 +91,347 @@ def _test_tube(cv: Cv, cx: float, top: float, height: float, tilt_deg: float = 0
 
 
 # ---------------------------------------------------------------------------
-# Electrolysis cell
+# Electrolysis & Electroplating cell
 # ---------------------------------------------------------------------------
 
 def _electrolysis_cell(cv: Cv) -> None:
-    """Electrolysis cell: battery, two electrodes, electrolyte, gas bubbles."""
-    lit_anode = cv.lit(r"anode|positive electrode|oxidation|anion|chlorine|oxygen gas")
-    lit_cathode = cv.lit(r"cathode|negative electrode|reduction|cation|hydrogen|metal deposit")
-    lit_battery = cv.lit(r"batter|power supply|current|voltage|electri")
-    lit_electrolyte = cv.lit(r"electrolyte|solution|ions?|dissol")
+    """Enhanced electrolysis / electroplating cell:
+    Explicit red wire (+) to positive terminal, blue wire (-) to negative terminal with switch,
+    prominent electrolytic solution annotation, dynamic anode/cathode callouts,
+    and flowing electron (e⁻) and silver cation (Ag⁺) particle animation.
+    """
+    lit_anode = cv.lit(r"anode|positive terminal|positive side|pure silver rod|oxidation")
+    lit_cathode = cv.lit(r"cathode|negative terminal|negative side|keychain|reduction")
+    lit_battery = cv.lit(r"batter|power supply|current|voltage|electri|switch|wire")
+    lit_electrolyte = cv.lit(r"electrolyte|solution|silver nitrate|agno|ions?|dissol")
+    lit_electrons = cv.lit(r"electron|flow|current|travel|reduc|oxida|mov")
 
     p = cv.pal
-    # Beaker / container
-    bx0, bx1, by0, by1 = 340, 1260, 220, 650
-    # Fill electrolyte
+    is_electroplating = True
+
+    # Beaker bounds
+    bx0, bx1 = 220, 1380
+    by0, by1 = 260, 740
+    ey0 = by0 + 70  # liquid level: 330
+
+    # 1. Beaker & Electrolytic Solution (Point 3 fix)
     if cv.shown(0):
-        ey0 = by0 + (by1 - by0) * 0.25
-        liq_col = (*p.glass, 100) if not lit_electrolyte else (*p.blue, 120)
-        cv.d.rectangle([cv.P((bx0 + 4, ey0)), cv.P((bx1 - 4, by1 - 4))], fill=liq_col)
-    # Container outline
-    cv.rect((bx0, by0, bx1, by1), outline=p.ink, w=5)
+        liq_alpha = 150 if lit_electrolyte else 115
+        cv.d.rectangle([cv.P((bx0 + 6, ey0)), cv.P((bx1 - 6, by1 - 6))], fill=(*p.blue, liq_alpha))
+        cv.rect((bx0, by0, bx1, by1), outline=p.ink, w=5, radius=14)
+        cv.line((bx0 + 6, ey0), (bx1 - 6, ey0), color=(*p.blue, 230), w=3)
 
-    electrode_top = by0 - 80
-    electrode_bottom = by0 + (by1 - by0) * 0.75
+        # Prominent Electrolytic Solution Label Banner
+        sol_box_y = by1 - 38
+        cv.rect((DW // 2 - 310, sol_box_y - 20, DW // 2 + 310, sol_box_y + 20),
+                fill=(*p.fill, 245), outline=p.blue if lit_electrolyte else p.muted, w=3, radius=8)
+        sol_text = "Electrolytic Solution: Silver Nitrate (AgNO₃)" if is_electroplating else "Electrolytic Solution (Electrolyte)"
+        cv.text((DW // 2, sol_box_y), sol_text, size=24, color=p.ink, bold=True)
 
-    # Anode (right, +)
+    # 2. Coordinates
+    electrode_top = 220
+    electrode_bot = by1 - 85
+    cathode_x = 420   # Left, Negative Cathode (Keychain)
+    anode_x = 1180    # Right, Positive Anode (Pure Silver Rod)
+
+    # 3. DC Battery / Power Supply (Point 1 fix)
+    mid_x = DW // 2
+    bat_y = 52
+    bat_w, bat_h = 240, 56
+    bat_pos_x = mid_x + bat_w // 2   # 920
+    bat_neg_x = mid_x - bat_w // 2   # 680
+
+    if cv.shown(0):
+        cv.rect((mid_x - bat_w // 2, bat_y - bat_h // 2, mid_x + bat_w // 2, bat_y + bat_h // 2),
+                fill=(*p.fill, 245), outline=p.hot if lit_battery else p.ink, w=4, radius=10)
+        cv.text((mid_x, bat_y - 42), "DC Power Supply / Battery", size=22, color=p.hot if lit_battery else p.ink, bold=True)
+
+        # Polarity plates inside battery box
+        cv.line((mid_x - 30, bat_y - 16), (mid_x - 30, bat_y + 16), color=p.blue, w=8)
+        cv.line((mid_x + 30, bat_y - 22), (mid_x + 30, bat_y + 22), color=p.hot, w=4)
+
+        # Terminal Pill Badges
+        cv.rect((mid_x - 110, bat_y - 16, mid_x - 45, bat_y + 16), fill=(*p.blue, 220), outline=p.ink, w=2, radius=6)
+        cv.text((mid_x - 77, bat_y), "− Term", size=16, color=(255, 255, 255), bold=True)
+
+        cv.rect((mid_x + 45, bat_y - 16, mid_x + 110, bat_y + 16), fill=(*p.hot, 220), outline=p.ink, w=2, radius=6)
+        cv.text((mid_x + 77, bat_y), "+ Term", size=16, color=(255, 255, 255), bold=True)
+
+    # 4. Wiring & Switch (Point 1 fix)
+    red_wire_col = (245, 60, 60)
+    blue_wire_col = (45, 140, 255)
+    sw_cx = 560
+
+    if cv.shown(0):
+        # Red Wire (+ terminal -> anode_x -> electrode_top)
+        cv.line((bat_pos_x, bat_y), (anode_x, bat_y), color=red_wire_col, w=6)
+        cv.line((anode_x, bat_y), (anode_x, electrode_top), color=red_wire_col, w=6)
+
+        # Red Wire Annotation Badge
+        red_mid_x = (bat_pos_x + anode_x) // 2
+        cv.rect((red_mid_x - 80, bat_y - 28, red_mid_x + 80, bat_y - 4), fill=(*p.hot, 225), outline=p.ink, w=2, radius=6)
+        cv.text((red_mid_x, bat_y - 16), "Red Wire (+)", size=16, color=(255, 255, 255), bold=True)
+
+        # Blue Wire (- terminal -> switch -> cathode_x -> electrode_top)
+        cv.line((bat_neg_x, bat_y), (sw_cx + 25, bat_y), color=blue_wire_col, w=6)
+
+        # Switch Symbol
+        sw_closed = True
+        cv.circle((sw_cx + 25, bat_y), 6, fill=blue_wire_col, outline=p.ink, w=2)
+        cv.circle((sw_cx - 25, bat_y), 6, fill=blue_wire_col, outline=p.ink, w=2)
+        if sw_closed:
+            cv.line((sw_cx + 25, bat_y), (sw_cx - 25, bat_y), color=blue_wire_col, w=6)
+        else:
+            cv.line((sw_cx + 25, bat_y), (sw_cx - 20, bat_y - 18), color=p.muted, w=5)
+
+        cv.text((sw_cx, bat_y - 25), "Switch [Closed]", size=16, color=p.blue, bold=True)
+
+        # Blue wire from switch to cathode_x
+        cv.line((sw_cx - 25, bat_y), (cathode_x, bat_y), color=blue_wire_col, w=6)
+        cv.line((cathode_x, bat_y), (cathode_x, electrode_top), color=blue_wire_col, w=6)
+
+        # Blue Wire Annotation Badge
+        cv.rect((cathode_x - 70, bat_y - 28, cathode_x + 70, bat_y - 4), fill=(*p.blue, 225), outline=p.ink, w=2, radius=6)
+        cv.text((cathode_x, bat_y - 16), "Blue Wire (−)", size=16, color=(255, 255, 255), bold=True)
+
+    # 5. Cathode: Copper Keychain (Point 2 highlight fix)
     if cv.shown(1):
-        anode_x = bx1 - 200
-        a_col = p.hot if lit_anode else p.a2
-        cv.rect((anode_x - 16, electrode_top, anode_x + 16, electrode_bottom), fill=a_col, outline=p.ink, w=3)
-        cv.text((anode_x, electrode_top - 28), "Anode (+)", size=30, color=p.hot if lit_anode else p.muted)
-        # Gas bubbles rising from anode
-        if cv.shown(3):
-            for i, (bcy, bcx_off) in enumerate([(by0 + 60, -8), (by0 + 120, 10), (by0 + 30, 5)]):
-                if cv.shown(3 + i):
-                    _bubble(cv, anode_x + bcx_off, bcy, r=11)
+        callout_y = 150
+        box_w, box_h = 240, 56
+        bg_col = (20, 50, 80) if lit_cathode else (*p.fill, 245)
+        border_col = p.blue if lit_cathode else p.muted
+        cv.rect((cathode_x - box_w // 2, callout_y - box_h // 2, cathode_x + box_w // 2, callout_y + box_h // 2),
+                fill=bg_col, outline=border_col, w=4 if lit_cathode else 2, radius=8)
+        cv.text((cathode_x, callout_y - 12), "CATHODE (−)", size=22, color=p.blue if lit_cathode else p.ink, bold=True)
+        cv.text((cathode_x, callout_y + 14), "Copper Keychain (Object)", size=16, color=p.ink)
 
-    # Cathode (left, -)
+        # Hanging Wire Clip
+        cv.line((cathode_x, electrode_top), (cathode_x, electrode_top + 45), color=p.blue, w=4)
+
+        # Keychain Silhouette
+        ring_cy = electrode_top + 80
+        cv.circle((cathode_x, ring_cy), 34, fill=(*p.fill2, 220), outline=p.a2, w=5)
+        cv.circle((cathode_x, ring_cy), 16, fill=(*p.blue, 150), outline=p.a2, w=3)
+        fob_y0, fob_y1 = ring_cy + 34, electrode_bot
+        copper_col = (195, 115, 65)
+        cv.rect((cathode_x - 30, fob_y0, cathode_x + 30, fob_y1), fill=copper_col, outline=p.ink, w=4, radius=10)
+        cv.line((cathode_x - 18, fob_y0 + 35), (cathode_x + 18, fob_y0 + 35), color=p.ink, w=3)
+        cv.line((cathode_x - 18, fob_y0 + 75), (cathode_x + 18, fob_y0 + 75), color=p.ink, w=3)
+
+        # Electroplated Silver Layer (grows with cv.t)
+        silver_t = min(1.0, max(0.0, (cv.t - 0.4) / 3.0))
+        if silver_t > 0.05:
+            plat_w = max(2, round(6 * silver_t))
+            cv.rect((cathode_x - 30 - plat_w, fob_y0 - plat_w, cathode_x + 30 + plat_w, fob_y1 + plat_w),
+                    outline=(235, 242, 252), w=plat_w, radius=10)
+            if silver_t > 0.4:
+                cv.text((cathode_x, fob_y0 + 55), "Ag Layer", size=16, color=(255, 255, 255), bold=True)
+
+    # 6. Anode: Pure Silver Rod (Point 2 highlight fix)
+    if cv.shown(1):
+        callout_y = 150
+        box_w, box_h = 240, 56
+        bg_col = (80, 30, 30) if lit_anode else (*p.fill, 245)
+        border_col = p.hot if lit_anode else p.muted
+        cv.rect((anode_x - box_w // 2, callout_y - box_h // 2, anode_x + box_w // 2, callout_y + box_h // 2),
+                fill=bg_col, outline=border_col, w=4 if lit_anode else 2, radius=8)
+        cv.text((anode_x, callout_y - 12), "ANODE (+)", size=22, color=p.hot if lit_anode else p.ink, bold=True)
+        cv.text((anode_x, callout_y + 14), "Pure Silver Rod (Ag)", size=16, color=p.ink)
+
+        # Silver Rod
+        silver_col = (220, 228, 238)
+        cv.rect((anode_x - 20, electrode_top, anode_x + 20, electrode_bot), fill=silver_col, outline=p.ink, w=4, radius=4)
+        cv.line((anode_x - 8, electrode_top + 10), (anode_x - 8, electrode_bot - 10), color=(255, 255, 255), w=3)
+
+    # 7. Animated Electron & Ion Motion (Point 5 & Point 8 fixes)
     if cv.shown(2):
-        cathode_x = bx0 + 200
-        c_col = p.blue if lit_cathode else p.muted
-        cv.rect((cathode_x - 16, electrode_top, cathode_x + 16, electrode_bottom), fill=c_col, outline=p.ink, w=3)
-        cv.text((cathode_x, electrode_top - 28), "Cathode (−)", size=30, color=p.blue if lit_cathode else p.muted)
-        # Bubbles / deposits
-        if cv.shown(4):
-            for i, (bcy, bcx_off) in enumerate([(by0 + 80, 6), (by0 + 140, -9)]):
-                if cv.shown(4 + i):
-                    _bubble(cv, cathode_x + bcx_off, bcy, r=10, col=p.a1)
+        # Electrons along Blue Wire
+        for i in range(4):
+            frac = ((cv.t * 0.45) + i * 0.25) % 1.0
+            horiz_len = bat_neg_x - cathode_x
+            vert_len = electrode_top - bat_y
+            tot_len = horiz_len + vert_len
+            d = frac * tot_len
+            if d < horiz_len:
+                ex = bat_neg_x - d
+                ey = bat_y
+            else:
+                ex = cathode_x
+                ey = bat_y + (d - horiz_len)
+            cv.circle((ex, ey), 8, fill=(255, 240, 70), outline=p.ink, w=2)
+            cv.text((ex, ey - 14), "e⁻", size=15, color=(255, 240, 70), bold=True)
 
-    # Battery on top
+        cv.arrow((sw_cx + 70, bat_y + 20), (sw_cx - 70, bat_y + 20), color=(255, 240, 70), w=3, head=14)
+        cv.text((sw_cx, bat_y + 35), "e⁻ flow to Cathode", size=16, color=(255, 240, 70), bold=True)
+
+        # Silver Cations (Ag⁺) migrating across the solution
+        span_x = anode_x - cathode_x - 140
+        for k in range(5):
+            u = ((cv.t * 0.2) + k * 0.2) % 1.0
+            ix = anode_x - 70 - span_x * u
+            iy = ey0 + 45 + (by1 - ey0 - 130) * (0.2 + 0.16 * k)
+            cv.circle((ix, iy), 18, fill=(225, 240, 255), outline=p.a1, w=3)
+            cv.text((ix, iy), "Ag⁺", size=18, color=(20, 40, 70), bold=True)
+
+        # Nitrate Anions (NO₃⁻)
+        for k in range(3):
+            nx = cathode_x + 110 + (anode_x - cathode_x - 220) * ((k * 0.35 + 0.2) % 1.0)
+            ny = ey0 + 75 + k * 65
+            cv.circle((nx, ny), 16, fill=(*p.fill, 200), outline=p.blue, w=2)
+            cv.text((nx, ny), "NO₃⁻", size=15, color=p.blue, bold=True)
+
+        # Migration arrow
+        cv.arrow((anode_x - 140, by1 - 90), (cathode_x + 140, by1 - 90), color=p.a1, w=4, head=18)
+        cv.text((DW // 2, by1 - 85), "Ag⁺ cations migrate toward negative Cathode keychain", size=20, color=p.a1, bold=True)
+
+        # Reaction Badges inside beaker
+        cv.rect((cathode_x - 110, by1 - 145, cathode_x + 110, by1 - 105), fill=(*p.fill, 235), outline=p.blue, w=2, radius=6)
+        cv.text((cathode_x, by1 - 125), "Ag⁺ + e⁻ → Ag (Reduction)", size=16, color=p.blue, bold=True)
+
+        cv.rect((anode_x - 110, by1 - 145, anode_x + 110, by1 - 105), fill=(*p.fill, 235), outline=p.hot, w=2, radius=6)
+        cv.text((anode_x, by1 - 125), "Ag → Ag⁺ + e⁻ (Oxidation)", size=16, color=p.hot, bold=True)
+
+
+# ---------------------------------------------------------------------------
+# Silver Ion Outermost Shell (Point 7 fix)
+# ---------------------------------------------------------------------------
+
+def _silver_ion_shell(cv: Cv) -> None:
+    """Bohr electron configuration of Silver (Ag⁺ cation):
+    Nucleus +47, filled inner shells (n=1..4), outermost shell (n=5) with empty electron vacancy,
+    and an incoming electron (e⁻) from cathode filling the vacancy to form neutral Ag.
+    """
+    p = cv.pal
+    cx = DW // 2
+    cy = 425
+
+    # Shell radii
+    radii = [55, 95, 140, 185, 235]  # n=1 (K), n=2 (L), n=3 (M), n=4 (N), n=5 (O valence)
+
+    # Nucleus
     if cv.shown(0):
-        mid_x = (bx0 + bx1) // 2
-        bat_y = electrode_top - 90
-        bat_col = p.hot if lit_battery else p.ink
-        # Battery symbol
-        cv.rect((mid_x - 70, bat_y - 24, mid_x + 70, bat_y + 24), fill=(*p.fill, 200), outline=bat_col, w=4)
-        cv.line((mid_x - 20, bat_y - 30), (mid_x - 20, bat_y + 30), bat_col, w=6)
-        cv.line((mid_x + 20, bat_y - 20), (mid_x + 20, bat_y + 20), bat_col, w=3)
-        cv.text((mid_x - 45, bat_y), "+", size=26, color=p.hot)
-        cv.text((mid_x + 35, bat_y), "−", size=26, color=p.blue)
-        cv.text((mid_x, bat_y - 50), "Battery", size=28, color=bat_col)
+        cv.circle((cx, cy), 32, fill=(225, 65, 65), outline=p.ink, w=3)
+        cv.text((cx, cy - 8), "Ag⁺", size=20, color=(255, 255, 255), bold=True)
+        cv.text((cx, cy + 12), "+47p", size=14, color=(255, 255, 255), bold=True)
 
-        # Wires: battery → electrodes
-        anode_x = bx1 - 200
-        cathode_x = bx0 + 200
-        wire_y = bat_y
-        cv.line((mid_x + 70, wire_y), (anode_x, wire_y), bat_col, w=4)
-        cv.line((anode_x, wire_y), (anode_x, electrode_top), bat_col, w=4)
-        cv.line((mid_x - 70, wire_y), (cathode_x, wire_y), bat_col, w=4)
-        cv.line((cathode_x, wire_y), (cathode_x, electrode_top), bat_col, w=4)
+    # Shells 1-4 (Filled Inner Orbitals)
+    electrons_per_shell = [2, 8, 18, 18]
+    for s_idx, (r, count) in enumerate(zip(radii[:4], electrons_per_shell)):
+        if cv.shown(s_idx):
+            cv.circle((cx, cy), r, outline=p.muted, w=2)
+            cv.text((cx + r - 12, cy - 8), f"n={s_idx+1}", size=14, color=p.muted)
+            for e_idx in range(count):
+                angle = 2 * math.pi * e_idx / count
+                ex = cx + r * math.cos(angle)
+                ey = cy + r * math.sin(angle)
+                cv.circle((ex, ey), 5, fill=(*p.blue, 230), outline=p.ink, w=1)
 
-    # Electrolyte label
-    if cv.shown(1) and lit_electrolyte:
-        cv.text(((bx0 + bx1) // 2, by0 + (by1 - by0) * 0.6), "Electrolyte", size=30, color=p.blue)
+    # Shell 5: Outermost Valence Shell (5s orbital) with Empty Spot
+    if cv.shown(3):
+        r5 = radii[4]
+        cv.circle((cx, cy), r5, outline=p.a2, w=3)
+        cv.text((cx + r5 - 20, cy - 12), "n=5 (5s)", size=16, color=p.a2, bold=True)
+
+        # The Empty Spot (Electron Vacancy) at top of shell 5
+        spot_x = cx
+        spot_y = cy - r5
+        cv.circle((spot_x, spot_y), 16, fill=(*p.fill, 180), outline=p.hot, w=3)
+        cv.text((spot_x, spot_y), "0", size=14, color=p.hot, bold=True)
+
+        # Vacancy Callout Box
+        call_x = cx + 240
+        call_y = spot_y - 45
+        cv.rect((call_x - 170, call_y - 24, call_x + 170, call_y + 24), fill=(*p.fill, 235), outline=p.hot, w=2, radius=8)
+        cv.text((call_x, call_y), "Empty Spot (5s orbital vacancy)", size=18, color=p.hot, bold=True)
+        cv.arrow((call_x - 170, call_y + 10), (spot_x + 20, spot_y - 6), color=p.hot, w=3, head=14)
+
+        # Incoming electron (e⁻) from cathode keychain
+        e_anim = min(1.0, max(0.0, (cv.t - 1.0) * 0.5))
+        start_x, start_y = cx - 180, spot_y - 75
+        curr_x = start_x + (spot_x - 24 - start_x) * e_anim
+        curr_y = start_y + (spot_y - start_y) * e_anim
+
+        cv.circle((curr_x, curr_y), 12, fill=(255, 235, 60), outline=p.ink, w=2)
+        cv.text((curr_x, curr_y), "e⁻", size=16, color=(20, 20, 20), bold=True)
+        cv.arrow((start_x, start_y), (spot_x - 26, spot_y - 4), color=(255, 235, 60), w=3, head=14, dash=6)
+        cv.text((start_x - 20, start_y - 20), "Incoming e⁻ from Cathode", size=16, color=p.a2, bold=True)
+
+    # Bottom Explanation Cards
+    if cv.shown(1):
+        by0, by1 = DH - 110, DH - 20
+        cv.rect((cx - 520, by0, cx + 520, by1), fill=(*p.fill, 240), outline=p.a1, w=3, radius=10)
+        cv.text((cx, by0 + 26), "Ag⁺ Cation: [Kr] 4d¹⁰ 5s⁰   +   1 e⁻   ->   Neutral Ag Atom: [Kr] 4d¹⁰ 5s¹", size=24, color=p.a2, bold=True)
+        cv.text((cx, by0 + 62), "Attracting 1 electron fills the vacant 5s orbital, transforming the dissolved ion into a neutral silver atom.", size=19, color=p.ink)
+
+
+# ---------------------------------------------------------------------------
+# Dual Redox Reaction Balance Board (Point 6 fix)
+# ---------------------------------------------------------------------------
+
+def _redox_reaction_board(cv: Cv) -> None:
+    """Dual Redox Balance: Cathode Reduction vs Anode Oxidation and Net Reaction."""
+    p = cv.pal
+    cx = DW // 2
+
+    # Split Two Columns: Left Cathode Reduction, Right Anode Oxidation
+    col_w = 640
+    col_h = 470
+    top_y = 50
+    lx0 = cx - col_w - 25
+    rx0 = cx + 25
+
+    # Left Column: CATHODE (Reduction)
+    if cv.shown(0):
+        cv.rect((lx0, top_y, lx0 + col_w, top_y + col_h), fill=(*p.fill, 235), outline=p.blue, w=4, radius=12)
+        # Header strip
+        cv.rect((lx0, top_y, lx0 + col_w, top_y + 55), fill=(*p.blue, 210), outline=p.blue, w=2, radius=12)
+        cv.text((lx0 + col_w // 2, top_y + 28), "CATHODE (−) : REDUCTION (Gain of e⁻)", size=22, color=(255, 255, 255), bold=True)
+        cv.text((lx0 + col_w // 2, top_y + 80), "[Copper Keychain to be Plated]", size=19, color=p.blue, bold=True)
+
+        # Equation Card
+        cv.rect((lx0 + 35, top_y + 110, lx0 + col_w - 35, top_y + 185), fill=(*p.glass, 140), outline=p.blue, w=2, radius=8)
+        cv.text((lx0 + col_w // 2, top_y + 148), "Ag⁺(aq)  +  e⁻   ->   Ag(solid)", size=32, color=p.ink, bold=True)
+
+        # Mechanism Bullet Points
+        points = [
+            "• Positive Ag⁺ ions migrate to the negative keychain",
+            "• Keychain supplies electrons (e⁻) from battery",
+            "• Each Ag⁺ ion is REDUCED to neutral metallic silver",
+            "• Forms a shiny, uniform electroplated silver layer",
+        ]
+        for idx, pt in enumerate(points):
+            cv.text((lx0 + 40, top_y + 230 + idx * 48), pt, size=19, color=p.ink, anchor="lm")
+
+    # Right Column: ANODE (Oxidation)
+    if cv.shown(0):
+        cv.rect((rx0, top_y, rx0 + col_w, top_y + col_h), fill=(*p.fill, 235), outline=p.hot, w=4, radius=12)
+        # Header strip
+        cv.rect((rx0, top_y, rx0 + col_w, top_y + 55), fill=(*p.hot, 210), outline=p.hot, w=2, radius=12)
+        cv.text((rx0 + col_w // 2, top_y + 28), "ANODE (+) : OXIDATION (Loss of e⁻)", size=22, color=(255, 255, 255), bold=True)
+        cv.text((rx0 + col_w // 2, top_y + 80), "[Pure Silver Rod (Ag)]", size=19, color=p.hot, bold=True)
+
+        # Equation Card
+        cv.rect((rx0 + 35, top_y + 110, rx0 + col_w - 35, top_y + 185), fill=(*p.fill2, 140), outline=p.hot, w=2, radius=8)
+        cv.text((rx0 + col_w // 2, top_y + 148), "Ag(solid)   ->   Ag⁺(aq)  +  e⁻", size=32, color=p.ink, bold=True)
+
+        # Mechanism Bullet Points
+        points = [
+            "• Pure silver rod connects to positive battery terminal",
+            "• Silver atoms LOSE electrons (e⁻) → Oxidation",
+            "• Enters electrolyte as Ag⁺ ions to replenish solution",
+            "• Released electrons travel through wire to battery",
+        ]
+        for idx, pt in enumerate(points):
+            cv.text((rx0 + 40, top_y + 230 + idx * 48), pt, size=19, color=p.ink, anchor="lm")
+
+    # Bottom Full-Width Banner: Net Redox Reaction
+    if cv.shown(1):
+        ny0 = top_y + col_h + 20
+        ny1 = DH - 20
+        cv.rect((lx0, ny0, rx0 + col_w, ny1), fill=(*p.fill, 245), outline=p.a2, w=3, radius=10)
+        cv.text((cx, ny0 + 35), "NET OVERALL REACTION:   Ag(anode rod)   ->   Ag(keychain coating)", size=26, color=p.a2, bold=True)
+        cv.text((cx, ny0 + 78), "Silver mass lost by Anode = Silver mass deposited on Keychain. Ag⁺ concentration in solution stays CONSTANT.", size=20, color=p.ink)
+        cv.text((cx, ny0 + 112), "Electric current acts as the driving pump, transferring silver atoms onto Vivant's gift.", size=18, color=p.muted)
 
 
 # ---------------------------------------------------------------------------
@@ -319,15 +587,305 @@ def _titration(cv: Cv) -> None:
 
 
 # ---------------------------------------------------------------------------
+# ---------------------------------------------------------------------------
+# Combustion & Thermodynamics figures
+# ---------------------------------------------------------------------------
+
+def _draw_flame(cv: Cv, cx: float, cy: float, w: float, h: float, flame_type: str, t: float = 0.0) -> None:
+    flicker = 1.0 + 0.08 * math.sin(t * 14.0)
+    w_f = w * flicker
+    h_f = h * flicker
+    
+    if flame_type == "lean":
+        cv.circle((cx, cy - h_f * 0.2), w_f * 0.9, fill=(0, 180, 240, 35))
+        cv.ellipse((cx - w_f * 0.45, cy - h_f, cx + w_f * 0.45, cy + h_f * 0.1), fill=(0, 210, 255, 120))
+        cv.ellipse((cx - w_f * 0.25, cy - h_f * 0.8, cx + w_f * 0.25, cy), fill=(180, 240, 255, 180))
+        cv.circle((cx, cy - h_f * 0.4), w_f * 0.15, fill=(255, 255, 255, 220))
+    elif flame_type == "stoich":
+        cv.circle((cx, cy - h_f * 0.25), w_f * 1.1, fill=(80, 120, 255, 45))
+        cv.ellipse((cx - w_f * 0.5, cy - h_f * 1.1, cx + w_f * 0.5, cy + h_f * 0.1), fill=(60, 150, 255, 160))
+        cv.ellipse((cx - w_f * 0.32, cy - h_f * 0.95, cx + w_f * 0.32, cy), fill=(130, 210, 255, 220))
+        cv.ellipse((cx - w_f * 0.18, cy - h_f * 0.75, cx + w_f * 0.18, cy - h_f * 0.1), fill=(240, 250, 255, 250))
+    else:  # rich
+        cv.circle((cx, cy - h_f * 0.3), w_f * 1.2, fill=(255, 120, 0, 40))
+        cv.ellipse((cx - w_f * 0.55, cy - h_f * 1.15, cx + w_f * 0.55, cy + h_f * 0.1), fill=(255, 90, 0, 150))
+        cv.ellipse((cx - w_f * 0.4, cy - h_f * 0.95, cx + w_f * 0.4, cy), fill=(255, 180, 0, 210))
+        cv.ellipse((cx - w_f * 0.22, cy - h_f * 0.7, cx + w_f * 0.22, cy - h_f * 0.05), fill=(255, 240, 120, 240))
+        soot_drift = (t * 28.0) % 25.0
+        cv.circle((cx - 6, cy - h_f * 1.18 - soot_drift), 4.5, fill=(60, 60, 60, 160))
+        cv.circle((cx + 7, cy - h_f * 1.25 - soot_drift * 0.8), 3.5, fill=(40, 40, 40, 140))
+
+
+def _equivalence_ratio_dial(cv: Cv) -> None:
+    """Equivalence ratio (φ) spectrum analyzer: Lean, Stoichiometric, and Rich regimes."""
+    cv.rect((60, 30, 1540, 790), radius=16, fill=(12, 19, 32, 245), outline=(55, 80, 120, 220), w=3)
+    
+    # Title Header
+    cv.text((800, 65), "EQUIVALENCE RATIO (φ) SPECTRUM ANALYZER", color=(255, 255, 255), size=28, bold=True, anchor="mm")
+    cv.text((800, 98), "φ = (Actual Fuel-to-Air Ratio) / (Stoichiometric Fuel-to-Air Ratio)", color=(180, 215, 245), size=18, anchor="mm")
+    
+    is_lean = cv.lit(r"lean|excess air|below one|less than one|phi.*0|cooler flame|fuel economy")
+    is_rich = cv.lit(r"rich|excess fuel|exceeds one|greater than one|more than one|soot|unburned")
+    is_stoich = cv.lit(r"stoichiometric|equals one|equal to one|perfect balance|complete combustion") or (not is_lean and not is_rich and cv.lit(r"phi|ratio|mixture"))
+    
+    lean_active = is_lean or (not is_rich and not is_stoich and (cv.t % 9.0 < 3.0))
+    stoich_active = is_stoich or (not is_lean and not is_rich and (3.0 <= cv.t % 9.0 < 6.0))
+    rich_active = is_rich or (not is_lean and not is_stoich and (cv.t % 9.0 >= 6.0))
+    
+    card_y = 130
+    card_h = 515
+    card_w = 440
+    
+    # 1. LEAN CARD
+    lx0 = 90
+    l_bg = (16, 48, 76, 245) if lean_active else (14, 26, 40, 190)
+    l_border = (0, 215, 255, 255) if lean_active else (40, 72, 105, 160)
+    cv.rect((lx0, card_y, lx0 + card_w, card_y + card_h), radius=12, fill=l_bg, outline=l_border, w=4 if lean_active else 2)
+    
+    # Header badge
+    cv.rect((lx0 + 50, card_y + 16, lx0 + card_w - 50, card_y + 54), radius=8, fill=(0, 140, 205) if lean_active else (25, 55, 88), outline=(0, 215, 255) if lean_active else None, w=2)
+    cv.text((lx0 + card_w // 2, card_y + 35), "LEAN REGIME", color=(255, 255, 255), size=19, bold=True, anchor="mm")
+    
+    cv.text((lx0 + card_w // 2, card_y + 82), "φ < 1.0", color=(0, 240, 255) if lean_active else (145, 190, 220), size=32, bold=True, anchor="mm")
+    cv.text((lx0 + card_w // 2, card_y + 114), "Excess Air (Oxygen Rich)", color=(210, 238, 255), size=17, bold=True, anchor="mm")
+    
+    _draw_flame(cv, lx0 + card_w // 2, card_y + 270, 75, 125, "lean", cv.t)
+    
+    pts_lean = [
+        "• More air than chemically required",
+        "• Pale blue, lower peak temperature",
+        "• Peak thermal / fuel efficiency",
+        "• Low carbon monoxide (CO) emission",
+        "• Lean misfire limit if φ too low"
+    ]
+    for idx, pt in enumerate(pts_lean):
+        cv.text((lx0 + 26, card_y + 360 + idx * 30), pt, color=(220, 238, 252), size=17, anchor="lm")
+        
+    # 2. STOICHIOMETRIC CARD
+    sx0 = 580
+    s_bg = (18, 62, 44, 245) if stoich_active else (14, 35, 28, 190)
+    s_border = (46, 225, 125, 255) if stoich_active else (40, 95, 68, 160)
+    cv.rect((sx0, card_y, sx0 + card_w, card_y + card_h), radius=12, fill=s_bg, outline=s_border, w=4 if stoich_active else 2)
+    
+    cv.rect((sx0 + 50, card_y + 16, sx0 + card_w - 50, card_y + 54), radius=8, fill=(35, 180, 98) if stoich_active else (25, 78, 48), outline=(50, 235, 135) if stoich_active else None, w=2)
+    cv.text((sx0 + card_w // 2, card_y + 35), "STOICHIOMETRIC", color=(255, 255, 255), size=19, bold=True, anchor="mm")
+    
+    cv.text((sx0 + card_w // 2, card_y + 82), "φ = 1.0", color=(80, 255, 165) if stoich_active else (145, 215, 175), size=32, bold=True, anchor="mm")
+    cv.text((sx0 + card_w // 2, card_y + 114), "Perfect Chemical Balance", color=(215, 255, 230), size=17, bold=True, anchor="mm")
+    
+    _draw_flame(cv, sx0 + card_w // 2, card_y + 270, 85, 135, "stoich", cv.t)
+    
+    pts_stoich = [
+        "• 100% complete combustion",
+        "• Intense high-velocity blue flame",
+        "• Theoretical peak heat release",
+        "• Clean exhaust: CO₂ + H₂O only",
+        "• Baseline reference standard"
+    ]
+    for idx, pt in enumerate(pts_stoich):
+        cv.text((sx0 + 26, card_y + 360 + idx * 30), pt, color=(225, 248, 232), size=17, anchor="lm")
+        
+    # 3. RICH CARD
+    rx0 = 1070
+    r_bg = (68, 26, 22, 245) if rich_active else (40, 18, 16, 190)
+    r_border = (255, 105, 65, 255) if rich_active else (120, 48, 38, 160)
+    cv.rect((rx0, card_y, rx0 + card_w, card_y + card_h), radius=12, fill=r_bg, outline=r_border, w=4 if rich_active else 2)
+    
+    cv.rect((rx0 + 50, card_y + 16, rx0 + card_w - 50, card_y + 54), radius=8, fill=(220, 58, 36) if rich_active else (100, 34, 26), outline=(255, 115, 75) if rich_active else None, w=2)
+    cv.text((rx0 + card_w // 2, card_y + 35), "RICH REGIME", color=(255, 255, 255), size=19, bold=True, anchor="mm")
+    
+    cv.text((rx0 + card_w // 2, card_y + 82), "φ > 1.0", color=(255, 135, 95) if rich_active else (220, 150, 130), size=32, bold=True, anchor="mm")
+    cv.text((rx0 + card_w // 2, card_y + 114), "Excess Fuel (Air Deficit)", color=(255, 228, 218), size=17, bold=True, anchor="mm")
+    
+    _draw_flame(cv, rx0 + card_w // 2, card_y + 270, 88, 142, "rich", cv.t)
+    
+    pts_rich = [
+        "• More fuel than oxygen can burn",
+        "• Luminous orange flame with soot",
+        "• Peak mechanical power & torque",
+        "• Produces unburned HC and toxic CO",
+        "• Cooler combustion wall protection"
+    ]
+    for idx, pt in enumerate(pts_rich):
+        cv.text((rx0 + 26, card_y + 360 + idx * 30), pt, color=(252, 228, 222), size=17, anchor="lm")
+        
+    # Bottom Spectrum Gauge Bar
+    bar_y = 695
+    bar_x1 = 160
+    bar_x2 = 1440
+    bar_w = bar_x2 - bar_x1
+    cv.rect((bar_x1, bar_y - 6, bar_x2, bar_y + 6), radius=5, fill=(28, 42, 60, 220))
+    # Lean track
+    cv.rect((bar_x1, bar_y - 6, bar_x1 + bar_w * 0.44, bar_y + 6), radius=4, fill=(0, 195, 245, 220))
+    # Stoich notch
+    stoich_px = bar_x1 + bar_w * 0.5
+    cv.circle((stoich_px, bar_y), 11, fill=(46, 225, 125, 255), outline=(255, 255, 255), w=3)
+    # Rich track
+    cv.rect((bar_x1 + bar_w * 0.56, bar_y - 6, bar_x2, bar_y + 6), radius=4, fill=(255, 80, 50, 220))
+    
+    if lean_active:
+        target_pos = bar_x1 + bar_w * 0.22
+        val_text = "CURRENT OPERATING POINT: φ = 0.82 (LEAN COMBUSTION)"
+        needle_col = (0, 230, 255)
+    elif rich_active:
+        target_pos = bar_x1 + bar_w * 0.78
+        val_text = "CURRENT OPERATING POINT: φ = 1.30 (RICH COMBUSTION)"
+        needle_col = (255, 95, 65)
+    else:
+        target_pos = stoich_px
+        val_text = "CURRENT OPERATING POINT: φ = 1.00 (STOICHIOMETRIC COMBUSTION)"
+        needle_col = (80, 255, 160)
+        
+    cv.arrow((target_pos, bar_y + 42), (target_pos, bar_y + 12), color=needle_col, w=5, head=18)
+    cv.rect((target_pos - 260, bar_y + 44, target_pos + 260, bar_y + 80), radius=6, fill=(16, 26, 42, 240), outline=needle_col, w=2)
+    cv.text((target_pos, bar_y + 62), val_text, color=(255, 255, 255), size=17, bold=True, anchor="mm")
+
+
+def _combustion_chamber(cv: Cv) -> None:
+    """Internal combustion engine cylinder with reciprocating piston, spark discharge, and turbulent flame propagation."""
+    cv.rect((60, 30, 1540, 790), radius=16, fill=(12, 18, 30, 245), outline=(55, 78, 110, 215), w=3)
+    cv.text((800, 65), "INTERNAL COMBUSTION CHAMBER DYNAMICS", color=(255, 255, 255), size=28, bold=True, anchor="mm")
+    cv.text((800, 98), "Air-Fuel Mixing, Spark Ignition, and High-Pressure Flame Propagation", color=(175, 210, 245), size=18, anchor="mm")
+    
+    cyl_x1 = 530
+    cyl_x2 = 1070
+    cyl_top = 145
+    cyl_bottom = 690
+    
+    wall_w = 55
+    cv.rect((cyl_x1 - wall_w, cyl_top, cyl_x1, cyl_bottom), fill=(36, 46, 62, 255), outline=(75, 95, 125), w=3)
+    for hy in range(cyl_top + 12, cyl_bottom, 22):
+        cv.line((cyl_x1 - wall_w + 6, hy), (cyl_x1 - 6, hy + 16), color=(60, 78, 102, 210), w=3)
+        
+    cv.rect((cyl_x2, cyl_top, cyl_x2 + wall_w, cyl_bottom), fill=(36, 46, 62, 255), outline=(75, 95, 125), w=3)
+    for hy in range(cyl_top + 12, cyl_bottom, 22):
+        cv.line((cyl_x2 + 6, hy), (cyl_x2 + wall_w - 6, hy + 16), color=(60, 78, 102, 210), w=3)
+        
+    cv.rect((cyl_x1, cyl_top, cyl_x2, cyl_bottom), fill=(18, 25, 38, 255))
+    
+    cycle_speed = 0.85
+    stroke_amplitude = 65.0
+    piston_top_base = 470.0
+    piston_displacement = stroke_amplitude * math.cos(2.0 * math.pi * cycle_speed * cv.t)
+    piston_y = piston_top_base + piston_displacement
+    
+    flame_cx = (cyl_x1 + cyl_x2) / 2
+    flame_cy = cyl_top + 35
+    
+    is_rich = cv.lit("rich", "soot", "excess fuel")
+    is_lean = cv.lit("lean", "excess air")
+    flame_type = "rich" if is_rich else ("lean" if is_lean else "stoich")
+    
+    kernel_r = min(175.0, 45.0 + (cv.t * 48.0) % 130.0)
+    if flame_type == "stoich":
+        cv.circle((flame_cx, flame_cy + 35), kernel_r * 1.3, fill=(60, 125, 255, 35))
+        cv.circle((flame_cx, flame_cy + 35), kernel_r, fill=(80, 185, 255, 85))
+        cv.circle((flame_cx, flame_cy + 35), kernel_r * 0.6, fill=(205, 245, 255, 190))
+    elif flame_type == "lean":
+        cv.circle((flame_cx, flame_cy + 35), kernel_r * 1.15, fill=(0, 165, 235, 30))
+        cv.circle((flame_cx, flame_cy + 35), kernel_r * 0.8, fill=(0, 205, 255, 75))
+        cv.circle((flame_cx, flame_cy + 35), kernel_r * 0.45, fill=(185, 235, 255, 170))
+    else:
+        cv.circle((flame_cx, flame_cy + 35), kernel_r * 1.35, fill=(255, 105, 25, 40))
+        cv.circle((flame_cx, flame_cy + 35), kernel_r, fill=(255, 145, 0, 95))
+        cv.circle((flame_cx, flame_cy + 35), kernel_r * 0.55, fill=(255, 235, 110, 200))
+        
+    # Moving reactant molecules in cylinder
+    for i in range(16):
+        px = cyl_x1 + 45 + (i * 39 + int(cv.t * 55)) % (cyl_x2 - cyl_x1 - 90)
+        py = cyl_top + 35 + (i * 26 + int(cv.t * 35)) % int(max(15, piston_y - cyl_top - 55))
+        if i % 2 == 0:
+            cv.circle((px, py), 6.0, fill=(0, 225, 255, 220))
+            cv.circle((px + 7, py), 6.0, fill=(0, 225, 255, 220))
+        else:
+            cv.circle((px, py), 7.5, fill=(255, 185, 35, 235))
+            
+    # Spark Plug Assembly at top
+    sp_w = 38
+    cv.rect((flame_cx - sp_w // 2, cyl_top - 28, flame_cx + sp_w // 2, cyl_top + 14), fill=(215, 220, 232), outline=(135, 145, 160), w=3)
+    cv.line((flame_cx, cyl_top + 14), (flame_cx, cyl_top + 30), color=(245, 245, 245), w=4)
+    cv.line((flame_cx - 9, cyl_top + 30), (flame_cx + 3, cyl_top + 30), color=(205, 205, 205), w=4)
+    
+    spark_active = math.sin(cv.t * 16.0) > 0.35
+    if spark_active:
+        cv.circle((flame_cx, cyl_top + 30), 16, fill=(255, 255, 255, 240))
+        cv.circle((flame_cx, cyl_top + 30), 30, fill=(255, 245, 110, 110))
+        
+    # Piston Head & Compression Rings
+    piston_h = 125
+    cv.rect((cyl_x1 + 3, piston_y, cyl_x2 - 3, piston_y + piston_h), radius=8, fill=(82, 98, 120), outline=(155, 175, 202), w=4)
+    for ry in range(int(piston_y + 18), int(piston_y + 54), 12):
+        cv.line((cyl_x1 + 4, ry), (cyl_x2 - 4, ry), color=(30, 42, 54), w=4)
+        
+    # Wrist Pin & Connecting Rod
+    pin_y = piston_y + 65
+    cv.circle((flame_cx, pin_y), 22, fill=(48, 58, 72), outline=(185, 200, 220), w=3)
+    cv.line((flame_cx - 15, pin_y + 18), (flame_cx - 20, cyl_bottom + 10), color=(98, 115, 136), w=10)
+    cv.line((flame_cx + 15, pin_y + 18), (flame_cx + 20, cyl_bottom + 10), color=(98, 115, 136), w=10)
+    cv.rect((flame_cx - 18, pin_y + 18, flame_cx + 18, cyl_bottom + 10), fill=(78, 92, 110))
+    
+    # Left Callout Card
+    cv.rect((90, 175, 440, 600), radius=10, fill=(16, 32, 50, 240), outline=(0, 205, 255), w=2)
+    cv.rect((110, 190, 420, 230), radius=6, fill=(0, 140, 195), outline=(0, 220, 255), w=2)
+    cv.text((265, 210), "INCOMING CHARGE", color=(255, 255, 255), size=18, bold=True, anchor="mm")
+    cv.text((115, 260), "• O₂ Oxidizer Molecules", color=(0, 230, 255), size=17, anchor="lm")
+    cv.text((115, 298), "• Hydrocarbon Fuel Spray", color=(255, 195, 60), size=17, anchor="lm")
+    cv.text((115, 336), "• Tumble & Swirl Flow", color=(210, 230, 250), size=17, anchor="lm")
+    cv.text((115, 374), "• Equivalence Ratio (φ)", color=(210, 230, 250), size=17, anchor="lm")
+    cv.text((115, 412), "• Governs Flame Velocity", color=(210, 230, 250), size=17, anchor="lm")
+    cv.arrow((265, 450), (cyl_x1 - 15, cyl_top + 60), color=(0, 210, 255), w=4, head=16)
+    
+    # Right Callout Card
+    cv.rect((1160, 175, 1510, 600), radius=10, fill=(48, 24, 20, 240), outline=(255, 120, 60), w=2)
+    cv.rect((1180, 190, 1490, 230), radius=6, fill=(215, 75, 40), outline=(255, 130, 70), w=2)
+    cv.text((1335, 210), "FLAME PROPAGATION", color=(255, 255, 255), size=18, bold=True, anchor="mm")
+    cv.text((1185, 260), "• High-Pressure Wavefront", color=(255, 225, 210), size=17, anchor="lm")
+    cv.text((1185, 298), "• Turbulent Reaction Zone", color=(255, 225, 210), size=17, anchor="lm")
+    cv.text((1185, 336), "• Rapid Enthalpy Release", color=(255, 225, 210), size=17, anchor="lm")
+    cv.text((1185, 374), "• Drives Piston Face Down", color=(255, 225, 210), size=17, anchor="lm")
+    cv.text((1185, 412), "• Converts Heat to Work", color=(255, 225, 210), size=17, anchor="lm")
+    cv.arrow((1335, 450), (cyl_x2 + 15, piston_y - 25), color=(255, 125, 60), w=4, head=16)
+    
+    # Bottom HUD summary banner
+    cv.rect((150, 715, 1450, 765), radius=8, fill=(18, 30, 46, 230), outline=(55, 82, 120), w=2)
+    cv.text((800, 740), "Combustion Power Stroke: Chemical Bond Energy -> Thermal Expansion -> Mechanical Shaft Work", color=(240, 248, 255), size=19, bold=True, anchor="mm")
+
+
+# ---------------------------------------------------------------------------
 # Registry
 # ---------------------------------------------------------------------------
 
 FIGURES: dict = {
+    "equivalence_ratio_dial": (
+        r"equivalence ratio|\bphi\b|stoichiometric ratio|fuel[- ]to[- ]air|air[- ]to[- ]fuel|lean mixture|rich mixture|excess air|excess fuel",
+        r"stoichiometric|combustion ratio|fuel ratio|mixture ratio|\bphi\b < 1|\bphi\b > 1|\bphi\b = 1|lean regime|rich regime|combustion",
+        _equivalence_ratio_dial,
+        {"engineering", "thermodynamics", "chemistry", "physics", "general"},
+    ),
+    "combustion_chamber": (
+        r"combustion chamber|engine cylinder|internal combustion|cylinder cross[- ]section|four[- ]stroke|piston.*spark|spark plug.*cylinder|flame front|flame propagation",
+        r"piston|cylinder|combustion|spark plug|ignition|flame kernel|combustion process|power stroke|reactants",
+        _combustion_chamber,
+        {"engineering", "thermodynamics", "chemistry", "physics", "general"},
+    ),
+
     "electrolysis_cell": (
-        r"electrolysis|electrolytic|electroplat|electrode|anode|cathode|electrolyte",
-        r"\bcell\b|decompos|copper sulphate|brine|salt solution|ions? migrat",
+        r"electrolysis|electrolytic|electroplat|electrode|anode|cathode|electrolyte|wire.*terminal|battery.*terminal|positive terminal|negative terminal|electrons? flow|silver rod.*keychain|power supply|rod into the wire|back into the battery|current flow in the circuit",
+        r"\bcell\b|decompos|copper sulphate|brine|salt solution|ions? migrat|silver rod|keychain|current flow|power supply",
         _electrolysis_cell,
         {"chemistry", "physics"},
+    ),
+    "silver_ion_shell": (
+        r"outermost shell|empty spot|valence shell|electron configuration|shell with empty|vacan|attracts an electron into this position",
+        r"silver ion|incoming electron|attracts an electron|orbital|settles onto the.*keychain",
+        _silver_ion_shell,
+        {"chemistry"},
+    ),
+    "redox_reaction_board": (
+        r"redox reaction|reduction occurs at the cathode|oxidation takes place at the anode|dual reaction|net reaction",
+        r"cathode and oxidation|redox summary|half[- ]reactions?",
+        _redox_reaction_board,
+        {"chemistry"},
     ),
     "test_tube_reaction": (
         r"test.?tube|boiling.?tube|reagent tube|precipitate|effervesc",

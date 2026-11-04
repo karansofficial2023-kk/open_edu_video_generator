@@ -1,4 +1,4 @@
-﻿project_name: "Open Edu Video Generator 12GB"
+project_name: "Open Edu Video Generator 12GB"
 
 output_resolution:
   width: 1920
@@ -7,8 +7,8 @@ output_resolution:
 fps: 30
 visual_mode: "hybrid"
 
-ffmpeg_path: "ffmpeg"
-ffprobe_path: "ffprobe"
+ffmpeg_path: "D:/Python/claude version/bin/ffmpeg.exe"
+ffprobe_path: "D:/Python/claude version/bin/ffprobe.exe"
 
 ollama_url: "http://localhost:11434"
 ollama_model: "llama3.1:8b"
@@ -59,9 +59,9 @@ comfyui:
   timeout_seconds: 900
   fallback_to_slideshow: false
   rewrite_prompts: true
-  prompt_prefix: "high resolution educational documentary photograph, realistic biology, clear subject, fine natural detail, soft daylight,"
-  prompt_suffix: "single realistic scene, accurate biology, text-free image, no labels"
-  negative_prompt: "text, letters, typography, labels, captions, watermark, logo, signature, diagram, infographic, chart, collage, grid, panels, border, blurry, distorted anatomy, duplicate parts, oversaturated"
+  prompt_prefix: "high resolution educational documentary photograph, realistic scientific apparatus, authentic material textures, clear subject, fine natural detail, cinematic lighting, f/2.8 lens,"
+  prompt_suffix: "single realistic scene, authentic physical detail, text-free image, no labels, 8k uhd"
+  negative_prompt: "text, letters, typography, labels, captions, watermark, logo, signature, diagram, infographic, chart, collage, grid, panels, border, blurry, distorted anatomy, duplicate parts, oversaturated, cartoon, anime, 3d render, cgi, illustration, drawing, sketch"
   video_enabled: false
   video_workflow_path: ""
   video_width: 832

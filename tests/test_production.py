@@ -1,5 +1,10 @@
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+root = Path(__file__).resolve().parents[1]
+sys.path[:0] = [str(root), str(root / ".runtime-deps")]
+
 import json
 import tempfile
 import unittest

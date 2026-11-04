@@ -1,0 +1,345 @@
+{
+  "schema_version": "2.0",
+  "title": "Equivalence Ratio to Analyse Combustion",
+  "subject": "Engineering / Thermodynamics",
+  "topic": "Analyzing Combustion Using the Equivalence Ratio",
+  "language": {
+    "bcp47": "en-IN",
+    "script": "Latn",
+    "direction": "ltr",
+    "voice_preference": "en-IN-NeerjaNeural",
+    "glossary": []
+  },
+  "scenes": [
+    {
+      "scene_number": 1,
+      "scene_title": "Introduction to Combustion Analysis",
+      "narration": "Analyzing combustion with the equivalence ratio. Engineers utilize the equivalence ratio, denoted by phi, to characterize whether a fuel-air mixture is rich or lean.",
+      "shots": [
+        {
+          "shot_id": "1.1",
+          "heading": "Equivalence Ratio to Analyse Combustion",
+          "narration": "Analyzing combustion with the equivalence ratio.",
+          "duration": 6.0,
+          "visual_type": "title_card",
+          "media_type": "generated still",
+          "image_requirement": "Sharp 1920x1080 realistic educational background directly representing Equivalence Ratio to Analyse Combustion, subject-matter accurate, natural lighting, clear subject separation, empty central margins with a calm uncluttered central area, no embedded text",
+          "image_prompt": "Sharp 1920x1080 realistic educational background directly representing Equivalence Ratio to Analyse Combustion, subject-matter accurate, natural lighting, clear subject separation, empty central margins with a calm uncluttered central area, no embedded text. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. No generated text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout.",
+          "labels": [],
+          "label_placement": [],
+          "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+          "motion": "camera: slow_zoom_in; title_animation: fade_up; transition_in: fade; transition_out: crossfade",
+          "subtitle": "",
+          "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+          "asset_path": "",
+          "wan_video_prompt": "",
+          "ltx_video_prompt": "",
+          "animate": "no",
+          "layout": "definition",
+          "table_rows": [],
+          "gallery_items": [],
+          "formula_lines": [],
+          "explain_steps": [],
+          "steps": [],
+          "columns": [],
+          "reasoning": "",
+          "pronunciations": {},
+          "manim_code": "",
+          "mermaid_code": "",
+          "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials.; Visual covers the introduction of combustion analysis and the equivalence ratio as a key concept.; Title-card guard: visualSubject is background guidance only and must not be rendered as visible text.; Academic level: High School or Undergraduate Intended learners: Students studying combustion processes, mechanical engineering, or energy systems Learning objectives: Define the equivalence ratio and explain its significance in combustion analysis.; Distinguish between lean, stoichiometric, and rich fuel-air mixtures based on the equivalence ratio.; Understand how controlling the equivalence ratio impacts engine performance and emissions.; Apply the concept of the equivalence ratio to real-world combustion systems.\nUse generated still for clean background asset only"
+        },
+        {
+          "shot_id": "1.2",
+          "heading": "Equivalence Ratio Definition",
+          "narration": "Engineers utilize the equivalence ratio, denoted by phi, to characterize whether a fuel-air mixture is rich or lean.",
+          "duration": 4.0,
+          "visual_type": "process_steps",
+          "media_type": "Manim animation",
+          "image_requirement": "A clean, realistic image of a combustion chamber with an arrow pointing to the equivalence ratio symbol (phi) and a label indicating its role in characterizing fuel-air mixtures as rich or lean.",
+          "image_prompt": "",
+          "labels": [],
+          "label_placement": [],
+          "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+          "motion": "formula_reveal: line_by_line; transition_in: fade; transition_out: crossfade",
+          "subtitle": "Engineers utilize the equivalence ratio, denoted by phi, to characterize whether a fuel-air mixture is rich or lean.",
+          "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+          "asset_path": "",
+          "wan_video_prompt": "",
+          "ltx_video_prompt": "",
+          "animate": "no",
+          "layout": "derivation",
+          "table_rows": [],
+          "gallery_items": [],
+          "formula_lines": [
+            "\\phi = \\frac{\\text{actual fuel-air ratio}}{\\text{stoichiometric fuel-air ratio}}"
+          ],
+          "explain_steps": [
+            "Equivalence ratio compares actual to stoichiometric fuel-air mixtures."
+          ],
+          "steps": [],
+          "columns": [],
+          "reasoning": "The equivalence ratio is an abstract concept, so a formula shot best illustrates the definition and notation.",
+          "pronunciations": {},
+          "manim_code": "",
+          "mermaid_code": "",
+          "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials.; Visual covers the application of the equivalence ratio in determining whether a fuel-air mixture is rich or lean.; Generated-video guard: do not draw exact labels/arrows on this moving shot; use subtitles only or cut to a separate labeled still/diagram.\nUse generated still for clean background asset only Deterministic formula route: Manim draws all equations, symbols, units, and derivation steps; the generated image is background only. Formula segment: render exact formulas with Manim and composite over clean background; do not generate formulas inside image/video.\nThe equivalence ratio is an abstract concept, so a formula shot best illustrates the definition and notation."
+        }
+      ]
+    },
+    {
+      "scene_number": 2,
+      "scene_title": "Definition of Equivalence Ratio",
+      "narration": "This ratio compares the actual fuel-to-air proportion to the stoichiometric fuel-to-air proportion.",
+      "shots": [
+        {
+          "shot_id": "2.1",
+          "heading": "Equivalence Ratio Definition",
+          "narration": "This ratio compares the actual fuel-to-air proportion to the stoichiometric fuel-to-air proportion.",
+          "duration": 6.0,
+          "visual_type": "realistic_labeled_image",
+          "media_type": "generated still",
+          "image_requirement": "a content visual with a dark background, white text, and a black band at the bottom. The text is centered, large, and clear, with no additional elements.",
+          "image_prompt": "A sharp 1920x1080 label-ready composition of a content visual with a dark background, white text, and a black band at the bottom. The text is centered, large, and clear, with no additional elements. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No slide or presentation-card layout. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. No generated text. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text.",
+          "labels": [
+            "Equivalence Ratio - A ratio comparing actual fuel-to-air proportion to stoichiometric fuel-to-air proportion"
+          ],
+          "label_placement": [
+            "Equivalence Ratio - A ratio comparing actual fuel-to-air proportion to stoichiometric fuel-to-air proportion | visible_physical_target | COORDINATES_PENDING_APPROVED_IMAGE"
+          ],
+          "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+          "motion": "arrow_draw_then_label_fade; reveal_in_list_order; keep_previous_labels_visible; completed_frame_hold=3s",
+          "subtitle": "This ratio compares the actual fuel-to-air proportion to the stoichiometric fuel-to-air proportion.",
+          "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+          "asset_path": "",
+          "wan_video_prompt": "",
+          "ltx_video_prompt": "",
+          "animate": "no",
+          "layout": "definition",
+          "table_rows": [],
+          "gallery_items": [],
+          "formula_lines": [],
+          "explain_steps": [],
+          "steps": [],
+          "columns": [],
+          "reasoning": "The narration defines a concept that cannot be shown in a single photograph, so process_steps are used to explain the ratio's definition.",
+          "pronunciations": {},
+          "manim_code": "",
+          "mermaid_code": "",
+          "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials.; Introduces the topic of equivalence ratio by defining it as a comparison between actual and stoichiometric fuel-to-air proportions.; Repeated-title guard: render this concept as a content visual, not another presentation content visual.\nUse a generated still for the title card. Ensure no text artifacts, clean background, and proper formatting. BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED\nThe narration defines a concept that cannot be shown in a single photograph, so process_steps are used to explain the ratio's definition."
+        }
+      ]
+    },
+    {
+      "scene_number": 3,
+      "scene_title": "Lean Mixture Characteristics",
+      "narration": "If phi is below one, the mixture is considered lean due to an excess of air compared to the amount of fuel.",
+      "shots": [
+        {
+          "shot_id": "3.1",
+          "heading": "Lean Mixture Characteristics",
+          "narration": "If phi is below one, the mixture is considered lean due to an excess of air compared to the amount of fuel.",
+          "duration": 6.0,
+          "visual_type": "realistic_labeled_image",
+          "media_type": "generated still",
+          "image_requirement": "content visual with dark background and light text for educational clarity",
+          "image_prompt": "A sharp 1920x1080 label-ready composition of a content visual with dark background and light text for educational clarity. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No slide or presentation-card layout. Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. No generated text. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text.",
+          "labels": [
+            "Lean Mixture - A fuel-air mixture with excess air relative to fuel"
+          ],
+          "label_placement": [
+            "Lean Mixture - A fuel-air mixture with excess air relative to fuel | visible_physical_target | COORDINATES_PENDING_APPROVED_IMAGE"
+          ],
+          "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+          "motion": "arrow_draw_then_label_fade; reveal_in_list_order; keep_previous_labels_visible; completed_frame_hold=3s",
+          "subtitle": "If phi is below one, the mixture is considered lean due to an excess of air compared to the amount of fuel.",
+          "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+          "asset_path": "",
+          "wan_video_prompt": "",
+          "ltx_video_prompt": "",
+          "animate": "no",
+          "layout": "bullets",
+          "table_rows": [],
+          "gallery_items": [],
+          "formula_lines": [],
+          "explain_steps": [],
+          "steps": [],
+          "columns": [],
+          "reasoning": "The narration introduces the concept of a lean mixture using the equivalence ratio (phi). A visual showing the ratio scale and its relation to air-fuel balance is appropriate.",
+          "pronunciations": {},
+          "manim_code": "",
+          "mermaid_code": "",
+          "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials.; Introduces the concept of lean mixtures and equivalence ratio (phi) in combustion Repeated-title guard: render this concept as a content visual, not another presentation content visual.\nUse generated still for clean background asset only BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED\nThe narration introduces the concept of a lean mixture using the equivalence ratio (phi). A visual showing the ratio scale and its relation to air-fuel balance is appropriate."
+        }
+      ]
+    },
+    {
+      "scene_number": 4,
+      "scene_title": "Stoichiometric Point",
+      "narration": "When phi equals one, the mixture reaches the stoichiometric point, meaning the fuel and air are in perfect balance.",
+      "shots": [
+        {
+          "shot_id": "4.1",
+          "heading": "Phi Equals",
+          "narration": "When phi equals one, the mixture reaches the stoichiometric point, meaning the fuel and air are in perfect balance.",
+          "duration": 9.1,
+          "visual_type": "realistic_image",
+          "media_type": "generated still",
+          "image_requirement": "Sharp 1920x1080 realistic documentary image for Equivalence Ratio to Analyse Combustion - Stoichiometric Point; depict the concrete subject or visible action described by: When phi equals one, the mixture reaches the stoichiometric point, meaning the fuel and air are in perfect balance.; principal subject large and unobscured, clear foreground-background separation, safe overlay margins, eye-level camera, neutral natural lighting, and no unrelated elements.",
+          "image_prompt": "Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Exact shot requirement: Sharp 1920x1080 realistic documentary image for Equivalence Ratio to Analyse Combustion - Stoichiometric Point; depict the concrete subject or visible action described by: When phi equals one, the mixture reaches the stoichiometric point, meaning the fuel and air are in perfect balance.; principal subject large and unobscured, clear foreground-background separation, safe overlay margins, eye-level camera, neutral natural lighting, and no unrelated elements.. Depict only source-supported visible evidence and physically credible objects. Keep all required structures unobscured and large enough for inspection; reserve overlay-safe space without weakening the composition. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout.",
+          "labels": [],
+          "label_placement": [],
+          "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+          "motion": "camera: slow_zoom_in; transition_in: fade; transition_out: crossfade",
+          "subtitle": "When phi equals one, the mixture reaches the stoichiometric point, meaning the fuel and air are in perfect balance.",
+          "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+          "asset_path": "",
+          "wan_video_prompt": "",
+          "ltx_video_prompt": "",
+          "animate": "no",
+          "layout": "definition",
+          "table_rows": [],
+          "gallery_items": [],
+          "formula_lines": [],
+          "explain_steps": [],
+          "steps": [],
+          "columns": [],
+          "reasoning": "A formula shot is needed to show the equivalence ratio at the stoichiometric point.",
+          "pronunciations": {},
+          "manim_code": "",
+          "mermaid_code": "",
+          "review_notes": "SME guard: replaced an unrelated visual plan with a source-faithful fallback.; Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable.\nFallback source-coverage visual requires subject-aware label review; use a reviewed asset when precise anatomy or apparatus is required.\nA formula shot is needed to show the equivalence ratio at the stoichiometric point."
+        }
+      ]
+    },
+    {
+      "scene_number": 5,
+      "scene_title": "Rich Mixture Characteristics",
+      "narration": "If phi exceeds one, the mixture becomes rich as there is more fuel than the required amount of air.",
+      "shots": [
+        {
+          "shot_id": "5.1",
+          "heading": "Equivalence Ratio and Rich Mixture",
+          "narration": "If phi exceeds one, the mixture becomes rich as there is more fuel than the required amount of air.",
+          "duration": 6.0,
+          "visual_type": "process_steps",
+          "media_type": "Manim animation",
+          "image_requirement": "content visual with text 'Rich Mixture Characteristics' centered at the top of a dark background, using white text and sans-serif font",
+          "image_prompt": "",
+          "labels": [],
+          "label_placement": [],
+          "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+          "motion": "formula_reveal: line_by_line; transition_in: fade; transition_out: crossfade",
+          "subtitle": "If phi exceeds one, the mixture becomes rich as there is more fuel than the required amount of air.",
+          "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+          "asset_path": "",
+          "wan_video_prompt": "",
+          "ltx_video_prompt": "",
+          "animate": "no",
+          "layout": "derivation",
+          "table_rows": [],
+          "gallery_items": [],
+          "formula_lines": [
+            "φ = (actual fuel / stoichiometric fuel)"
+          ],
+          "explain_steps": [
+            "Phi represents the ratio of actual fuel to stoichiometric fuel."
+          ],
+          "steps": [],
+          "columns": [],
+          "reasoning": "The narration describes a condition (phi > 1) that can be visually represented through a formula to show the equivalence ratio.",
+          "pronunciations": {},
+          "manim_code": "",
+          "mermaid_code": "",
+          "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials.; Introduces the topic of rich mixtures using a content visual for clarity and focus Repeated-title guard: render this concept as a content visual, not another presentation content visual.\nGenerated still for title card, no labels or text in image BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED Deterministic formula route: Manim draws all equations, symbols, units, and derivation steps; the generated image is background only. Formula segment: render exact formulas with Manim and composite over clean background; do not generate formulas inside image/video.\nThe narration describes a condition (phi > 1) that can be visually represented through a formula to show the equivalence ratio."
+        }
+      ]
+    },
+    {
+      "scene_number": 6,
+      "scene_title": "Practical Applications of Equivalence Ratio",
+      "narration": "In real-world combustion applications, monitoring and controlling the mixture's composition allows engineers to optimize performance and reduce emissions.",
+      "shots": [
+        {
+          "shot_id": "6.1",
+          "heading": "Engine Combustion Monitoring",
+          "narration": "In real-world combustion applications, monitoring and controlling the mixture's composition allows engineers to optimize performance and reduce emissions.",
+          "duration": 8.0,
+          "visual_type": "short_motion_clip",
+          "media_type": "LTX clip",
+          "image_requirement": "Viewer must see engine components and monitoring equipment to understand the narration.",
+          "image_prompt": "Premium educational documentary frame, sharp native 1920x1080 detail, full-frame visual coverage with no blank card panel, intentional foreground-background separation, camera distance and angle chosen to make the taught evidence clearly inspectable, controlled realistic lighting, natural color and contrast, stable professional composition, and sufficient uncluttered safe margins for renderer overlays. Engine and exhaust system with sensors and gauges monitoring fuel-air mixture, natural lighting, industrial setting, medium distance, slightly angled to show controls and pipes. No generated text. No embedded text. No generated labels. No generated arrows. No captions. No watermark. No logo. No border. No UI. No incorrect anatomy or technical structure. No duplicated or malformed objects. No irrelevant background elements. No decorative infographic text. No slide or presentation-card layout.",
+          "labels": [],
+          "label_placement": [],
+          "label_style": "Analyzing Combustion Using the Equivalence Ratio",
+          "motion": "camera: slow_zoom_in; transition_in: fade; transition_out: crossfade",
+          "subtitle": "In real-world combustion applications, monitoring and controlling the mixture's composition allows engineers to optimize performance and reduce emissions.",
+          "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+          "asset_path": "",
+          "wan_video_prompt": "A close-up of an engineer adjusting a fuel-air mixture control panel in a combustion chamber. The screen shows the equivalence ratio scale and real-time emission levels. The camera slowly pans across the control panel to emphasize key metrics., designed for 8.0 seconds with seamless natural continuation, no abrupt ending",
+          "ltx_video_prompt": "LTX video, realistic HD educational footage, A close-up of an engineer adjusting a fuel-air mixture control panel in a combustion chamber. The screen shows the equivalence ratio scale and real-time emission levels. The camera slowly pans across the control panel to emphasize key metrics, split into 4-second continuation clips if needed, one continuous clear action from beginning to end, simple camera movement, stable subject, accurate educational detail, no abrupt final-frame freeze, no text artifacts, no slide layout",
+          "animate": "yes",
+          "layout": "gallery",
+          "table_rows": [],
+          "gallery_items": [
+            "Optimizing performance",
+            "Reducing emissions",
+            "Monitoring combustion efficiency",
+            "Controlling engine operation"
+          ],
+          "formula_lines": [],
+          "explain_steps": [],
+          "steps": [],
+          "columns": [],
+          "reasoning": "A realistic image of an engine and exhaust system shows how engineers monitor and control combustion mixtures.",
+          "pronunciations": {},
+          "manim_code": "",
+          "mermaid_code": "",
+          "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials.; Visual covers the concept of monitoring and controlling mixture composition to optimize performance and reduce emissions.; Generated-video guard: do not draw exact labels/arrows on this moving shot; use subtitles only or cut to a separate labeled still/diagram.; FACT CHECK (partly supported): 50% of key terms found in the sources. Subject-expert review required.\nUse LTX clip for natural motion; no reviewed asset required.\nA realistic image of an engine and exhaust system shows how engineers monitor and control combustion mixtures."
+        }
+      ]
+    },
+    {
+      "scene_number": 7,
+      "scene_title": "Summary and Importance of Equivalence Ratio",
+      "narration": "The equivalence ratio offers an effective and straightforward approach for describing and managing the strength of a fuel-air mixture.",
+      "shots": [
+        {
+          "shot_id": "7.1",
+          "heading": "Equivalence Ratio Formula",
+          "narration": "The equivalence ratio offers an effective and straightforward approach for describing and managing the strength of a fuel-air mixture.",
+          "duration": 6.0,
+          "visual_type": "process_steps",
+          "media_type": "Manim animation",
+          "image_requirement": "content visual with centered text, dark background, white text, sans-serif font, 42px font size, two lines max, horizontal margin 120, bottom margin 55",
+          "image_prompt": "",
+          "labels": [],
+          "label_placement": [],
+          "label_style": "high_contrast_box; dark_text; light_background; thin_colored_border; colored_target_dot; 3px_leader_line; sans_serif; 28px_minimum_font; avoid_subject; avoid_title_area; avoid_subtitle_area; avoid_logo_area",
+          "motion": "formula_reveal: line_by_line; transition_in: fade; transition_out: crossfade",
+          "subtitle": "The equivalence ratio offers an effective and straightforward approach for describing and managing the strength of a fuel-air mixture.",
+          "subtitle_style": "bottom_band; band_color=black; band_opacity=0.55; text_color=white; font_size=42; max_lines=2; align=center; horizontal_margin=120; bottom_margin=55",
+          "asset_path": "",
+          "wan_video_prompt": "",
+          "ltx_video_prompt": "",
+          "animate": "no",
+          "layout": "derivation",
+          "table_rows": [],
+          "gallery_items": [],
+          "formula_lines": [
+            "φ = (actual fuel/air ratio) / (stoichiometric fuel/air ratio)"
+          ],
+          "explain_steps": [
+            "Equivalence ratio is the ratio of actual to stoichiometric fuel-air mixtures."
+          ],
+          "steps": [],
+          "columns": [],
+          "reasoning": "A formula is needed to represent the equivalence ratio concept as stated in the narration.",
+          "pronunciations": {},
+          "manim_code": "",
+          "mermaid_code": "",
+          "review_notes": "Source: transcript/paraphrase plus enabled curriculum enrichment/materials.; Introduces the concept of equivalence ratio as a key metric in combustion engineering Repeated-title guard: render this concept as a content visual, not another presentation content visual.; Strict label-readiness guard: rendered without labels because exact reviewed targets and coordinates were unavailable.\nGenerated still with clean background, no text, no labels, no captions, no watermark BLOCK_FINAL_RENDER_UNTIL_LABEL_COORDINATES_ARE_VERIFIED Deterministic formula route: Manim draws all equations, symbols, units, and derivation steps; the generated image is background only. Formula segment: render exact formulas with Manim and composite over clean background; do not generate formulas inside image/video.\nA formula is needed to represent the equivalence ratio concept as stated in the narration."
+        }
+      ]
+    }
+  ]
+}

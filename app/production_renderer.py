@@ -205,7 +205,7 @@ class ShotRenderer:
         """Identifies a card / equation screen that has finished animating (it cannot change until the next reveal), else None."""
         segment, shot = plan.segment, plan.segment.shot
         if plan.figure:
-            if plan.figure.get("concept") in {"electrolysis_cell", "motor", "silver_ion_shell", "combustion_chamber", "equivalence_ratio_dial"}:
+            if plan.figure.get("concept") in {"electrolysis_cell", "motor", "silver_ion_shell", "combustion_chamber", "equivalence_ratio_dial", "four_stroke_cycle", "air_fuel_ratio_gauge"}:
                 return None                          # continuous particle / cycle animation
             return ("figure",) if t >= figures.REVEAL_SECONDS else None
         if plan.board is not None:

@@ -698,9 +698,12 @@ def concept_for(narration: str, context: str, subject: str) -> str | None:
     low = f"{text} {context or ''}".lower()
     best, score = None, 0
     for name, (strong, weak, _drawer, subjects) in {**FIGURES, **figures_sci.FIGURES}.items():
-        if subjects and subject and subject not in subjects:
-            if subject != "general" and not any(s in subject or subject in s for s in subjects):
-                continue
+        subj = (subject or "").strip().lower()
+        if subjects and subj:
+            subjs_low = {s.lower() for s in subjects}
+            if subj not in subjs_low and subj != "general":
+                if not any(s in subj or subj in s for s in subjs_low):
+                    continue
         s, w = len(re.findall(strong, text, re.I)), len(re.findall(weak, text, re.I))
         if name == "tangent_circle" and "circle" not in low:
             continue

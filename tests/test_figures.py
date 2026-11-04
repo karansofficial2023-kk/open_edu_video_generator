@@ -96,7 +96,7 @@ class FigureTests(unittest.TestCase):
             "combustion_chamber"
         )
         self.assertEqual(
-            figures.concept_for("A high-pressure flame front propagates rapidly across the chamber, forcing the piston down in the power stroke.", "", "thermodynamics"),
+            figures.concept_for("A high-pressure flame front propagates rapidly across the combustion chamber, forcing the piston down.", "", "thermodynamics"),
             "combustion_chamber"
         )
 
@@ -107,6 +107,44 @@ class FigureTests(unittest.TestCase):
         chamber_img = figures.frame((1920, 1080), CONFIG, "combustion_chamber", "Combustion Dynamics", 2.5, "flame front power stroke piston", False)
         self.assertEqual(chamber_img.size, (1920, 1080))
 
+
+
+
+    def test_four_stroke_cycle_and_air_fuel_ratio_gauge(self):
+        # 1. 4-Stroke Engine Cycle matching
+        self.assertEqual(
+            figures.concept_for("In a four-stroke internal combustion engine, the intake stroke pulls the air-fuel mixture into the cylinder.", "", "engineering"),
+            "four_stroke_cycle"
+        )
+        self.assertEqual(
+            figures.concept_for("During the compression stroke, both valves are closed as the piston moves upward.", "", "thermodynamics"),
+            "four_stroke_cycle"
+        )
+        self.assertEqual(
+            figures.concept_for("The engine cycle consists of intake, compression, power stroke, and exhaust stroke.", "", "physics"),
+            "four_stroke_cycle"
+        )
+
+        # 2. Air-Fuel Ratio (AFR) & Spark Plug Diagnostics matching
+        self.assertEqual(
+            figures.concept_for("The air-fuel ratio of stoichiometric 14.7:1 is ideal for gasoline combustion.", "", "engineering"),
+            "air_fuel_ratio_gauge"
+        )
+        self.assertEqual(
+            figures.concept_for("A lean mixture causes the spark plug condition to show blistered white overheated deposits.", "", "thermodynamics"),
+            "air_fuel_ratio_gauge"
+        )
+        self.assertEqual(
+            figures.concept_for("A rich mixture with excess fuel causes the spark plug tip to become carbon fouled black.", "", "general"),
+            "air_fuel_ratio_gauge"
+        )
+
+        # 3. Verify high quality rendering at 1080p
+        stroke_img = figures.frame((1920, 1080), CONFIG, "four_stroke_cycle", "Four-Stroke Cycle", 2.2, "spark plug fires in power stroke", False)
+        self.assertEqual(stroke_img.size, (1920, 1080))
+
+        afr_img = figures.frame((1920, 1080), CONFIG, "air_fuel_ratio_gauge", "Air-Fuel Ratio", 4.0, "stoichiometric 14.7:1 ideal ratio", False)
+        self.assertEqual(afr_img.size, (1920, 1080))
 
 
 if __name__ == "__main__":

@@ -93,13 +93,16 @@ def _figure_for(seg, scene_title: str, subject: str) -> dict | None:
     shows that figure instead of text cards or hallucinatory photo prompts."""
     from . import figures
     shot = seg.shot
-    if not shot or seg.labels:
+    if not shot or shot.template == "title_card":
         return None
     concept = figures.concept_for(seg.narration, scene_title, subject)
     if not concept:
         return None
-    if shot.template in {"process", "comparison", "circuit"} or not (shot.asset_path and Path(shot.asset_path).is_file()):
+    if concept in {"electrolysis_cell", "motor", "silver_ion_shell", "combustion_chamber", "equivalence_ratio_dial", "four_stroke_cycle", "air_fuel_ratio_gauge"}:
         return {"concept": concept, "light": False}
+    if not seg.labels:
+        if shot.template in {"process", "comparison", "circuit"} or not (shot.asset_path and Path(shot.asset_path).is_file()):
+            return {"concept": concept, "light": False}
     return None
 
 

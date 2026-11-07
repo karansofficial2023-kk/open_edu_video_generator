@@ -9,7 +9,7 @@ from .renderer import _run, _run_capture, _tool_path, audio_duration, concat_aud
 from .schema import Scene, Segment, Storyboard
 from .tts import synthesize_storyboard
 
-MAX_SPEED_UP = 1.35
+MAX_SPEED_UP = 1.50
 
 
 def _probe(path: Path, config: AppConfig) -> dict:

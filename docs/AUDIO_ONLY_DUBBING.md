@@ -15,6 +15,6 @@ Set-Location -LiteralPath "D:\Python\claude version\open_edu_video_generator"
 & ".\run_video.ps1" --config ".\config.realistic.12gb.yaml" --input "D:\path\to\<source>_hi_contract.json" --output ".\outputs\dub_hi" --replace-audio --source-video "D:\path\to\original_video.mp4"
 ```
 
-The result is `<original-name>_dub_hi.mp4` in the output folder. `audio_replacement_manifest.json` records the target language, codecs, duration, and any per-segment speech speed changes. The video codec is stream-copied; the original soundtrack is not retained. If a translated line would need to be sped up beyond 1.35x to fit before the next source cue, the job stops with a message rather than shifting later speech. This aligns narration to ASR segment start times; it does not perform speaker lip-sync.
+The result is `<original-name>_dub_hi.mp4` in the output folder. `audio_replacement_manifest.json` records the target language, codecs, duration, and any per-segment speech speed changes. The video codec is stream-copied; the original soundtrack is not retained. If a translated line would need to be sped up beyond 1.50x to fit before the next source cue, the job stops rather than shifting later speech. Re-running after a fit-limit failure reuses completed TTS audio from the local cache. This aligns narration to ASR segment start times; it does not perform speaker lip-sync.
 
 The workflow needs FFmpeg/FFprobe and a configured TTS voice for the target language. ComfyUI and image/video generation are not used.

@@ -61,6 +61,8 @@ def segment_from_fields(fields: dict, fallback_number: int = 1) -> Segment:
         formula_lines=split_list(fields.get("formula_lines")),
         explain_steps=split_list(fields.get("explain_steps")),
         duration_hint=parse_duration(fields.get("duration")),
+        source_start=parse_optional_duration(fields.get("source_start")),
+        source_end=parse_optional_duration(fields.get("source_end")),
         motion_prompt=motion_prompt,
         animate=get("animate").lower() in {"true", "yes", "1"},
         layout=get("layout").lower(),
@@ -77,6 +79,15 @@ def segment_from_fields(fields: dict, fallback_number: int = 1) -> Segment:
         manim_code=get("manim_code"),
         mermaid_code=get("mermaid_code"),
     )
+
+
+def parse_optional_duration(value) -> float | None:
+    if value is None or str(value).strip() == "":
+        return None
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
 
 
 def looks_like_contract_table(table: Table) -> bool:

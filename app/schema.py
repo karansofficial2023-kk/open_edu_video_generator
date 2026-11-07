@@ -80,6 +80,8 @@ class Segment(BaseModel):
     formula_lines: list[str] = Field(default_factory=list)
     explain_steps: list[str] = Field(default_factory=list)
     duration_hint: float = 0.0
+    source_start: float | None = None
+    source_end: float | None = None
     motion_prompt: str = ""
     animate: bool = False                 # the storyboard asks for the approved picture to be brought to life (LTX image-to-video)
     layout: str = ""                      # board layout from the storyboard: definition, bullets, table, derivation, diagram, gallery, summary

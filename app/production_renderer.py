@@ -49,12 +49,15 @@ class ShotPlan:
     video: object = None
     backdrop_path: str | None = None         # a photo of the same lesson shown softly behind concept cards (app.backdrops)
     backdrop: Image.Image | None = None
+    primary_cards: Image.Image | None = None  # exact text panels over primary-school topic illustrations
     steady: dict = field(default_factory=dict)       # frames that cannot change until the next reveal (cards, equations): drawn once, reused
     formula_step: float = 2.2                # seconds between equation lines; paced to the narration by render_clip (formula_pace)
     board: dict | None = None                # physics/chemistry board page: {theme, previous, current} (board.py)
     figure: dict | None = None               # a teaching figure drawn by code instead of text cards: {concept, light} (figures.py)
     duration: float = 0.0                    # on-screen seconds of the shot being rendered (set by render_clip)
     is_primary: bool = False                 # primary grade (<= 5th standard): cartoon art, karaoke highlights
+    topic_style: str = "general"             # palette/art direction selected for this scene's topic
+    has_embedded_banner: bool = False        # asset already includes scene banner
     scene_number: int = 1
 
 
@@ -180,6 +183,9 @@ class ShotRenderer:
             for anchor in anchors[len(plan.placed):]:
                 plan.omitted.append({"label": anchor.label, "reason": "no collision-free placement"})
             plan.label_starts = [0.8 + i * self.config.production.label_stagger_seconds for i in range(len(plan.placed))]
+        if plan.is_primary and shot.template == "photo" and segment.steps:
+            from .typography import primary_topic_cards
+            plan.primary_cards = primary_topic_cards(self.size, segment.steps, plan.topic_style)
 
     def required_seconds(self, plan: ShotPlan) -> float:
         """Minimum on-screen time so every reveal is followed by the reading hold."""
@@ -274,7 +280,12 @@ class ShotRenderer:
         frame = self._board_frame(plan, t, duration)
         if frame is not None:
             return slow_push(frame, t / duration, STATIC_DRIFT_SCALE) if self.drifting(plan) and duration > 0 else frame
-        return self._picture_frame(plan, t, duration)
+        frame = self._picture_frame(plan, t, duration)
+        if self.drifting(plan) and duration > 0:
+            frame = slow_push(frame, t / duration, STATIC_DRIFT_SCALE)
+        if plan.primary_cards is not None:
+            frame = Image.alpha_composite(frame.convert("RGBA"), plan.primary_cards).convert("RGB")
+        return frame
 
     def _board_frame(self, plan: ShotPlan, t: float, duration: float) -> Image.Image | None:
         """Equation and card screens (cached once they stop changing); None for every other template."""
@@ -458,7 +469,7 @@ class ShotRenderer:
         cue = next((c for c in cues if c.start <= t < c.end), cues[-1] if cues and t >= cues[-1].start else None)
         if cue is not None:
             if plan.is_primary or plan.segment.subtitle_style == "primary_karaoke":
-                built = primary_karaoke_band(self.size, cue, t, self.style)
+                built = primary_karaoke_band(self.size, cue, t, self.style, topic_style=plan.topic_style)
                 band = built[0] if built else None
             else:
                 opacity = self.band_opacity(base)
@@ -470,9 +481,9 @@ class ShotRenderer:
             if band is not None:
                 layer = Image.alpha_composite(layer, band)
         if (plan.is_primary or plan.segment.subtitle_style == "primary_karaoke") and plan.scene_title:
-            if plan.segment.shot_id != "1.1" and plan.segment.visual_type != "title_card":
+            if plan.segment.visual_type != "title_card" and not getattr(plan, "has_embedded_banner", False):
                 banner_text = f"{plan.scene_number}. {plan.scene_title}"
-                banner_layer = primary_scene_banner(self.size, banner_text)
+                banner_layer = primary_scene_banner(self.size, banner_text, topic_style=plan.topic_style)
                 if banner_layer is not None:
                     layer = Image.alpha_composite(layer, banner_layer)
         if self.logo is not None:

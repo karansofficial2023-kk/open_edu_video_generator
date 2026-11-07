@@ -31,6 +31,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--preview", action="store_true", help="Render a silent MP4 with approximate timing; no TTS required")
     parser.add_argument("--burn-captions", action="store_true", help="Burn captions into video pixels (legacy path)")
     parser.add_argument("--no-embed-subtitles", action="store_true", help="Write subtitles.srt without embedding a subtitle track in MP4")
+    parser.add_argument("--replace-audio", action="store_true", help="Replace a source video's audio with translated narration; preserve its video stream")
+    parser.add_argument("--source-video", help="Original video whose audio track will be replaced (requires --replace-audio)")
     parser.add_argument("--allow-incomplete", action="store_true", help="Render even when review/QA reports unresolved issues (draft)")
     parser.add_argument("--strict-coverage", action="store_true", help="Treat an unmet coverage checklist as blocking")
     parser.add_argument("--preflight-only", action="store_true", help="Validate the storyboard contract and services, then stop")
@@ -93,8 +95,21 @@ def run_job(parser, args, config, input_path: Path, output_dir: Path, heal: int 
     except OSError:
         pass
     text, existing_storyboard = read_input(input_path)
+    if args.replace_audio:
+        if not args.source_video:
+            parser.error("--replace-audio requires --source-video PATH")
+        if existing_storyboard is None:
+            parser.error("--replace-audio requires a translated Transcribe storyboard contract (.json)")
+        from .audio_replacement import replace_audio
+        dubbed = replace_audio(existing_storyboard, args.source_video, output_dir, config)
+        print(f"AUDIO_REPLACED: {dubbed}")
+        return
+    if args.source_video:
+        parser.error("--source-video can only be used with --replace-audio")
     storyboard = existing_storyboard or plan_storyboard(text, config, title=args.title)
     normalize_storyboard(storyboard, config)
+    from .primary_style import apply_primary_storybook
+    apply_primary_storybook(storyboard)
     if not storyboard.all_segments():
         parser.error("The storyboard contains no narration segments")
     if args.limit_segments is not None:

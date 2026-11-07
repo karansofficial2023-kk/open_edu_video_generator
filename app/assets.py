@@ -25,6 +25,8 @@ from .comfyui_client import ComfyUIClient
 from .config import AppConfig
 from .safety import unsafe_reason
 from .schema import Segment, Shot, Storyboard
+from .primary_style import (PRIMARY_ILLUSTRATION_NEGATIVE, PRIMARY_ILLUSTRATION_STYLE,
+                            illustration_subject_prompt)
 
 TARGET = (1920, 1080)
 GENERIC_MARKERS = ("subject-appropriate visual medium", "production asset in", "sharp 1920x1080", "1920x1080",
@@ -211,16 +213,21 @@ def clean_prompt(prompt: str) -> str:
     return text
 
 
-def director_prompt(segment: Segment, scene_title: str, lesson: str, config: AppConfig, feedback: list[str] | None = None) -> str:
+def director_prompt(segment: Segment, scene_title: str, lesson: str, config: AppConfig,
+                    feedback: list[str] | None = None, primary: bool = False) -> str:
     """Rewrite a weak image prompt from approved narration only. No new facts; text-free by construction."""
-    system = ("You write image-generation prompts for a photorealistic educational video. Use ONLY facts stated in the "
+    medium = "a polished 2D children's storybook illustration for an educational animation" if primary else "a photorealistic educational video"
+    system = (f"You write image-generation prompts for {medium}. Use ONLY facts stated in the "
               "narration or required visual; never introduce species, objects or settings that they do not mention. "
               "Describe objects by shape, material and colour only; never mention names, brands, titles, screens, labels or any text on objects. "
               "Never show pages, books, charts, whiteboards, blackboards, screens, posters, signs or forms (they always carry writing): show the "
               "real thing they are about instead. Medicines and products are plain and unbranded: blank tablets, unprinted bottles and boxes. "
-              "If the narration is abstract, choose a neutral real-world scene that fits the lesson title. Describe one concrete subject, its visible action, spatial layout, camera "
+              "If the narration is abstract, choose a neutral scene that fits the lesson title. Describe one concrete subject, its visible action, spatial layout, camera "
               "distance/angle, natural lighting and colours in 40-70 words. Never ask for text, labels, arrows, diagrams, "
               "collages or watermarks. Return JSON {\"image_prompt\": \"...\"}.")
+    if primary:
+        system += (" Use a single cohesive illustrated scene, expressive child-friendly shapes, a detailed environment and warm, vivid colours; "
+                   "never request a photograph or photorealism.")
     payload = {"lesson": lesson, "scene": scene_title, "narration": segment.narration,
                "required_visual": segment.image_requirement, "visible_structures_to_include": segment.labels,
                "visual_type": segment.visual_type}
@@ -561,14 +568,12 @@ def apply_checklist(semantic: dict, checks, grounding: str = "") -> dict:
     if not items:
         return semantic
     if grounding.strip():
-        # The checklist must come from what the shot REQUIRES. A reviewer that lists what it sees in the picture instead ("industrial
-        # machinery", "concrete floor" for a silver rod in a solution) can pass any photograph, so its verdict is not trusted.
+        # Score only checklist items anchored to the requested visual. Broad narration often permits a valid illustrative scene
+        # whose concrete details (e.g. deer and trees) are not named word-for-word; an entirely ungrounded checklist is not evidence
+        # that the picture is wrong, so retain the vision reviewer's overall verdict in that case.
         wanted = _stems(grounding, generic=True)
         grounded = [c for c in items if _stems(str(c.get("item", "")), generic=True) & wanted]
-        if len(grounded) * 2 < len(items):
-            semantic["matches"] = False
-            semantic["score"] = min(semantic["score"], 0.3)
-            semantic["missing"] = list(dict.fromkeys(semantic["missing"] + ["reviewer checklist not based on the required visual"]))[:6]
+        if not grounded:
             semantic["checks"] = [{"item": str(c["item"]).strip(), "visible": _is_true(c.get("visible"))} for c in items]
             return semantic
         items = grounded
@@ -698,7 +703,8 @@ class StillProducer:
     def _signature(self, prompt: str) -> str:
         workflow = Path(self.config.production.image_workflow_path)
         blob = json.dumps([prompt, self.config.production.image_checkpoint, self.config.production.image_width,
-                           self.config.production.image_height, workflow.read_text(encoding="utf-8") if workflow.exists() else ""])
+                           self.config.production.image_height, workflow.read_text(encoding="utf-8") if workflow.exists() else "",
+                           PRIMARY_ILLUSTRATION_STYLE if self.board.is_primary() else STYLE_SUFFIX])
         return hashlib.sha1(blob.encode()).hexdigest()[:16]
 
     def _cards_for_screen_moments(self) -> None:
@@ -923,13 +929,14 @@ class StillProducer:
                 seg = job.segment
                 prompt = seg.image_prompt
                 if self.config.production.prompt_director and is_generic_prompt(seg):
-                    prompt = director_prompt(seg, job.scene_title, self.board.title, self.config)
+                    prompt = director_prompt(seg, job.scene_title, self.board.title, self.config, primary=self.board.is_primary())
                 if seg.visual_type == "title_card" or (seg.shot and seg.shot.template == "title_card"):
                     prompt = f"{clean_prompt(prompt)}. Wide establishing scene, main subject placed off to one side, soft out-of-focus open space in the centre"
                 else:
                     prompt = text_free_prompt(clean_prompt(prompt) or seg.image_prompt)
                     if not prompt and self.config.production.prompt_director:     # the planned picture was a page or chart: ask for the real thing
-                        prompt = text_free_prompt(clean_prompt(director_prompt(seg, job.scene_title, self.board.title, self.config)))
+                        prompt = text_free_prompt(clean_prompt(director_prompt(
+                            seg, job.scene_title, self.board.title, self.config, primary=self.board.is_primary())))
                     if not prompt and job.panel is None and self._downgrade(job):
                         self.issues.append({"shot_id": job.owner.shot_id or job.key, "field": "image_prompt", "severity": "info",
                                             "renderer": "concept_cards", "reason": "the only picture for this sentence would be a page, "
@@ -938,13 +945,15 @@ class StillProducer:
                     prompt = prompt or seg.image_prompt
                 record = {"shot_id": job.key, "narration": seg.narration, "prompt": prompt, "original_prompt": seg.image_prompt,
                           "attempts": [], "accepted": False, "path": ""}
+            if self.board.is_primary():
+                record["prompt"] = illustration_subject_prompt(record["prompt"])
             records[job.key] = record
         jobs = [job for job in jobs if job.key in records]          # shots turned into cards above need no picture
         if not jobs:
             self._apply_continuations()
             return self.issues             # keep what the pre-pass recorded (greeting / screen-operation shots shown as cards)
         vision.unload(self.config)
-        if self.config.production.retrieval_enabled:
+        if self.config.production.retrieval_enabled and not self.board.is_primary():
             for done, job in enumerate(jobs, start=1):
                 record = records[job.key]
                 if done % 5 == 1 or done == len(jobs):
@@ -964,7 +973,8 @@ class StillProducer:
                     last = (records[job.key]["attempts"] or [{}])[-1].get("semantic") or {}
                     problems = list(last.get("missing") or []) + list(last.get("issues") or [])
                     if problems:
-                        revised = director_prompt(job.segment, job.scene_title, self.board.title, self.config, feedback=problems[:5])
+                        revised = director_prompt(job.segment, job.scene_title, self.board.title, self.config,
+                                                  feedback=problems[:5], primary=self.board.is_primary())
                         if revised and revised != records[job.key]["prompt"]:
                             records[job.key]["prompt"] = text_free_prompt(clean_prompt(revised) or revised) or records[job.key]["prompt"]      # a rewrite must not bring charts or labels back
                 vision.unload(self.config)
@@ -1218,6 +1228,8 @@ class StillProducer:
             return True
         if shot.template not in {"photo", "split_screen", "video"}:
             return False
+        if self.board.is_primary():
+            return False
         owner.labels, owner.label_placement = [], []       # labels need a verified picture; cards need none
         if job.panel is not None and owner.shot.template != "split_screen":
             return False
@@ -1251,7 +1263,8 @@ class StillProducer:
     def _content_key(self, job: Job) -> str:
         """What the picture must show: if the approved text changes, an old still was judged against something else."""
         segment = job.segment
-        blob = json.dumps([segment.narration, segment.image_prompt, segment.image_requirement, list(segment.labels or []), STYLE_SUFFIX, MEDICAL_STYLE],
+        blob = json.dumps([segment.narration, segment.image_prompt, segment.image_requirement, list(segment.labels or []), STYLE_SUFFIX,
+                           MEDICAL_STYLE, PRIMARY_ILLUSTRATION_STYLE if self.board.is_primary() else ""],
                           ensure_ascii=False)
         return hashlib.sha1(blob.encode()).hexdigest()[:16]
 
@@ -1265,7 +1278,20 @@ class StillProducer:
         if record.get("signature") != self._signature(record.get("prompt", "")) or not all(Path(a["path"]).exists() for a in record["attempts"]):
             return None
         if record.get("content") not in (None, self._content_key(job)):
-            return None                 # narration, prompt, requirement or labels were edited since this still was approved
+            if record.get("narration") != job.segment.narration or not record["attempts"]:
+                return None             # the narration changed: old pictures are not valid candidates for new lesson content
+            # A prompt/requirement cleanup can leave an already-generated picture useful. Re-review its latest candidate
+            # against the repaired contract first; if it fails, the normal retry loop has room to generate replacements.
+            latest = record["attempts"][-1]
+            record["attempts"] = [latest]
+            record["prompt"] = text_free_prompt(clean_prompt(job.segment.image_prompt)) or job.segment.image_prompt
+            record["original_prompt"] = job.segment.image_prompt
+            record["accepted"] = False
+            record.pop("exhausted", None)
+            latest["reviewed"] = False
+            latest.pop("semantic", None)
+            latest.pop("score", None)
+            record["rereview"] = True
         last = record["attempts"][-1] if record["attempts"] else {}
         if record.get("accepted") and last.get("source") == "commons" and not title_relevant(
                 (last.get("provenance") or {}).get("title", ""),
@@ -1290,7 +1316,10 @@ class StillProducer:
     def _generate(self, job: Job, record: dict, round_no: int) -> None:
         seed = random.Random(f"{job.key}:{round_no}:{len(record['attempts'])}:{record['prompt']}").randint(1, 2**31 - 1)   # a retry never repeats a seed
         base = text_free_prompt(record["prompt"]) or record["prompt"]
-        style = STYLE_SUFFIX
+        style = PRIMARY_ILLUSTRATION_STYLE if self.board.is_primary() else STYLE_SUFFIX
+        negative = NEGATIVE
+        if self.board.is_primary() and not SENSITIVE_TOPIC.search(f"{base} {job.segment.narration}"):
+            negative = f"{NEGATIVE}, {PRIMARY_ILLUSTRATION_NEGATIVE}"
         if SENSITIVE_TOPIC.search(f"{base} {job.segment.narration}"):
             base = f"{SAFE_FRAMING} {BODY_WORDS.sub('', base)}"       # reproduction, puberty, anatomy: organs and diagrams, never a naked or shirtless body
             style = MEDICAL_STYLE                 # and drawn like the reference videos: glowing false-colour models, not photographs of flesh
@@ -1300,7 +1329,7 @@ class StillProducer:
         raw = self.dir / f"shot_{job.key}_a{round_no}_raw.png"
         final = self.dir / f"shot_{job.key}_a{round_no}.png"
         p = self.config.production
-        self.client.generate_still(prompt, NEGATIVE, raw, seed, p.image_workflow_path, p.image_checkpoint,
+        self.client.generate_still(prompt, negative, raw, seed, p.image_workflow_path, p.image_checkpoint,
                                    p.image_width, p.image_height, p.image_steps)
         with Image.open(raw) as image:
             done = finish_image(image)

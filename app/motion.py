@@ -163,6 +163,9 @@ def fidelity(still: Path, clip: Path) -> tuple[float, float]:
 def derive_motion_prompt(seg: Segment) -> str:
     """What moves, for a picture that has no motion prompt of its own: the scene described by the shot, kept stable and gentle."""
     scene = (seg.motion_prompt or seg.image_prompt or seg.image_requirement or seg.visual or seg.narration).strip()
+    if seg.subtitle_style == "primary_karaoke":
+        return (scene.rstrip(".") + ". Gentle storybook animation: leaves sway, water and clouds move softly, and characters make small natural gestures; "
+                "preserve the illustrated 2D style, character identity, scene layout and colours, with no morphing, no text or subtitles.")
     return (scene.rstrip(".") + ". Gentle natural motion of the scene, slow smooth camera push-in, subjects keep their shape and position, "
             "realistic educational documentary footage, no text, suitable for school students, no nudity, no adult content, "
             "any people fully and modestly clothed.")

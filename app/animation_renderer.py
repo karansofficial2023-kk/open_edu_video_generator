@@ -86,8 +86,11 @@ class Canvas:
 def render_frame(segment, scene_title, t, config, source=None):
     c = Canvas(config)
     shot = segment.shot
-    c.text(shot.heading or scene_title, (48, 25, 1230, 96), 36, bold=True)
-    c.line([(48, 104), (1232, 104)], "#D8DFD9", 2)
+    # The reference-style primary overlay supplies its own scene-title banner.
+    # Leave the header area clear so the generic heading is not printed behind it.
+    if segment.subtitle_style != "primary_karaoke":
+        c.text(shot.heading or scene_title, (48, 25, 1230, 96), 36, bold=True)
+        c.line([(48, 104), (1232, 104)], "#D8DFD9", 2)
     times = stage_times(segment)
     stage = max(i for i, start in enumerate(times) if t >= start)
     duration = segment.end - segment.start

@@ -204,7 +204,8 @@ def primary_karaoke_band(
     cue: object,
     t: float,
     style=None,
-    opacity: float | None = None
+    opacity: float | None = None,
+    topic_style: str = "general",
 ) -> tuple[Image.Image, tuple[int, int, int, int]] | None:
     """Card overlay with word-by-word karaoke highlight for primary school (<= 5th standard).
     Renders warm ivory rounded card with drop shadow and yellow pill highlight behind active word."""
@@ -213,32 +214,38 @@ def primary_karaoke_band(
         return None
     width, height = size
     scale = height / 1080
+    from .primary_style import get_topic_style
+    theme = get_topic_style(topic_style)
     overlay = Image.new("RGBA", size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
 
-    margin_x = round(100 * scale)
+    margin_x = round(28 * scale)
     card_w = width - 2 * margin_x
-    card_bottom = height - round(40 * scale)
-    card_h = round(135 * scale)
-    card_top = card_bottom - card_h
+    card_bottom = round(1000 * scale)
+    card_top = round(815 * scale)
+    card_h = card_bottom - card_top
     card_box = (margin_x, card_top, margin_x + card_w, card_bottom)
 
     # Soft drop shadow
     shadow_offset = round(4 * scale)
     shadow_box = (margin_x, card_top + shadow_offset, margin_x + card_w, card_bottom + shadow_offset)
-    draw.rounded_rectangle(shadow_box, radius=round(18 * scale), fill=(0, 0, 0, 40))
+    draw.rounded_rectangle(shadow_box, radius=round(24 * scale), fill=(0, 0, 0, 45))
 
-    # Warm cream / ivory card body with soft golden border
+    # Warm cream / ivory card body with warm chocolate border
     draw.rounded_rectangle(
         card_box,
-        radius=round(18 * scale),
-        fill=(255, 253, 245, 250),
-        outline=(226, 207, 172, 255),
-        width=round(2.5 * scale)
+        radius=round(24 * scale),
+        fill=(255, 252, 240, 255),
+        outline=hex_rgb(theme.accent) + (255,),
+        width=round(3 * scale)
     )
+    accent_h = max(3, round(7 * scale))
+    draw.rounded_rectangle((margin_x + round(30 * scale), card_top + round(8 * scale),
+                            margin_x + card_w - round(30 * scale), card_top + round(8 * scale) + accent_h),
+                           radius=accent_h // 2, fill=hex_rgb(theme.accent) + (225,))
 
     # Typography
-    font_size = round(32 * scale)
+    font_size = round(42 * scale)
     complex_script = is_complex_script(text)
     fnt = font(font_size, bold=False, complex_script=complex_script)
     fnt_bold = font(font_size, bold=True, complex_script=complex_script)
@@ -306,8 +313,8 @@ def primary_karaoke_band(
                 draw.rounded_rectangle(
                     pill_box,
                     radius=round(6 * scale),
-                    fill=(255, 224, 80, 255),
-                    outline=(235, 195, 45, 255),
+                    fill=hex_rgb(theme.highlight) + (255,),
+                    outline=hex_rgb(theme.accent) + (255,),
                     width=round(1.5 * scale)
                 )
                 put_text(draw, (cursor_x, line_y), item["text"], fnt_bold, (15, 15, 15, 255))
@@ -319,27 +326,42 @@ def primary_karaoke_band(
     return overlay, card_box
 
 
-def primary_scene_banner(size: tuple[int, int], text: str) -> Image.Image | None:
-    """Top cream pill banner showing scene index and title for primary school lessons."""
+def primary_scene_banner(size: tuple[int, int], text: str, topic_style: str = "general") -> Image.Image | None:
+    """Topic-colored cream pill banner; long scene titles wrap and stay inside the frame."""
     clean = text.strip()
     if not clean:
         return None
     width, height = size
     scale = height / 1080
+    from .primary_style import get_topic_style
+    theme = get_topic_style(topic_style)
     overlay = Image.new("RGBA", size, (0, 0, 0, 0))
     draw = ImageDraw.Draw(overlay)
 
-    font_size = round(24 * scale)
-    fnt = font(font_size, bold=True, complex_script=is_complex_script(clean))
-    text_w = text_width(draw, clean, fnt)
+    max_banner_w = width - round(96 * scale)
+    pad_x = round(38 * scale)
+    pad_y = round(12 * scale)
+    chosen = None
+    for font_size in range(round(52 * scale), round(30 * scale) - 1, -1):
+        fnt = font(font_size, bold=True, complex_script=is_complex_script(clean))
+        lines = wrap_text(draw, clean, fnt, max_banner_w - 2 * pad_x)
+        ascent, descent = fnt.getmetrics()
+        line_h = ascent + descent + max(2, round(3 * scale))
+        if len(lines) <= 2:
+            chosen = (fnt, lines, line_h)
+            break
+    if chosen is None:
+        fnt = font(round(30 * scale), bold=True, complex_script=is_complex_script(clean))
+        lines = wrap_text(draw, clean, fnt, max_banner_w - 2 * pad_x)
+        ascent, descent = fnt.getmetrics()
+        chosen = (fnt, lines[:2], ascent + descent + max(2, round(3 * scale)))
+    fnt, lines, line_h = chosen
+    text_w = max(text_width(draw, line, fnt) for line in lines)
+    banner_w = min(max_banner_w, text_w + 2 * pad_x)
+    banner_h = max(round(82 * scale), len(lines) * line_h + 2 * pad_y)
 
-    pad_x = round(28 * scale)
-    pad_y = round(10 * scale)
-    banner_w = text_w + 2 * pad_x
-    banner_h = round(44 * scale)
-
-    banner_x = round(60 * scale)
-    banner_y = round(32 * scale)
+    banner_x = (width - banner_w) // 2
+    banner_y = round(52 * scale)
     banner_box = (banner_x, banner_y, banner_x + banner_w, banner_y + banner_h)
 
     shadow_offset = round(3 * scale)
@@ -353,12 +375,84 @@ def primary_scene_banner(size: tuple[int, int], text: str) -> Image.Image | None
         banner_box,
         radius=round(14 * scale),
         fill=(255, 253, 245, 240),
-        outline=(226, 207, 172, 240),
-        width=round(2 * scale)
+        outline=hex_rgb(theme.accent) + (245,),
+        width=round(3 * scale)
     )
+    badge_r = round(8 * scale)
+    badge_x = banner_x + round(14 * scale)
+    badge_y = banner_y + banner_h // 2
+    draw.ellipse((badge_x, badge_y - badge_r, badge_x + badge_r * 2, badge_y + badge_r),
+                 fill=hex_rgb(theme.accent) + (255,))
+    content_left = banner_x + pad_x + round(10 * scale)
+    content_width = banner_w - 2 * pad_x - round(10 * scale)
+    total_text_h = len(lines) * line_h
+    ty = banner_y + (banner_h - total_text_h) / 2
+    draw_lines(draw, lines, fnt, line_h, content_left, ty, (28, 36, 48, 255), "center", content_width)
+    return overlay
 
-    ascent, descent = fnt.getmetrics()
-    ty = banner_y + (banner_h - (ascent + descent)) / 2
-    put_text(draw, (banner_x + pad_x, ty), clean, fnt, (28, 36, 48, 255))
+
+def primary_topic_cards(size: tuple[int, int], items: list[str], topic_style: str = "general") -> Image.Image | None:
+    """Exact, readable topic panels over primary illustrations; the image model never writes their text."""
+    items = [" ".join((item or "").split()) for item in items if (item or "").strip()][:4]
+    if len(items) < 2:
+        return None
+    from .primary_style import get_topic_style
+    theme = get_topic_style(topic_style)
+    width, height = size
+    scale = height / 1080
+    overlay = Image.new("RGBA", size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+    margin_x = round(76 * scale)
+    gap_x = round(24 * scale)
+    gap_y = round(18 * scale)
+    if len(items) <= 3:
+        columns, rows = len(items), 1
+        top, card_h = round(515 * scale), round(235 * scale)
+    else:
+        columns, rows = 2, 2
+        top, card_h = round(380 * scale), round(185 * scale)
+    card_w = (width - 2 * margin_x - gap_x * (columns - 1)) // columns
+    accent = hex_rgb(theme.accent)
+    for index, text in enumerate(items):
+        row, col = divmod(index, columns)
+        left = margin_x + col * (card_w + gap_x)
+        y = top + row * (card_h + gap_y)
+        box = (left, y, left + card_w, y + card_h)
+        radius = round(26 * scale)
+        draw.rounded_rectangle((left + round(4 * scale), y + round(8 * scale), box[2] + round(4 * scale), box[3] + round(8 * scale)),
+                               radius=radius, fill=(21, 33, 42, 48))
+        draw.rounded_rectangle(box, radius=radius, fill=(255, 251, 235, 238),
+                               outline=accent + (245,), width=max(2, round(3 * scale)))
+        badge = round(19 * scale)
+        badge_x, badge_y = left + round(22 * scale), y + round(22 * scale)
+        draw.ellipse((badge_x, badge_y, badge_x + 2 * badge, badge_y + 2 * badge), fill=accent + (255,))
+        number_font = font(round(22 * scale), True)
+        number = str(index + 1)
+        nw = text_width(draw, number, number_font)
+        na, nd = number_font.getmetrics()
+        put_text(draw, (badge_x + badge - nw / 2, badge_y + (2 * badge - na - nd) / 2), number, number_font, (255, 255, 255, 255))
+
+        pad_l = round(28 * scale)
+        text_box = (left + pad_l, y + round(18 * scale), box[2] - round(24 * scale), box[3] - round(18 * scale))
+        max_px, min_px = round(34 * scale), max(14, round(20 * scale))
+        chosen = None
+        for px in range(max_px, min_px - 1, -1):
+            fnt = font(px, True, is_complex_script(text))
+            lines = wrap_text(draw, text, fnt, text_box[2] - text_box[0])
+            ascent, descent = fnt.getmetrics()
+            line_h = ascent + descent + max(2, round(4 * scale))
+            if len(lines) * line_h <= text_box[3] - text_box[1]:
+                chosen = (fnt, lines, line_h)
+                break
+        if chosen is None:
+            fnt = font(min_px, True, is_complex_script(text))
+            lines = wrap_text(draw, text, fnt, text_box[2] - text_box[0])
+            ascent, descent = fnt.getmetrics()
+            line_h = ascent + descent + max(2, round(4 * scale))
+            chosen = (fnt, lines, line_h)
+        fnt, lines, line_h = chosen
+        total_h = len(lines) * line_h
+        ty = y + (card_h - total_h) / 2
+        draw_lines(draw, lines, fnt, line_h, text_box[0], ty, (38, 48, 51, 255), "center", text_box[2] - text_box[0])
     return overlay
 

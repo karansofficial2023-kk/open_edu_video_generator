@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 import subprocess
 import shutil
+import tempfile
 from pathlib import Path
 
 from .config import AppConfig
@@ -89,6 +90,10 @@ def render_video(storyboard: Storyboard, frames: list[Path], audio: Path, output
     segments = [segment for _scene, segment in items]
     if not segments or len(frames) != len(segments):
         raise ValueError("Every storyboard segment must have exactly one rendered frame.")
+    primary_karaoke = storyboard.is_primary()
+    if primary_karaoke:
+        for segment in segments:
+            segment.subtitle_style = "primary_karaoke"
     frame_cursor = 0
     for index, (segment, frame) in enumerate(zip(segments, frames), start=1):
         end_frame = round(segment.end * config.fps)
@@ -99,7 +104,7 @@ def render_video(storyboard: Storyboard, frames: list[Path], audio: Path, output
         if segment.shot and segment.shot.template == "video":
             _render_video_asset(frame, clip, duration, config)
         elif segment.shot and segment.shot.template == "photo":
-            _render_fullscreen_image_clip(frame, clip, duration, config)
+            _render_fullscreen_image_clip(frame, clip, duration, config, primary=primary_karaoke)
         elif config.render.layout == "modern" or segment.shot:
             from PIL import Image
             from .animation_renderer import render_animation_clip
@@ -116,6 +121,12 @@ def render_video(storyboard: Storyboard, frames: list[Path], audio: Path, output
             render_animation_clip(segment, items[index - 1][0].title, clip, frame_count, render_config, source)
         else:
             _render_image_clip(frame, clip, duration, config)
+        if primary_karaoke:
+            # The primary-school subtitle is part of the picture: a cream card with
+            # the currently spoken word highlighted. Apply it after whichever
+            # legacy clip renderer was selected so photos and imported video get it too.
+            _render_primary_overlay(clip, segment, items[index - 1][0].title,
+                                    items[index - 1][0].scene_number, duration, config)
         clips.append(clip)
 
     concat_file = output_dir / "video_concat.txt"
@@ -132,7 +143,9 @@ def render_video(storyboard: Storyboard, frames: list[Path], audio: Path, output
         "-i",
         str(Path(audio).resolve()),
     ]
-    burn_subtitles = bool(config.render.burn_captions and subtitles and subtitles.exists())
+    # Primary captions are already drawn word-by-word into the clips above. Burning
+    # the ordinary SRT here would cover that design with a second subtitle track.
+    burn_subtitles = bool(not primary_karaoke and config.render.burn_captions and subtitles and subtitles.exists())
     embed_subtitles = bool(config.render.embed_subtitles and not burn_subtitles and subtitles and subtitles.exists())
     if embed_subtitles:
         command.extend(["-i", str(Path(subtitles).resolve())])
@@ -197,6 +210,71 @@ def _subtitle_filter(subtitles: Path, config: AppConfig) -> str:
     return f"subtitles='{path}':force_style='{style}'"
 
 
+def _render_primary_overlay(clip: Path, segment, scene_title: str, scene_number: int,
+                            duration: float, config: AppConfig) -> None:
+    """Burn the reference-style primary karaoke card over a legacy rendered clip."""
+    import cv2
+    from PIL import Image
+    from .captions import build_cues
+    from .typography import primary_karaoke_band, primary_scene_banner
+
+    width, height = config.output_resolution.width, config.output_resolution.height
+    size = (width, height)
+    style = config.production.subtitle
+    cues = build_cues(segment, style, size)
+    fps = config.fps
+    frame_count = max(1, round(duration * fps))
+    temp_clip = clip.with_name(f"{clip.stem}.primary.mp4")
+    capture = cv2.VideoCapture(str(clip))
+    if not capture.isOpened():
+        raise RuntimeError(f"Could not read rendered clip for primary subtitles: {clip}")
+    command = [_tool_path(config.ffmpeg_path, "ffmpeg"), "-v", "error", "-y",
+               "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{width}x{height}",
+               "-r", str(fps), "-i", "pipe:0", "-an", "-frames:v", str(frame_count),
+               "-c:v", "libx264", "-preset", config.render.video_preset,
+               "-crf", str(config.render.video_crf), "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+               str(temp_clip)]
+    try:
+        with tempfile.TemporaryFile() as errors:
+            proc = subprocess.Popen(command, stdin=subprocess.PIPE, stderr=errors, stdout=subprocess.DEVNULL)
+            try:
+                for i in range(frame_count):
+                    ok, bgr = capture.read()
+                    if not ok:
+                        break
+                    if bgr.shape[1] != width or bgr.shape[0] != height:
+                        bgr = cv2.resize(bgr, size, interpolation=cv2.INTER_AREA)
+                    t = i / fps
+                    cue = next((c for c in cues if c.start <= t < c.end),
+                               cues[-1] if cues and t >= cues[-1].start else None)
+                    frame = Image.fromarray(cv2.cvtColor(bgr, cv2.COLOR_BGR2RGB)).convert("RGBA")
+                    if cue is not None:
+                        overlay = primary_karaoke_band(size, cue, t, style,
+                                                       topic_style=getattr(segment, "topic_style", "general"))
+                        if overlay:
+                            frame = Image.alpha_composite(frame, overlay[0])
+                    if scene_title:
+                        banner = primary_scene_banner(size, f"{scene_number}. {scene_title}",
+                                                       topic_style=getattr(segment, "topic_style", "general"))
+                        if banner:
+                            frame = Image.alpha_composite(frame, banner)
+                    proc.stdin.write(frame.convert("RGB").tobytes())
+                proc.stdin.close()
+                if proc.wait() != 0:
+                    errors.seek(0)
+                    raise RuntimeError(errors.read().decode("utf-8", "replace"))
+            except BaseException:
+                proc.kill()
+                proc.wait()
+                raise
+        capture.release()
+        temp_clip.replace(clip)
+    except BaseException:
+        capture.release()
+        temp_clip.unlink(missing_ok=True)
+        raise
+
+
 def _ass_color(hex_color: str, alpha: str = "00") -> str:
     value = (hex_color or "#000000").strip().lstrip("#")
     if len(value) != 6:
@@ -220,12 +298,18 @@ def _render_video_asset(source: Path, clip: Path, duration: float, config: AppCo
           "-pix_fmt", "yuv420p", str(clip)])
 
 
-def _render_fullscreen_image_clip(frame: Path, clip: Path, duration: float, config: AppConfig) -> None:
+def _render_fullscreen_image_clip(frame: Path, clip: Path, duration: float, config: AppConfig, primary: bool = False) -> None:
     width = config.output_resolution.width
     height = config.output_resolution.height
     frame_count = max(1, round(duration * config.fps))
-    # Real photos should fill the whole video frame. Use cover/crop to avoid letterbox borders.
-    vf = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height},setsar=1"
+    # Fill the frame; primary storybook stills get a gentle push-in like the reference video.
+    if primary:
+        zoom_width, zoom_height = round(width * 1.06), round(height * 1.06)
+        vf = (f"scale={zoom_width}:{zoom_height}:force_original_aspect_ratio=increase,"
+              f"crop={zoom_width}:{zoom_height},zoompan=z='min(zoom+0.00014,1.04)':d=1:"
+              f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={width}x{height}:fps={config.fps},setsar=1")
+    else:
+        vf = f"scale={width}:{height}:force_original_aspect_ratio=increase,crop={width}:{height},setsar=1"
     command = [
         _tool_path(config.ffmpeg_path, "ffmpeg"),
         "-y",

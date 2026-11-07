@@ -8,6 +8,8 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 from .config import AppConfig
+from .primary_style import (PRIMARY_ILLUSTRATION_NEGATIVE, PRIMARY_ILLUSTRATION_STYLE,
+                            illustration_subject_prompt)
 from .schema import Segment, Storyboard
 
 
@@ -21,8 +23,18 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
     availability_checked = False
     if config.visual_mode.lower() in {"comfyui-image", "hybrid"} and config.comfyui.enabled:
         from .comfyui_client import ComfyUIClient
-
-        comfy_client = ComfyUIClient(config)
+        generation_config = config
+        if storyboard.is_primary():
+            generation_config = config.model_copy(deep=True)
+            generation_config.comfyui.prompt_prefix = PRIMARY_ILLUSTRATION_STYLE
+            generation_config.comfyui.prompt_suffix = "single cohesive 16:9 scene, crisp illustration, clean edges, no writing, no captions, no watermark, no logo"
+            generation_config.comfyui.negative_prompt = ", ".join(filter(None, [
+                generation_config.comfyui.negative_prompt.replace("cartoonish", ""),
+                PRIMARY_ILLUSTRATION_NEGATIVE,
+            ]))
+            generation_config.comfyui.video_prompt_prefix = "high-quality 2D storybook animation, preserve the illustrated design and character appearance, gentle smooth motion,"
+            generation_config.comfyui.video_prompt_suffix = "consistent shapes and colours, no morphing, no text, no subtitles, no watermark"
+        comfy_client = ComfyUIClient(generation_config)
 
     for scene, segment in storyboard.all_segments():
         path = frames_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.png"
@@ -38,8 +50,12 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
                     raise RuntimeError(f"ComfyUI is not available at {config.comfyui.api_url}")
             generated_dir = output_dir / "generated_videos"
             generated = generated_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.mp4"
+            video_segment = segment
+            if storyboard.is_primary():
+                video_segment = segment.model_copy(deep=True)
+                video_segment.image_prompt = illustration_subject_prompt(segment.image_prompt or segment.visual or segment.narration)
             comfy_client.generate_video(
-                segment,
+                video_segment,
                 generated,
                 f"open_edu_video_scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}",
             )
@@ -80,8 +96,12 @@ def render_segment_frames(storyboard: Storyboard, output_dir: str | Path, config
                     continue
             generated_dir = output_dir / "generated_images"
             generated = generated_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.png"
+            image_segment = segment
+            if storyboard.is_primary():
+                image_segment = segment.model_copy(deep=True)
+                image_segment.image_prompt = illustration_subject_prompt(segment.image_prompt or segment.visual or segment.narration)
             comfy_client.generate_image(
-                segment,
+                image_segment,
                 generated,
                 f"open_edu_scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}",
             )

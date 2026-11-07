@@ -271,9 +271,12 @@ def _run_production(board: Storyboard, output_dir: Path, config: AppConfig, *, p
     use_board = board_style(subject)
     backdrops = {} if plain_cards(subject) or use_board else choose_backdrops(board)
     for scene, seg in board.all_segments():
-        is_primary = board.is_primary()
-        plan = ShotPlan(segment=seg, scene_title=scene.title, backdrop_path=backdrops.get(id(seg)),
-                        is_primary=is_primary, scene_number=scene.scene_number)
+        is_primary = board.is_primary()
+
+        plan = ShotPlan(segment=seg, scene_title=scene.title, backdrop_path=backdrops.get(id(seg)),
+                        is_primary=is_primary, topic_style=seg.topic_style or "general",
+                        scene_number=scene.scene_number)
+        plan.has_embedded_banner = bool(is_primary and seg.shot and seg.shot.asset_path and "shot_" in str(seg.shot.asset_path))
         plan.figure = _figure_for(seg, scene.title, subject)
         renderer.prepare(plan)
         for omission in plan.omitted:
@@ -411,6 +414,8 @@ def _reflow(board: Storyboard, config: AppConfig) -> None:
 
 
 def _escalate_section_repairs(board: Storyboard, unresolved: list[dict]) -> list[dict]:
+    if board.is_primary():
+        return []
     """Escalating repair (Research Item #10): field -> shot -> section.
     When 2 or more shots in a section fail all visual generation/review retries,
     escalate to section level: convert failed shots to structured teacher board cards."""

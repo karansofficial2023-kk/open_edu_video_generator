@@ -65,6 +65,7 @@ class Segment(BaseModel):
     source_references: list[str] = Field(default_factory=list)
     # ---- renderer-ready contract fields (Transcribe storyboard contract v2) ----
     shot_id: str = ""
+    topic_style: str = ""                # topic-driven visual palette for primary-school scenes
     visual_type: str = ""
     media_type: str = ""
     image_requirement: str = ""

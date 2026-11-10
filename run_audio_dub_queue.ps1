@@ -87,6 +87,9 @@ else { [System.IO.File]::WriteAllText((Join-Path $reportDir 'no_audio.csv'), '"s
 if ($probeFailures.Count) { $probeFailures | Export-Csv -LiteralPath (Join-Path $reportDir 'probe_failures.csv') -NoTypeInformation -Encoding UTF8 }
 else { [System.IO.File]::WriteAllText((Join-Path $reportDir 'probe_failures.csv'), '"source_path","status","detail"' + "`n", [System.Text.UTF8Encoding]::new($false)) }
 $inventory | Export-Csv -LiteralPath (Join-Path $reportDir 'inventory.csv') -NoTypeInformation -Encoding UTF8
+Write-Host "Inventory scanned: $($videos.Count) total | $($audioVideos.Count) with audio | $($noAudioVideos.Count) no audio | $($probeFailures.Count) probe errors"
+foreach ($video in $noAudioVideos) { Write-Host "NO_AUDIO (not a failure): $($video.source_path)" }
+foreach ($video in $probeFailures) { Write-Host "PROBE_ERROR: $($video.source_path) - $($video.detail)" }
 
 # Transcribe writes contracts into one flat folder, so duplicate stems would collide. Report and exclude those safely.
 $duplicateStems = @($audioVideos | Group-Object { [System.IO.Path]::GetFileNameWithoutExtension($_.Name) } |
@@ -103,7 +106,7 @@ $duplicatePaths = [System.Collections.Generic.HashSet[string]]::new([System.Stri
 foreach ($row in $duplicateRows) { [void]$duplicatePaths.Add($row.source_path) }
 $eligible = @($audioVideos | Where-Object { -not $duplicatePaths.Contains($_.FullName) })
 if ($eligible.Count -eq 0) {
-    Write-Host "Inventory complete: no unique audio-bearing videos to process. See $reportDir"
+    Write-Host "Inventory complete: no unique audio-bearing videos to process. Reports: $reportDir"
     exit 0
 }
 
@@ -130,6 +133,7 @@ $missingContracts = @($eligible | Where-Object {
 $transcribedThisRun = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::OrdinalIgnoreCase)
 foreach ($video in $missingContracts) { [void]$transcribedThisRun.Add($video.FullName) }
 if ($missingContracts.Count -gt 0) {
+    Write-Host "TRANSCRIBE_START: $($missingContracts.Count) video(s) need a translation contract."
     $manifest = Join-Path $reportDir 'transcribe_inputs.txt'
     $manifestText = (($missingContracts | ForEach-Object { $_.FullName }) -join "`n") + "`n"
     [System.IO.File]::WriteAllText($manifest, $manifestText, [System.Text.UTF8Encoding]::new($false))
@@ -140,17 +144,24 @@ if ($missingContracts.Count -gt 0) {
     try {
         & $queueRunner -InputManifest $manifest -OutputDir $transcribeOutput `
             -GradeLevel $GradeLevel -AcademicLevel $AcademicLevel -TargetLanguages $TargetLanguage
+        Write-Host "TRANSCRIBE_FINISHED: translation queue returned successfully."
     } catch {
         Write-Warning "Transcribe queue returned an error; continuing with any contracts it completed. $($_.Exception.Message)"
     }
+} else {
+    Write-Host "TRANSCRIBE_SKIP: all eligible videos already have valid translation contracts."
 }
 
+$contractIndex = 0
 foreach ($video in $eligible) {
+    $contractIndex++
     $contract = Join-Path $transcribeOutput ($video.BaseName + "_$TargetLanguage`_contract.json")
     if (Test-AudioTranslationContract $contract) {
         Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = 'ready_to_dub'; detail = '' })
+        Write-Host "[$contractIndex/$($eligible.Count)] CONTRACT_READY: $($video.FullName)"
     } else {
         Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = 'transcribe_failed'; detail = "Missing contract: $contract" })
+        Write-Host "[$contractIndex/$($eligible.Count)] TRANSCRIBE_FAILED: $($video.FullName) | expected $contract"
     }
 }
 
@@ -164,7 +175,10 @@ $dubConfig = Join-Path $reportDir 'config.hindi.piper.queue.yaml'
 [System.IO.File]::WriteAllText($dubConfig, $baseText, [System.Text.UTF8Encoding]::new($false))
 
 $runVideo = Join-Path $generatorRoot 'run_video.ps1'
+$videoIndex = 0
 foreach ($video in $eligible) {
+    $videoIndex++
+    $itemLabel = "[$videoIndex/$($eligible.Count)]"
     $contract = Join-Path $transcribeOutput ($video.BaseName + "_$TargetLanguage`_contract.json")
     if (-not (Test-AudioTranslationContract $contract)) {
         continue
@@ -194,11 +208,13 @@ foreach ($video in $eligible) {
                 }
                 $finalStatus = if ($reviewCount -gt 0) { 'completed_needs_teacher_review' } else { 'completed_existing' }
                 Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = $finalStatus; output_video = $previous.output_video; voice_gender = $previous.source_voice_profile.gender; voice_confidence = $previous.source_voice_profile.confidence; translation_review_flags = $reviewCount; detail = '' })
+                Write-Host "$itemLabel SKIPPED: already completed in $previousMode mode | status=$finalStatus | output=$($previous.output_video)"
                 continue
             }
         } catch { }
     }
     try {
+        Write-Host "$itemLabel DUBBING_START: $($video.FullName) | mode=$desiredAudioMode | contract=$contract | output=$itemOutput"
         Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = 'dubbing'; detail = '' })
         $runArgs = @('--config', $dubConfig, '--input', $contract, '--output', $itemOutput,
             '--replace-audio', '--source-video', $video.FullName)
@@ -224,6 +240,7 @@ foreach ($video in $eligible) {
         }
         $finalStatus = if ($reviewCount -gt 0) { 'completed_needs_teacher_review' } else { 'completed' }
         Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = $finalStatus; output_video = $dubManifest.output_video; voice_gender = $dubManifest.source_voice_profile.gender; voice_confidence = $dubManifest.source_voice_profile.confidence; translation_review_flags = $reviewCount; detail = '' })
+        Write-Host "$itemLabel DUBBING_FINISHED: status=$finalStatus | output=$($dubManifest.output_video) | QA/teacher flags=$reviewCount"
     } catch {
         $qaReportPath = Join-Path $itemOutput 'translation_qa_report.json'
         $qaBlocked = $false
@@ -234,10 +251,10 @@ foreach ($video in $eligible) {
             $qaReport = Get-Content -LiteralPath $qaReportPath -Raw | ConvertFrom-Json
             $detail = "Critical translation QA blocked dubbing ($($qaReport.issue_count) issue(s)); see $qaReportPath"
             Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = 'qa_blocked'; output_video = ''; voice_gender = ''; voice_confidence = ''; translation_review_flags = ''; detail = $detail })
-            Write-Warning $detail
+            Write-Warning "$itemLabel $detail"
         } else {
             Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = 'dub_failed'; output_video = ''; voice_gender = ''; voice_confidence = ''; translation_review_flags = ''; detail = $_.Exception.Message })
-            Write-Warning "Dubbing failed for $($video.FullName): $($_.Exception.Message)"
+            Write-Warning "$itemLabel DUBBING_FAILED: $($video.FullName) | $($_.Exception.Message)"
         }
     }
 }

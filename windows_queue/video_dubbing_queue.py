@@ -129,6 +129,7 @@ def run_queue(mode: str, videos: list[Path], ids: dict[str, str]) -> int:
     say(f"Live log: {log_path}", log)
     say("IDs: " + ", ".join(f"{ids[os.path.normcase(str(v))]}={v.name}" for v in videos), log)
     say("Starting Transcribe/video-generator queue…", log)
+    say(f"STAGE 1/3: scanning audio streams for {len(videos)} video(s); no-audio items will be reported separately.", log)
     run_started = time.time()
     try:
         process = subprocess.Popen(command, cwd=GENERATOR_ROOT, stdout=subprocess.PIPE,

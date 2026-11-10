@@ -8,7 +8,7 @@ Put source videos under `D:\Python\video_dubbing` (subfolders are scanned too). 
 | `RUN_SECOND_AUDIO_TRACK.bat` | Resume in dual-track mode. English remains the default and Hindi is selectable; completed dual-track dubs are skipped and unfinished videos are retried. Existing replacement-mode videos are converted to dual-track outputs. |
 | `TEACHER_RERUN_BY_ID.bat V000001` | Rerun just one video selected by its persistent ID. It reuses that video's translation contract so a teacher's contract edit is not overwritten. |
 
-First run creates `video_ids.csv`. Each video receives a persistent ID such as `V000001`; use that ID for teacher reruns. IDs identify videos in logs and commands; source files are not renamed. Each run prints live Transcribe/generator output plus a status line every ten seconds with total, QA-passed completed, teacher-review, failed, pending, and no-audio counts. No-audio items are listed separately and are not counted as failures.
+First run creates `video_ids.csv`. Each video receives a persistent ID such as `V000001`; use that ID for teacher reruns. IDs identify videos in logs and commands. After a queue run, generated MP4 filenames are prefixed with the ID (for example, V000001_AC Motor_dub_hi_dual.mp4); older existing outputs are prefixed the next time a launcher scans them. Source videos are not renamed. Each run prints live Transcribe/generator output plus a status line every ten seconds with total, QA-passed completed, teacher-review, failed, pending, and no-audio counts. No-audio items are listed separately and are not counted as failures.
 
 To assign/list IDs without starting production, run `py -3 video_dubbing_queue.py --mode list`.
 
@@ -47,3 +47,6 @@ Set-Location -LiteralPath 'D:\Python\video_dubbing'
 ## Restart after interruption
 
 After network or power interruption, run the same mode launcher again. Completed videos with a matching audio mode are skipped; valid translation contracts are reused; failed or unfinished videos are retried. If power fails while one video is in TTS/mux, that current video starts again from its dubbing step because per-sentence Piper work is not checkpointed. Switching from replacement audio to dual-track mode intentionally rebuilds videos that do not yet have both tracks. The teacher-ID launcher intentionally reruns that one video even if a completed dub exists.
+
+
+The ID is a filename prefix for identification; it is not burned into the visible video frames.

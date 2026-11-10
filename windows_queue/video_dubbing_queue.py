@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import datetime as dt
 import os
 import queue
@@ -97,6 +98,63 @@ def queue_counts() -> dict[str, int]:
     return {"completed": ok, "review": review, "failed": failed, "pending": pending, "no_audio": no_audio}
 
 
+def prefix_output_files(videos: list[Path], ids: dict[str, str], log) -> None:
+    """Put each persistent queue ID at the front of its generated MP4 filename."""
+    result_path = OUTPUT_ROOT / "reports" / "queue_results.csv"
+    rows = read_csv(result_path)
+    output_by_source: dict[str, str] = {}
+    for video in videos:
+        video_id = ids[os.path.normcase(str(video))]
+        item_dir = OUTPUT_ROOT / "dubbed" / video.stem
+        manifest_path = item_dir / "audio_replacement_manifest.json"
+        if not manifest_path.is_file():
+            continue
+        try:
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+            current_output = Path(manifest.get("output_video", ""))
+            if not current_output.is_file():
+                continue
+            candidates = [p for p in item_dir.iterdir() if p.is_file()
+                          and p.suffix.lower() in VIDEO_EXTENSIONS
+                          and (p.stem.startswith(video.stem + "_dub_")
+                               or p.name.startswith(video_id + "_" + video.stem + "_dub_"))]
+            renamed: dict[str, Path] = {}
+            for old_path in candidates:
+                key = os.path.normcase(str(old_path.resolve()))
+                if old_path.name.startswith(video_id + "_"):
+                    renamed[key] = old_path
+                    continue
+                new_path = old_path.with_name(f"{video_id}_{old_path.name}")
+                os.replace(old_path, new_path)
+                renamed[key] = new_path
+                say(f"OUTPUT_ID: {video_id} -> {new_path}", log)
+            current_key = os.path.normcase(str(current_output.resolve()))
+            final_output = renamed.get(current_key)
+            if final_output is None and current_output.is_file():
+                final_output = current_output
+            if final_output is None:
+                continue
+            manifest["output_video"] = str(final_output)
+            manifest["queue_video_id"] = video_id
+            manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+            output_by_source[os.path.normcase(str(video))] = str(final_output)
+        except (OSError, ValueError, json.JSONDecodeError) as exc:
+            say(f"OUTPUT_ID_WARNING: could not prefix output for {video_id} ({video.name}): {exc}", log)
+    if rows and output_by_source:
+        for row in rows:
+            key = os.path.normcase(os.path.abspath(row.get("source_path", "")))
+            if key in output_by_source:
+                row["output_video"] = output_by_source[key]
+        temp_path = result_path.with_suffix(".csv.tmp")
+        with temp_path.open("w", encoding="utf-8-sig", newline="") as handle:
+            fieldnames = list(dict.fromkeys(key for row in rows for key in row.keys()))
+            if "output_video" not in fieldnames:
+                fieldnames.append("output_video")
+            writer = csv.DictWriter(handle, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(rows)
+        os.replace(temp_path, result_path)
+
 def run_queue(mode: str, videos: list[Path], ids: dict[str, str]) -> int:
     if not videos:
         say("No matching videos were found.")
@@ -170,6 +228,7 @@ def run_queue(mode: str, videos: list[Path], ids: dict[str, str]) -> int:
                 f"failed={c['failed']} | pending={c['pending']} | no_audio={c['no_audio']} (not counted as failure)", log)
             last_dashboard = now
     return_code = process.wait()
+    prefix_output_files(videos, ids, log)
     report_file = OUTPUT_ROOT / "reports" / "queue_results.csv"
     report_is_current = report_file.exists() and report_file.stat().st_mtime >= run_started - 2
     c = queue_counts() if report_is_current else {

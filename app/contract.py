@@ -78,6 +78,7 @@ def segment_from_fields(fields: dict, fallback_number: int = 1) -> Segment:
         pronunciations=fields.get("pronunciations") if isinstance(fields.get("pronunciations"), dict) else {},
         manim_code=get("manim_code"),
         mermaid_code=get("mermaid_code"),
+        source_narration=get("source_narration"),
     )
 
 

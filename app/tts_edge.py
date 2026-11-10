@@ -40,7 +40,7 @@ def synthesize_storyboard(storyboard: Storyboard, output_dir: str | Path, config
     for scene, segment in storyboard.all_segments():
         out = audio_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.mp3"
         from . import tts_indic
-        prons = getattr(segment, "pronunciations", {}) or {}
+        prons = {**config.production.pronunciations.get(lang, {}), **(getattr(segment, "pronunciations", {}) or {})}
         spoken = tts_indic.apply_pronunciations(segment.narration, prons) if prons else segment.narration
         # Audio is cached by narration + voice + rate + provider so reruns never resynthesize (spec section 11).
         signature = hashlib.sha1(f"edge2|{config.edge_tts.voice}|{config.edge_tts.rate}|{spoken}".encode()).hexdigest()   # edge2: silence trimmed

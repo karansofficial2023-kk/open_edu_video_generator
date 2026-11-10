@@ -122,7 +122,7 @@ class ProductionConfig(BaseModel):
     semantic_qa: bool = True
     tts_provider: str = "edge"             # edge = cloud voices; open = open-source voices only (fails if none is installed); auto = open when installed
     open_tts: OpenTtsConfig = OpenTtsConfig()
-    pronunciations: dict[str, dict[str, str]] = {}   # per language code: {"CO2": "spoken form"}, applied to narration before synthesis
+    pronunciations: dict[str, dict[str, str]] = {"hi": {"NaOH": "सोडियम हाइड्रॉक्साइड"}}   # per language: spoken forms applied before synthesis
     indic_rate: str = "-10%"               # speaking rate for non-English lessons (Edge TTS)
     indic_voices: dict[str, str] = {
         "hi": "hi-IN-SwaraNeural", "mr": "mr-IN-AarohiNeural", "ta": "ta-IN-PallaviNeural", "te": "te-IN-ShrutiNeural",
@@ -161,6 +161,8 @@ class AppConfig(BaseModel):
     piper_path: str = "piper"
     piper_model: str = ""
     piper_config: str = ""
+    piper_gender_models: dict[str, str] = {}
+    piper_gender_configs: dict[str, str] = {}
     voice: VoiceConfig = VoiceConfig()
     render: RenderConfig = RenderConfig()
     comfyui: ComfyUIConfig = ComfyUIConfig()

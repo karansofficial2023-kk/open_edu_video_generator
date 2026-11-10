@@ -33,6 +33,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--no-embed-subtitles", action="store_true", help="Write subtitles.srt without embedding a subtitle track in MP4")
     parser.add_argument("--replace-audio", action="store_true", help="Replace a source video's audio with translated narration; preserve its video stream")
     parser.add_argument("--source-video", help="Original video whose audio track will be replaced (requires --replace-audio)")
+    parser.add_argument("--keep-original-audio", action="store_true",
+                        help="Keep source audio as the default track and add translated narration as a selectable track")
     parser.add_argument("--allow-incomplete", action="store_true", help="Render even when review/QA reports unresolved issues (draft)")
     parser.add_argument("--strict-coverage", action="store_true", help="Treat an unmet coverage checklist as blocking")
     parser.add_argument("--preflight-only", action="store_true", help="Validate the storyboard contract and services, then stop")
@@ -101,7 +103,8 @@ def run_job(parser, args, config, input_path: Path, output_dir: Path, heal: int 
         if existing_storyboard is None:
             parser.error("--replace-audio requires a translated Transcribe storyboard contract (.json)")
         from .audio_replacement import replace_audio
-        dubbed = replace_audio(existing_storyboard, args.source_video, output_dir, config)
+        dubbed = replace_audio(existing_storyboard, args.source_video, output_dir, config,
+                               keep_original_audio=args.keep_original_audio)
         print(f"AUDIO_REPLACED: {dubbed}")
         return
     if args.source_video:

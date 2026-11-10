@@ -12,9 +12,26 @@ def synthesize_storyboard(storyboard: Storyboard, output_dir: str | Path, config
     audio_dir = Path(output_dir) / "audio"
     audio_dir.mkdir(parents=True, exist_ok=True)
 
+    voice_gender = str((storyboard.language or {}).get("voice_gender", "")).strip().lower()
+    selected_model = config.piper_gender_models.get(voice_gender, "")
+    selected_config = config.piper_gender_configs.get(voice_gender, "")
+    updates = {}
+    if selected_model:
+        updates["piper_model"] = selected_model
+    if selected_config:
+        updates["piper_config"] = selected_config
+    voice_config = config.model_copy(update=updates) if updates else config
+    language = str((storyboard.language or {}).get("bcp47", "")).split("-")[0].lower()
+    global_pronunciations = config.production.pronunciations.get(language, {})
+
     for scene, segment in storyboard.all_segments():
         out = audio_dir / f"scene_{scene.scene_number:02d}_segment_{segment.segment_number:02d}.wav"
-        synthesize_text(segment.narration, out, config)
+        pronunciations = {**global_pronunciations, **(segment.pronunciations or {})}
+        spoken = segment.narration
+        if pronunciations:
+            from .tts_indic import apply_pronunciations
+            spoken = apply_pronunciations(spoken, pronunciations)
+        synthesize_text(spoken, out, voice_config)
         segment.audio_path = str(out)
 
 

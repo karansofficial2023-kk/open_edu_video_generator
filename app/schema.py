@@ -98,6 +98,7 @@ class Segment(BaseModel):
     pronunciations: dict[str, str] = Field(default_factory=dict)
     manim_code: str = ""
     mermaid_code: str = ""
+    source_narration: str = ""     # retained source-language sentence used for critical translation QA before dubbing
 
 
 class Scene(BaseModel):

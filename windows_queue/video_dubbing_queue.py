@@ -27,6 +27,64 @@ FAILURE = {"probe_error", "duplicate_stem", "transcribe_failed", "dub_failed", "
 ACTIVE = {"queued", "transcribing", "ready_to_dub", "dubbing", "audio_found"}
 
 
+def apply_teacher_corrections(video: Path, video_id: str) -> int:
+    """Apply reviewed Hindi lines by shot ID while retaining English text and timing."""
+    correction_path = INPUT_ROOT / "teacher_corrections" / f"{video_id}.json"
+    contract_path = OUTPUT_ROOT / "transcribe" / f"{video.stem}_hi_contract.json"
+    if not correction_path.is_file():
+        raise ValueError(f"Teacher correction file is missing: {correction_path}")
+    if not contract_path.is_file():
+        raise ValueError(f"Translated contract is missing: {contract_path}. Run the Hindi queue first.")
+    correction_data = json.loads(correction_path.read_text(encoding="utf-8-sig"))
+    rows = correction_data.get("corrections", [])
+    if not isinstance(rows, list) or not rows:
+        raise ValueError(f"Expected a nonempty corrections list in {correction_path}")
+    contract = json.loads(contract_path.read_text(encoding="utf-8-sig"))
+    shots = {str(shot.get("shot_id")): shot for scene in contract.get("scenes", [])
+             for shot in scene.get("shots", [])}
+    seen = set()
+    source_corrected = set()
+    for row in rows:
+        shot_id = str(row.get("shot_id", "")).strip()
+        narration = row.get("narration", "")
+        if shot_id in seen or shot_id not in shots or not isinstance(narration, str) or not narration.strip():
+            raise ValueError(f"Invalid, duplicate, or empty correction for shot {shot_id!r} in {correction_path}")
+        corrected_source = row.get("source_narration")
+        if corrected_source is not None and (not isinstance(corrected_source, str) or not corrected_source.strip()):
+            raise ValueError(f"Source correction for shot {shot_id!r} must be nonempty English text")
+        if not shots[shot_id].get("source_narration"):
+            raise ValueError(f"Shot {shot_id} has no English source for QA")
+        seen.add(shot_id)
+        if corrected_source is not None:
+            source_corrected.add(shot_id)
+    for row in rows:
+        shot = shots[str(row["shot_id"]).strip()]
+        shot["narration"] = row["narration"].strip()
+        if "source_narration" in row:
+            shot["source_narration"] = row["source_narration"].strip()
+    temporary = contract_path.with_suffix(".teacher_tmp.json")
+    temporary.write_text(json.dumps(contract, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    os.replace(temporary, contract_path)
+    review_path = OUTPUT_ROOT / "transcribe" / f"{video.stem}_hi_translation_review.json"
+    if review_path.is_file():
+        review = json.loads(review_path.read_text(encoding="utf-8-sig"))
+        active, resolved = [], list(review.get("teacher_resolved_items", []))
+        for item in review.get("review_items", []):
+            where = str(item.get("where", ""))
+            corrected_id = next((shot_id for shot_id in seen if f"scene {shot_id} " in where), None)
+            if corrected_id and ("source_asr" not in where or corrected_id in source_corrected):
+                resolved.append({**item, "resolved_by_teacher_id": video_id})
+            else:
+                active.append(item)
+        review["review_items"] = active
+        review["teacher_resolved_items"] = resolved
+        review_tmp = review_path.with_suffix(".teacher_tmp.json")
+        review_tmp.write_text(json.dumps(review, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        os.replace(review_tmp, review_path)
+    print(f"Applied {len(rows)} reviewed correction(s) from {correction_path}", flush=True)
+    return len(rows)
+
+
 def say(message: str, log=None) -> None:
     print(message, flush=True)
     if log:
@@ -176,8 +234,20 @@ def run_queue(mode: str, videos: list[Path], ids: dict[str, str]) -> int:
     elif mode == "dual":
         # Resume in dual-track mode; replacement-mode outputs are rebuilt by mode mismatch.
         command.append("-KeepOriginalAudio")
+    elif mode == "dual-full-rerun":
+        command.extend(("-KeepOriginalAudio", "-RerunTranscribe", "-RerunDubbing"))
+    elif mode == "single-hindi-rerun":
+        command.extend(("-RerunTranscribe", "-RerunDubbing"))
     elif mode == "teacher-rerun":
         command.append("-RerunDubbing")
+        manifest_path = OUTPUT_ROOT / "dubbed" / videos[0].stem / "audio_replacement_manifest.json"
+        if manifest_path.is_file():
+            try:
+                previous = json.loads(manifest_path.read_text(encoding="utf-8-sig"))
+                if previous.get("audio_track_mode") == "dual_audio":
+                    command.append("-KeepOriginalAudio")
+            except (OSError, json.JSONDecodeError):
+                pass
 
     lines: queue.Queue[str | None] = queue.Queue()
     log = log_path.open("w", encoding="utf-8", newline="\n")
@@ -247,8 +317,8 @@ def run_queue(mode: str, videos: list[Path], ids: dict[str, str]) -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run the Hindi dubbing queue with visible logs and per-video IDs.")
-    parser.add_argument("--mode", choices=("fix", "dual", "teacher-rerun", "list"), required=True)
-    parser.add_argument("--video-id", help="Persistent ID from video_ids.csv; required for teacher-rerun.")
+    parser.add_argument("--mode", choices=("fix", "dual", "dual-full-rerun", "single-hindi-rerun", "teacher-rerun", "list"), required=True)
+    parser.add_argument("--video-id", help="Persistent ID from video_ids.csv; required for single-video reruns.")
     args = parser.parse_args()
     if not QUEUE_PS1.is_file():
         print(f"Queue script is missing: {QUEUE_PS1}", file=sys.stderr)
@@ -260,15 +330,21 @@ def main() -> int:
         for video in videos:
             print(f"{ids[os.path.normcase(str(video))]}  {video}")
         return 0
-    if args.mode == "teacher-rerun":
+    if args.mode in ("teacher-rerun", "single-hindi-rerun") or (args.mode == "dual-full-rerun" and args.video_id):
         if not args.video_id:
-            print("Teacher rerun needs an ID, for example V000001.", file=sys.stderr)
+            print("Single-video rerun needs an ID, for example V000001.", file=sys.stderr)
             return 2
         found = [p for p in videos if ids[os.path.normcase(str(p))].casefold() == args.video_id.casefold()]
         if not found:
             print(f"Unknown video ID: {args.video_id}. Find valid IDs in {INPUT_ROOT / 'video_ids.csv'}", file=sys.stderr)
             return 2
         videos = found
+        if args.mode == "teacher-rerun":
+            try:
+                apply_teacher_corrections(videos[0], args.video_id.upper())
+            except (ValueError, OSError, json.JSONDecodeError) as exc:
+                print(f"Teacher correction was not applied: {exc}", file=sys.stderr)
+                return 2
         # A one-video run rewrites the queue runner's summary CSVs. Preserve the last whole-folder report.
         report_dir = OUTPUT_ROOT / "reports"
         names = ("queue_results.csv", "inventory.csv", "no_audio.csv", "probe_failures.csv", "duplicate_names.csv")

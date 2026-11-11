@@ -34,6 +34,13 @@ function Test-AudioTranslationContract([string]$Path) {
             @($shots | Where-Object { [string]::IsNullOrWhiteSpace([string]$_.source_narration) }).Count -eq 0)
     } catch { return $false }
 }
+function Get-ActionableTranslationReviewCount([string]$Path) {
+    if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return 0 }
+    $review = Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
+    return @($review.review_items | Where-Object {
+        $_.where -ne 'title' -and $_.where -ne 'auto_repair'
+    }).Count
+}
 $inputFullPath = (Resolve-Path -LiteralPath $InputPath).Path
 $outputFullPath = [System.IO.Path]::GetFullPath($OutputRoot)
 $reportDir = Join-Path $outputFullPath 'reports'
@@ -190,18 +197,20 @@ foreach ($video in $eligible) {
         try {
             $previous = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
             $previousMode = if ($previous.audio_track_mode) { [string]$previous.audio_track_mode } else { 'replacement_audio' }
-            if ($previous.source_video -eq $video.FullName -and $previousMode -eq $desiredAudioMode -and $previous.output_video -and
+            $currentContractHash = (Get-FileHash -LiteralPath $contract -Algorithm SHA256).Hash.ToLowerInvariant()
+            if ($previous.source_video -eq $video.FullName -and $previousMode -eq $desiredAudioMode -and
+                $previous.qa_version -eq 4 -and $previous.contract_sha256 -eq $currentContractHash -and $previous.output_video -and
                 (Test-Path -LiteralPath $previous.output_video -PathType Leaf)) {
                 $reviewPath = Join-Path $transcribeOutput ($video.BaseName + "_$TargetLanguage`_translation_review.json")
                 $reviewCount = 0
                 if (Test-Path -LiteralPath $reviewPath -PathType Leaf) {
-                    $review = Get-Content -LiteralPath $reviewPath -Raw | ConvertFrom-Json
-                    $reviewCount = @($review.review_items).Count
+                    $reviewCount = Get-ActionableTranslationReviewCount $reviewPath
                 }
                 $qaPath = Join-Path $itemOutput 'translation_qa_report.json'
                 if (Test-Path -LiteralPath $qaPath -PathType Leaf) {
                     $qa = Get-Content -LiteralPath $qaPath -Raw | ConvertFrom-Json
-                    $reviewCount += [int]$qa.issue_count
+                    if ($qa.translation_review_integrated) { $reviewCount = [int]$qa.issue_count }
+                    else { $reviewCount += [int]$qa.issue_count }
                 }
                 if ($previous.source_voice_profile.gender -eq 'unknown' -or [double]$previous.source_voice_profile.confidence -lt 0.55) {
                     $reviewCount++
@@ -227,13 +236,13 @@ foreach ($video in $eligible) {
         $reviewPath = Join-Path $transcribeOutput ($video.BaseName + "_$TargetLanguage`_translation_review.json")
         $reviewCount = 0
         if (Test-Path -LiteralPath $reviewPath -PathType Leaf) {
-            $review = Get-Content -LiteralPath $reviewPath -Raw | ConvertFrom-Json
-            $reviewCount = @($review.review_items).Count
+            $reviewCount = Get-ActionableTranslationReviewCount $reviewPath
         }
         $qaPath = Join-Path $itemOutput 'translation_qa_report.json'
         if (Test-Path -LiteralPath $qaPath -PathType Leaf) {
             $qa = Get-Content -LiteralPath $qaPath -Raw | ConvertFrom-Json
-            $reviewCount += [int]$qa.issue_count
+            if ($qa.translation_review_integrated) { $reviewCount = [int]$qa.issue_count }
+            else { $reviewCount += [int]$qa.issue_count }
         }
         if ($dubManifest.source_voice_profile.gender -eq 'unknown' -or [double]$dubManifest.source_voice_profile.confidence -lt 0.55) {
             $reviewCount++

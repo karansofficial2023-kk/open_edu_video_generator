@@ -104,7 +104,7 @@ def run_job(parser, args, config, input_path: Path, output_dir: Path, heal: int 
             parser.error("--replace-audio requires a translated Transcribe storyboard contract (.json)")
         from .audio_replacement import replace_audio
         dubbed = replace_audio(existing_storyboard, args.source_video, output_dir, config,
-                               keep_original_audio=args.keep_original_audio)
+                               keep_original_audio=args.keep_original_audio, contract_path=input_path)
         print(f"AUDIO_REPLACED: {dubbed}")
         return
     if args.source_video:

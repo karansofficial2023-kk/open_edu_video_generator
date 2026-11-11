@@ -2,6 +2,11 @@
 from __future__ import annotations
 
 import json
+import hashlib
+import os
+import re
+import subprocess
+import difflib
 from pathlib import Path
 
 from .config import AppConfig
@@ -12,6 +17,29 @@ from .translation_qa import repair_protected_content
 from .voice_profile import source_voice_profile
 
 MAX_SPEED_UP = 1.50
+QA_VERSION = 4
+
+
+def _speech_verification(audio: Path, expected: str, output: Path) -> dict:
+    """ASR the synthesized Hindi speech and compare it with the approved narration."""
+    python = Path(os.environ.get("DUB_ASR_PYTHON", r"D:\AI\ComfyUI_windows_portable\python_embeded\python.exe"))
+    script = Path(os.environ.get("DUB_ASR_SCRIPT", r"D:\Python\claude version\transcribe\whisper_transcribe.py"))
+    if not python.is_file() or not script.is_file():
+        return {"status": "unavailable", "detail": "Hindi ASR Python or script is missing"}
+    transcript_path = output / "post_tts_transcript.json"
+    try:
+        process = subprocess.run([str(python), str(script), str(audio), "--model", "large-v3",
+                                  "--device", "cuda", "--language", "hi", "--output", str(transcript_path)],
+                                 capture_output=True, text=True, errors="replace", timeout=3600)
+        if process.returncode or not transcript_path.is_file():
+            return {"status": "unavailable", "detail": (process.stderr or process.stdout)[-500:]}
+        heard = json.loads(transcript_path.read_text(encoding="utf-8-sig")).get("text", "")
+        normalize = lambda value: re.sub(r"[^\w\u0900-\u097f]+", " ", value.casefold()).strip()
+        similarity = difflib.SequenceMatcher(None, normalize(expected), normalize(heard), autojunk=False).ratio()
+        return {"status": "passed" if similarity >= 0.72 else "needs_teacher_review",
+                "similarity": round(similarity, 3), "heard": heard[:1000], "transcript": str(transcript_path)}
+    except (OSError, ValueError, subprocess.TimeoutExpired, json.JSONDecodeError) as error:
+        return {"status": "unavailable", "detail": str(error)[:500]}
 
 
 def _probe(path: Path, config: AppConfig) -> dict:
@@ -64,7 +92,7 @@ def _concat_tts(files: list[Path], target: Path, config: AppConfig) -> Path:
 
 
 def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str | Path, config: AppConfig,
-                  keep_original_audio: bool = False) -> Path:
+                  keep_original_audio: bool = False, contract_path: str | Path | None = None) -> Path:
     """Dub a translated Transcribe contract without rendering images or subtitles."""
     source = Path(source_video).expanduser().resolve()
     if not source.is_file():
@@ -79,10 +107,23 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     output = Path(output_dir).resolve()
     output.mkdir(parents=True, exist_ok=True)
     qa_repairs, qa_issues = repair_protected_content(board)
+    contract_file = Path(contract_path) if contract_path else None
+    contract_hash = hashlib.sha256(contract_file.read_bytes()).hexdigest() if contract_file and contract_file.is_file() else ""
+    review_file = contract_file.with_name(contract_file.name.replace("_contract.json", "_translation_review.json")) if contract_file else None
+    if review_file and review_file.is_file():
+        review = json.loads(review_file.read_text(encoding="utf-8-sig"))
+        for item in review.get("review_items", []):
+            if item.get("where") in ("title", "auto_repair"):
+                continue
+            qa_issues.append({"shot_id": item.get("where", ""), "kind": "translation_review",
+                              "source": item.get("source", ""), "translation": item.get("translation", ""),
+                              "detail": item.get("problem", "Translation needs review")})
     qa_report = output / "translation_qa_report.json"
     qa_report.write_text(json.dumps({
+        "qa_version": QA_VERSION, "contract_sha256": contract_hash,
+        "translation_review_integrated": True,
         "status": "needs_teacher_review" if qa_issues else "passed_with_corrections" if qa_repairs else "passed",
-        "reason": "Safe source-grounded formula/number corrections were applied before TTS; unresolved checks remain for teacher review." if qa_issues else "All source narration lines and protected formula/number checks passed; corrections were applied before TTS." if qa_repairs else "All source narration lines and protected formula/number tokens passed.",
+        "reason": "Source-aligned formula, number, equation, and known terminology checks found items for teacher review; safe corrections were applied before TTS." if qa_issues else "Source-aligned formula, number, equation, and known terminology checks passed; corrections were applied before TTS." if qa_repairs else "Source-aligned formula, number, equation, and known terminology checks passed.",
         "checked_segments": len(segments),
         "repair_count": len(qa_repairs),
         "repairs": qa_repairs,
@@ -212,6 +253,19 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     concat_config.voice.sentence_gap_seconds = 0.0
     concat_config.voice.scene_gap_seconds = 0.0
     narration = concat_audio(concat_board, audio_dir, concat_config)
+    speech_check = _speech_verification(narration, " ".join(s.narration for s in segments), output)
+    if speech_check["status"] != "passed":
+        qa_issues.append({"shot_id": "whole_audio", "kind": "post_tts_speech_check",
+                          "source": "approved Hindi narration", "translation": "",
+                          "detail": speech_check.get("detail", "Speech-to-text differs from approved narration")})
+    report = json.loads(qa_report.read_text(encoding="utf-8"))
+    report["post_tts_speech_check"] = speech_check
+    report["issues"] = qa_issues
+    report["issue_count"] = len(qa_issues)
+    report["status"] = "needs_teacher_review" if qa_issues else "passed_with_corrections" if qa_repairs else "passed"
+    report["reason"] = ("Unresolved source, translation, or synthesized-speech findings require teacher review."
+                        if qa_issues else "Source, translation, and synthesized Hindi speech checks passed.")
+    qa_report.write_text(json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
     measured = audio_duration(narration, config)
     if abs(measured - video_seconds) > 0.15:
         raise RuntimeError(f"Synchronized narration is {measured:.2f}s; source video is {video_seconds:.2f}s")
@@ -254,6 +308,7 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
         raise RuntimeError(f"Dubbed output duration {output_seconds:.2f}s differs from source {video_seconds:.2f}s")
 
     manifest = {
+        "qa_version": QA_VERSION, "contract_sha256": contract_hash,
         "source_video": str(source), "output_video": str(dubbed), "target_language": language,
         "source_duration_seconds": round(video_seconds, 3), "output_duration_seconds": round(output_seconds, 3),
         "video_codec": result_video.get("codec_name"), "audio_codec": result_audio.get("codec_name"),

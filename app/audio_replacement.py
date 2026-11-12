@@ -20,7 +20,7 @@ from .visual_source_qa import (audit_visual_source, load_visual_report,
 
 MAX_SPEED_UP = 1.50
 MIN_NATURAL_TEMPO = 0.85
-QA_VERSION = 12
+QA_VERSION = 15
 
 
 def _normalize_speech(value: str) -> str:
@@ -446,6 +446,7 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     report["visual_source_qa"] = ({"status": visual_report["status"],
                                     "checked_cues": visual_report["checked_cues"],
                                     "eligible_cues": visual_report["eligible_cues"],
+                                    "screened_unflagged_cues": visual_report.get("screened_unflagged_cues", 0),
                                     "reused_pre_dubbing_report": visual_report.get("reused", False),
                                     "report_path": visual_report.get("report_path")}
                                    if visual_report else None)

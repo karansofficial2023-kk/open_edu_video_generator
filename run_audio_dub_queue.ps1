@@ -237,7 +237,7 @@ foreach ($video in $eligible) {
                 (Get-FileHash -LiteralPath $reviewPath -Algorithm SHA256).Hash.ToLowerInvariant()
             } else { '' }
             if ($previous.source_video -eq $video.FullName -and $previousMode -eq $desiredAudioMode -and
-                $previous.qa_version -eq 12 -and $previous.source_size -eq $video.Length -and
+                $previous.qa_version -eq 15 -and $previous.source_size -eq $video.Length -and
                 $previous.source_mtime_utc_ticks -eq $video.LastWriteTimeUtc.Ticks -and
                 $previous.visual_source_signature.review_sha256 -eq $currentReviewHash -and
                 $previous.visual_source_qa_report_path -and

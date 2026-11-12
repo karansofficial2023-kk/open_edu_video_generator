@@ -17,7 +17,7 @@ from pathlib import Path
 from .renderer import _tool_path
 from .translation_qa import _formula_tokens, _SPOKEN_EQUATION
 
-VISUAL_QA_VERSION = 2
+VISUAL_QA_VERSION = 5
 _CHEMISTRY = re.compile(r"\b(formula|equation|reaction|compound|bleaching|sodium|calcium|hydroxide|"
                         r"chloride|oxide|carbonate|acid|alkali|ketone|ethanol|ethanoic)\b", re.I)
 _MATH = re.compile(r"\b(plus|minus|times|multiply|divid|subtract|equals?|equal to|calculate|solve)\b|[+×÷=]", re.I)
@@ -140,6 +140,18 @@ def _read_frame(engine, image: Path) -> list[dict]:
             for box, text, confidence in result or [] if str(text).strip()]
 
 
+def _capture_frame(engine, source_video: Path, image: Path, when: float, config) -> list[dict] | None:
+    command = [_tool_path(config.ffmpeg_path, "ffmpeg"), "-v", "error", "-y", "-ss", str(when),
+               "-i", str(source_video), "-frames:v", "1", "-q:v", "2", str(image)]
+    process = subprocess.run(command, capture_output=True, timeout=45, check=False)
+    if process.returncode or not image.is_file():
+        return None
+    try:
+        return _read_frame(engine, image)
+    except (ValueError, OSError, RuntimeError):
+        return []
+
+
 def _vision_read(image: Path, source_line: str, model: str, ollama_url: str) -> dict:
     import requests
     schema = {"type": "object", "properties": {
@@ -147,25 +159,37 @@ def _vision_read(image: Path, source_line: str, model: str, ollama_url: str) -> 
         "visible_equations": {"type": "array", "items": {"type": "string"}},
         "contradicts_spoken_line": {"type": "boolean"}, "reason": {"type": "string"}},
         "required": ["visible_labels", "visible_equations", "contradicts_spoken_line", "reason"]}
-    response = requests.post(ollama_url.rstrip("/") + "/api/generate", json={
+    request = {
         "model": model, "stream": False, "think": False, "format": schema,
-        "options": {"temperature": 0, "num_predict": 350},
+        "options": {"temperature": 0, "num_predict": 700},
         "prompt": ("Read only printed formulae, identifiers and arithmetic equations visible in this frame. "
                    "Count duplicate labels. Do not infer hidden or future animation frames. "
                    "Does the visible text directly contradict this spoken line? A different but related diagram "
-                   "does not count as a contradiction. Spoken line: " + source_line),
+                   "does not count as a contradiction. Keep reason under 25 words. Spoken line: " + source_line),
         "images": [base64.b64encode(image.read_bytes()).decode("ascii")],
-    }, timeout=120)
-    response.raise_for_status()
-    return json.loads(response.json()["response"])
+    }
+    for attempt in range(2):
+        response = requests.post(ollama_url.rstrip("/") + "/api/generate", json=request, timeout=120)
+        response.raise_for_status()
+        try:
+            return json.loads(response.json()["response"])
+        except (json.JSONDecodeError, KeyError, TypeError):
+            if attempt:
+                raise
+            request["prompt"] = ("Return a short valid JSON object with keys visible_labels, visible_equations, "
+                                 "contradicts_spoken_line, reason. Read the image, do not infer hidden frames. "
+                                 "Spoken line: " + source_line)
+    raise RuntimeError("Vision response was not valid JSON")
 
 
 def _candidate_priority(source: str, flagged: bool) -> int:
     if _formula_tokens(source) or _SPOKEN_EQUATION.search(source):
         return 3
+    if flagged:
+        return 3
     if _MATH.search(source) and re.search(r"\d", source):
         return 2
-    if flagged or _CHEMISTRY.search(source):
+    if _CHEMISTRY.search(source):
         return 1
     return 0
 
@@ -183,20 +207,20 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
     flagged_ids = {match.group(1) for item in review_items or []
                    if (match := re.search(r"scene (\d+\.\d+)", str(item.get("where", ""))))}
     candidates = []
+    unflagged = []
     for _scene, segment in board.all_segments():
         if segment.source_start is None or segment.source_end is None or not segment.source_narration:
             continue
         priority = _candidate_priority(segment.source_narration, segment.shot_id in flagged_ids)
         if priority:
             candidates.append((priority, segment))
-    candidates.sort(key=lambda pair: (-pair[0], float(pair[1].source_start)))
-    high_priority = [pair for pair in candidates if pair[0] >= 2]
-    lower_priority = [pair for pair in candidates if pair[0] < 2]
-    selected = high_priority + lower_priority[:max(0, max_cues - len(high_priority))]
+        else:
+            unflagged.append(segment)
     report = {"visual_qa_version": VISUAL_QA_VERSION, "source_video": str(source_video),
               "ocr_engine": "rapidocr_onnxruntime", "vision_model": vision_model,
               "input_signature": input_signature,
               "status": "completed", "eligible_cues": len(candidates), "checked_cues": 0,
+              "screened_unflagged_cues": 0, "unreadable_screened_cues": 0,
               "cues": [], "issues": []}
     if isinstance(engine, Exception):
         report["status"] = "ocr_unavailable"
@@ -208,6 +232,34 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
         report["report_path"] = str(report_path)
         return report
 
+    for old_frame in visual_dir.glob("shot_*.jpg"):
+        old_frame.unlink()
+
+    # A formula may be shown without being named in the ASR line. Screen every
+    # otherwise unflagged timed cue once, then reuse the midpoint frame below.
+    midpoint_cache = {}
+    for segment in unflagged:
+        shot_id = segment.shot_id or str(segment.segment_number)
+        sample_times = _sample_times(float(segment.source_start), float(segment.source_end))
+        midpoint_index = len(sample_times) // 2
+        midpoint = sample_times[midpoint_index]
+        image = visual_dir / f"shot_{shot_id.replace('.', '_')}_{midpoint_index + 1}.jpg"
+        lines = _capture_frame(engine, source_video, image, midpoint, config)
+        report["screened_unflagged_cues"] += 1
+        if lines is None or not lines:
+            report["unreadable_screened_cues"] += 1
+        confident = [line["text"] for line in lines or [] if line["confidence"] >= 0.5]
+        if any(_formula_tokens(line) or _math_equations([line]) for line in confident):
+            candidates.append((2, segment))
+            midpoint_cache[shot_id] = (midpoint_index + 1, image, lines)
+        elif image.is_file():
+            image.unlink()
+    candidates.sort(key=lambda pair: (-pair[0], float(pair[1].source_start)))
+    high_priority = [pair for pair in candidates if pair[0] >= 2]
+    lower_priority = [pair for pair in candidates if pair[0] < 2]
+    selected = high_priority + lower_priority[:max(0, max_cues - len(high_priority))]
+    report["eligible_cues"] = len(candidates)
+
     for _priority, segment in selected:
         shot_id = segment.shot_id or str(segment.segment_number)
         expected = list(dict.fromkeys(token for token, _a, _b in _formula_tokens(segment.source_narration)))
@@ -217,15 +269,11 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
         equation_frames = Counter()
         for number, when in enumerate(_sample_times(float(segment.source_start), float(segment.source_end)), start=1):
             image = visual_dir / f"shot_{shot_id.replace('.', '_')}_{number}.jpg"
-            command = [_tool_path(config.ffmpeg_path, "ffmpeg"), "-v", "error", "-y", "-ss", str(when),
-                       "-i", str(source_video), "-frames:v", "1", "-q:v", "2", str(image)]
-            process = subprocess.run(command, capture_output=True, timeout=45, check=False)
-            if process.returncode or not image.is_file():
+            lines = (midpoint_cache[shot_id][2] if shot_id in midpoint_cache and
+                     number == midpoint_cache[shot_id][0]
+                     else _capture_frame(engine, source_video, image, when, config))
+            if lines is None:
                 continue
-            try:
-                lines = _read_frame(engine, image)
-            except (ValueError, OSError, RuntimeError):
-                lines = []
             confident = [line["text"] for line in lines if line["confidence"] >= 0.5]
             for token in expected:
                 if _exact_token_present(token, confident):
@@ -240,7 +288,10 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
                  "source_narration": segment.source_narration, "expected_tokens": expected,
                  "token_frame_counts": dict(token_frames), "visible_token_frame_counts": dict(visible_token_frames),
                  "samples": samples, "status": "no_visible_protected_text"}
-        if _priority >= 2 and (not samples or all(not sample["ocr_lines"] for sample in samples)):
+        expects_printed_fact = (bool(expected) or bool(_SPOKEN_EQUATION.search(segment.source_narration)) or
+                                (_MATH.search(segment.source_narration) and
+                                 re.search(r"\d", segment.source_narration)) or shot_id in midpoint_cache)
+        if expects_printed_fact and (not samples or all(not sample["ocr_lines"] for sample in samples)):
             entry["status"] = "visual_evidence_unavailable"
             report["issues"].append({"shot_id": shot_id, "kind": "visual_evidence_unavailable",
                                      "source": segment.source_narration, "translation": "",

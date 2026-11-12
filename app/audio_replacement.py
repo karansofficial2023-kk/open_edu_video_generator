@@ -17,7 +17,83 @@ from .translation_qa import repair_protected_content
 from .voice_profile import source_voice_profile
 
 MAX_SPEED_UP = 1.50
-QA_VERSION = 4
+MIN_NATURAL_TEMPO = 0.85
+QA_VERSION = 10
+
+
+def _normalize_speech(value: str) -> str:
+    return re.sub(r"[^\w\u0900-\u097f]+", " ", value.casefold()).strip()
+
+
+def _cue_speech_checks(transcript: Path, timing_groups: list[dict], segments: list[Segment]) -> list[dict]:
+    """Compare synthesized words with the approved Hindi within each source-aligned cue group."""
+    data = json.loads(transcript.read_text(encoding="utf-8-sig"))
+    heard_words = [(float(w["start"]), str(w["word"]))
+                   for cue in data.get("segments", []) for w in cue.get("words", [])
+                   if w.get("start") is not None and w.get("word")]
+    by_id = {s.shot_id: s for s in segments}
+    checks = []
+    for group in timing_groups:
+        start = group["start_seconds"]
+        end = start + group["slot_seconds"]
+        expected = " ".join(by_id[shot].narration for shot in group["segment_ids"] if shot in by_id)
+        heard = " ".join(word for when, word in heard_words if start <= when < end)
+        score = difflib.SequenceMatcher(None, _normalize_speech(expected), _normalize_speech(heard),
+                                        autojunk=False).ratio() if expected else 1.0
+        checks.append({"segment_ids": group["segment_ids"], "start_seconds": start,
+                       "end_seconds": round(end, 3), "similarity": round(score, 3),
+                       "status": "needs_review" if len(_normalize_speech(expected)) > 20 and score < 0.35 else "passed",
+                       "expected": expected, "heard": heard})
+    return checks
+
+
+def _source_speech_gaps(audio: Path, video: Path, segments: list[Segment], config: AppConfig,
+                        source_transcript: Path | None = None) -> list[dict]:
+    """Find long Hindi silences inside source ASR cue intervals and measure visual change."""
+    result = _run_capture([_tool_path(config.ffmpeg_path, "ffmpeg"), "-hide_banner", "-i", str(audio),
+                           "-af", "silencedetect=noise=-35dB:d=1.8", "-f", "null", "-"])
+    starts = re.findall(r"silence_start:\s*([\d.]+)", result.stderr)
+    ends = re.findall(r"silence_end:\s*([\d.]+)", result.stderr)
+    source_words = None
+    if source_transcript and source_transcript.is_file():
+        transcript = json.loads(source_transcript.read_text(encoding="utf-8-sig"))
+        source_words = [(float(w["start"]), float(w["end"])) for cue in transcript.get("segments", [])
+                        for w in cue.get("words", []) if w.get("start") is not None and w.get("end") is not None]
+        if not source_words:
+            source_words = None
+    gaps = []
+    for begin_text, end_text in zip(starts, ends):
+        begin, end = float(begin_text), float(end_text)
+        overlapping = [s for s in segments if s.source_start is not None and s.source_end is not None
+                       and min(end, float(s.source_end)) - max(begin, float(s.source_start)) >= 1.0]
+        if overlapping:
+            word_overlap = (sum(max(0.0, min(end, word_end) - max(begin, word_start))
+                                for word_start, word_end in source_words)
+                            if source_words is not None else None)
+            probe_seconds = min(end - begin, 5.0)
+            motion = 0.0
+            try:
+                frames = subprocess.run([_tool_path(config.ffmpeg_path, "ffmpeg"), "-v", "error", "-ss", str(begin),
+                                         "-t", str(probe_seconds), "-i", str(video), "-vf",
+                                         "fps=2,scale=160:90,format=gray", "-f", "rawvideo", "-"],
+                                        capture_output=True, timeout=60, check=False)
+                pixels = 160 * 90
+                raw = frames.stdout
+                pairs = [(raw[i:i+pixels], raw[i+pixels:i+2*pixels])
+                         for i in range(0, len(raw) - 2*pixels + 1, pixels)]
+                if pairs:
+                    motion = sum(sum(abs(a - b) for a, b in zip(left, right)) / pixels
+                                 for left, right in pairs) / len(pairs)
+            except (OSError, RuntimeError, TypeError, subprocess.TimeoutExpired):
+                pass
+            gaps.append({"start_seconds": round(begin, 3), "end_seconds": round(end, 3),
+                         "source_speech_overlap_seconds": round(max(min(end, float(s.source_end))
+                            - max(begin, float(s.source_start)) for s in overlapping), 3),
+                         "segment_ids": [s.shot_id for s in overlapping],
+                         "source_word_overlap_seconds": round(word_overlap, 3) if word_overlap is not None else None,
+                         "visual_change_score": round(motion, 2),
+                         "visual_motion_detected": motion >= 6.0})
+    return gaps
 
 
 def _speech_verification(audio: Path, expected: str, output: Path) -> dict:
@@ -52,18 +128,22 @@ def _probe(path: Path, config: AppConfig) -> dict:
         raise RuntimeError(f"FFprobe returned invalid metadata for {path}") from exc
 
 
-def _fit_segment(source: Path, target: Path, seconds: float, config: AppConfig) -> float:
+def _fit_segment(source: Path, target: Path, seconds: float, config: AppConfig,
+                 source_speech_seconds: float | None = None) -> float:
     """Keep a natural pace when speech fits; speed up only when needed and pad the rest of its slot with silence."""
     duration = audio_duration(source, config)
     if duration <= 0 or seconds <= 0:
         raise ValueError(f"Cannot fit empty narration audio into {seconds:.2f}s")
     speed = duration / seconds if duration > seconds else 1.0
+    if duration <= seconds and source_speech_seconds and duration < source_speech_seconds - 0.35:
+        speech_target = min(seconds, source_speech_seconds)
+        speed = max(MIN_NATURAL_TEMPO, duration / speech_target)
     if speed > MAX_SPEED_UP:
         raise ValueError(
             f"Translated narration needs {duration:.1f}s but its video slot is {seconds:.1f}s. "
             f"Fitting would require {speed:.2f}x speed (limit {MAX_SPEED_UP:.2f}x); shorten/re-split the translation or allow a longer video."
         )
-    filters = ([f"atempo={speed:.6f}"] if speed > 1.005 else [])
+    filters = ([f"atempo={speed:.6f}"] if abs(speed - 1.0) > 0.005 else [])
     filters.extend([f"apad=whole_dur={seconds:.6f}", f"atrim=duration={seconds:.6f}"])
     _run([
         _tool_path(config.ffmpeg_path, "ffmpeg"), "-v", "error", "-y", "-i", str(source),
@@ -110,10 +190,35 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     contract_file = Path(contract_path) if contract_path else None
     contract_hash = hashlib.sha256(contract_file.read_bytes()).hexdigest() if contract_file and contract_file.is_file() else ""
     review_file = contract_file.with_name(contract_file.name.replace("_contract.json", "_translation_review.json")) if contract_file else None
+    resolved_reviews = []
     if review_file and review_file.is_file():
         review = json.loads(review_file.read_text(encoding="utf-8-sig"))
         for item in review.get("review_items", []):
             if item.get("where") in ("title", "auto_repair"):
+                continue
+            # Only structured audit evidence for the exact current text can resolve a
+            # review. Historical prose saying "passed" is not sufficient evidence.
+            match = re.search(r"scene (\d+\.\d+)", item.get("where", ""))
+            current = next((s for s in segments if s.shot_id == (match.group(1) if match else None)), None) if match else None
+            repaired_from_review = any(r.get("shot_id") == (current.shot_id if current else None)
+                and r.get("kind") == "narration_corrected"
+                and r.get("original_narration") == item.get("translation")
+                and r.get("corrected_narration") == (current.narration if current else None)
+                for r in qa_repairs)
+            deterministic_numeric_verified = (current is not None
+                and item.get("where", "").endswith(" narration")
+                and item.get("problem", "").startswith("number ")
+                and item.get("source") == current.source_narration
+                and item.get("translation") == current.narration
+                and not any(i.get("shot_id") == current.shot_id for i in qa_issues))
+            if deterministic_numeric_verified:
+                resolved_reviews.append({**item, "resolution": "source_aligned_numeric_verified"})
+                continue
+            if (item.get("resolution") == "verified_repair" and current is not None
+                    and item.get("source") == current.source_narration
+                    and (item.get("translation") == current.narration or repaired_from_review)
+                    and not any(i.get("shot_id") == current.shot_id for i in qa_issues)):
+                resolved_reviews.append(item)
                 continue
             qa_issues.append({"shot_id": item.get("where", ""), "kind": "translation_review",
                               "source": item.get("source", ""), "translation": item.get("translation", ""),
@@ -127,10 +232,15 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
         "checked_segments": len(segments),
         "repair_count": len(qa_repairs),
         "repairs": qa_repairs,
+        "resolved_translation_reviews": resolved_reviews,
         "issue_count": len(qa_issues),
         "issues": qa_issues,
     }, indent=2, ensure_ascii=False), encoding="utf-8")
     voice_profile = source_voice_profile(source, config, temp_parent=output)
+    if voice_profile.get("gender") not in {"male", "female"}:
+        qa_issues.append({"shot_id": "source_voice", "kind": "voice_selection_unverified",
+                          "source": "Source speaker gender could not be determined", "translation": "",
+                          "detail": "Fallback dubbing voice requires verification or an explicit voice override."})
     board.language = dict(board.language or {})
     board.language["voice_gender"] = voice_profile["gender"]
 
@@ -141,6 +251,33 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     video_seconds = float(video_stream.get("duration") or metadata.get("format", {}).get("duration") or 0)
     if video_seconds <= 0:
         raise ValueError("Could not determine a positive source-video duration")
+
+    # Preserve the original audio and frame beside uncertain ASR/formula findings.
+    # These are evidence for correction; a language model must not silently invent
+    # a scientific symbol that the source audio or slide does not establish.
+    evidence_dir = output / "source_review_evidence"
+    for issue in qa_issues:
+        if issue.get("kind") not in {"translation_review", "formula_mismatch", "number_mismatch"}:
+            continue
+        shot = re.search(r"(\d+\.\d+)", str(issue.get("shot_id", "")))
+        match = next((s for s in segments if s.shot_id == shot.group(1)), None) if shot else None
+        if match is None or match.source_start is None or match.source_end is None:
+            continue
+        begin = max(0.0, float(match.source_start) - 0.7)
+        length = min(video_seconds - begin, float(match.source_end) - begin + 0.7)
+        evidence_dir.mkdir(exist_ok=True)
+        stem = f"shot_{match.shot_id.replace('.', '_')}"
+        audio_clip = evidence_dir / f"{stem}.wav"
+        frame = evidence_dir / f"{stem}.jpg"
+        if not audio_clip.is_file():
+            _run([_tool_path(config.ffmpeg_path, "ffmpeg"), "-v", "error", "-y", "-ss", str(begin),
+                  "-t", str(length), "-i", str(source), "-map", "0:a:0", "-vn", "-ar", "16000",
+                  "-ac", "1", str(audio_clip)])
+        if not frame.is_file():
+            _run([_tool_path(config.ffmpeg_path, "ffmpeg"), "-v", "error", "-y", "-ss",
+                  str((begin + min(length / 2, 3.0))), "-i", str(source), "-frames:v", "1", str(frame)])
+        issue["source_audio_evidence"] = str(audio_clip)
+        issue["source_frame_evidence"] = str(frame)
 
     audio_dir = output / "audio_replacement"
     audio_dir.mkdir(parents=True, exist_ok=True)
@@ -224,7 +361,9 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
         group_files = source_audio[index:end_index]
         group_raw = _concat_tts(group_files, audio_dir / f"group_{group_number:04d}_raw.wav", config)
         fitted = audio_dir / f"group_{group_number:04d}_fit.wav"
-        speed = _fit_segment(group_raw, fitted, group_slot, config)
+        source_speech_seconds = (max(float(segments[i].source_end) for i in range(index, end_index)) - group_start
+                                 if timed else None)
+        speed = _fit_segment(group_raw, fitted, group_slot, config, source_speech_seconds)
         speed_factors.append(speed)
         scene = Scene(scene_number=group_number, title="", narration="", segments=[
             Segment(segment_number=1, narration="", audio_path=str(fitted))
@@ -234,6 +373,7 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
             "segment_ids": [segments[i].shot_id or str(i + 1) for i in range(index, end_index)],
             "start_seconds": round(group_start, 3), "slot_seconds": round(group_slot, 3),
             "speed_factor": round(speed, 3),
+            "source_speech_seconds": round(source_speech_seconds, 3) if source_speech_seconds else None,
         })
 
     # Fitted groups each fill their cue windows. Keep the original opening audio until the first translated speech cue.
@@ -254,12 +394,34 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     concat_config.voice.scene_gap_seconds = 0.0
     narration = concat_audio(concat_board, audio_dir, concat_config)
     speech_check = _speech_verification(narration, " ".join(s.narration for s in segments), output)
+    cue_checks = (_cue_speech_checks(Path(speech_check["transcript"]), timing_groups, segments)
+                  if speech_check.get("transcript") else [])
+    transcript_name = (re.sub(r"_[a-z]{2,3}_contract\.json$", "_transcript.json", contract_file.name)
+                       if contract_file else "")
+    source_transcript = (contract_file.with_name(transcript_name)
+                         if contract_file and transcript_name != contract_file.name else None)
+    speech_gaps = (_source_speech_gaps(narration, source, segments, config, source_transcript)
+                   if timed else [])
+    for gap in speech_gaps:
+        if (gap["visual_motion_detected"] and gap["source_speech_overlap_seconds"] >= 2.0
+                and (gap["source_word_overlap_seconds"] is None or gap["source_word_overlap_seconds"] >= 0.8)):
+            qa_issues.append({"shot_id": ",".join(gap["segment_ids"]), "kind": "source_speech_motion_gap",
+                              "source": f"{gap['start_seconds']:.2f}-{gap['end_seconds']:.2f}s",
+                              "translation": "Hindi narration is silent inside a source ASR cue while frames change",
+                              "detail": "Check the source audio and visual action; the ASR cue may also include a pause or music."})
+    for cue in cue_checks:
+        if cue["status"] == "needs_review":
+            qa_issues.append({"shot_id": ",".join(cue["segment_ids"]), "kind": "post_tts_cue_mismatch",
+                              "source": cue["expected"], "translation": cue["heard"],
+                              "detail": f"Synthesized speech similarity {cue['similarity']:.2f} is below 0.35"})
     if speech_check["status"] != "passed":
         qa_issues.append({"shot_id": "whole_audio", "kind": "post_tts_speech_check",
                           "source": "approved Hindi narration", "translation": "",
                           "detail": speech_check.get("detail", "Speech-to-text differs from approved narration")})
     report = json.loads(qa_report.read_text(encoding="utf-8"))
     report["post_tts_speech_check"] = speech_check
+    report["post_tts_cue_checks"] = cue_checks
+    report["source_speech_gaps"] = speech_gaps
     report["issues"] = qa_issues
     report["issue_count"] = len(qa_issues)
     report["status"] = "needs_teacher_review" if qa_issues else "passed_with_corrections" if qa_repairs else "passed"

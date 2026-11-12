@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import subprocess
+import hashlib
+import json
 import wave
 from pathlib import Path
 
@@ -31,7 +33,20 @@ def synthesize_storyboard(storyboard: Storyboard, output_dir: str | Path, config
         if pronunciations:
             from .tts_indic import apply_pronunciations
             spoken = apply_pronunciations(spoken, pronunciations)
-        synthesize_text(spoken, out, voice_config)
+        model = Path(voice_config.piper_model)
+        model_config = Path(voice_config.piper_config) if voice_config.piper_config else None
+        cache_key = hashlib.sha256(json.dumps({
+            "spoken": spoken, "model": str(model.resolve()),
+            "model_mtime": model.stat().st_mtime_ns if model.is_file() else None,
+            "config": str(model_config.resolve()) if model_config else "",
+            "config_mtime": model_config.stat().st_mtime_ns if model_config and model_config.is_file() else None,
+        }, ensure_ascii=False, sort_keys=True).encode("utf-8")).hexdigest()
+        marker = out.with_suffix(".sha256")
+        if not (out.is_file() and out.stat().st_size > 44 and marker.is_file()
+                and marker.read_text(encoding="ascii").strip() == cache_key):
+            marker.unlink(missing_ok=True)
+            synthesize_text(spoken, out, voice_config)
+            marker.write_text(cache_key, encoding="ascii")
         segment.audio_path = str(out)
 
 

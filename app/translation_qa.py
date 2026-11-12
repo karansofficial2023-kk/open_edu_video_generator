@@ -17,15 +17,15 @@ _ELEMENT = re.compile(r"[A-Z][a-z]?")
 # A bare comma is treated as a list separator (e.g. “2,4” => 2 and 4), not a decimal point.
 # Thousands separators remain supported; decimal values should use the unambiguous dot form.
 _NUMBER = re.compile(r"(?<![A-Za-z0-9])(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?![A-Za-z0-9])")
-_NUMBER_WORD = re.compile(r"(?<![\w\u0900-\u097f])(zero|one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|"
+_NUMBER_WORD = re.compile(r"(?<![\w\u0900-\u097f])(zero|one|two|both|three|four|five|six|seven|eight|nine|ten|eleven|twelve|"
                           r"thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|"
-                          r"fifty|sixty|seventy|eighty|ninety|शून्य|एक|दो|तीन|चार|पाँच|पांच|छह|छः|सात|आठ|नौ|"
+                          r"fifty|sixty|seventy|eighty|ninety|शून्य|एक|दो|दोनों|तीन|चार|पाँच|पांच|छह|छः|सात|आठ|नौ|"
                           r"दस|ग्यारह|बारह|तेरह|चौदह|पंद्रह|पन्द्रह|सोलह|सत्रह|अठारह|उन्नीस|बीस|तीस|चालीस|"
                           r"पचास|साठ|सत्तर|अस्सी|नब्बे)(?![\w\u0900-\u097f])", re.IGNORECASE)
 _NUMBER_WORD_VALUES = {
     **{word: value for value, word in enumerate("zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split())},
     **dict(zip("twenty thirty forty fifty sixty seventy eighty ninety".split(), range(20, 100, 10))),
-    "शून्य": 0, "एक": 1, "दो": 2, "तीन": 3, "चार": 4, "पाँच": 5, "पांच": 5,
+    "both": 2, "शून्य": 0, "एक": 1, "दो": 2, "दोनों": 2, "तीन": 3, "चार": 4, "पाँच": 5, "पांच": 5,
     "छह": 6, "छः": 6, "सात": 7, "आठ": 8, "नौ": 9, "दस": 10, "ग्यारह": 11,
     "बारह": 12, "तेरह": 13, "चौदह": 14, "पंद्रह": 15, "पन्द्रह": 15, "सोलह": 16,
     "सत्रह": 17, "अठारह": 18, "उन्नीस": 19, "बीस": 20, "तीस": 30, "चालीस": 40,
@@ -49,6 +49,7 @@ _SCIENCE_TERMS_HI = {
     "virus": ("विषाणु", "वायरस"),
     "viruses": ("विषाणु", "वायरस"),
     "electric current": ("विद्युत धारा", "बिजली की धारा", "करंट"),
+    "middle finger": ("मध्यमा उंगली", "मध्य उंगली", "मध्यमा अंगुली"),
     "vinegar": ("सिरका",),
 }
 _EQUATION_OPERATORS = {
@@ -93,7 +94,11 @@ def _numbers_outside_formulas(text: str, include_hindi_one: bool = True) -> Coun
     consumed: set[int] = set()
     index = 0
     while index < len(words):
-        word, _start, end = words[index]
+        word, start, end = words[index]
+        # Hindi "...ने दो" is the permissive verb "let ...", not the number two.
+        if word == "दो" and re.search(r"ने\s*$", safe_text[:start]):
+            index += 1
+            continue
         if word == "एक" and not include_hindi_one:
             index += 1
             continue
@@ -102,7 +107,7 @@ def _numbers_outside_formulas(text: str, include_hindi_one: bool = True) -> Coun
         if value >= 20 and value % 10 == 0 and index + 1 < len(words):
             next_word, next_start, _next_end = words[index + 1]
             unit = _NUMBER_WORD_VALUES[next_word]
-            if next_start >= end and next_start - end <= 8 and 1 <= unit <= 9:
+            if re.fullmatch(r"[\s-]+", safe_text[end:next_start]) and 1 <= unit <= 9:
                 value += unit
                 consumed.add(index + 1)
         if index not in consumed:
@@ -126,7 +131,7 @@ def _spoken_number_tokens(text: str) -> list[tuple[str, int, int]]:
         if value >= 20 and value % 10 == 0 and index + 1 < len(words):
             next_word, next_start, next_end = words[index + 1]
             unit = _NUMBER_WORD_VALUES[next_word]
-            if next_start >= end and next_start - end <= 8 and 1 <= unit <= 9:
+            if re.fullmatch(r"[\s-]+", normalized[end:next_start]) and 1 <= unit <= 9:
                 value += unit
                 end = next_end
                 index += 1
@@ -249,6 +254,33 @@ def repair_protected_content(board: Storyboard) -> tuple[list[dict[str, str]], l
         if not source.strip() or not text.strip():
             continue
         before = text
+        if ((board.language or {}).get("bcp47", "").lower().startswith("hi")
+                and re.search(r"\belectric current\b", source, re.IGNORECASE)):
+            corrected = text.replace("इलेक्ट्रिक धारा", "विद्युत धारा")
+            if corrected != text:
+                repairs.append({"shot_id": shot_id, "kind": "science_terminology",
+                                "from": text, "to": corrected})
+                text = corrected
+        if (board.language or {}).get("bcp47", "").lower().startswith("hi"):
+            if re.search(r"\bmiddle finger\b", source, re.IGNORECASE):
+                corrected = text.replace("मध्य अंगूठी", "मध्यमा उंगली").replace("मध्य अंगूठा", "मध्यमा उंगली")
+                if corrected != text:
+                    repairs.append({"shot_id": shot_id, "kind": "science_terminology", "from": text, "to": corrected})
+                    text = corrected
+            for arm_id in re.findall(r"\barm\s+([A-Z]{1,2})\b", source):
+                corrected = re.sub(r"\bहाथ\s+" + re.escape(arm_id) + r"\b", "भुजा " + arm_id, text)
+                if corrected != text:
+                    repairs.append({"shot_id": shot_id, "kind": "science_terminology", "from": text, "to": corrected})
+                    text = corrected
+        # Repair a missing/wrong operator even when all numeric tokens already match.
+        # Never rebuild an equation whose source arithmetic is inconsistent.
+        canonical = _equation_as_hindi(source)
+        if canonical and (board.language or {}).get("bcp47", "").lower().startswith("hi"):
+            equation_issues = check_translation_segment(shot_id, source, text, "hi")
+            if any(issue["kind"] in {"equation_operator_mismatch", "equation_operator_unverified", "number_mismatch"}
+                   for issue in equation_issues):
+                text = canonical
+                repairs.append({"shot_id": shot_id, "kind": "equation_rebuild", "from": before, "to": canonical})
         source_formulas = _formula_tokens(source)
         target_formulas = _formula_tokens(text)
         # Restore a source formula/identifier that the Hindi translator spelled phonetically (e.g. B2 -> बी 2).

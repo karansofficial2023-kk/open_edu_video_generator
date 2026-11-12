@@ -1,8 +1,10 @@
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true)]
     [ValidateScript({ Test-Path -LiteralPath $_ })]
     [string]$InputPath,
+
+    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+    [string]$InputManifest,
 
     [string]$OutputRoot = ".\outputs\hindi_audio_queue",
     [string]$TargetLanguage = 'hi',
@@ -18,12 +20,16 @@ param(
     [string]$PiperFemaleConfig = 'D:\AI\models\piper-hi\hi\hi_IN\priyamvada\medium\hi_IN-priyamvada-medium.onnx.json',
     [switch]$RerunTranscribe,
     [switch]$RerunDubbing,
-    [switch]$KeepOriginalAudio
+    [switch]$KeepOriginalAudio,
+    [switch]$RequireOllamaAudit
 )
 
 $ErrorActionPreference = 'Stop'
 $generatorRoot = $PSScriptRoot
 Set-Location -LiteralPath $generatorRoot
+if ([string]::IsNullOrWhiteSpace($InputPath) -eq [string]::IsNullOrWhiteSpace($InputManifest)) {
+    throw 'Specify exactly one of -InputPath or -InputManifest.'
+}
 function Test-AudioTranslationContract([string]$Path) {
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return $false }
     try {
@@ -38,10 +44,10 @@ function Get-ActionableTranslationReviewCount([string]$Path) {
     if (-not (Test-Path -LiteralPath $Path -PathType Leaf)) { return 0 }
     $review = Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
     return @($review.review_items | Where-Object {
-        $_.where -ne 'title' -and $_.where -ne 'auto_repair'
+        $_.where -ne 'title' -and $_.where -ne 'auto_repair' -and $_.resolution -ne 'verified_repair'
     }).Count
 }
-$inputFullPath = (Resolve-Path -LiteralPath $InputPath).Path
+$inputFullPath = if ($InputPath) { (Resolve-Path -LiteralPath $InputPath).Path } else { '' }
 $outputFullPath = [System.IO.Path]::GetFullPath($OutputRoot)
 $reportDir = Join-Path $outputFullPath 'reports'
 $transcribeOutput = Join-Path $outputFullPath 'transcribe'
@@ -58,7 +64,14 @@ foreach ($required in @($FfprobePath, $PiperPath, $PiperMaleModel, $PiperMaleCon
 }
 
 $extensions = @('.mp4', '.mov', '.avi', '.mkv', '.wmv', '.webm', '.flv', '.m4v', '.mpeg', '.mpg')
-if (Test-Path -LiteralPath $inputFullPath -PathType Container) {
+if ($InputManifest) {
+    $manifestFullPath = (Resolve-Path -LiteralPath $InputManifest).Path
+    $manifestEntries = @(Get-Content -LiteralPath $manifestFullPath | ForEach-Object { $_.Trim() } | Where-Object { $_ })
+    $videos = @($manifestEntries | ForEach-Object {
+        if (-not (Test-Path -LiteralPath $_ -PathType Leaf)) { throw "Manifest video is missing: $_" }
+        Get-Item -LiteralPath $_
+    })
+} elseif (Test-Path -LiteralPath $inputFullPath -PathType Container) {
     $videos = @(Get-ChildItem -LiteralPath $inputFullPath -File -Recurse |
         Where-Object { $extensions -contains $_.Extension.ToLowerInvariant() } |
         Sort-Object FullName)
@@ -68,7 +81,12 @@ if (Test-Path -LiteralPath $inputFullPath -PathType Container) {
         throw "Unsupported video file extension: $($videos[0].Extension)"
     }
 }
-if ($videos.Count -eq 0) { throw "No supported video files were found in $inputFullPath" }
+if ($videos.Count -eq 0) { throw 'No supported video files were found.' }
+foreach ($video in $videos) {
+    if ($extensions -notcontains $video.Extension.ToLowerInvariant()) {
+        throw "Unsupported video file extension: $($video.Extension)"
+    }
+}
 
 $inventory = [System.Collections.Generic.List[object]]::new()
 $audioVideos = [System.Collections.Generic.List[object]]::new()
@@ -149,8 +167,13 @@ if ($missingContracts.Count -gt 0) {
     }
     $queueRunner = Join-Path $TranscribeRoot 'run_translation_queue.ps1'
     try {
-        & $queueRunner -InputManifest $manifest -OutputDir $transcribeOutput `
-            -GradeLevel $GradeLevel -AcademicLevel $AcademicLevel -TargetLanguages $TargetLanguage
+        if ($RequireOllamaAudit.IsPresent) {
+            & $queueRunner -InputManifest $manifest -OutputDir $transcribeOutput `
+                -GradeLevel $GradeLevel -AcademicLevel $AcademicLevel -TargetLanguages $TargetLanguage -RequireOllamaAudit
+        } else {
+            & $queueRunner -InputManifest $manifest -OutputDir $transcribeOutput `
+                -GradeLevel $GradeLevel -AcademicLevel $AcademicLevel -TargetLanguages $TargetLanguage
+        }
         Write-Host "TRANSCRIBE_FINISHED: translation queue returned successfully."
     } catch {
         Write-Warning "Transcribe queue returned an error; continuing with any contracts it completed. $($_.Exception.Message)"
@@ -199,7 +222,7 @@ foreach ($video in $eligible) {
             $previousMode = if ($previous.audio_track_mode) { [string]$previous.audio_track_mode } else { 'replacement_audio' }
             $currentContractHash = (Get-FileHash -LiteralPath $contract -Algorithm SHA256).Hash.ToLowerInvariant()
             if ($previous.source_video -eq $video.FullName -and $previousMode -eq $desiredAudioMode -and
-                $previous.qa_version -eq 4 -and $previous.contract_sha256 -eq $currentContractHash -and $previous.output_video -and
+                $previous.qa_version -eq 10 -and $previous.contract_sha256 -eq $currentContractHash -and $previous.output_video -and
                 (Test-Path -LiteralPath $previous.output_video -PathType Leaf)) {
                 $reviewPath = Join-Path $transcribeOutput ($video.BaseName + "_$TargetLanguage`_translation_review.json")
                 $reviewCount = 0

@@ -222,7 +222,7 @@ foreach ($video in $eligible) {
             $previousMode = if ($previous.audio_track_mode) { [string]$previous.audio_track_mode } else { 'replacement_audio' }
             $currentContractHash = (Get-FileHash -LiteralPath $contract -Algorithm SHA256).Hash.ToLowerInvariant()
             if ($previous.source_video -eq $video.FullName -and $previousMode -eq $desiredAudioMode -and
-                $previous.qa_version -eq 10 -and $previous.contract_sha256 -eq $currentContractHash -and $previous.output_video -and
+                $previous.qa_version -eq 11 -and $previous.contract_sha256 -eq $currentContractHash -and $previous.output_video -and
                 (Test-Path -LiteralPath $previous.output_video -PathType Leaf)) {
                 $reviewPath = Join-Path $transcribeOutput ($video.BaseName + "_$TargetLanguage`_translation_review.json")
                 $reviewCount = 0

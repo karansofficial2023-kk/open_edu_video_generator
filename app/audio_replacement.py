@@ -15,10 +15,11 @@ from .schema import Scene, Segment, Storyboard
 from .tts import synthesize_storyboard
 from .translation_qa import repair_protected_content
 from .voice_profile import source_voice_profile
+from .visual_source_qa import audit_visual_source
 
 MAX_SPEED_UP = 1.50
 MIN_NATURAL_TEMPO = 0.85
-QA_VERSION = 10
+QA_VERSION = 11
 
 
 def _normalize_speech(value: str) -> str:
@@ -191,9 +192,11 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     contract_hash = hashlib.sha256(contract_file.read_bytes()).hexdigest() if contract_file and contract_file.is_file() else ""
     review_file = contract_file.with_name(contract_file.name.replace("_contract.json", "_translation_review.json")) if contract_file else None
     resolved_reviews = []
+    review_items = []
     if review_file and review_file.is_file():
         review = json.loads(review_file.read_text(encoding="utf-8-sig"))
-        for item in review.get("review_items", []):
+        review_items = review.get("review_items", [])
+        for item in review_items:
             if item.get("where") in ("title", "auto_repair"):
                 continue
             # Only structured audit evidence for the exact current text can resolve a
@@ -251,6 +254,18 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     video_seconds = float(video_stream.get("duration") or metadata.get("format", {}).get("duration") or 0)
     if video_seconds <= 0:
         raise ValueError("Could not determine a positive source-video duration")
+
+    visual_report = None
+    if config.production.source_visual_ocr:
+        try:
+            visual_report = audit_visual_source(
+                board, source, output, config, review_items,
+                max_cues=config.production.source_visual_ocr_max_cues,
+                ollama_url=config.ollama_url, vision_model=config.production.vision_model)
+            qa_issues.extend(visual_report["issues"])
+        except Exception as error:
+            qa_issues.append({"shot_id": "visual_ocr", "kind": "visual_ocr_error", "source": "",
+                              "translation": "", "detail": str(error)[:500]})
 
     # Preserve the original audio and frame beside uncertain ASR/formula findings.
     # These are evidence for correction; a language model must not silently invent
@@ -420,6 +435,11 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
                           "detail": speech_check.get("detail", "Speech-to-text differs from approved narration")})
     report = json.loads(qa_report.read_text(encoding="utf-8"))
     report["post_tts_speech_check"] = speech_check
+    report["visual_source_qa"] = ({"status": visual_report["status"],
+                                    "checked_cues": visual_report["checked_cues"],
+                                    "eligible_cues": visual_report["eligible_cues"],
+                                    "report_path": visual_report.get("report_path")}
+                                   if visual_report else None)
     report["post_tts_cue_checks"] = cue_checks
     report["source_speech_gaps"] = speech_gaps
     report["issues"] = qa_issues

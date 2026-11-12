@@ -100,6 +100,8 @@ class ProductionConfig(BaseModel):
     min_semantic_score: float = 0.65
     generate_title_backgrounds: bool = True    # False: title cards use the built-in gradient, so lessons without photos never load the image model
     ocr_text_check: bool = True            # reject stills with readable lettering found by OCR (needs rapidocr-onnxruntime)
+    source_visual_ocr: bool = True          # inspect original video slides for formula/equation discrepancies before dubbing
+    source_visual_ocr_max_cues: int = 24    # high-priority formula/equation cues are always included
     gallery_thumbnails: bool = True        # board "uses" lists get one reviewed picture per item (physics/chemistry boards only)
     min_sharpness: float = 45.0            # Laplacian variance floor at 1024px
     loose_picture_min_score: float = 0.45 # an on-topic but incomplete picture is kept (no labels) instead of falling back to text cards (0.3 let weak pictures through: an egg on feathers, an organ-shaped blob for the urethra)

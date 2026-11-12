@@ -15,11 +15,12 @@ from .schema import Scene, Segment, Storyboard
 from .tts import synthesize_storyboard
 from .translation_qa import repair_protected_content
 from .voice_profile import source_voice_profile
-from .visual_source_qa import audit_visual_source
+from .visual_source_qa import (audit_visual_source, load_visual_report,
+                               visual_input_signature, visual_report_output)
 
 MAX_SPEED_UP = 1.50
 MIN_NATURAL_TEMPO = 0.85
-QA_VERSION = 11
+QA_VERSION = 12
 
 
 def _normalize_speech(value: str) -> str:
@@ -258,10 +259,17 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     visual_report = None
     if config.production.source_visual_ocr:
         try:
-            visual_report = audit_visual_source(
-                board, source, output, config, review_items,
-                max_cues=config.production.source_visual_ocr_max_cues,
-                ollama_url=config.ollama_url, vision_model=config.production.vision_model)
+            visual_output = visual_report_output(contract_file) if contract_file else output
+            signature = (visual_input_signature(source, contract_file, review_file,
+                         config.production.source_visual_ocr_max_cues, config.production.vision_model)
+                         if contract_file and contract_file.is_file() else None)
+            visual_report = load_visual_report(visual_output, signature) if signature else None
+            if visual_report is None:
+                visual_report = audit_visual_source(
+                    board, source, visual_output, config, review_items,
+                    max_cues=config.production.source_visual_ocr_max_cues,
+                    ollama_url=config.ollama_url, vision_model=config.production.vision_model,
+                    input_signature=signature)
             qa_issues.extend(visual_report["issues"])
         except Exception as error:
             qa_issues.append({"shot_id": "visual_ocr", "kind": "visual_ocr_error", "source": "",
@@ -438,6 +446,7 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     report["visual_source_qa"] = ({"status": visual_report["status"],
                                     "checked_cues": visual_report["checked_cues"],
                                     "eligible_cues": visual_report["eligible_cues"],
+                                    "reused_pre_dubbing_report": visual_report.get("reused", False),
                                     "report_path": visual_report.get("report_path")}
                                    if visual_report else None)
     report["post_tts_cue_checks"] = cue_checks
@@ -492,6 +501,10 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
     manifest = {
         "qa_version": QA_VERSION, "contract_sha256": contract_hash,
         "source_video": str(source), "output_video": str(dubbed), "target_language": language,
+        "source_size": source.stat().st_size,
+        "source_mtime_utc_ticks": source.stat().st_mtime_ns // 100 + 621355968000000000,
+        "visual_source_qa_report_path": visual_report.get("report_path") if visual_report else None,
+        "visual_source_signature": visual_report.get("input_signature") if visual_report else None,
         "source_duration_seconds": round(video_seconds, 3), "output_duration_seconds": round(output_seconds, 3),
         "video_codec": result_video.get("codec_name"), "audio_codec": result_audio.get("codec_name"),
         "video_stream_copied": True, "original_audio_replaced": not keep_original_audio,

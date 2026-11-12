@@ -205,6 +205,17 @@ $dubConfig = Join-Path $reportDir 'config.hindi.piper.queue.yaml'
 [System.IO.File]::WriteAllText($dubConfig, $baseText, [System.Text.UTF8Encoding]::new($false))
 
 $runVideo = Join-Path $generatorRoot 'run_video.ps1'
+$sourceOcr = Join-Path $generatorRoot 'scripts/audit_source_video.py'
+$projectPython = Join-Path $generatorRoot '.venv/Scripts/python.exe'
+$portablePython = 'D:/AI/ComfyUI_windows_portable/python_embeded/python.exe'
+$ocrPython = if (Test-Path -LiteralPath $projectPython -PathType Leaf) {
+    $previousErrorActionPreference = $ErrorActionPreference
+    $ErrorActionPreference = 'Continue'
+    & $projectPython -c 'import sys' 2>$null
+    $ErrorActionPreference = $previousErrorActionPreference
+    if ($LASTEXITCODE -eq 0) { $projectPython } else { $portablePython }
+} else { $portablePython }
+if (-not (Test-Path -LiteralPath $ocrPython -PathType Leaf)) { throw "OCR Python is missing: $ocrPython" }
 $videoIndex = 0
 foreach ($video in $eligible) {
     $videoIndex++
@@ -221,10 +232,18 @@ foreach ($video in $eligible) {
             $previous = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
             $previousMode = if ($previous.audio_track_mode) { [string]$previous.audio_track_mode } else { 'replacement_audio' }
             $currentContractHash = (Get-FileHash -LiteralPath $contract -Algorithm SHA256).Hash.ToLowerInvariant()
+            $reviewPath = Join-Path $transcribeOutput ($video.BaseName + "_$TargetLanguage`_translation_review.json")
+            $currentReviewHash = if (Test-Path -LiteralPath $reviewPath -PathType Leaf) {
+                (Get-FileHash -LiteralPath $reviewPath -Algorithm SHA256).Hash.ToLowerInvariant()
+            } else { '' }
             if ($previous.source_video -eq $video.FullName -and $previousMode -eq $desiredAudioMode -and
-                $previous.qa_version -eq 11 -and $previous.contract_sha256 -eq $currentContractHash -and $previous.output_video -and
+                $previous.qa_version -eq 12 -and $previous.source_size -eq $video.Length -and
+                $previous.source_mtime_utc_ticks -eq $video.LastWriteTimeUtc.Ticks -and
+                $previous.visual_source_signature.review_sha256 -eq $currentReviewHash -and
+                $previous.visual_source_qa_report_path -and
+                (Test-Path -LiteralPath $previous.visual_source_qa_report_path -PathType Leaf) -and
+                $previous.contract_sha256 -eq $currentContractHash -and $previous.output_video -and
                 (Test-Path -LiteralPath $previous.output_video -PathType Leaf)) {
-                $reviewPath = Join-Path $transcribeOutput ($video.BaseName + "_$TargetLanguage`_translation_review.json")
                 $reviewCount = 0
                 if (Test-Path -LiteralPath $reviewPath -PathType Leaf) {
                     $reviewCount = Get-ActionableTranslationReviewCount $reviewPath
@@ -246,6 +265,16 @@ foreach ($video in $eligible) {
         } catch { }
     }
     try {
+        Write-Host "$itemLabel SOURCE_OCR_START: checking printed formulas and arithmetic before dubbing | $($video.FullName)"
+        Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = 'source_ocr'; detail = '' })
+        & $ocrPython $sourceOcr --video $video.FullName --contract $contract --config $dubConfig
+        if ($LASTEXITCODE -ne 0) { throw "Source OCR preflight exited with code $LASTEXITCODE" }
+        $ocrEvidenceRoot = Join-Path $transcribeOutput ($video.BaseName + "_$TargetLanguage`_source_qa")
+        $ocrReportPath = Join-Path $ocrEvidenceRoot 'visual_source_qa/report.json'
+        if (-not (Test-Path -LiteralPath $ocrReportPath -PathType Leaf)) { throw "Source OCR report is missing: $ocrReportPath" }
+        $ocrReport = Get-Content -LiteralPath $ocrReportPath -Raw | ConvertFrom-Json
+        $ocrState = if (@($ocrReport.issues).Count -gt 0) { 'SOURCE_OCR_REVIEW' } else { 'SOURCE_OCR_READY' }
+        Write-Host "$itemLabel ${ocrState}: $(@($ocrReport.issues).Count) visual finding(s) | report=$ocrReportPath"
         Write-Host "$itemLabel DUBBING_START: $($video.FullName) | mode=$desiredAudioMode | contract=$contract | output=$itemOutput"
         Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = 'dubbing'; detail = '' })
         $runArgs = @('--config', $dubConfig, '--input', $contract, '--output', $itemOutput,

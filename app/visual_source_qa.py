@@ -7,6 +7,7 @@ formula, so disagreements remain review findings with saved frames.
 from __future__ import annotations
 
 import base64
+import hashlib
 import json
 import re
 import subprocess
@@ -16,12 +17,58 @@ from pathlib import Path
 from .renderer import _tool_path
 from .translation_qa import _formula_tokens, _SPOKEN_EQUATION
 
-VISUAL_QA_VERSION = 1
+VISUAL_QA_VERSION = 2
 _CHEMISTRY = re.compile(r"\b(formula|equation|reaction|compound|bleaching|sodium|calcium|hydroxide|"
                         r"chloride|oxide|carbonate|acid|alkali|ketone|ethanol|ethanoic)\b", re.I)
 _MATH = re.compile(r"\b(plus|minus|times|multiply|divid|subtract|equals?|equal to|calculate|solve)\b|[+×÷=]", re.I)
 _EQUATION = re.compile(r"(?<!\w)\(?\s*(-?\d+(?:\.\d+)?)\s*([+\-×x*÷/])\s*(-?\d+(?:\.\d+)?)\s*\)?\s*=\s*(-?\d+(?:\.\d+)?)(?!\w)")
 _SUBSCRIPTS = str.maketrans("₀₁₂₃₄₅₆₇₈₉−–", "0123456789--")
+
+
+def visual_report_output(contract_path: Path) -> Path:
+    """One stable evidence location beside the translated contract."""
+    return contract_path.with_name(contract_path.stem.removesuffix("_contract") + "_source_qa")
+
+
+def visual_input_signature(source_video: Path, contract_path: Path, review_path: Path | None,
+                           max_cues: int, vision_model: str) -> dict:
+    source = source_video.resolve()
+    metadata = source.stat()
+    return {"visual_qa_version": VISUAL_QA_VERSION, "source_video": str(source),
+            "source_size": metadata.st_size, "source_mtime_ns": metadata.st_mtime_ns,
+            "contract_sha256": hashlib.sha256(contract_path.read_bytes()).hexdigest(),
+            "review_sha256": hashlib.sha256(review_path.read_bytes()).hexdigest()
+            if review_path and review_path.is_file() else "",
+            "max_cues": max_cues, "vision_model": vision_model}
+
+
+def load_visual_report(output_dir: Path, signature: dict, retry_incomplete: bool = False) -> dict | None:
+    """Reuse matching evidence; only a new preflight retries transient readers."""
+    report_path = output_dir / "visual_source_qa" / "report.json"
+    try:
+        report = json.loads(report_path.read_text(encoding="utf-8"))
+        incomplete = (report.get("status") == "ocr_unavailable" or
+                      any(issue.get("kind") in {"vision_crosscheck_unavailable", "visual_evidence_unavailable"}
+                          for issue in report.get("issues", [])))
+        if (report.get("input_signature") != signature or
+                report.get("checked_cues") is None or
+                report.get("status") not in {"completed", "partial_low_priority", "ocr_unavailable"} or
+                (retry_incomplete and incomplete)):
+            return None
+        if any(not Path(sample["image"]).is_file() for cue in report.get("cues", [])
+               for sample in cue.get("samples", [])):
+            return None
+        report["report_path"] = str(report_path)
+        report["reused"] = True
+        return report
+    except (OSError, ValueError, KeyError, TypeError):
+        return None
+
+
+def _save_report(report_path: Path, report: dict) -> None:
+    temporary = report_path.with_suffix(".json.tmp")
+    temporary.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    temporary.replace(report_path)
 
 
 def _engine():
@@ -126,7 +173,8 @@ def _candidate_priority(source: str, flagged: bool) -> int:
 def audit_visual_source(board, source_video: Path, output_dir: Path, config,
                         review_items: list[dict] | None = None, max_cues: int = 24,
                         ollama_url: str = "http://127.0.0.1:11434",
-                        vision_model: str = "qwen3-vl:8b-instruct") -> dict:
+                        vision_model: str = "qwen3-vl:8b-instruct",
+                        input_signature: dict | None = None) -> dict:
     """Return an evidence report and conservative issues from sampled source frames."""
     visual_dir = output_dir / "visual_source_qa"
     visual_dir.mkdir(parents=True, exist_ok=True)
@@ -147,6 +195,7 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
     selected = high_priority + lower_priority[:max(0, max_cues - len(high_priority))]
     report = {"visual_qa_version": VISUAL_QA_VERSION, "source_video": str(source_video),
               "ocr_engine": "rapidocr_onnxruntime", "vision_model": vision_model,
+              "input_signature": input_signature,
               "status": "completed", "eligible_cues": len(candidates), "checked_cues": 0,
               "cues": [], "issues": []}
     if isinstance(engine, Exception):
@@ -155,7 +204,8 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
         if candidates:
             report["issues"].append({"shot_id": "visual_ocr", "kind": "visual_ocr_unavailable",
                                      "source": "", "translation": "", "detail": "Source-video OCR could not run: " + str(engine)})
-        report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+        _save_report(report_path, report)
+        report["report_path"] = str(report_path)
         return report
 
     for _priority, segment in selected:
@@ -263,6 +313,6 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
         report["status"] = "partial_low_priority"
         report["detail"] = (f"All {len(high_priority)} formula/equation cues were checked; "
                             f"{len(lower_priority) - (len(selected) - len(high_priority))} lower-priority cues were skipped.")
-    report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
+    _save_report(report_path, report)
     report["report_path"] = str(report_path)
     return report

@@ -993,7 +993,15 @@ def _bullet_before(frame, line) -> bool:
     return 0.15 * height <= (right - left + 1) <= 1.3 * height and 0.15 * height <= blob_h <= 0.85 * height and gap >= 0.05 * height
 
 
-def _flat_fill(frame, mask, pad: int, line_h: int = 30, text_rgb=None):
+def _backdrop_colour(pixels, bright_text: bool):
+    """The backdrop's colour from a few pixels beside the erased text: with light lettering the darker pixels are the backdrop (the lighter
+    ones carry the letters' halo), with dark lettering the lighter ones."""
+    luminance = pixels @ np.array([0.114, 0.587, 0.299], np.float32)
+    keep = luminance <= np.percentile(luminance, 50) if bright_text else luminance >= np.percentile(luminance, 50)
+    return np.median(pixels[keep], axis=0) if keep.any() else np.median(pixels, axis=0)
+
+
+def _flat_fill(frame, mask, pad: int, line_h: int = 30, text_rgb=None, protect_left: int = 0):
     """Erase by painting a plain box of the backdrop's own colour over the old lettering (the Hindi is then written on that box).
 
     Each row of the erased area is filled by blending the colour just left of it into the colour just right of it, so a caption pill's
@@ -1004,6 +1012,7 @@ def _flat_fill(frame, mask, pad: int, line_h: int = 30, text_rgb=None):
         return frame.copy()
     h, w = mask.shape
     reach = 5                                           # pixels sampled on each side of an erased span
+    bright_text = True if text_rgb is None else (0.299 * text_rgb[0] + 0.587 * text_rgb[1] + 0.114 * text_rgb[2]) > 128
     out = frame.copy()
     spreads, gaps = [], []
     fills = []
@@ -1013,10 +1022,21 @@ def _flat_fill(frame, mask, pad: int, line_h: int = 30, text_rgb=None):
             a, b = int(span[0]), int(span[-1])
             if a - reach - 1 < 0 or b + reach + 1 >= w:
                 return None
-            left = frame[y, a - reach - 1:a - 1].astype(np.float32)
-            right = frame[y, b + 2:b + reach + 2].astype(np.float32)
-            spreads.append(float(max(left.std(axis=0).max(), right.std(axis=0).max())))
-            lv, rv = np.median(left, axis=0), np.median(right, axis=0)
+            # Sample a little away from the erased edge (the old letters' anti-aliased halo is lighter than the backdrop) and never take
+            # pixels of a bullet that stays beside the text (its white edge would be blended in as a light streak).
+            floor = protect_left + 1 if protect_left else 0
+            lo = max(a - 12, floor) if a - 12 <= floor or True else a - 12
+            left = frame[y, max(lo, floor):max(a - 3, max(lo, floor))].astype(np.float32)
+            if len(left) < 2:
+                left = frame[y, max(a - reach - 1, floor):a - 1].astype(np.float32)
+            right = frame[y, b + 4:b + 12].astype(np.float32)
+            if len(right) < 2:
+                right = frame[y, b + 2:b + reach + 2].astype(np.float32)
+            lv = _backdrop_colour(left, bright_text) if len(left) else None
+            rv = _backdrop_colour(right, bright_text)
+            if lv is None:
+                lv = rv                                                     # no clean pixels left of the span: use the right side
+            spreads.append(float(max(left.std(axis=0).max() if len(left) else 0.0, right.std(axis=0).max())))
             gaps.append(float(np.abs(lv - rv).sum()))
             fills.append((y, a, b, lv, rv))
     if not fills or float(np.percentile(spreads, 90)) > 9.0 or float(np.percentile(gaps, 90)) > 90.0:
@@ -1088,7 +1108,7 @@ def _paint_block(frame, lines: list, hindi: str, alpha: float = 1.0):
     for line in erase_lines:
         if getattr(line, "keep_left", 0):
             mask[max(0, line.y0 - pad):line.y1 + pad + 1, :line.keep_left] = 0       # a bullet stays exactly as drawn
-    cleaned = _flat_fill(frame, mask, pad, line_h, colour)
+    cleaned = _flat_fill(frame, mask, pad, line_h, colour, max([getattr(l, "keep_left", 0) for l in erase_lines] + [0]))
     if cleaned is None:
         cleaned = _stroke_inpaint(frame, mask, line_h, colour)
     if cleaned is None:

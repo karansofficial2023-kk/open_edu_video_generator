@@ -264,6 +264,22 @@ class NeighbourOfNumbersIsNotAnEquationHalf(unittest.TestCase):
         self.assertEqual(hits["b"]["reason"], "translate")
 
 
+class BulletBesideErasedText(unittest.TestCase):
+    def test_bullet_edge_is_not_blended_into_the_fill(self):
+        import numpy as np
+        frame = np.full((100, 300, 3), (90, 8, 33), np.uint8)
+        frame[40:60, 20:40] = (255, 255, 255)                          # the bullet that stays
+        for x in range(60, 200, 11):
+            frame[42:58, x:x + 3] = (250, 250, 250)                    # old lettering
+        mask = np.zeros((100, 300), np.uint8)
+        mask[36:64, 42:210] = 255                                      # erased box starts right after the bullet
+        filled = v._flat_fill(frame, mask, 6, 24, (250, 250, 250), protect_left=41)
+        self.assertIsNotNone(filled)
+        box = filled[36:64, 42:210].astype(int)
+        self.assertLess(int(np.abs(box - np.array((90, 8, 33))).max()), 12)     # no light streak next to the bullet
+        self.assertTrue((filled[40:60, 20:40] == 255).all())                     # the bullet itself is untouched
+
+
 class TitleCardsAndEquationHalves(unittest.TestCase):
     def test_subject_name_title_card_is_translated_but_brand_lettering_is_not(self):
         v.load_glossary_packs()

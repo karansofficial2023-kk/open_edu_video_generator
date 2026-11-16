@@ -102,6 +102,15 @@ class ProductionConfig(BaseModel):
     ocr_text_check: bool = True            # reject stills with readable lettering found by OCR (needs rapidocr-onnxruntime)
     source_visual_ocr: bool = True          # inspect original video slides for formula/equation discrepancies before dubbing
     source_visual_ocr_max_cues: int = 24    # high-priority formula/equation cues are always included
+    video_text_translation: bool = False    # opt-in: replace reviewed ordinary English labels inside source-video frames
+    video_text_translation_auto: bool = False
+    video_text_translation_engine: str = "madlad"     # madlad | qwen | glossary
+    video_text_translation_ocr_every: int = 3
+    video_text_translation_scan_frames: int = 5
+    video_text_translation_repair: bool = True       # second OCR pass on enlarged frames for approved labels the first render missed
+    video_text_translation_repair_attempts: int = 2
+    video_text_translation_min_confidence: float = 0.80
+    video_text_translation_protected_terms: list[str] = []
     gallery_thumbnails: bool = True        # board "uses" lists get one reviewed picture per item (physics/chemistry boards only)
     min_sharpness: float = 45.0            # Laplacian variance floor at 1024px
     loose_picture_min_score: float = 0.45 # an on-topic but incomplete picture is kept (no labels) instead of falling back to text cards (0.3 let weak pictures through: an egg on feathers, an organ-shaped blob for the urethra)
@@ -124,7 +133,7 @@ class ProductionConfig(BaseModel):
     semantic_qa: bool = True
     tts_provider: str = "edge"             # edge = cloud voices; open = open-source voices only (fails if none is installed); auto = open when installed
     open_tts: OpenTtsConfig = OpenTtsConfig()
-    pronunciations: dict[str, dict[str, str]] = {"hi": {"NaOH": "सोडियम हाइड्रॉक्साइड"}}   # per language: spoken forms applied before synthesis
+    pronunciations: dict[str, dict[str, str]] = {}   # per language: spoken forms applied before synthesis
     indic_rate: str = "-10%"               # speaking rate for non-English lessons (Edge TTS)
     indic_voices: dict[str, str] = {
         "hi": "hi-IN-SwaraNeural", "mr": "mr-IN-AarohiNeural", "ta": "ta-IN-PallaviNeural", "te": "te-IN-ShrutiNeural",
@@ -165,6 +174,16 @@ class AppConfig(BaseModel):
     piper_config: str = ""
     piper_gender_models: dict[str, str] = {}
     piper_gender_configs: dict[str, str] = {}
+    # Dubbing v2 strict rule: chemical formulas/equations/labels are spoken by an ENGLISH voice, never Hindi.
+    piper_english_model: str = ""
+    piper_english_config: str = ""
+    piper_english_gender_models: dict[str, str] = {}
+    piper_english_gender_configs: dict[str, str] = {}
+    # auto: detect mathematics; english_stem: physics/chemistry; hindi_math: force maths notation in Hindi.
+    formula_speech_mode: str = "auto"
+    piper_length_scale: float = 1.0           # >1 slower, <1 faster (Piper --length_scale)
+    piper_english_length_scale: float = 1.08  # English spans (formulas) a little slower so letters stay clear next to Hindi
+    piper_english_match_voice: bool = True    # pitch/level-match the English voice to the Hindi narrator (fewer 'two voices')
     voice: VoiceConfig = VoiceConfig()
     render: RenderConfig = RenderConfig()
     comfyui: ComfyUIConfig = ComfyUIConfig()

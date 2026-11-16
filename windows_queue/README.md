@@ -1,4 +1,21 @@
-# Video dubbing queue
+# Video dubbing queue (V2 deep dive)
+
+Every launcher in this folder now runs the **v2 deep-dive pipeline**: formulas, equations, bonds and labels are spoken by an English
+voice; the translated contract is checked and repaired before dubbing; ASR uses the STEM vocabulary prompt; formulas are masked during
+translation. Each launcher first runs `_v2_preflight.bat` (English voices present + tests pass) and stops if that fails.
+Output now goes to `D:\Python\video_dubbing_output_v2` (set `DUB_OUTPUT_ROOT` to change it).
+
+| Launcher | Use it for |
+| --- | --- |
+| `RUN_FIX_AND_RERUN.bat` | **New videos / resume.** Videos in `D:\Python\video_dubbing` that have no finished v2 dub are processed fresh; finished v2 dubs are skipped. |
+| `RUN_SECOND_AUDIO_TRACK.bat` | Same, but English stays the default track and Hindi is added as a selectable second track. |
+| `TEACHER_RERUN_BY_ID.bat V000001` | Apply reviewed Hindi corrections for one video, then re-dub with all v2 checks. |
+| `RUN_HINDI_DUB_V2_DEEP_DIVE.bat` | Direct runner with modes: none = 3 test videos fresh, `NEW`, `ALL`, `QUICK` (reuse old contracts), `KEEP`. |
+
+**v2.1 (permanent fixes from the two-video review).** Both `RUN_FIX_AND_RERUN.bat` and `RUN_SECOND_AUDIO_TRACK.bat` use the same code and differ only in the audio-track mode. Whisper decodes without conditioning on previous text (no phantom words, punctuation kept), rescues the closing words, and contracts record `asr_pipeline: v2.1`; the queue rebuilds contracts from an older recipe and dubs below QA version 21. Ambiguous speaker pitch (185-190 Hz) chooses the nearer voice at confidence 0.5 and is listed as `voice_selection_unverified`; a `<video>.voice.json` sidecar always wins.
+
+The text below is the original queue documentation; paths that mention `video_dubbing_output` now refer to `video_dubbing_output_v2`.
+
 
 Put source videos under `D:\Python\video_dubbing` (subfolders are scanned too). Open a Command Prompt in that folder and run one launcher:
 

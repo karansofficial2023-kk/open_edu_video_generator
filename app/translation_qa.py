@@ -14,17 +14,23 @@ _FORMULA = re.compile(
     r"(?:[·.]\d*(?:[A-Z][a-z]?\d*)+)*(?:[⁺⁻+\-]\d*)?(?![A-Za-z0-9])"
 )
 _ELEMENT = re.compile(r"[A-Z][a-z]?")
+_KNOWN_NODIGIT_FORMULAS = {"KOH", "CHO", "COOH", "CO", "OH", "CN", "HCN", "CH"}
+_DIGIT_ALIASES = {"0": ("0", "०", "ज़ीरो", "शून्य"), "1": ("1", "१", "वन", "एक"), "2": ("2", "२", "टू", "दो"),
+                  "3": ("3", "३", "थ्री", "तीन"), "4": ("4", "४", "फोर", "चार"), "5": ("5", "५", "फाइव", "पाँच", "पांच"),
+                  "6": ("6", "६", "सिक्स", "छह"), "7": ("7", "७", "सेवन", "सात"), "8": ("8", "८", "एट", "आठ"),
+                  "9": ("9", "९", "नाइन", "नौ")}
 # A bare comma is treated as a list separator (e.g. “2,4” => 2 and 4), not a decimal point.
 # Thousands separators remain supported; decimal values should use the unambiguous dot form.
 _NUMBER = re.compile(r"(?<![A-Za-z0-9])(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?(?![A-Za-z0-9])")
 _NUMBER_WORD = re.compile(r"(?<![\w\u0900-\u097f])(zero|one|two|both|three|four|five|six|seven|eight|nine|ten|eleven|twelve|"
                           r"thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|"
-                          r"fifty|sixty|seventy|eighty|ninety|शून्य|एक|दो|दोनों|तीन|चार|पाँच|पांच|छह|छः|सात|आठ|नौ|"
+                          r"fifty|sixty|seventy|eighty|ninety|शून्य|एक|दो|दोनों|चारों|तीनों|पाँचों|पांचों|छहों|सातों|आठों|तीन|चार|पाँच|पांच|छह|छः|सात|आठ|नौ|"
                           r"दस|ग्यारह|बारह|तेरह|चौदह|पंद्रह|पन्द्रह|सोलह|सत्रह|अठारह|उन्नीस|बीस|तीस|चालीस|"
                           r"पचास|साठ|सत्तर|अस्सी|नब्बे)(?![\w\u0900-\u097f])", re.IGNORECASE)
 _NUMBER_WORD_VALUES = {
     **{word: value for value, word in enumerate("zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen".split())},
     **dict(zip("twenty thirty forty fifty sixty seventy eighty ninety".split(), range(20, 100, 10))),
+    "चारों": 4, "तीनों": 3, "पाँचों": 5, "पांचों": 5, "छहों": 6, "सातों": 7, "आठों": 8,
     "both": 2, "शून्य": 0, "एक": 1, "दो": 2, "दोनों": 2, "तीन": 3, "चार": 4, "पाँच": 5, "पांच": 5,
     "छह": 6, "छः": 6, "सात": 7, "आठ": 8, "नौ": 9, "दस": 10, "ग्यारह": 11,
     "बारह": 12, "तेरह": 13, "चौदह": 14, "पंद्रह": 15, "पन्द्रह": 15, "सोलह": 16,
@@ -76,6 +82,9 @@ def _formula_tokens(text: str) -> list[tuple[str, int, int]]:
         if not elements or remainder or any(element not in _ELEMENTS for element in elements):
             continue
         if len(elements) < 2 and not re.search(r"\d", base):
+            continue
+        # v2: an all-caps run with no digit (HIS, SO, NO, CO) is an English word unless it is a known formula.
+        if not re.search(r"\d", base) and base not in _KNOWN_NODIGIT_FORMULAS and not re.search(r"[a-z]", base):
             continue
         found.append((_canonical_formula(token), match.start(), match.end()))
     return found
@@ -173,13 +182,26 @@ def _equation_as_hindi(source: str) -> str | None:
     return phrase if calculated == stated else None
 
 
+def chemistry_issue_classification(kind: str) -> str:
+    """Stable production categories; source defects must not be blamed on Hindi."""
+    if kind == "source_math_inconsistent":
+        return "source_formula_ambiguity"
+    if kind in {"formula_mismatch", "equation_operator_mismatch", "equation_operator_unverified"}:
+        return "formula_error"
+    if kind in {"science_term_unverified", "iupac_suffix_replaced_by_group"}:
+        return "wrong_chemical_term"
+    if kind in {"missing_source"}:
+        return "source_wording_issue"
+    return "hindi_translation_error"
+
+
 def check_translation_segment(shot_id: str, source: str, translation: str, target_language: str = "") -> list[dict[str, str]]:
     issues: list[dict[str, str]] = []
     if not (source or "").strip():
-        return [{"shot_id": shot_id, "kind": "missing_source", "source": "", "translation": translation or "",
+        return [{"shot_id": shot_id, "kind": "missing_source", "classification": "source_wording_issue", "source": "", "translation": translation or "",
                  "detail": "No original source narration was stored with this translated line."}]
     if not (translation or "").strip():
-        return [{"shot_id": shot_id, "kind": "missing_translation", "source": source,
+        return [{"shot_id": shot_id, "kind": "missing_translation", "classification": "hindi_translation_error", "source": source,
                  "translation": "", "detail": "This timed source line has no translated narration."}]
     for equation in _SPOKEN_EQUATION.finditer(source):
         left, operator, right, result = equation.groups()
@@ -202,6 +224,13 @@ def check_translation_segment(shot_id: str, source: str, translation: str, targe
                        "source": ", ".join(source_formulas.elements()),
                        "translation": ", ".join(translated_formulas.elements()),
                        "detail": "Chemical formula tokens must match the source exactly."})
+    # An IUPAC name ending (-one, O-N-E, -al, -ol) names a family; it is not the C=O group. A translation that swaps one
+    # for the other is wrong, and an audit that claims the source should say C=O is also wrong.
+    if (re.search(r"(?<![A-Za-z0-9])-(?:one|al|ol)\b|\bO\s*-\s*N\s*-\s*E\b", source)
+            and "C=O" in translation and "C=O" not in source):
+        issues.append({"shot_id": shot_id, "kind": "iupac_suffix_replaced_by_group", "source": source,
+                       "translation": translation,
+                       "detail": "The source names an IUPAC suffix (-one/-al/-ol); it must not be replaced by the C=O group."})
     source_numbers = _numbers_outside_formulas(source)
     # Hindi "एक" also serves as an indefinite article. Count its presence as one
     # spoken 1 only when the source contains 1 and no less ambiguous 1 was found.
@@ -230,6 +259,8 @@ def check_translation_segment(shot_id: str, source: str, translation: str, targe
                 if not any(value in translation for value in accepted):
                     issues.append({"shot_id": shot_id, "kind": "science_term_unverified", "source": term,
                                    "translation": translation, "detail": "Expected: " + " / ".join(accepted) + "."})
+    for issue in issues:
+        issue.setdefault("classification", chemistry_issue_classification(issue["kind"]))
     return issues
 
 
@@ -290,9 +321,11 @@ def repair_protected_content(board: Storyboard) -> tuple[list[dict[str, str]], l
                 for char in expected:
                     if char.isalpha() and char.upper() in _LETTER_NAMES_HI:
                         chunks.append(re.escape(_LETTER_NAMES_HI[char.upper()]))
+                    elif char in _DIGIT_ALIASES:
+                        chunks.append("(?:" + "|".join(re.escape(a) for a in _DIGIT_ALIASES[char]) + ")")
                     else:
                         chunks.append(re.escape(char))
-                alias = r"(?<!\w)" + r"\s*".join(chunks) + r"(?!\w)"
+                alias = r"(?<![\wऀ-ॿ])" + r"[\s\-]*".join(chunks) + r"(?![\wऀ-ॿ])"
                 alias_match = re.search(alias, text, flags=re.IGNORECASE)
                 if alias_match:
                     text = text[:alias_match.start()] + expected + text[alias_match.end():]

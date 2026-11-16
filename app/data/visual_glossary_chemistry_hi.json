@@ -1,0 +1,165 @@
+{
+ "_comment": "Chemistry: acids, bases, indicators and common solutions. NCERT-style wording.",
+ "entries": {
+  "indicator": "सूचक",
+  "indicators": "सूचक",
+  "acid-base indicators": "अम्ल-क्षारक सूचक",
+  "what are indicators?": "सूचक क्या होते हैं?",
+  "olfactory indicators": "घ्राण सूचक",
+  "examples of olfactory indicators": "घ्राण सूचकों के उदाहरण",
+  "universal indicator": "सार्वत्रिक सूचक",
+  "natural indicators": "प्राकृतिक सूचक",
+  "synthetic indicators": "संश्लेषित सूचक",
+  "litmus": "लिटमस",
+  "blue litmus paper": "नीला लिटमस पेपर",
+  "red litmus paper": "लाल लिटमस पेपर",
+  "red litmus solution": "लाल लिटमस विलयन",
+  "blue litmus solution": "नीला लिटमस विलयन",
+  "methyl red": "मेथिल रेड",
+  "methyl orange": "मेथिल ऑरेंज",
+  "thymol blue": "थाइमॉल ब्लू",
+  "phenolphthalein": "फीनॉल्फ्थैलीन",
+  "red cabbage": "लाल पत्तागोभी",
+  "red cabbage solution": "लाल पत्तागोभी का विलयन",
+  "cabbage": "पत्तागोभी",
+  "clove oil": "लौंग का तेल",
+  "clove": "लौंग",
+  "onion juice": "प्याज का रस",
+  "lemon juice": "नींबू का रस",
+  "apple juice": "सेब का रस",
+  "lichens": "लाइकेन",
+  "acidic": "अम्लीय",
+  "basic": "क्षारकीय",
+  "alkaline": "क्षारीय",
+  "neutral": "उदासीन",
+  "most acidic": "सबसे अधिक अम्लीय",
+  "acid": "अम्ल",
+  "acids": "अम्ल",
+  "base": "क्षारक",
+  "bases": "क्षारक",
+  "salt": "लवण",
+  "turns pink": "गुलाबी हो जाता है",
+  "pure water": "शुद्ध जल",
+  "lime water": "चूने का पानी",
+  "detergent powder": "डिटर्जेंट पाउडर",
+  "ph scale": "pH पैमाना",
+  "ph paper": "pH पेपर",
+  "ph meter": "pH मीटर",
+  "ph value": "pH मान",
+  "neutralised": "उदासीन किया गया",
+  "neutralized": "उदासीन किया गया",
+  "bluish-purple": "नीला-बैंगनी",
+  "smell remains unaffected": "गंध अप्रभावित रहती है",
+  "almost all acids are sour to taste": "लगभग सभी अम्ल स्वाद में खट्टे होते हैं",
+  "all of them are sour to taste": "ये सभी स्वाद में खट्टे होते हैं",
+  "they all contain an acid": "इन सभी में एक अम्ल होता है",
+  "combustion": "दहन",
+  "substitution": "प्रतिस्थापन",
+  "addition": "योग",
+  "addition reaction": "योगात्मक अभिक्रिया",
+  "addition reactions": "योगात्मक अभिक्रियाएँ",
+  "substitution reaction": "प्रतिस्थापन अभिक्रिया",
+  "substitution reactions": "प्रतिस्थापन अभिक्रियाएँ",
+  "combustion reaction": "दहन अभिक्रिया",
+  "amalgam": "अमलगम",
+  "amalgams": "अमलगम",
+  "statues": "मूर्तियाँ",
+  "ignite": "जलाना"
+ },
+ "wording_fixes": [
+  {
+   "id": "indicator_term",
+   "when": "\\bindicators?\\b",
+   "replace": [
+    [
+     "सूचकांक",
+     "सूचक"
+    ],
+    [
+     "संकेतक",
+     "सूचक"
+    ],
+    [
+     "सार्वभौमिक",
+     "सार्वत्रिक"
+    ]
+   ]
+  },
+  {
+   "id": "acidic_term",
+   "when": "\\bacidic\\b",
+   "replace": [
+    [
+     "एसिडिक",
+     "अम्लीय"
+    ]
+   ]
+  },
+  {
+   "id": "acid_term",
+   "when": "\\bacids?\\b",
+   "replace": [
+    [
+     "एसिड",
+     "अम्ल"
+    ]
+   ]
+  },
+  {
+   "id": "basic_term",
+   "when": "\\b(?:alkali|alkaline)\\b",
+   "replace": [
+    [
+     "अल्कली",
+     "क्षार"
+    ]
+   ]
+  },
+  {
+   "id": "reaction_term",
+   "when": "\\breactions?\\b",
+   "replace": [
+    [
+     "प्रतिक्रियाएँ",
+     "अभिक्रियाएँ"
+    ],
+    [
+     "प्रतिक्रियाएं",
+     "अभिक्रियाएँ"
+    ],
+    [
+     "प्रतिक्रिया",
+     "अभिक्रिया"
+    ]
+   ]
+  },
+  {
+   "id": "addition_reaction",
+   "when": "\\baddition\\b",
+   "replace": [
+    [
+     "जोड़ अभिक्रिया",
+     "योगात्मक अभिक्रिया"
+    ],
+    [
+     "जोड़ प्रतिक्रिया",
+     "योगात्मक अभिक्रिया"
+    ]
+   ]
+  },
+  {
+   "id": "bond_term",
+   "when": "\\bbonds?\\b",
+   "replace": [
+    [
+     "बांड",
+     "आबंध"
+    ],
+    [
+     "बॉन्ड",
+     "आबंध"
+    ]
+   ]
+  }
+ ]
+}

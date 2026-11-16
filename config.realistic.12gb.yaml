@@ -18,6 +18,9 @@ use_ollama: true
 
 
 tts_provider: "edge"
+# auto = mathematics expressions in Hindi; physics/chemistry formulas in English.
+# Allowed values: auto | hindi_math | english_stem
+formula_speech_mode: "auto"
 edge_tts:
   voice: "en-IN-NeerjaNeural"
   rate: "-20%"
@@ -82,6 +85,17 @@ comfyui:
   video_prompt_suffix: "natural motion, coherent anatomy, no text, no subtitles, no watermark"
 
 production:
+  # ---- On-screen text translation (English -> Hindi inside the video picture). OFF unless switched on. ----
+  # The launcher RUN_VIDEO_TEXT_TRANSLATION.bat switches it on for its own run (environment VIDEO_TEXT_TRANSLATION=1) and no other
+  # launcher does, so this key can stay false. Rule: when that environment variable is set to 1 or 0 it wins; when it is not set,
+  # this YAML key decides.
+  video_text_translation: false
+  video_text_translation_auto: false       # true: find ordinary on-screen English by OCR and plan it automatically
+  video_text_translation_engine: "madlad"  # madlad (local model, default) | qwen (needs Ollama) | glossary (reviewed wording only)
+  video_text_translation_ocr_every: 3      # re-verify the text with OCR every N frames (smaller = steadier, slower)
+  video_text_translation_min_confidence: 0.80
+  video_text_translation_repair: true       # enlarged-frame OCR repair for labels the first render missed (only when the feature is on)
+  video_text_translation_repair_attempts: 2
   # --- realistic profile: real photographs and short motion clips are part of the video, not optional extras ---
   motion_enabled: true           # approved stills of shots marked animate (opening title, closing, planned natural motion) become 1080p LTX image-to-video clips (about 1.5 minutes each on a 12 GB card)
   generate_title_backgrounds: false   # title cards: themed plain gradient behind the title (no AI picture, so no stray text in it)

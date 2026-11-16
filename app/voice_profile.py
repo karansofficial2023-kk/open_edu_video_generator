@@ -17,7 +17,7 @@ from .config import AppConfig
 from .renderer import _tool_path
 
 
-def source_voice_profile(source_video: str | Path, config: AppConfig, temp_parent: str | Path | None = None) -> dict:
+def _estimate_source_voice_profile(source_video: str | Path, config: AppConfig, temp_parent: str | Path | None = None) -> dict:
     source = Path(source_video)
     override_path = source.with_suffix(".voice.json")
     override_gender = None
@@ -125,8 +125,10 @@ def source_voice_profile(source_video: str | Path, config: AppConfig, temp_paren
         gender = "female"
         confidence = min(0.95, 0.65 + (median_hz - 190.0) / 100.0)
     else:
-        gender = "unknown"
-        confidence = 0.0
+        # 185-190 Hz is genuinely ambiguous. v2.1: choose the nearer side instead of silently falling back to the female
+        # voice, but keep the confidence low (< 0.55) so the queue and the QA report still ask for a human check.
+        gender = "male" if median_hz <= 187.5 else "female"
+        confidence = 0.5
     return {"gender": override_gender or gender, "confidence": 1.0 if override_gender else round(confidence, 3),
             "method": "sidecar_override" if override_gender else "vad_filtered_source_voice_pitch",
             "median_f0_hz": round(median_hz, 1), "voiced_frames": int(pitches.size),
@@ -134,3 +136,30 @@ def source_voice_profile(source_video: str | Path, config: AppConfig, temp_paren
             "speech_start_seconds": round(speech_ranges[0][0], 2) if speech_ranges else None,
             "profile_speech_chunks": len(profile_ranges), "vad_error": vad_error or None,
             "sidecar": str(override_path) if override_gender else None}
+
+
+def _override_gender(source_video: Path) -> tuple[str, Path | None]:
+    """A reviewed gender: ``<video>.voice.json`` first, then ``default.voice.json`` in the video's folder (one narrator per series)."""
+    for path in (source_video.with_suffix(".voice.json"), source_video.parent / "default.voice.json"):
+        if path.is_file():
+            try:
+                gender = str(json.loads(path.read_text(encoding="utf-8-sig")).get("gender", "")).strip().lower()
+            except (OSError, json.JSONDecodeError, AttributeError):
+                gender = ""
+            if gender in {"male", "female"}:
+                return gender, path
+    return "", None
+
+
+def source_voice_profile(source_video: str | Path, config: AppConfig, temp_parent: str | Path | None = None) -> dict:
+    """Narrator gender, used for BOTH the Hindi voice and the English formula voice.
+
+    The original approach decides: listen to the source speech after the music intro (voice-activity filtered), measure the
+    pitch, and choose male or female. A reviewed ``<video>.voice.json`` (or ``default.voice.json`` in the video's folder) wins.
+    """
+    source = Path(source_video)
+    profile = _estimate_source_voice_profile(source, config, temp_parent)
+    override, override_path = _override_gender(source)
+    if override:
+        return {**profile, "gender": override, "confidence": 1.0, "method": "sidecar_override", "sidecar": str(override_path)}
+    return profile

@@ -1,0 +1,218 @@
+{
+ "_comment": "Materials, metals and everyday objects.",
+ "entries": {
+  "brass": "पीतल",
+  "copper": "तांबा",
+  "iron": "लोहा",
+  "steel": "इस्पात",
+  "bronze": "कांसा",
+  "gold": "सोना",
+  "silver": "चांदी",
+  "aluminium": "ऐलुमिनियम",
+  "aluminum": "ऐलुमिनियम",
+  "alloy": "मिश्रातु",
+  "alloys": "मिश्रातु",
+  "stainless steel": "स्टेनलेस स्टील",
+  "utensil": "बर्तन",
+  "utensils": "बर्तन",
+  "ornament": "आभूषण",
+  "ornaments": "आभूषण",
+  "aircraft": "विमान",
+  "aircrafts": "विमान",
+  "pressure cooker": "प्रेशर कुकर",
+  "pressure cookers": "प्रेशर कुकर",
+  "silvery shine": "चांदी जैसी चमक",
+  "sugar": "चीनी",
+  "milk": "दूध"
+ },
+ "entity_pairs": {
+  "gold": {
+   "hindi": [
+    "सोना",
+    "सोने",
+    "स्वर्ण"
+   ],
+   "never": [
+    "चांदी",
+    "चाँदी",
+    "रजत"
+   ]
+  },
+  "silver": {
+   "hindi": [
+    "चांदी",
+    "चाँदी",
+    "रजत"
+   ],
+   "never": [
+    "सोना",
+    "सोने",
+    "स्वर्ण"
+   ]
+  },
+  "brass": {
+   "hindi": [
+    "पीतल"
+   ],
+   "never": [
+    "चांदी",
+    "चाँदी",
+    "रजत"
+   ]
+  },
+  "copper": {
+   "hindi": [
+    "तांबा",
+    "तांबे",
+    "ताँबा",
+    "ताँबे"
+   ],
+   "never": []
+  },
+  "iron": {
+   "hindi": [
+    "लोहा",
+    "लोहे"
+   ],
+   "never": []
+  },
+  "steel": {
+   "hindi": [
+    "इस्पात",
+    "स्टील"
+   ],
+   "never": []
+  },
+  "bronze": {
+   "hindi": [
+    "कांसा",
+    "कांसे",
+    "काँसा",
+    "कांस्य",
+    "ब्रॉन्ज"
+   ],
+   "never": []
+  },
+  "stainless steel": {
+   "hindi": [
+    "स्टेनलेस स्टील",
+    "जंगरोधी इस्पात"
+   ],
+   "never": []
+  }
+ },
+ "wording_fixes": [
+  {
+   "id": "utensil",
+   "when": "\\butensils?\\b",
+   "replace": [
+    [
+     "उपकरण",
+     "बर्तन"
+    ]
+   ]
+  },
+  {
+   "id": "ornament",
+   "when": "\\bornaments?\\b",
+   "replace": [
+    [
+     "अलंकार",
+     "आभूषण"
+    ]
+   ]
+  },
+  {
+   "id": "aircraft",
+   "when": "\\baircrafts?\\b",
+   "replace": [
+    [
+     "हवाई जहाज",
+     "विमान"
+    ]
+   ]
+  },
+  {
+   "id": "pressure_cooker",
+   "when": "\\bpressure cookers?\\b",
+   "replace": [
+    [
+     "दबाव बर्तन",
+     "प्रेशर कुकर"
+    ]
+   ]
+  },
+  {
+   "id": "silvery",
+   "when": "\\bsilvery\\b",
+   "replace": [
+    [
+     "चांदी का चमक",
+     "चांदी जैसी चमक"
+    ]
+   ]
+  },
+  {
+   "id": "bronze_word",
+   "when": "\\bbronze\\b",
+   "replace": [
+    [
+     "कांस्य",
+     "कांसा"
+    ]
+   ]
+  },
+  {
+   "id": "alloy_word",
+   "when": "\\balloys?\\b",
+   "replace": [
+    [
+     "मिश्र धातुओं",
+     "मिश्रातुओं"
+    ],
+    [
+     "मिश्र धातु",
+     "मिश्रातु"
+    ]
+   ]
+  },
+  {
+   "id": "brass_not_silver",
+   "when": "\\bbrass\\b",
+   "replace": [
+    [
+     "चांदी",
+     "पीतल"
+    ],
+    [
+     "रजत",
+     "पीतल"
+    ]
+   ]
+  },
+  {
+   "id": "steel_one_word",
+   "when": "\\bsteel\\b",
+   "unless": "stainless",
+   "replace": [
+    [
+     "स्टील",
+     "इस्पात"
+    ]
+   ]
+  },
+  {
+   "id": "material_hardness",
+   "when": [
+    "\\bhard(?:er|est)?\\b",
+    "\\b(?:steel|iron|metal|alloy|substance|material|water|diamond)\\b"
+   ],
+   "replace": [
+    [
+     "कठिन",
+     "कठोर"
+    ]
+   ]
+  }
+ ]
+}

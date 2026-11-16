@@ -1,0 +1,153 @@
+{
+ "_comment": "General classroom screen wording, abbreviations and known OCR confusions. Valid for any subject. Add a new pack file visual_glossary_<subject>_hi.json for subject vocabulary; every visual_glossary*.json in this folder is loaded, and so is an optional <video>.visual_glossary.json placed beside a video.",
+ "entries": {
+  "summary": "सारांश",
+  "introduction": "परिचय",
+  "conclusion": "निष्कर्ष",
+  "example": "उदाहरण",
+  "examples": "उदाहरण",
+  "properties": "गुण",
+  "uses": "उपयोग",
+  "applications": "अनुप्रयोग",
+  "definition": "परिभाषा",
+  "activity": "गतिविधि",
+  "observation": "अवलोकन",
+  "result": "परिणाम",
+  "recap": "पुनरावलोकन",
+  "key points": "मुख्य बिंदु",
+  "quiz": "प्रश्नोत्तरी",
+  "red": "लाल",
+  "blue": "नीला",
+  "white": "सफेद",
+  "yellow": "पीला",
+  "green": "हरा",
+  "pink": "गुलाबी",
+  "black": "काला",
+  "orange": "नारंगी",
+  "purple": "बैंगनी",
+  "colourless": "रंगहीन",
+  "colorless": "रंगहीन",
+  "chemistry": "रसायन विज्ञान",
+  "physics": "भौतिक विज्ञान",
+  "biology": "जीव विज्ञान",
+  "science": "विज्ञान",
+  "mathematics": "गणित",
+  "maths": "गणित",
+  "geography": "भूगोल",
+  "history": "इतिहास",
+  "civics": "नागरिक शास्त्र",
+  "economics": "अर्थशास्त्र",
+  "political science": "राजनीति विज्ञान",
+  "social science": "सामाजिक विज्ञान",
+  "computer science": "कंप्यूटर विज्ञान",
+  "environmental science": "पर्यावरण विज्ञान",
+  "botany": "वनस्पति विज्ञान",
+  "zoology": "जंतु विज्ञान",
+  "english": "अंग्रेज़ी",
+  "hindi": "हिंदी"
+ },
+ "abbreviations": {
+  "dil.": "dilute",
+  "conc.": "concentrated",
+  "aq.": "aqueous",
+  "sol.": "solution",
+  "approx.": "approximately",
+  "fig.": "figure"
+ },
+ "ocr_fixes": {
+  "HCI": "HCl",
+  "H2S04": "H2SO4"
+ },
+ "wording_fixes": [
+  {
+   "id": "taste_sour",
+   "when": "\\bsour\\b",
+   "replace": [
+    [
+     "मीठे",
+     "खट्टे"
+    ],
+    [
+     "मीठा",
+     "खट्टा"
+    ],
+    [
+     "मीठी",
+     "खट्टी"
+    ],
+    [
+     "कड़वे",
+     "खट्टे"
+    ],
+    [
+     "कड़वा",
+     "खट्टा"
+    ],
+    [
+     "कड़वी",
+     "खट्टी"
+    ]
+   ]
+  },
+  {
+   "id": "taste_bitter",
+   "when": "\\bbitter\\b",
+   "replace": [
+    [
+     "मीठे",
+     "कड़वे"
+    ],
+    [
+     "मीठा",
+     "कड़वा"
+    ],
+    [
+     "मीठी",
+     "कड़वी"
+    ],
+    [
+     "खट्टे",
+     "कड़वे"
+    ],
+    [
+     "खट्टा",
+     "कड़वा"
+    ],
+    [
+     "खट्टी",
+     "कड़वी"
+    ]
+   ]
+  },
+  {
+   "id": "taste_sweet",
+   "when": "\\bsweet\\b",
+   "replace": [
+    [
+     "कड़वे",
+     "मीठे"
+    ],
+    [
+     "कड़वा",
+     "मीठा"
+    ],
+    [
+     "कड़वी",
+     "मीठी"
+    ],
+    [
+     "खट्टे",
+     "मीठे"
+    ],
+    [
+     "खट्टा",
+     "मीठा"
+    ],
+    [
+     "खट्टी",
+     "मीठी"
+    ]
+   ]
+  }
+ ]
+}

@@ -1,0 +1,280 @@
+{
+ "_comment": "Dubbing v2 deterministic Hindi repairs: a rule fires only when `source` (English regex, case-insensitive) matches the source narration; each `wrong` regex in the Hindi narration is replaced by `right`.",
+ "rules": [
+  {
+   "id": "middle_finger",
+   "source": "\\bmiddle\\s+finger\\b",
+   "wrong": [
+    "मध्य\\s*अंगूठी",
+    "मध्य\\s*अंगूठा",
+    "मध्य\\s*उंगली",
+    "बीच\\s*की\\s*अंगूठी",
+    "मध्यम\\s*अंगूठी"
+   ],
+   "right": "मध्यमा उंगली"
+  },
+  {
+   "id": "first_finger",
+   "source": "\\b(?:first|fore|index)\\s*finger\\b",
+   "wrong": [
+    "पहली\\s*उंगली",
+    "पहली\\s*अंगुली",
+    "पहली\\s*अंगूठी",
+    "प्रथम\\s*उंगली",
+    "पहला\\s*उंगली"
+   ],
+   "right": "तर्जनी उंगली"
+  },
+  {
+   "id": "thumb",
+   "source": "\\bthumb\\b",
+   "wrong": [
+    "अंगूठी"
+   ],
+   "right": "अंगूठा"
+  },
+  {
+   "id": "slip_ring",
+   "source": "\\bslip[\\s-]*rings?\\b",
+   "wrong": [
+    "स्लीप\\s*अंगूठी",
+    "स्लिप\\s*अंगूठी",
+    "फिसलन\\s*(?:की\\s*)?अंगूठी",
+    "स्लीप\\s*रिंग",
+    "स्लिपरिंग",
+    "स्लिप\\s*रिंग्स"
+   ],
+   "right": "स्लिप रिंग"
+  },
+  {
+   "id": "brush",
+   "source": "\\bbrush(?:es)?\\b",
+   "wrong": [
+    "ब्रस"
+   ],
+   "right": "ब्रश"
+  },
+  {
+   "id": "electric_current",
+   "source": "\\belectric\\s+current\\b",
+   "wrong": [
+    "इलेक्ट्रिक\\s*धारा",
+    "बिजली\\s*की\\s*धारा"
+   ],
+   "right": "विद्युत धारा"
+  },
+  {
+   "id": "current_physics",
+   "source": "\\bcurrent\\b(?!\\s+(?:year|time|situation))",
+   "wrong": [
+    "वर्तमान(?!\\s*(?:समय|में\\s*समय))"
+   ],
+   "right": "धारा"
+  },
+  {
+   "id": "alkane",
+   "source": "\\balkane",
+   "wrong": [
+    "अलकेन",
+    "अल्केन"
+   ],
+   "right": "ऐल्केन"
+  },
+  {
+   "id": "alkanoyl",
+   "source": "\\balkanoyl",
+   "wrong": [
+    "अलकनॉयल",
+    "अल्कनॉयल"
+   ],
+   "right": "ऐल्कनॉयल"
+  },
+  {
+   "id": "alkanal",
+   "source": "\\balkanal",
+   "wrong": [
+    "अलकनल",
+    "अल्कनल",
+    "अलकनाल",
+    "अल्कनाल",
+    "अल्केनाल"
+   ],
+   "right": "ऐल्केनल"
+  },
+  {
+   "id": "carboxylic",
+   "source": "\\bcarboxylic\\b",
+   "wrong": [
+    "कार्बोक्सीलिक",
+    "कार्बोक्जिलिक"
+   ],
+   "right": "कार्बोक्सिलिक"
+  },
+  {
+   "id": "armature",
+   "source": "\\barmature\\b",
+   "wrong": [
+    "आर्मचर",
+    "अर्मेचर"
+   ],
+   "right": "आर्मेचर"
+  },
+  {
+   "id": "commutator",
+   "source": "\\bcommutators?\\b",
+   "wrong": [
+    "कम्युटेटर",
+    "कम्यूटर"
+   ],
+   "right": "कम्यूटेटर"
+  },
+  {
+   "id": "alkanal_river",
+   "source": "\\balkanals?\\b",
+   "wrong": [
+    "अलकनंदा",
+    "अलकनन्दा"
+   ],
+   "right": "ऐल्केनल"
+  },
+  {
+   "id": "hydroxyl",
+   "source": "\\bhydroxyl\\b",
+   "wrong": [
+    "हाइड्रोक्लोरिक"
+   ],
+   "right": "हाइड्रॉक्सिल"
+  },
+  {
+   "id": "allotrope",
+   "source": "\\ballotropes?\\b|\\bfullerenes?\\b",
+   "wrong": [
+    "समस्थिति",
+    "समरूपों",
+    "समरूप",
+    "समस्थानिक"
+   ],
+   "right": "अपररूप"
+  },
+  {
+   "id": "nitrile",
+   "source": "\\bnitriles?\\b",
+   "wrong": [
+    "नाइट्राइड"
+   ],
+   "right": "नाइट्राइल"
+  },
+  {
+   "id": "functional_group",
+   "source": "\\bfunctional\\s+groups?\\b",
+   "wrong": [
+    "संकेतीय\\s*समूह",
+    "संकेतिय\\s*समूह"
+   ],
+   "right": "कार्यात्मक समूह"
+  },
+  {
+   "id": "aldehyde",
+   "source": "\\baldehydes?\\b",
+   "wrong": [
+    "एल्डाइड",
+    "अल्डेहाइड"
+   ],
+   "right": "ऐल्डिहाइड"
+  },
+  {
+   "id": "carbonyl",
+   "source": "\\bcarbonyl\\b",
+   "wrong": [
+    "कार्बनाइल"
+   ],
+   "right": "कार्बोनिल"
+  },
+  {
+   "id": "fraternal_twins",
+   "source": "\\bfraternal\\s+twins?\\b",
+   "wrong": [
+    "भाई\\s*बहन\\s*जुड़वां"
+   ],
+   "right": "भ्रातृ जुड़वां"
+  },
+  {
+   "id": "conducts_electricity",
+   "source": "\\bconducts?\\s+electricity\\b",
+   "wrong": [
+    "बिजली\\s+नहीं\\s+चलाता\\s+है"
+   ],
+   "right": "विद्युत का चालन नहीं करता है"
+  }
+ ],
+ "latin_stopwords": [
+  "the",
+  "a",
+  "an",
+  "of",
+  "and",
+  "is",
+  "are",
+  "in",
+  "on",
+  "to",
+  "for",
+  "with",
+  "that",
+  "this",
+  "we",
+  "it",
+  "or",
+  "as",
+  "by"
+ ],
+ "asr_function_words": [
+  "the",
+  "a",
+  "an",
+  "of",
+  "and",
+  "is",
+  "are",
+  "in",
+  "on",
+  "to",
+  "for",
+  "with",
+  "that",
+  "this",
+  "we",
+  "it",
+  "or",
+  "as",
+  "by",
+  "so",
+  "now",
+  "its",
+  "us",
+  "let",
+  "thus",
+  "then",
+  "which",
+  "also",
+  "if",
+  "when",
+  "there",
+  "these",
+  "those",
+  "they",
+  "you",
+  "i",
+  "be",
+  "can",
+  "has",
+  "have",
+  "was",
+  "were",
+  "will",
+  "from",
+  "at",
+  "but",
+  "not"
+ ]
+}

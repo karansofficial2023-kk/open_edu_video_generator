@@ -18,6 +18,13 @@ param(
     [string]$PiperMaleConfig = 'D:\AI\models\piper-hi\hi\hi_IN\pratham\medium\hi_IN-pratham-medium.onnx.json',
     [string]$PiperFemaleModel = 'D:\AI\models\piper-hi\hi\hi_IN\priyamvada\medium\hi_IN-priyamvada-medium.onnx',
     [string]$PiperFemaleConfig = 'D:\AI\models\piper-hi\hi\hi_IN\priyamvada\medium\hi_IN-priyamvada-medium.onnx.json',
+    # v2 strict rule: chemical formulas/equations/labels are spoken by these ENGLISH voices, never by the Hindi voice.
+    [string]$PiperEnglishFemaleModel = 'D:\AI\models\piper-en\en_US-lessac-medium.onnx',
+    [string]$PiperEnglishFemaleConfig = 'D:\AI\models\piper-en\en_US-lessac-medium.onnx.json',
+    [string]$PiperEnglishMaleModel = 'D:\AI\models\piper-en\en_US-hfc_male-medium.onnx',
+    [string]$PiperEnglishMaleConfig = 'D:\AI\models\piper-en\en_US-hfc_male-medium.onnx.json',
+    # Reuse already-translated contracts (and ASR transcripts) from an earlier output root instead of re-running Transcribe.
+    [string]$SeedContractsFrom = '',
     [switch]$RerunTranscribe,
     [switch]$RerunDubbing,
     [switch]$KeepOriginalAudio,
@@ -25,8 +32,56 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
+# Enable the production ASR quality passes automatically for every queue launch.
+# These are process-scoped so the launcher does not alter Windows policy or other apps.
+$env:WHISPER_PREPROCESS = '1'
+$env:WHISPER_ALTERNATE = '1'
+$env:WHISPERX_EVIDENCE = '1'
+$env:FFMPEG_PATH = 'ffmpeg'
+$script:RequireAsrVersion = [string]::IsNullOrWhiteSpace($SeedContractsFrom)
 $generatorRoot = $PSScriptRoot
 Set-Location -LiteralPath $generatorRoot
+# Ollama (Qwen) is REQUIRED: the semantic audit/repair, the re-translation of drifted lines, the on-screen-text second opinion and the
+# vision cross-check all need it. Checked before anything runs; if it is down this tries to start it, and if it still does not answer
+# (or a needed model is missing) the queue STOPS instead of producing unaudited dubs. Set ALLOW_NO_OLLAMA=1 to run without it anyway.
+$ollamaUrl = if ($env:OLLAMA_URL) { $env:OLLAMA_URL } else { 'http://localhost:11434' }
+$requiredModels = @('qwen3:14b', 'qwen3:8b', 'qwen3-vl:8b-instruct')
+function Get-OllamaModels {
+    try {
+        $reply = Invoke-WebRequest -Uri "$ollamaUrl/api/tags" -UseBasicParsing -TimeoutSec 4
+        return @((($reply.Content | ConvertFrom-Json).models) | ForEach-Object { $_.name })
+    } catch { return $null }
+}
+$installed = Get-OllamaModels
+if ($null -eq $installed) {
+    Write-Host "OLLAMA: not answering at $ollamaUrl - trying to start it..."
+    $exe = (Get-Command ollama -ErrorAction SilentlyContinue).Source
+    if (-not $exe) { $exe = Join-Path $env:LOCALAPPDATA 'Programs\Ollama\ollama.exe' }
+    if (Test-Path -LiteralPath $exe) { Start-Process -FilePath $exe -ArgumentList 'serve' -WindowStyle Hidden }
+    for ($i = 0; $i -lt 30 -and $null -eq $installed; $i++) { Start-Sleep -Seconds 2; $installed = Get-OllamaModels }
+}
+$missing = @()
+if ($null -ne $installed) { $missing = @($requiredModels | Where-Object { $installed -notcontains $_ }) }
+if ($null -ne $installed -and $missing.Count -eq 0) {
+    $env:OLLAMA_AVAILABLE = '1'
+    Write-Host "OLLAMA: running at $ollamaUrl, models ready ($($requiredModels -join ', ')) - Qwen audits, repairs and vision checks WILL be used."
+} elseif ($env:ALLOW_NO_OLLAMA -eq '1') {
+    $env:OLLAMA_AVAILABLE = '0'
+    Write-Warning "OLLAMA unavailable or incomplete (missing: $($missing -join ', ')) - continuing WITHOUT Qwen because ALLOW_NO_OLLAMA=1. QA reports will say so."
+} else {
+    $reason = if ($null -eq $installed) { "Ollama is not running and could not be started" } else { "Ollama is missing models: $($missing -join ', ')  (run: ollama pull <name>)" }
+    Write-Host ""
+    Write-Host "STOPPED: $reason." -ForegroundColor Red
+    Write-Host "Qwen is needed for QA. Start Ollama (or pull the models) and run this bat again. To run without it: set ALLOW_NO_OLLAMA=1" -ForegroundColor Red
+    exit 4
+}
+# Vocal separation (demucs) cleans the music/effects under the narrator before ASR. It lives in the Python the Transcribe stage uses.
+$asrPython = if ($env:DEMUCS_PYTHON) { $env:DEMUCS_PYTHON } else { 'D:\AI\ComfyUI_windows_portable\python_embeded\python.exe' }
+if ($env:WHISPER_STEM_SEPARATION -ne '0' -and (Test-Path -LiteralPath $asrPython)) {
+    & $asrPython -c "import demucs.separate" 2>$null
+    if ($LASTEXITCODE -eq 0) { Write-Host "DEMUCS: installed - vocals are separated from the music before speech recognition." }
+    else { Write-Warning "DEMUCS: not installed in $asrPython - ASR will hear the background music. Install: `"$asrPython`" -m pip install --no-deps demucs dora-search openunmix lameenc soundfile retrying submitit treetable sphn" }
+}
 if ([string]::IsNullOrWhiteSpace($InputPath) -eq [string]::IsNullOrWhiteSpace($InputManifest)) {
     throw 'Specify exactly one of -InputPath or -InputManifest.'
 }
@@ -35,6 +90,8 @@ function Test-AudioTranslationContract([string]$Path) {
     try {
         $contract = Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
         $shots = @($contract.scenes | ForEach-Object { $_.shots })
+        # v2.3 (re-translation of drifted lines, dropped-sentence check): a contract made by an older ASR/translation recipe (before the tail rescue) is rebuilt (reused seeded contracts are exempt).
+        if ($script:RequireAsrVersion -and [string]$contract.asr_pipeline -ne 'v2.3') { return $false }
         return ($contract.audio_translation_only -eq $true -and
             -not [string]::IsNullOrWhiteSpace([string]$contract.language.bcp47) -and $shots.Count -gt 0 -and
             @($shots | Where-Object { [string]::IsNullOrWhiteSpace([string]$_.source_narration) }).Count -eq 0)
@@ -57,6 +114,8 @@ $null = New-Item -ItemType Directory -Path $reportDir, $transcribeOutput, $dubOu
 
 foreach ($required in @($FfprobePath, $PiperPath, $PiperMaleModel, $PiperMaleConfig,
                          $PiperFemaleModel, $PiperFemaleConfig, $BaseConfig,
+                         $PiperEnglishFemaleModel, $PiperEnglishFemaleConfig,
+                         $PiperEnglishMaleModel, $PiperEnglishMaleConfig,
                          (Join-Path $TranscribeRoot 'run_translation_queue.ps1'))) {
     if (-not (Test-Path -LiteralPath $required -PathType Leaf)) {
         throw "Required file is missing: $required"
@@ -150,6 +209,21 @@ function Set-QueueResult([object]$row) {
 }
 $results | Export-Csv -LiteralPath (Join-Path $reportDir 'queue_results.csv') -NoTypeInformation -Encoding UTF8
 
+if ($SeedContractsFrom) {
+    $seedDir = (Resolve-Path -LiteralPath $SeedContractsFrom).Path
+    foreach ($video in $eligible) {
+        foreach ($suffix in @("_$TargetLanguage`_contract.json", "_$TargetLanguage`_translation_review.json",
+                              '_transcript.json', '_transcript.txt', '_manifest.json', '_glossary_candidates.json')) {
+            $from = Join-Path $seedDir ($video.BaseName + $suffix)
+            $to = Join-Path $transcribeOutput ($video.BaseName + $suffix)
+            if ((Test-Path -LiteralPath $from -PathType Leaf) -and -not (Test-Path -LiteralPath $to -PathType Leaf)) {
+                Copy-Item -LiteralPath $from -Destination $to
+                Write-Host "SEEDED: $($video.BaseName)$suffix"
+            }
+        }
+    }
+}
+
 # A single JVM/Transcribe queue handles every missing contract, avoiding a full model reload for each video.
 $missingContracts = @($eligible | Where-Object {
     $contract = Join-Path $transcribeOutput ($_.BaseName + "_$TargetLanguage`_contract.json")
@@ -201,8 +275,20 @@ $baseText = $baseText -replace '(?m)^tts_provider:.*$', 'tts_provider: "piper"'
 $baseText = $baseText -replace '(?m)^piper_path:.*$', "piper_path: `"$($PiperPath.Replace('\','/'))`""
 $baseText = $baseText -replace '(?m)^piper_model:.*$', "piper_model: `"$($PiperFemaleModel.Replace('\','/'))`""
 $baseText = $baseText -replace '(?m)^piper_config:.*$', "piper_config: `"$($PiperFemaleConfig.Replace('\','/'))`"`npiper_gender_models:`n  male: `"$($PiperMaleModel.Replace('\','/'))`"`n  female: `"$($PiperFemaleModel.Replace('\','/'))`"`npiper_gender_configs:`n  male: `"$($PiperMaleConfig.Replace('\','/'))`"`n  female: `"$($PiperFemaleConfig.Replace('\','/'))`""
+$baseText = [regex]::Replace($baseText, '(?m)^piper_english\w*:[^\r\n]*\r?\n(?:[ \t]+[^\r\n]*\r?\n)*', '')
+function ConvertTo-YamlPath([string]$Path) { return $Path.Replace('\', '/') }
+$baseText = $baseText.TrimEnd() + "`n`n# Dubbing v2 deep dive: formulas, equations and labels are spoken by English voices.`n" +
+    "piper_english_model: `"$(ConvertTo-YamlPath $PiperEnglishFemaleModel)`"`n" +
+    "piper_english_config: `"$(ConvertTo-YamlPath $PiperEnglishFemaleConfig)`"`n" +
+    "piper_english_gender_models:`n  male: `"$(ConvertTo-YamlPath $PiperEnglishMaleModel)`"`n  female: `"$(ConvertTo-YamlPath $PiperEnglishFemaleModel)`"`n" +
+    "piper_english_gender_configs:`n  male: `"$(ConvertTo-YamlPath $PiperEnglishMaleConfig)`"`n  female: `"$(ConvertTo-YamlPath $PiperEnglishFemaleConfig)`"`n"
 $dubConfig = Join-Path $reportDir 'config.hindi.piper.queue.yaml'
 [System.IO.File]::WriteAllText($dubConfig, $baseText, [System.Text.UTF8Encoding]::new($false))
+# On-screen text translation is OFF unless the visual launcher (RUN_VIDEO_TEXT_TRANSLATION.bat) sets VIDEO_TEXT_TRANSLATION=1. If the
+# variable is not set at all, the YAML key production.video_text_translation decides, and the queue is told so here, so skip logic,
+# review flags and the Python choice agree with what the generator will do. An explicit 0 or 1 in the environment always wins.
+if ([string]::IsNullOrWhiteSpace($env:VIDEO_TEXT_TRANSLATION) -and $baseText -match '(?m)^\s+video_text_translation:\s*true\b') { $env:VIDEO_TEXT_TRANSLATION = '1' }
+if ([string]::IsNullOrWhiteSpace($env:VIDEO_TEXT_TRANSLATION_AUTO) -and $baseText -match '(?m)^\s+video_text_translation_auto:\s*true\b') { $env:VIDEO_TEXT_TRANSLATION_AUTO = '1' }
 
 $runVideo = Join-Path $generatorRoot 'run_video.ps1'
 $sourceOcr = Join-Path $generatorRoot 'scripts/audit_source_video.py'
@@ -236,8 +322,13 @@ foreach ($video in $eligible) {
             $currentReviewHash = if (Test-Path -LiteralPath $reviewPath -PathType Leaf) {
                 (Get-FileHash -LiteralPath $reviewPath -Algorithm SHA256).Hash.ToLowerInvariant()
             } else { '' }
-            if ($previous.source_video -eq $video.FullName -and $previousMode -eq $desiredAudioMode -and
-                $previous.qa_version -eq 15 -and $previous.source_size -eq $video.Length -and
+            $visualRequested = $env:VIDEO_TEXT_TRANSLATION -eq '1'
+            $visualCurrent = $previous.video_text_translation.enabled -eq $true -and
+                $previous.video_text_translation.pipeline_version -ge 6 -and
+                @('completed', 'completed_needs_review') -contains $previous.video_text_translation.status
+            if ((-not $visualRequested -or $visualCurrent) -and
+                $previous.source_video -eq $video.FullName -and $previousMode -eq $desiredAudioMode -and
+                $previous.qa_version -ge 23 -and $previous.pipeline_version -eq 'v2-deep-dive' -and @('english_stem','hindi_math','english_voice_strict') -contains $previous.formula_rule -and $previous.source_size -eq $video.Length -and
                 $previous.source_mtime_utc_ticks -eq $video.LastWriteTimeUtc.Ticks -and
                 $previous.visual_source_signature.review_sha256 -eq $currentReviewHash -and
                 $previous.visual_source_qa_report_path -and
@@ -257,6 +348,7 @@ foreach ($video in $eligible) {
                 if ($previous.source_voice_profile.gender -eq 'unknown' -or [double]$previous.source_voice_profile.confidence -lt 0.55) {
                     $reviewCount++
                 }
+                if ($visualRequested -and $previous.video_text_translation.status -ne 'completed') { $reviewCount++ }
                 $finalStatus = if ($reviewCount -gt 0) { 'completed_needs_teacher_review' } else { 'completed_existing' }
                 Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = $finalStatus; output_video = $previous.output_video; voice_gender = $previous.source_voice_profile.gender; voice_confidence = $previous.source_voice_profile.confidence; translation_review_flags = $reviewCount; detail = '' })
                 Write-Host "$itemLabel SKIPPED: already completed in $previousMode mode | status=$finalStatus | output=$($previous.output_video)"
@@ -265,6 +357,10 @@ foreach ($video in $eligible) {
         } catch { }
     }
     try {
+        Write-Host "$itemLabel CONTRACT_PRECHECK_START: inspecting and repairing the contract before dubbing | $contract"
+        Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = 'contract_precheck'; detail = '' })
+        & $ocrPython (Join-Path $generatorRoot 'scripts/precheck_contract.py') $contract
+        if ($LASTEXITCODE -ne 0) { throw "Contract precheck rejected the contract (exit code $LASTEXITCODE)" }
         Write-Host "$itemLabel SOURCE_OCR_START: checking printed formulas and arithmetic before dubbing | $($video.FullName)"
         Set-QueueResult ([pscustomobject]@{ source_path = $video.FullName; status = 'source_ocr'; detail = '' })
         & $ocrPython $sourceOcr --video $video.FullName --contract $contract --config $dubConfig
@@ -295,6 +391,10 @@ foreach ($video in $eligible) {
             $qa = Get-Content -LiteralPath $qaPath -Raw | ConvertFrom-Json
             if ($qa.translation_review_integrated) { $reviewCount = [int]$qa.issue_count }
             else { $reviewCount += [int]$qa.issue_count }
+        }
+        if ($env:VIDEO_TEXT_TRANSLATION -eq '1' -and $dubManifest.video_text_translation.status -ne 'completed') {
+            $reviewCount++
+            Write-Warning "$itemLabel Visual text translation is incomplete; inspect video_text_translation_report.json"
         }
         if ($dubManifest.source_voice_profile.gender -eq 'unknown' -or [double]$dubManifest.source_voice_profile.confidence -lt 0.55) {
             $reviewCount++

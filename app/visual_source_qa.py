@@ -15,9 +15,9 @@ from collections import Counter
 from pathlib import Path
 
 from .renderer import _tool_path
-from .translation_qa import _formula_tokens, _SPOKEN_EQUATION
+from .translation_qa import _formula_tokens, _numbers_outside_formulas, _SPOKEN_EQUATION
 
-VISUAL_QA_VERSION = 5
+VISUAL_QA_VERSION = 6
 _CHEMISTRY = re.compile(r"\b(formula|equation|reaction|compound|bleaching|sodium|calcium|hydroxide|"
                         r"chloride|oxide|carbonate|acid|alkali|ketone|ethanol|ethanoic)\b", re.I)
 _MATH = re.compile(r"\b(plus|minus|times|multiply|divid|subtract|equals?|equal to|calculate|solve)\b|[+×÷=]", re.I)
@@ -263,6 +263,8 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
     for _priority, segment in selected:
         shot_id = segment.shot_id or str(segment.segment_number)
         expected = list(dict.fromkeys(token for token, _a, _b in _formula_tokens(segment.source_narration)))
+        expected_numbers = list(_numbers_outside_formulas(segment.source_narration).keys())
+        protected_expected = expected + [value for value in expected_numbers if value not in expected]
         samples = []
         token_frames = Counter()
         visible_token_frames = Counter()
@@ -278,6 +280,9 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
             for token in expected:
                 if _exact_token_present(token, confident):
                     token_frames[token] += 1
+            for token in expected_numbers:
+                if _exact_token_present(token, confident):
+                    token_frames[token] += 1
             for token in {value for line in confident for value, _a, _b in _formula_tokens(line)}:
                 visible_token_frames[token] += 1
             for equation in _math_equations(confident):
@@ -285,7 +290,8 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
             samples.append({"time_seconds": when, "image": str(image), "ocr_lines": lines,
                             "equations": _math_equations(confident)})
         entry = {"shot_id": shot_id, "start_seconds": segment.source_start, "end_seconds": segment.source_end,
-                 "source_narration": segment.source_narration, "expected_tokens": expected,
+                 "source_narration": segment.source_narration, "expected_tokens": protected_expected,
+                 "expected_formula_tokens": expected, "expected_number_tokens": expected_numbers,
                  "token_frame_counts": dict(token_frames), "visible_token_frame_counts": dict(visible_token_frames),
                  "samples": samples, "status": "no_visible_protected_text"}
         expects_printed_fact = (bool(expected) or bool(_SPOKEN_EQUATION.search(segment.source_narration)) or
@@ -297,9 +303,14 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
                                      "source": segment.source_narration, "translation": "",
                                      "detail": "No readable source-video frame was available for this formula or arithmetic cue; check the original slide and audio.",
                                      "evidence": [sample["image"] for sample in samples]})
-        if expected and all(token_frames[token] > 0 for token in expected):
+        if protected_expected and all(token_frames[token] > 0 for token in protected_expected):
             entry["status"] = "visually_corroborated"
-        elif expected and any(token_frames.values()):
+            entry["evidence_confirmation"] = {
+                "status": "confirmed_by_ocr",
+                "confirmed_tokens": protected_expected,
+                "source_audio_remains_authoritative": True,
+            }
+        elif protected_expected and any(token_frames.values()):
             entry["status"] = "partial_visual_evidence"
         for expression, count in equation_frames.items():
             if count < 2:
@@ -335,6 +346,12 @@ def audit_visual_source(board, source_video: Path, output_dir: Path, config,
                                              "detail": "Visual OCR suggested a possible disagreement, but Qwen vision could not verify it: " + str(error)[:200],
                                              "evidence": [chosen["image"]]})
                 vision = entry.get("vision_crosscheck", {})
+                if vision and vision.get("contradicts_spoken_line") is False:
+                    entry["evidence_confirmation"] = {
+                        "status": "qwen_vision_agrees",
+                        "confirmed_tokens": expected,
+                        "source_audio_remains_authoritative": True,
+                    }
                 visible = [str(token) for token in vision.get("visible_labels", [])]
                 # A conflict needs independent OCR evidence from at least two frames
                 # plus a consistent vision-model statement; otherwise record uncertainty.

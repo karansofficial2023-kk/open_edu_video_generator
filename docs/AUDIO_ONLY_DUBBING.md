@@ -45,9 +45,52 @@ classification is still uncertain, add a source-adjacent `<video-name>.voice.jso
 
 Transcribe also supports a Hindi terminology glossary. Starter biology terms include `bacteria` → `जीवाणु` and `virus` →
 `विषाणु`, and `red cabbage` → `लाल गोभी`; chemistry includes `vinegar` → `सिरका`. Common wrong variants are normalized only
-when the English source line contains the corresponding term. Hindi TTS also speaks `NaOH` as `सोडियम हाइड्रॉक्साइड`.
-Add reviewed terms under
+when the English source line contains the corresponding term. Add reviewed terms under
 `transcribe/terminology/hi/` or make per-lesson overrides in the Transcribe storyboard materials folder; see
 `transcribe/terminology/README.md`.
 
 The workflow needs FFmpeg/FFprobe and a configured TTS voice for the target language. ComfyUI and image/video generation are not used.
+
+## Dubbing v2 (deep dive)
+
+Launcher: `windows_queue\RUN_HINDI_DUB_V2_DEEP_DIVE.bat` (`ALL` = every video, `KEEP` = keep the English track as a second audio track).
+
+**Strict formula rule.** Chemical formulas, chemical equations, atom/point labels (`AB`, `B1`) and acronyms (`AC`) are never read
+in Hindi. `app/spoken_forms.py` splits each narration into Hindi and English spans: `H2SO4` is spoken by an English Piper voice as
+"H two S O four", `2NaOH + H2SO4 -> Na2SO4 + 2H2O` as one English equation, and everything else (digits, percentages, units)
+by the Hindi voice with numbers expanded into Hindi words. Configure the English voices with `piper_english_model` /
+`piper_english_gender_models` (or `PIPER_EN_MODEL`); without one the dub fails loudly instead of silently reading a formula in Hindi.
+Hindi pronunciation maps can no longer replace a formula. The QA report lists every English span under `strict_formula_rule`.
+
+**Contract precheck.** Before any TTS, `app/contract_precheck.py` (also `python scripts/precheck_contract.py CONTRACT.json`)
+removes foreign-script ASR debris, repairs known science mistranslations from the source term (`app/data/hi_dub_glossary.json`),
+restores Devanagari-spelled formulas to Latin, speaks bare numbering cues ("2.") as Hindi ordinals, and repairs cue timing. Repairs are
+written to `<name>_contract.precheck.json`; the original is kept as `<name>_contract.json.v1.bak`. Low-risk review notes (ASR
+doubt only on function words, unverified language-model concerns) become `advisory_notes` in the QA report instead of teacher-review
+flags; anything touching a formula, number or term stays a finding.
+
+**QA.** Post-TTS checking uses Hindi-only speech coverage per cue (threshold 0.55) and over the dubbed span (0.70), excluding the
+untouched English intro. QA version is 20; the queue rebuilds any older output.
+
+
+**v2 additions from the STEM prompt review.** Bonds, groups and suffixes are spoken as chemistry (`C=O` = "C double bond O",
+`C≡N` = "C triple bond N", `-COOH` = "dash C O O H", `-one` = "suffix own"; physics formulas such as `F=BIL` stay equations).
+Transcribe's MADLAD worker masks formulas, bonds and diagram labels as `[1]`, `[2]` before translating and restores them (a line that
+loses a placeholder is translated again unmasked). Whisper gets a STEM vocabulary prompt (`WHISPER_STEM_VOCAB=0` disables it). The Qwen
+repair prompt carries the NCERT Hindi glossary. QA flags a `-one` suffix that was replaced by `C=O`
+(`iupac_suffix_replaced_by_group`), and an audit claiming the source should say `C=O` is recorded as advisory.
+Launcher modes: default = fresh ASR + translation, `QUICK` = reuse old contracts, `ALL`, `KEEP`.
+
+**Two-voice mismatch (v2.1).** The English voice for formulas is a second speaker, so it is matched to the Hindi narrator: the male
+English voice is `en_US-hfc_male-medium` (measured closest to the Hindi `pratham` voice: spectral distance 16 against 27 for the old
+`en_GB-alan`, pitch gap 3 Hz against 18 Hz); the female one stays `en_US-lessac-medium` (the other candidates do not run on the
+installed Piper build). Each English span is also pitch-matched (cached per voice pair), level-matched to the Hindi speech of the same
+line, slowed slightly (`piper_english_length_scale: 1.08`) and faded at the joins. `piper_english_match_voice: false` turns the
+matching off.
+
+**Narrator gender.** The detected gender picks BOTH the Hindi voice and the English formula voice. It is decided by the original
+approach: the source speech after the music intro (voice-activity filtered) is listened to and its pitch gives male or female
+(male at or below 185 Hz, female at or above 190 Hz; the narrow band between is resolved to the nearer side at confidence 0.5 and
+reported as `voice_selection_unverified`). This was right on every lesson tested (Acid-base, Bleaching Powder, Allotropes,
+Carbonyl). Overrides win: `<video>.voice.json`, then `default.voice.json` in the video's folder (one narrator for a series).
+A missing male/female voice in the config is reported as `voice_gender_mismatch`.

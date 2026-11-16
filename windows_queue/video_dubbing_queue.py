@@ -16,7 +16,8 @@ from pathlib import Path
 
 
 INPUT_ROOT = Path(r"D:\Python\video_dubbing")
-OUTPUT_ROOT = Path(r"D:\Python\video_dubbing_output")
+# Fresh v2 (deep dive) output folder; set DUB_OUTPUT_ROOT to use another one.
+OUTPUT_ROOT = Path(os.environ.get("DUB_OUTPUT_ROOT") or r"D:\Python\video_dubbing_output_v2")
 GENERATOR_ROOT = Path(r"D:\Python\claude version\open_edu_video_generator")
 TRANSCRIBE_ROOT = Path(r"D:\Python\claude version\transcribe")
 QUEUE_PS1 = GENERATOR_ROOT / "run_audio_dub_queue.ps1"

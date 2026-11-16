@@ -32,7 +32,7 @@ import numpy as np
 from .renderer import _tool_path
 from .translation_qa import _formula_tokens, _SCIENCE_TERMS_HI
 
-PIPELINE_VERSION = 6
+PIPELINE_VERSION = 7
 DISCOVERY_STEP_SECONDS = 0.25
 WINDOW_GAP_SECONDS = 0.60
 MATCH_RATIO = 0.90

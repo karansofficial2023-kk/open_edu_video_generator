@@ -90,8 +90,8 @@ function Test-AudioTranslationContract([string]$Path) {
     try {
         $contract = Get-Content -LiteralPath $Path -Raw | ConvertFrom-Json
         $shots = @($contract.scenes | ForEach-Object { $_.shots })
-        # v2.3 (re-translation of drifted lines, dropped-sentence check): a contract made by an older ASR/translation recipe (before the tail rescue) is rebuilt (reused seeded contracts are exempt).
-        if ($script:RequireAsrVersion -and [string]$contract.asr_pipeline -ne 'v2.3') { return $false }
+        # v2.4 (split-word and decimal repair in ASR; v2.3 re-translation of drifted lines, dropped-sentence check): a contract made by an older ASR/translation recipe (before the tail rescue) is rebuilt (reused seeded contracts are exempt).
+        if ($script:RequireAsrVersion -and [string]$contract.asr_pipeline -ne 'v2.4') { return $false }
         return ($contract.audio_translation_only -eq $true -and
             -not [string]::IsNullOrWhiteSpace([string]$contract.language.bcp47) -and $shots.Count -gt 0 -and
             @($shots | Where-Object { [string]::IsNullOrWhiteSpace([string]$_.source_narration) }).Count -eq 0)
@@ -324,7 +324,7 @@ foreach ($video in $eligible) {
             } else { '' }
             $visualRequested = $env:VIDEO_TEXT_TRANSLATION -eq '1'
             $visualCurrent = $previous.video_text_translation.enabled -eq $true -and
-                $previous.video_text_translation.pipeline_version -ge 6 -and
+                $previous.video_text_translation.pipeline_version -ge 7 -and
                 @('completed', 'completed_needs_review') -contains $previous.video_text_translation.status
             if ((-not $visualRequested -or $visualCurrent) -and
                 $previous.source_video -eq $video.FullName -and $previousMode -eq $desiredAudioMode -and

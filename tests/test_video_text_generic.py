@@ -210,6 +210,52 @@ class GhostsRevealsAndStackedBullets(unittest.TestCase):
         self.assertIn("पीतल", v._term_hints("Brass is stronger"))
 
 
+class ScreenshotRegressions(unittest.TestCase):
+    def line(self, text, x0, y0, x1, y1, keep_left=0):
+        item = v.Line(text, [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], 0.95)
+        item.keep_left = keep_left
+        return item
+
+    def test_each_bullet_item_is_its_own_block(self):
+        blocks = v.group_blocks([self.line("Duralumin:", 90, 70, 250, 108),
+                                 self.line("Very strong", 116, 113, 270, 152, keep_left=112),
+                                 self.line("Corrosion resistant", 117, 153, 370, 189, keep_left=112),
+                                 self.line("Very light", 116, 192, 248, 231, keep_left=112)])
+        self.assertEqual([b.text for b in blocks], ["Duralumin:", "Very strong", "Corrosion resistant", "Very light"])
+
+    def test_a_wrapped_bullet_item_stays_one_block(self):
+        blocks = v.group_blocks([self.line("Bronze: This alloy of copper is also", 100, 200, 600, 238, keep_left=95),
+                                 self.line("strong, used to make medals", 100, 242, 560, 280)])
+        self.assertEqual(len(blocks), 1)
+
+    def test_erase_only_fragments_do_not_move_the_hindi(self):
+        row = {"key": "sugarcane", "english": "SUGARCANE", "reveal_box": [100, 100, 500, 150]}
+        lone = self.line("S", 60, 100, 85, 150)
+        logo_letter = self.line("e", 20, 60, 90, 190)                # taller than the title's lettering: the logo, never erased
+        lines = v._reveal_paint_lines(row, [lone, logo_letter])
+        self.assertEqual(sum(1 for l in lines if l.erase_only), 1)
+        self.assertFalse(lines[0].erase_only)
+
+    def test_flat_backdrop_is_filled_without_inpainting_smear(self):
+        import numpy as np
+        frame = np.full((120, 300, 3), (90, 10, 40), np.uint8)
+        for x in range(40, 200, 12):
+            frame[48:72, x:x + 3] = (250, 250, 250)                   # thin light strokes (lettering) on a plain pill
+        mask = np.zeros((120, 300), np.uint8)
+        mask[44:76, 34:206] = 255
+        filled = v._flat_fill(frame, mask, 6, 24, (250, 250, 250))
+        self.assertIsNotNone(filled)
+        self.assertLess(int(np.abs(filled[44:76, 34:206].astype(int) - np.array((90, 10, 40))).max()), 12)
+
+    def test_busy_backdrop_is_left_to_inpainting(self):
+        import numpy as np
+        rng = np.random.default_rng(1)
+        frame = rng.integers(0, 255, (120, 300, 3), dtype=np.uint8)
+        mask = np.zeros((120, 300), np.uint8)
+        mask[44:76, 34:206] = 255
+        self.assertIsNone(v._flat_fill(frame, mask, 6, 24, (250, 250, 250)))
+
+
 class TitleCardsAndEquationHalves(unittest.TestCase):
     def test_subject_name_title_card_is_translated_but_brand_lettering_is_not(self):
         v.load_glossary_packs()

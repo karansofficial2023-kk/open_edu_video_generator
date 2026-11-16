@@ -102,6 +102,7 @@ class Line:
     x1: int = 0
     y1: int = 0
     keep_left: int = 0                    # pixels left of this x belong to a bullet that stays untouched
+    erase_only: bool = False              # erased with the label but never used to place or size the Hindi (title fragments)
 
     def __post_init__(self):
         points = np.array(self.box, dtype=np.int32)
@@ -286,7 +287,7 @@ def group_blocks(lines: list) -> list:
                 near = pitch <= 1.30 * float(np.median(pitches))
             else:
                 near = gap <= 0.60 * height
-            starts_new_item = bool(_LABEL_START.match(clean_line_text(line.text)))
+            starts_new_item = bool(_LABEL_START.match(clean_line_text(line.text))) or bool(getattr(line, "keep_left", 0))   # "Label:" or a bullet
             if -0.35 * height <= gap and near and same_size and (left or centred) and not starts_new_item:
                 block.lines.append(line)
                 break
@@ -883,7 +884,8 @@ def _auto_plan(source: Path, config, report: dict) -> tuple:
                 rejected[item["english"]] = "numbers_or_formula_changed"
             elif len(hindi) > 4.0 * len(item["english"]) + 12:
                 rejected[item["english"]] = "implausible_length"
-            elif index in back_by_index and content_overlap(item["english"], back_by_index[index]) < MIN_BACK_OVERLAP:
+            elif (index in back_by_index and not second.get(item["english"])
+                  and content_overlap(item["english"], back_by_index[index]) < MIN_BACK_OVERLAP):
                 rejected[item["english"]] = f"meaning_not_preserved (back-translation: {str(back_by_index[index])[:60]})"
             elif item.get("hidden"):
                 accepted[item["english"]] = hindi           # a prose run of a mixed line: used only to assemble its parent below
@@ -987,25 +989,103 @@ def _bullet_before(frame, line) -> bool:
     return 0.15 * height <= (right - left + 1) <= 1.3 * height and 0.15 * height <= blob_h <= 0.85 * height and gap >= 0.05 * height
 
 
+def _flat_fill(frame, mask, pad: int, line_h: int = 30, text_rgb=None):
+    """Erase lettering on a plain or smoothly shaded backdrop (a caption pill, a slide) without smearing: the background under the strokes
+    is estimated by a morphological opening (light text) or closing (dark text), which removes thin strokes and keeps the gradient.
+    None for a busy backdrop (a scene), which gets inpainted instead."""
+    import cv2
+    ys, xs = np.where(mask > 0)
+    if len(ys) == 0:
+        return frame.copy()
+    k = max(5, int(0.40 * line_h)) | 1
+    h, w = mask.shape
+    y0, y1 = max(0, ys.min() - k), min(h, ys.max() + k + 1)
+    x0, x1 = max(0, xs.min() - k), min(w, xs.max() + k + 1)
+    crop, local = frame[y0:y1, x0:x1], mask[y0:y1, x0:x1] > 0
+    ring = (cv2.dilate(local.astype(np.uint8), np.ones((2 * pad + 3, 2 * pad + 3), np.uint8)) > 0) & ~local
+    if ring.sum() < 30 or local.sum() < 30:
+        return None
+    ring_px = crop[ring].astype(np.int32)
+    background = np.median(ring_px, axis=0)
+    if float(np.percentile(np.abs(ring_px - background).sum(axis=1), 50)) > 35.0:     # half the surroundings must match the background
+        return None                                     # the surroundings are not a plain backdrop
+    if text_rgb is not None:                           # the lettering's own colour decides: light strokes are opened away, dark ones closed
+        bright_text = (0.299 * text_rgb[0] + 0.587 * text_rgb[1] + 0.114 * text_rgb[2]) > float(background.mean())
+    else:
+        bright_text = float(crop[local].astype(np.int32).mean()) > float(background.mean())
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
+    estimate = cv2.morphologyEx(crop, cv2.MORPH_OPEN if bright_text else cv2.MORPH_CLOSE, kernel)
+    estimate = cv2.GaussianBlur(estimate, (0, 0), 1.2)
+    # Replace only the lettering itself (what differs from the estimated backdrop, plus its anti-aliased halo). Every other pixel of the
+    # erased box keeps its true value, so a gradient or a bright patch beside the text is never darkened into a visible rectangle.
+    difference = np.abs(crop.astype(np.int32) - estimate.astype(np.int32)).sum(axis=2)
+    strokes = ((difference > 40) & local).astype(np.uint8)
+    strokes = (cv2.dilate(strokes, np.ones((3, 3), np.uint8), iterations=2) > 0) & local
+    out = frame.copy()
+    region = out[y0:y1, x0:x1]
+    region[strokes] = estimate[strokes]
+    return out
+
+
+def _stroke_inpaint(frame, mask, line_h: int, text_rgb):
+    """For a backdrop that is not plain (a gradient, a scene): find the lettering pixels (what differs from a morphologically estimated
+    backdrop) and inpaint ONLY those. Inpainting the whole erased box smeared a dark rectangle into the picture. None when the lettering
+    cannot be isolated (then the whole box is inpainted as before)."""
+    import cv2
+    ys, xs = np.where(mask > 0)
+    if len(ys) == 0:
+        return None
+    k = max(5, int(0.40 * line_h)) | 1
+    h, w = mask.shape
+    y0, y1 = max(0, ys.min() - k), min(h, ys.max() + k + 1)
+    x0, x1 = max(0, xs.min() - k), min(w, xs.max() + k + 1)
+    crop, local = frame[y0:y1, x0:x1], mask[y0:y1, x0:x1] > 0
+    if local.sum() < 30:
+        return None
+    ring = (cv2.dilate(local.astype(np.uint8), np.ones((9, 9), np.uint8)) > 0) & ~local
+    background = np.median(crop[ring].astype(np.int32), axis=0) if ring.sum() >= 30 else np.median(crop[local].astype(np.int32), axis=0)
+    bright_text = (0.299 * text_rgb[0] + 0.587 * text_rgb[1] + 0.114 * text_rgb[2]) > float(background.mean())
+    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
+    estimate = cv2.morphologyEx(crop, cv2.MORPH_OPEN if bright_text else cv2.MORPH_CLOSE, kernel)
+    difference = np.abs(crop.astype(np.int32) - estimate.astype(np.int32)).sum(axis=2)
+    strokes = ((difference > 45) & local).astype(np.uint8)
+    if strokes.sum() == 0 or strokes.sum() > 0.55 * local.sum():
+        return None
+    strokes = (cv2.dilate(strokes, np.ones((3, 3), np.uint8), iterations=2) > 0) & local
+    patch = cv2.inpaint(np.ascontiguousarray(crop), strokes.astype(np.uint8) * 255, 3, cv2.INPAINT_TELEA)
+    out = frame.copy()
+    out[y0:y1, x0:x1] = patch
+    return out
+
+
 def _paint_block(frame, lines: list, hindi: str, alpha: float = 1.0):
     import cv2
     from PIL import Image, ImageDraw
     from .typography import font, put_text, text_width, wrap_text
 
     height, width = frame.shape[:2]
+    erase_lines = lines
+    lines = [l for l in lines if not getattr(l, "erase_only", False)] or lines
     x0, y0 = min(l.x0 for l in lines), min(l.y0 for l in lines)
     x1, y1 = max(l.x1 for l in lines), max(l.y1 for l in lines)
     line_h = int(np.median([l.height for l in lines]))
     pad = max(3, round(line_h * 0.20))
     colour = _text_colour(frame, (max(0, x0), max(0, y0), min(width, x1), min(height, y1)), lines)
     mask = np.zeros((height, width), np.uint8)
-    for line in lines:
+    for line in erase_lines:
         cv2.fillPoly(mask, [np.array(line.box, dtype=np.int32)], 255)
-    mask = cv2.dilate(mask, np.ones((pad * 2 + 1, pad * 2 + 1), np.uint8))
-    for line in lines:
+    # Wide horizontally, but only a little vertically: stacked lines sit a few pixels apart, and an erase that reaches into the next line
+    # damages its lettering (the white wisps between a heading and its bullets).
+    pad_y = max(2, min(pad, int(0.10 * line_h)))
+    mask = cv2.dilate(mask, np.ones((pad_y * 2 + 1, pad * 2 + 1), np.uint8))
+    for line in erase_lines:
         if getattr(line, "keep_left", 0):
             mask[max(0, line.y0 - pad):line.y1 + pad + 1, :line.keep_left] = 0       # a bullet stays exactly as drawn
-    cleaned = cv2.inpaint(frame, mask, max(3, pad), cv2.INPAINT_TELEA)
+    cleaned = _flat_fill(frame, mask, pad, line_h, colour)
+    if cleaned is None:
+        cleaned = _stroke_inpaint(frame, mask, line_h, colour)
+    if cleaned is None:
+        cleaned = cv2.inpaint(frame, mask, max(3, pad), cv2.INPAINT_TELEA)
     image = Image.fromarray(cv2.cvtColor(cleaned, cv2.COLOR_BGR2RGB))
     base = image.copy() if alpha < 0.999 else None            # the erased picture, without Hindi, for a fade
     draw = ImageDraw.Draw(image)
@@ -1015,8 +1095,16 @@ def _paint_block(frame, lines: list, hindi: str, alpha: float = 1.0):
     centred = len(lines) == 1 or (x_spread > 0.6 * line_h and c_spread <= 0.5 * line_h)
     if centred and len(lines) == 1 and (lines[0].keep_left or _bullet_before(frame, lines[0])):
         centred = False                              # a list item stays left-aligned beside its bullet
+    widen = False
+    if centred and len(lines) == 1 and " " not in hindi.strip():
+        probe = font(max(14, int(line_h * 0.88)), True, True)
+        if text_width(draw, hindi, probe) > 1.15 * (x1 - x0):
+            centred = False                          # wider than the English it replaces: keep its left edge instead of spilling both ways
+            widen = True
     centre_x = (x0 + x1) / 2.0
     box_w = max(40, int((x1 - x0) * 1.0))
+    if widen:
+        box_w = int(box_w * 1.8)
     if centred and " " not in hindi.strip():
         box_w = int(box_w * 1.8)                      # one word is never broken over two lines: it may be wider than a tiny label
     box_w = min(box_w, int(2 * min(centre_x, width - centre_x)) - 8) if centred else min(box_w, width - x0 - 4)
@@ -1134,8 +1222,9 @@ def _reveal_lines(row: dict) -> list:
     return row["_reveal_lines"]
 
 
-def _fragment_fits(block, row: dict) -> bool:
-    """True when a block's letters are a part of the row's word and sit where the finished word sits."""
+def _fragment_fits(block, row: dict, loose: bool = False) -> bool:
+    """True when a block's letters are a part of the row's word and sit where the finished word sits (loose: anywhere on that line,
+    because an animated title moves while it is being revealed)."""
     letters = re.sub(r"[^a-z]", "", block_text(block).casefold())
     full = re.sub(r"[^a-z]", "", row["key"])
     if len(letters) < 2 or len(letters) >= len(full) + 1 or not _is_subsequence(letters, full):
@@ -1143,7 +1232,33 @@ def _fragment_fits(block, row: dict) -> bool:
     x0, y0, x1, y1 = row["reveal_box"]
     bx0, by0, bx1, by1 = block.bbox
     width, height = max(1, x1 - x0), max(1, y1 - y0)
+    if loose:
+        return abs((by0 + by1) - (y0 + y1)) / 2.0 <= 0.5 * height and bx1 - bx0 <= 1.2 * width
     return bx0 >= x0 - 0.2 * width and bx1 <= x1 + 0.2 * width and abs((by0 + by1) - (y0 + y1)) / 2.0 <= 0.5 * height
+
+
+def _reveal_paint_lines(row: dict, ocr_lines: list, matched=None) -> list:
+    """The finished word's place (for the Hindi) plus every visible fragment of the animated title (erased, wherever it currently sits).
+    Works on the raw OCR lines, so a lone letter ("H") that grouping would drop is erased too."""
+    full = re.sub(r"[^a-z]", "", row["key"])
+    x0, y0, x1, y1 = row["reveal_box"]
+    width, height = max(1, x1 - x0), max(1, y1 - y0)
+    taken = {id(l) for l in (matched.lines if matched is not None else [])}
+    extra = []
+    for line in ocr_lines:
+        letters = re.sub(r"[^a-z]", "", line.text.casefold())
+        if id(line) in taken or not letters or not _is_subsequence(letters, full):
+            continue
+        if abs((line.y0 + line.y1) - (y0 + y1)) / 2.0 > 0.5 * height or line.x1 - line.x0 > 1.2 * width:
+            continue
+        if not 0.5 * height <= line.y1 - line.y0 <= 1.3 * height:
+            continue                                   # a logo's own letter is much taller than the title's lettering
+        if line.x1 < x0 - 0.35 * width or line.x0 > x1 + 0.2 * width:
+            continue
+        copy = Line(line.text, line.box, line.confidence)
+        copy.erase_only = True
+        extra.append(copy)
+    return _reveal_lines(row) + extra
 
 
 def _label_contrast(frame, lines: list) -> float:
@@ -1398,19 +1513,20 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
                       if float(row.get("start", 0)) - WINDOW_PAD_SECONDS <= second <= float(row.get("end", 1e12)) + WINDOW_PAD_SECONDS]
             if active and (frame_number % every == 0 or cut):
                 seen = set()
-                blocks = group_blocks(_ocr_lines(ocr, frame, min(minimum, TRACKING_CONFIDENCE)))
+                ocr_lines = _ocr_lines(ocr, frame, min(minimum, TRACKING_CONFIDENCE))
+                blocks = group_blocks(ocr_lines)
                 for block in blocks:
                     text = normalize(block_text(block))
                     for index, row in active:
                         if index not in seen and difflib.SequenceMatcher(None, text, row["key"]).ratio() >= MATCH_RATIO:
-                            lines = _reveal_lines(row) if row.get("reveal_box") else block.lines
+                            lines = _reveal_paint_lines(row, ocr_lines, block) if row.get("reveal_box") else block.lines
                             held[index] = (lines, frame_number)
                             peak[index] = max(peak.get(index, 0.0), _label_contrast(frame, lines))
                             seen.add(index)
                             break
                 for index, row in active:                 # an animated title: any of its letters in place counts
                     if index not in seen and row.get("reveal_box") and any(_fragment_fits(b, row) for b in blocks):
-                        lines = _reveal_lines(row)
+                        lines = _reveal_paint_lines(row, ocr_lines)
                         held[index] = (lines, frame_number)
                         peak[index] = max(peak.get(index, 0.0), _label_contrast(frame, lines))
                         seen.add(index)

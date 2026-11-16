@@ -766,7 +766,9 @@ def _keep_equation_halves_together(hits: dict) -> None:
     """An equation or mixed label that must stay English is often wrapped over two lines. Translating only one of the halves leaves a
     half-English, half-Hindi box, so a translatable block stacked directly against such a block (same time, same column) stays English."""
     stay = [v for v in hits.values() if v["reason"] in {"not_plain_english", "contains_unit_or_operator", "ocr_garbled_text", "equation_with_graphics"}
-            and len(re.findall(r"[A-Za-z]{3,}", v["english"])) >= 1 and v.get("bbox")]
+            and len(re.findall(r"[A-Za-z]{3,}", v["english"])) >= 1 and v.get("bbox")
+            and (v["reason"] == "equation_with_graphics"
+                 or any(_is_notation(t) in ("operator", "formula") for t in v["english"].split()))]    # numbers alone do not make an equation
     for item in hits.values():
         if item["reason"] != "translate" or not item.get("bbox"):
             continue

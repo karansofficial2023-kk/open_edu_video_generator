@@ -256,6 +256,14 @@ class ScreenshotRegressions(unittest.TestCase):
         self.assertIsNone(v._flat_fill(frame, mask, 6, 24, (250, 250, 250)))
 
 
+class NeighbourOfNumbersIsNotAnEquationHalf(unittest.TestCase):
+    def test_caption_beside_a_numbers_only_label_is_still_translated(self):
+        hits = {"a": {"english": "0 5 manganese", "times": [1.0, 1.25, 1.5], "reason": "not_plain_english", "bbox": (100, 100, 400, 140)},
+                "b": {"english": "Very light", "times": [1.0, 1.25, 1.5], "reason": "translate", "bbox": (100, 150, 300, 190)}}
+        v._keep_equation_halves_together(hits)
+        self.assertEqual(hits["b"]["reason"], "translate")
+
+
 class TitleCardsAndEquationHalves(unittest.TestCase):
     def test_subject_name_title_card_is_translated_but_brand_lettering_is_not(self):
         v.load_glossary_packs()

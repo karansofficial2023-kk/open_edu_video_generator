@@ -719,22 +719,29 @@ def _is_subsequence(small: str, big: str) -> bool:
 def _absorb_reveal_fragments(hits: dict) -> None:
     """A title that is revealed letter by letter is read by OCR as "R Y", "I STRY", "E MISTRY"... Those readings are parts of the
     finished word that sits in the same place a moment later. Fold them into it: the word's window starts with the first fragment and
-    the row remembers where the finished word is, so the Hindi can replace the animation from its first letter."""
+    the row remembers where the finished word is, so the Hindi can replace the animation from its first letter.
+
+    Strict on purpose (a loose rule once swallowed unrelated labels): the finished word is a single short line; a fragment is NOT itself
+    a translatable text, has at least two letters in the word's order, sits inside the word's box on the same line, and was seen only
+    in the moments just before the finished word (never at unrelated times)."""
     letters = lambda text: re.sub(r"[^a-z]", "", str(text).casefold())
     for key, item in list(hits.items()):
         full = letters(key)
-        if item.get("reason") != "translate" or len(full) < 6 or not item.get("bbox") or key not in hits:
+        if item.get("reason") != "translate" or not 6 <= len(full) <= 20 or not item.get("bbox") or key not in hits:
             continue
         x0, y0, x1, y1 = item["bbox"]
         width, height = max(1, x1 - x0), max(1, y1 - y0)
+        first, last = min(item["times"]), max(item["times"])
         for other_key, other in list(hits.items()):
             part = letters(other_key)
-            if other_key == key or not other.get("bbox") or not part or len(part) >= len(full) or not _is_subsequence(part, full):
+            if other_key == key or not other.get("bbox") or other.get("reason") == "translate":
+                continue
+            if not 2 <= len(part) < len(full) or not _is_subsequence(part, full):
                 continue
             ox0, oy0, ox1, oy1 = other["bbox"]
-            inside = ox0 >= x0 - 0.35 * width and ox1 <= x1 + 0.35 * width and abs((oy0 + oy1) - (y0 + y1)) / 2.0 <= height
-            near = min(abs(t - u) for t in other["times"] for u in item["times"]) <= 2.0
-            if inside and near:
+            inside = ox0 >= x0 - 0.2 * width and ox1 <= x1 + 0.2 * width and abs((oy0 + oy1) - (y0 + y1)) / 2.0 <= 0.5 * height
+            just_before = all(first - 2.5 <= t <= last + 0.3 for t in other["times"])
+            if inside and just_before:
                 item.setdefault("fragments", []).append(other_key)
                 item["times"] = sorted(item["times"] + other["times"])
                 del hits[other_key]
@@ -1131,12 +1138,12 @@ def _fragment_fits(block, row: dict) -> bool:
     """True when a block's letters are a part of the row's word and sit where the finished word sits."""
     letters = re.sub(r"[^a-z]", "", block_text(block).casefold())
     full = re.sub(r"[^a-z]", "", row["key"])
-    if not letters or len(letters) >= len(full) + 1 or not _is_subsequence(letters, full):
+    if len(letters) < 2 or len(letters) >= len(full) + 1 or not _is_subsequence(letters, full):
         return False
     x0, y0, x1, y1 = row["reveal_box"]
     bx0, by0, bx1, by1 = block.bbox
     width, height = max(1, x1 - x0), max(1, y1 - y0)
-    return bx0 >= x0 - 0.35 * width and bx1 <= x1 + 0.35 * width and abs((by0 + by1) - (y0 + y1)) / 2.0 <= height
+    return bx0 >= x0 - 0.2 * width and bx1 <= x1 + 0.2 * width and abs((by0 + by1) - (y0 + y1)) / 2.0 <= 0.5 * height
 
 
 def _label_contrast(frame, lines: list) -> float:

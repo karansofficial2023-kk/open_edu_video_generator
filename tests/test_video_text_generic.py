@@ -184,12 +184,16 @@ class GhostsRevealsAndStackedBullets(unittest.TestCase):
     def test_letter_by_letter_reveal_is_folded_into_the_finished_word(self):
         hits = {"sugarcane": {"english": "SUGARCANE", "times": [2.0, 2.25, 2.5], "reason": "translate", "bbox": (100, 100, 500, 150)},
                 "sg ne": {"english": "SG NE", "times": [1.5, 1.75], "reason": "all_caps_label", "bbox": (110, 100, 300, 150)},
+                "cane": {"english": "cane", "times": [40.0, 41.0], "reason": "translate", "bbox": (120, 100, 300, 150)},   # a real label: never a fragment
+                "ane": {"english": "ane", "times": [40.0], "reason": "short_unlisted_word", "bbox": (120, 100, 300, 150)},  # seen at an unrelated time
                 "other": {"english": "OTHER", "times": [9.0], "reason": "translate", "bbox": (100, 400, 300, 450)}}
         v._absorb_reveal_fragments(hits)
         self.assertNotIn("sg ne", hits)
         self.assertEqual(hits["sugarcane"]["fragments"], ["sg ne"])
         self.assertEqual(min(hits["sugarcane"]["times"]), 1.5)
         self.assertIn("other", hits)
+        self.assertIn("cane", hits)
+        self.assertIn("ane", hits)
 
     def test_fragment_must_be_part_of_the_word_and_in_its_place(self):
         row = {"key": "sugarcane", "english": "SUGARCANE", "reveal_box": [100, 100, 500, 150]}

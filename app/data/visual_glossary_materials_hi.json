@@ -23,7 +23,8 @@
   "pressure cookers": "प्रेशर कुकर",
   "silvery shine": "चांदी जैसी चमक",
   "sugar": "चीनी",
-  "milk": "दूध"
+  "milk": "दूध",
+  "german silver": "जर्मन सिल्वर"
  },
  "entity_pairs": {
   "gold": {
@@ -42,7 +43,8 @@
    "hindi": [
     "चांदी",
     "चाँदी",
-    "रजत"
+    "रजत",
+    "सिल्वर"
    ],
    "never": [
     "सोना",

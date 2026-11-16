@@ -36,6 +36,9 @@ PIPELINE_VERSION = 6
 DISCOVERY_STEP_SECONDS = 0.25
 WINDOW_GAP_SECONDS = 0.60
 MATCH_RATIO = 0.90
+SCENE_CUT_DIFFERENCE = 25.0       # mean grey difference (0-255, 64x36 thumbnails) that means a hard cut: nothing may be carried over it
+FADE_FULL_RATIO = 0.60           # a label whose contrast has fallen under this share of its peak is repainted fading, then dropped
+FADE_DROP_OPACITY = 0.12
 TRACKING_CONFIDENCE = 0.55       # verifying a block we already decided to translate may accept fading text the discovery pass would not
 MISS_TOLERANCE_SCANS = 4         # OCR scans (3 frames each) a held block may be missed before the English is shown again
 WINDOW_PAD_SECONDS = 0.4         # text fades in before its first clear sighting and out after the last (painting still needs an OCR match)
@@ -486,7 +489,20 @@ def madlad_translate(texts: list, config=None, target: str = "hi") -> list | Non
     return None
 
 
-def qwen_translate(texts: list, config) -> list | None:
+def _term_hints(english: str) -> str:
+    """'sugar = चीनी; salt = नमक' for every pack term the text uses (entity pairs and one-word glossary entries)."""
+    lower = str(english).casefold()
+    parts = []
+    for entity, rule in _ENTITY_PAIRS.items():
+        if re.search(rf"\b{re.escape(entity)}\b", lower) and rule.get("hindi"):
+            parts.append(f"{entity} = {rule['hindi'][0]}")
+    for word in dict.fromkeys(re.findall(r"[a-z]+", lower)):
+        if word in _GLOSSARY and f"{word} =" not in " ".join(parts):
+            parts.append(f"{word} = {_GLOSSARY[word]}")
+    return "; ".join(parts)
+
+
+def qwen_translate(texts: list, config, hints: list | None = None) -> list | None:
     """Fallback only: a local Qwen when MADLAD cannot start. Skipped quietly when Ollama is not running."""
     if os.environ.get("OLLAMA_AVAILABLE", "") == "0":
         return None
@@ -494,8 +510,13 @@ def qwen_translate(texts: list, config) -> list | None:
         import requests
         schema = {"type": "object", "properties": {"translations": {"type": "array", "items": {"type": "string"}}},
                   "required": ["translations"]}
+        if hints and any(hints):
+            payload = [{"text": t, "required_terms": h} if h else {"text": t} for t, h in zip(texts, hints)]
+            extra = " Where required_terms is given, use exactly those Hindi words for those English words (a school textbook's terms, never a transliteration)."
+        else:
+            payload, extra = texts, ""
         prompt = ("Translate each classroom screen text from English to natural, concise Hindi (Devanagari), one output per input, "
-                  "same order. Keep numbers, formulas and chemical symbols unchanged. Input: " + json.dumps(texts, ensure_ascii=False))
+                  "same order. Keep numbers, formulas and chemical symbols unchanged." + extra + " Input: " + json.dumps(payload, ensure_ascii=False))
         reply = requests.post(config.ollama_url.rstrip("/") + "/api/generate", json={
             "model": config.production.director_model, "prompt": prompt, "stream": False, "format": schema,
             "options": {"temperature": 0}}, timeout=180)
@@ -675,7 +696,8 @@ def _second_opinion(rejected_items: list, config) -> dict:
     """english -> Hindi for rejected blocks that Qwen can translate AND a separate Qwen check judges faithful. Same hard checks apply."""
     if not rejected_items:
         return {}
-    candidates = qwen_translate([clean_line_text(i["english"]) for i in rejected_items], config)
+    candidates = qwen_translate([clean_line_text(i["english"]) for i in rejected_items], config,
+                                [_term_hints(i["english"]) for i in rejected_items])
     if not candidates:
         return {}
     ready = []
@@ -689,6 +711,35 @@ def _second_opinion(rejected_items: list, config) -> dict:
     return {english: hindi for (english, hindi), ok in zip(ready, verdicts) if ok is True}
 
 
+def _is_subsequence(small: str, big: str) -> bool:
+    it = iter(big)
+    return all(ch in it for ch in small)
+
+
+def _absorb_reveal_fragments(hits: dict) -> None:
+    """A title that is revealed letter by letter is read by OCR as "R Y", "I STRY", "E MISTRY"... Those readings are parts of the
+    finished word that sits in the same place a moment later. Fold them into it: the word's window starts with the first fragment and
+    the row remembers where the finished word is, so the Hindi can replace the animation from its first letter."""
+    letters = lambda text: re.sub(r"[^a-z]", "", str(text).casefold())
+    for key, item in list(hits.items()):
+        full = letters(key)
+        if item.get("reason") != "translate" or len(full) < 6 or not item.get("bbox") or key not in hits:
+            continue
+        x0, y0, x1, y1 = item["bbox"]
+        width, height = max(1, x1 - x0), max(1, y1 - y0)
+        for other_key, other in list(hits.items()):
+            part = letters(other_key)
+            if other_key == key or not other.get("bbox") or not part or len(part) >= len(full) or not _is_subsequence(part, full):
+                continue
+            ox0, oy0, ox1, oy1 = other["bbox"]
+            inside = ox0 >= x0 - 0.35 * width and ox1 <= x1 + 0.35 * width and abs((oy0 + oy1) - (y0 + y1)) / 2.0 <= height
+            near = min(abs(t - u) for t in other["times"] for u in item["times"]) <= 2.0
+            if inside and near:
+                item.setdefault("fragments", []).append(other_key)
+                item["times"] = sorted(item["times"] + other["times"])
+                del hits[other_key]
+
+
 def _graphics_beside(block, blocks: list) -> bool:
     """True when any other OCR block (an arrow label, a catalyst, a note) sits within a line height above/below or beside this one."""
     x0, y0, x1, y1 = block.bbox
@@ -697,8 +748,9 @@ def _graphics_beside(block, blocks: list) -> bool:
         if other is block:
             continue
         ox0, oy0, ox1, oy1 = other.bbox
-        if ox0 < x1 + 0.1 * width and ox1 > x0 - 0.1 * width and oy0 < y1 + height and oy1 > y0 - height:
-            return True
+        small_note = len(re.sub(r"[^A-Za-z]", "", other.text)) <= 12 or (oy1 - oy0) < 0.75 * height
+        if small_note and ox0 < x1 + 0.1 * width and ox1 > x0 - 0.1 * width and oy0 < y1 + height and oy1 > y0 - height:
+            return True                                # a neighbouring full-size text line (the next bullet) is not a graphic
     return False
 
 
@@ -766,6 +818,7 @@ def _auto_plan(source: Path, config, report: dict) -> tuple:
     for item in hits.values():                      # mostly seen tilted/in perspective -> text on an object, not a caption
         if item["reason"] == "translate" and item.get("object_sightings", 0) * 2 >= len(item["times"]):
             item["reason"] = "scene_object_text"
+    _absorb_reveal_fragments(hits)
     _keep_equation_halves_together(hits)
     brief = {k: v for k, v in hits.items() if len(v["times"]) < MIN_SAMPLES and normalize(v["english"]) not in _GLOSSARY}
     hits = {k: v for k, v in hits.items() if k not in brief}
@@ -799,8 +852,11 @@ def _auto_plan(source: Path, config, report: dict) -> tuple:
             if current is not None and current - previous <= WINDOW_GAP_SECONDS:
                 previous = current
                 continue
-            out.append({"english": item["english"], "hindi": hindi, "start": max(0, round(start - 0.25, 2)),
-                        "end": round(min(duration, previous + 0.25), 2), "source": f"auto_ocr_{engine}"})
+            row = {"english": item["english"], "hindi": hindi, "start": max(0, round(start - 0.25, 2)),
+                   "end": round(min(duration, previous + 0.25), 2), "source": f"auto_ocr_{engine}"}
+            if item.get("fragments") and item.get("bbox"):
+                row["reveal_box"] = [int(v) for v in item["bbox"]]        # where the finished word sits (letter-by-letter reveal)
+            out.append(row)
             if current is not None:
                 start = previous = current
         return out
@@ -1063,6 +1119,26 @@ def _rescue_lines(ocr, frame, scale: float, mode: str, tiles: int) -> list:
     return _lines_from_found(found, frame, REPAIR_CONFIDENCE)
 
 
+def _reveal_lines(row: dict) -> list:
+    """One line covering the finished word of a letter-by-letter title (a fixed place, so the Hindi does not jump as letters appear)."""
+    if "_reveal_lines" not in row:
+        x0, y0, x1, y1 = row["reveal_box"]
+        row["_reveal_lines"] = [Line(row["english"], [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], 1.0)]
+    return row["_reveal_lines"]
+
+
+def _fragment_fits(block, row: dict) -> bool:
+    """True when a block's letters are a part of the row's word and sit where the finished word sits."""
+    letters = re.sub(r"[^a-z]", "", block_text(block).casefold())
+    full = re.sub(r"[^a-z]", "", row["key"])
+    if not letters or len(letters) >= len(full) + 1 or not _is_subsequence(letters, full):
+        return False
+    x0, y0, x1, y1 = row["reveal_box"]
+    bx0, by0, bx1, by1 = block.bbox
+    width, height = max(1, x1 - x0), max(1, y1 - y0)
+    return bx0 >= x0 - 0.35 * width and bx1 <= x1 + 0.35 * width and abs((by0 + by1) - (y0 + y1)) / 2.0 <= height
+
+
 def _label_contrast(frame, lines: list) -> float:
     """How strongly the lettering stands out from the background inside its own box (falls to ~0 while a label fades out)."""
     x0, y0 = max(0, min(l.x0 for l in lines)), max(0, min(l.y0 for l in lines))
@@ -1305,6 +1381,8 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
     paint_log: dict = {}                              # frame number -> [(row index, lines, Hindi text)] : lets a repair replay the render
     held: dict = {}                                   # row index -> (lines, frame number last seen)
     misses: dict = {}                                 # row index -> consecutive OCR scans that did not find it
+    peak: dict = {}                                   # row index -> strongest contrast its lettering has had (to follow fades)
+    previous_thumb = None
     frame_number = 0
     try:
         while True:
@@ -1312,17 +1390,33 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
             if not ok:
                 break
             second = frame_number / fps
+            thumb = cv2.resize(cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY), (64, 36)).astype(np.int16)
+            cut = previous_thumb is not None and float(np.mean(np.abs(thumb - previous_thumb))) > SCENE_CUT_DIFFERENCE
+            previous_thumb = thumb
+            if cut:                                   # a new shot: Hindi must never be carried into it (the "ghost in the next frame")
+                held.clear()
+                misses.clear()
+                peak.clear()
             active = [(i, row) for i, row in enumerate(approved)
                       if float(row.get("start", 0)) - WINDOW_PAD_SECONDS <= second <= float(row.get("end", 1e12)) + WINDOW_PAD_SECONDS]
-            if active and frame_number % every == 0:
+            if active and (frame_number % every == 0 or cut):
                 seen = set()
-                for block in group_blocks(_ocr_lines(ocr, frame, min(minimum, TRACKING_CONFIDENCE))):
+                blocks = group_blocks(_ocr_lines(ocr, frame, min(minimum, TRACKING_CONFIDENCE)))
+                for block in blocks:
                     text = normalize(block_text(block))
                     for index, row in active:
                         if index not in seen and difflib.SequenceMatcher(None, text, row["key"]).ratio() >= MATCH_RATIO:
-                            held[index] = (block.lines, frame_number)
+                            lines = _reveal_lines(row) if row.get("reveal_box") else block.lines
+                            held[index] = (lines, frame_number)
+                            peak[index] = max(peak.get(index, 0.0), _label_contrast(frame, lines))
                             seen.add(index)
                             break
+                for index, row in active:                 # an animated title: any of its letters in place counts
+                    if index not in seen and row.get("reveal_box") and any(_fragment_fits(b, row) for b in blocks):
+                        lines = _reveal_lines(row)
+                        held[index] = (lines, frame_number)
+                        peak[index] = max(peak.get(index, 0.0), _label_contrast(frame, lines))
+                        seen.add(index)
                 for index, _row in active:
                     if index in seen:
                         misses.pop(index, None)
@@ -1341,8 +1435,15 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
                         or frame_number - last_seen > every * (MISS_TOLERANCE_SCANS + 1) + 1:
                     held.pop(index, None)
                     continue
-                paint_log.setdefault(frame_number, []).append((index, lines, row["hindi"]))
-                frame = _paint_block(frame, lines, row["hindi"])
+                # While the original lettering fades out its contrast falls; the Hindi fades with it and is dropped once it is gone,
+                # instead of staying behind as a light, blurred ghost.
+                contrast = _label_contrast(frame, lines)
+                opacity = min(1.0, contrast / max(FADE_FULL_RATIO * peak.get(index, 0.0), 1.0))
+                if opacity < FADE_DROP_OPACITY and last_seen != frame_number:
+                    held.pop(index, None)
+                    continue
+                paint_log.setdefault(frame_number, []).append((index, lines, row["hindi"], opacity))
+                frame = _paint_block(frame, lines, row["hindi"], opacity)
                 row_hits[index] += 1
                 report["applied_frames"] += 1
             writer.stdin.write(frame.tobytes())

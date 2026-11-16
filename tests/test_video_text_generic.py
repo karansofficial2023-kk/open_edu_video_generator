@@ -170,6 +170,42 @@ class RepairOfMissedLabels(unittest.TestCase):
         self.assertLessEqual(len(v.REPAIR_VARIANTS), 2)
 
 
+class GhostsRevealsAndStackedBullets(unittest.TestCase):
+    def box(self, text, x0, y0, x1, y1):
+        return v.Block([v.Line(text, [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], 0.95)])
+
+    def test_stacked_list_items_are_not_graphics_but_a_small_note_is(self):
+        item = self.box("Steel: Iron + carbon", 100, 100, 500, 135)
+        next_item = self.box("Brass: Copper + zinc", 100, 150, 500, 185)
+        note = self.box("(Note)", 300, 140, 360, 160)
+        self.assertFalse(v._graphics_beside(item, [item, next_item]))
+        self.assertTrue(v._graphics_beside(item, [item, note]))
+
+    def test_letter_by_letter_reveal_is_folded_into_the_finished_word(self):
+        hits = {"sugarcane": {"english": "SUGARCANE", "times": [2.0, 2.25, 2.5], "reason": "translate", "bbox": (100, 100, 500, 150)},
+                "sg ne": {"english": "SG NE", "times": [1.5, 1.75], "reason": "all_caps_label", "bbox": (110, 100, 300, 150)},
+                "other": {"english": "OTHER", "times": [9.0], "reason": "translate", "bbox": (100, 400, 300, 450)}}
+        v._absorb_reveal_fragments(hits)
+        self.assertNotIn("sg ne", hits)
+        self.assertEqual(hits["sugarcane"]["fragments"], ["sg ne"])
+        self.assertEqual(min(hits["sugarcane"]["times"]), 1.5)
+        self.assertIn("other", hits)
+
+    def test_fragment_must_be_part_of_the_word_and_in_its_place(self):
+        row = {"key": "sugarcane", "english": "SUGARCANE", "reveal_box": [100, 100, 500, 150]}
+        self.assertTrue(v._fragment_fits(self.box("SG NE", 120, 100, 300, 150), row))
+        self.assertFalse(v._fragment_fits(self.box("XYZ", 120, 100, 300, 150), row))
+        self.assertFalse(v._fragment_fits(self.box("SG NE", 120, 600, 300, 650), row))
+
+    def test_scene_cut_and_fade_constants_exist(self):
+        self.assertGreater(v.SCENE_CUT_DIFFERENCE, 10)
+        self.assertGreater(v.FADE_DROP_OPACITY, 0)
+
+    def test_qwen_hints_use_the_packs(self):
+        v.load_glossary_packs()
+        self.assertIn("पीतल", v._term_hints("Brass is stronger"))
+
+
 class TitleCardsAndEquationHalves(unittest.TestCase):
     def test_subject_name_title_card_is_translated_but_brand_lettering_is_not(self):
         v.load_glossary_packs()

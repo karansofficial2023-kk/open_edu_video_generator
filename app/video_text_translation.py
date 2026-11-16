@@ -1220,6 +1220,8 @@ def _rescue_row(capture, ocr, row: dict, already: set, fps: float, total: int, v
     if len(frames) > REPAIR_MAX_FRAMES_PER_ROW:
         frames = frames[::-(-len(frames) // REPAIR_MAX_FRAMES_PER_ROW)]
     found = {}
+    print(f"VISUAL_TEXT_REPAIR: re-reading '{row['english'][:40]}' {_timecode(row.get('start'))}-{_timecode(row.get('end'))} "
+          f"({len(frames)} frames)", flush=True)
     for n in frames:
         capture.set(cv2.CAP_PROP_POS_FRAMES, n)
         ok, frame = capture.read()
@@ -1246,13 +1248,16 @@ def _painted_frames(paint_log: dict, rows: int) -> list:
     return painted
 
 
-def _replay(source: Path, output: Path, paint_log: dict, fps: float, size: tuple, config) -> None:
-    """Re-encode the picture from the source, applying a paint log. No OCR, so it is far quicker than the first render."""
+def _replay(source: Path, output: Path, paint_log: dict, fps: float, size: tuple, config, preset: str = "slow",
+            progress: bool = False) -> None:
+    """Render the picture ONCE from the source, applying the paint log (no OCR here). Silent video, same encoder settings as before."""
     import cv2
     capture = cv2.VideoCapture(str(source))
+    total = int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+    began = time.time()
     command = [_tool_path(config.ffmpeg_path, "ffmpeg"), "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24",
                "-s", f"{size[0]}x{size[1]}", "-r", f"{fps:.6f}", "-i", "-", "-an", "-c:v", "libx264",
-               "-preset", "medium", "-crf", "17", "-pix_fmt", "yuv420p", str(output)]
+               "-preset", preset, "-crf", "17", "-pix_fmt", "yuv420p", str(output)]
     writer = subprocess.Popen(command, stdin=subprocess.PIPE)
     frame_number = 0
     try:
@@ -1264,21 +1269,23 @@ def _replay(source: Path, output: Path, paint_log: dict, fps: float, size: tuple
                 frame = _paint_block(frame, lines, text, rest[0] if rest else 1.0)
             writer.stdin.write(frame.tobytes())
             frame_number += 1
+            if progress and frame_number % 1000 == 0:
+                print(f"VISUAL_TEXT_RENDER: frame {frame_number}/{total} | {int(time.time() - began)}s", flush=True)
     finally:
         capture.release()
         if writer.stdin:
             writer.stdin.close()
         code = writer.wait()
     if code != 0 or not output.is_file():
-        raise RuntimeError("FFmpeg failed while replaying the repaired video")
+        raise RuntimeError("FFmpeg failed while encoding the visually translated video")
 
 
-def _repair_labels(source: Path, output: Path, approved: list, paint_log: dict, row_hits: list, ocr, fps: float, size: tuple,
-                   config, report: dict) -> None:
-    """Up to repair_attempts() passes. Each targets only the labels still missing, re-renders only when it found something, and keeps
-    the new render only if every earlier replacement is preserved and the result is better. Changes paint_log/row_hits in place."""
+def _repair_labels(source: Path, approved: list, paint_log: dict, row_hits: list, ocr, fps: float, config, report: dict) -> None:
+    """Up to repair_attempts() passes over the labels pass 1 missed. Each pass re-reads only those labels' own frames with enlarged,
+    contrast-enhanced OCR and ADDS what it finds to the paint log. Nothing already found is touched, so every earlier replacement is
+    preserved by construction, and since nothing has been rendered yet the picture is still encoded just once, afterwards."""
     import cv2
-    log = {"enabled": True, "attempts": [], "unresolved_labels": []}
+    log = {"enabled": True, "mode": "rescue_before_render", "attempts": [], "unresolved_labels": []}
     report["repair"] = log
     capture = cv2.VideoCapture(str(source))
     total = int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
@@ -1293,41 +1300,24 @@ def _repair_labels(source: Path, output: Path, approved: list, paint_log: dict, 
                  "targets": [{"english": approved[i]["english"], "start": approved[i].get("start"), "end": approved[i].get("end"),
                               "painted_frames_before": row_hits[i]} for i in targets]}
         log["attempts"].append(entry)
-        gained = {}
+        print(f"VISUAL_TEXT_REPAIR: attempt {attempt}, {len(targets)} label(s) to re-read with enlarged frames", flush=True)
+        recovered = []
+        detected = {}
         for index in targets:
             found = _rescue_row(capture, ocr, approved[index], painted[index], fps, total, REPAIR_VARIANTS[attempt - 1])
-            if found:
-                gained[index] = _fill_detections(found, total)
-        entry["detected_in_frames"] = {approved[i]["english"] + f"@{_timecode(approved[i].get('start'))}": len(g) for i, g in gained.items()}
-        if not gained:
-            entry.update(rendered=False, kept=False, seconds=round(time.time() - started, 1))
-            continue
-        candidate = {n: list(v) for n, v in paint_log.items()}
-        for index, frames in gained.items():
+            if not found:
+                continue
+            frames = _fill_detections(found, total)
             for n, (lines, text, opacity) in frames.items():
                 if n not in painted[index]:
-                    candidate.setdefault(n, []).append((index, lines, text, opacity))
-        new_hits = [len(f) for f in _painted_frames(candidate, len(approved))]
-        path = output.with_name(f"{output.stem}_repair{attempt}{output.suffix}")
-        try:
-            _replay(source, path, candidate, fps, size, config)
-        except Exception as error:
-            path.unlink(missing_ok=True)
-            entry.update(rendered=False, kept=False, error=str(error)[:200], seconds=round(time.time() - started, 1))
-            continue
-        preserved = all(new >= old for new, old in zip(new_hits, row_hits))
-        better = sum(1 for h in new_hits if h) > sum(1 for h in row_hits if h) or sum(new_hits) > sum(row_hits)
-        entry.update(rendered=True, kept=bool(preserved and better), seconds=round(time.time() - started, 1),
-                     recovered=[approved[i]["english"] + f"@{_timecode(approved[i].get('start'))}" for i in targets
-                                if new_hits[i] and not row_hits[i]])
-        if preserved and better:
-            os.replace(path, output)
-            paint_log.clear()
-            paint_log.update(candidate)
-            row_hits[:] = new_hits
-            painted = _painted_frames(paint_log, len(approved))
-        else:
-            path.unlink(missing_ok=True)
+                    paint_log.setdefault(n, []).append((index, lines, text, opacity))
+                    painted[index].add(n)
+                    row_hits[index] += 1
+            detected[approved[index]["english"] + f"@{_timecode(approved[index].get('start'))}"] = len(frames)
+            if row_hits[index]:
+                recovered.append(approved[index]["english"] + f"@{_timecode(approved[index].get('start'))}")
+        entry.update(detected_in_frames=detected, recovered=recovered, rendered=False, kept=bool(detected),
+                     seconds=round(time.time() - started, 1))
     capture.release()
 
 
@@ -1378,10 +1368,10 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
     if fps <= 0 or width <= 0 or height <= 0:
         raise RuntimeError("Could not read source video for visual text translation")
     output.parent.mkdir(parents=True, exist_ok=True)
-    command = [_tool_path(config.ffmpeg_path, "ffmpeg"), "-v", "error", "-y", "-f", "rawvideo", "-pix_fmt", "bgr24",
-               "-s", f"{width}x{height}", "-r", f"{fps:.6f}", "-i", "-", "-an", "-c:v", "libx264",
-               "-preset", "slow", "-crf", "17", "-pix_fmt", "yuv420p", str(output)]
-    writer = subprocess.Popen(command, stdin=subprocess.PIPE)
+    total_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+    started_at = time.time()
+    # Pass 1 only ANALYSES the picture (OCR on the original frames, which label is where, how it fades) and writes a paint log. Nothing is
+    # painted or encoded yet, so the repair below can still add missed labels and the picture is rendered exactly ONCE afterwards.
     every = ocr_every(config)
     minimum = float(config.production.video_text_translation_min_confidence)
     row_hits = [0] * len(approved)
@@ -1450,24 +1440,33 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
                     held.pop(index, None)
                     continue
                 paint_log.setdefault(frame_number, []).append((index, lines, row["hindi"], opacity))
-                frame = _paint_block(frame, lines, row["hindi"], opacity)
                 row_hits[index] += 1
-                report["applied_frames"] += 1
-            writer.stdin.write(frame.tobytes())
             frame_number += 1
+            if frame_number % 1000 == 0:
+                print(f"VISUAL_TEXT_ANALYSIS: frame {frame_number}/{total_frames} | {int(time.time() - started_at)}s", flush=True)
     finally:
         capture.release()
-        if writer.stdin:
-            writer.stdin.close()
-        code = writer.wait()
-    if code != 0 or not output.is_file():
-        raise RuntimeError("FFmpeg failed while encoding visually translated video")
+    print(f"VISUAL_TEXT_ANALYSIS_DONE: {frame_number} frames in {int(time.time() - started_at)}s | labels found in "
+          f"{sum(1 for h in row_hits if h)}/{len(approved)} planned", flush=True)
     report["approved_count"] = len(approved)
     if repair_enabled(config) and repair_attempts(config) > 0 and any(_needs_repair(r, h, fps) for r, h in zip(approved, row_hits)):
         try:
-            _repair_labels(source, output, approved, paint_log, row_hits, ocr, fps, (width, height), config, report)
-        except Exception as error:                       # a repair problem keeps the first render, which is already complete
+            _repair_labels(source, approved, paint_log, row_hits, ocr, fps, config, report)
+        except Exception as error:                       # a repair problem keeps what pass 1 found
             report["repair"] = {**report.get("repair", {}), "enabled": True, "error": str(error)[:300]}
+    if not paint_log:                                    # nothing to paint: keep the original picture, no re-encode
+        report.update(matched_count=0, applied_frames=0, status="words_not_found")
+        report["unmatched_replacements"] = [{"english": r["english"], "start": r.get("start"), "end": r.get("end")} for r in approved]
+        report.setdefault("repair", {"enabled": False})["unresolved_labels"] = [
+            {"english": r["english"], "hindi": r["hindi"], "start": r.get("start"), "end": r.get("end"),
+             "start_timecode": _timecode(r.get("start")), "end_timecode": _timecode(r.get("end"))} for r in approved]
+        report["needs_teacher_review"] = True
+        return source, report
+    render_started = time.time()
+    print(f"VISUAL_TEXT_RENDER_START: painting {sum(len(v) for v in paint_log.values())} label-frames and encoding once", flush=True)
+    _replay(source, output, paint_log, fps, (width, height), config, preset="slow", progress=True)
+    report["render_seconds"] = round(time.time() - render_started, 1)
+    report["analysis_seconds"] = round(render_started - started_at, 1)
     report["matched_count"] = sum(count > 0 for count in row_hits)
     report["applied_frames"] = sum(row_hits)
     report["unmatched_replacements"] = [{"english": row["english"], "start": row.get("start"), "end": row.get("end")}

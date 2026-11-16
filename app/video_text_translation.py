@@ -37,14 +37,16 @@ DISCOVERY_STEP_SECONDS = 0.25
 WINDOW_GAP_SECONDS = 0.60
 MATCH_RATIO = 0.90
 SCENE_CUT_DIFFERENCE = 25.0       # mean grey difference (0-255, 64x36 thumbnails) that means a hard cut: nothing may be carried over it
-FADE_FULL_RATIO = 0.60           # a label whose contrast has fallen under this share of its peak is repainted fading, then dropped
-FADE_DROP_OPACITY = 0.12
+FADE_FULL_RATIO = 0.80           # a label whose contrast has fallen under this share of its peak is repainted fading, then dropped
+FADE_DROP_OPACITY = 0.30
+FAINT_MATCH_RATIO = 0.45         # an OCR match whose lettering has fallen under this share of the label's peak contrast is a fade-out remnant, not a sighting
+PATCH_MATCH_DROP = 0.45          # similarity (-1..1) of the label's box with how it looked when OCR last confirmed it; below this the text is gone
 TRACKING_CONFIDENCE = 0.55       # verifying a block we already decided to translate may accept fading text the discovery pass would not
 MISS_TOLERANCE_SCANS = 4         # OCR scans (3 frames each) a held block may be missed before the English is shown again
 WINDOW_PAD_SECONDS = 0.4         # text fades in before its first clear sighting and out after the last (painting still needs an OCR match)
 
 _PROTECTED_UNIT = re.compile(r"\b(?:cm|mm|km|kg|mg|ml|mol|hz|pa)\b|[=+*/×÷^<>≤≥→⇌]", re.I)
-_CANDIDATE = re.compile(r"[A-Za-z][A-Za-z0-9 ,.:;'’\"&()/%!?-]{1,200}")
+_CANDIDATE = re.compile(r"[A-Za-z0-9][A-Za-z0-9 ,.:;'’\"&()/%!?-]{1,200}")
 _BULLET = re.compile(r"^[•●○◦▪■□·\-–—*]\s*|^[oO0]\s+(?=[A-Z])")
 
 # ---- vocabulary lives in data packs, never in this code ----------------------------------------------------------------
@@ -992,40 +994,43 @@ def _bullet_before(frame, line) -> bool:
 
 
 def _flat_fill(frame, mask, pad: int, line_h: int = 30, text_rgb=None):
-    """Erase lettering on a plain or smoothly shaded backdrop (a caption pill, a slide) without smearing: the background under the strokes
-    is estimated by a morphological opening (light text) or closing (dark text), which removes thin strokes and keeps the gradient.
-    None for a busy backdrop (a scene), which gets inpainted instead."""
-    import cv2
+    """Erase by painting a plain box of the backdrop's own colour over the old lettering (the Hindi is then written on that box).
+
+    Each row of the erased area is filled by blending the colour just left of it into the colour just right of it, so a caption pill's
+    gentle gradient is kept and no trace of the old text, dark smudge or halo is left. Used only when those edge colours are clean and
+    consistent (a pill, a plain slide); None for a busy or multicoloured backdrop, which is handled by inpainting instead."""
     ys, xs = np.where(mask > 0)
     if len(ys) == 0:
         return frame.copy()
-    k = max(5, int(0.40 * line_h)) | 1
     h, w = mask.shape
-    y0, y1 = max(0, ys.min() - k), min(h, ys.max() + k + 1)
-    x0, x1 = max(0, xs.min() - k), min(w, xs.max() + k + 1)
-    crop, local = frame[y0:y1, x0:x1], mask[y0:y1, x0:x1] > 0
-    ring = (cv2.dilate(local.astype(np.uint8), np.ones((2 * pad + 3, 2 * pad + 3), np.uint8)) > 0) & ~local
-    if ring.sum() < 30 or local.sum() < 30:
-        return None
-    ring_px = crop[ring].astype(np.int32)
-    background = np.median(ring_px, axis=0)
-    if float(np.percentile(np.abs(ring_px - background).sum(axis=1), 50)) > 35.0:     # half the surroundings must match the background
-        return None                                     # the surroundings are not a plain backdrop
-    if text_rgb is not None:                           # the lettering's own colour decides: light strokes are opened away, dark ones closed
-        bright_text = (0.299 * text_rgb[0] + 0.587 * text_rgb[1] + 0.114 * text_rgb[2]) > float(background.mean())
-    else:
-        bright_text = float(crop[local].astype(np.int32).mean()) > float(background.mean())
-    kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
-    estimate = cv2.morphologyEx(crop, cv2.MORPH_OPEN if bright_text else cv2.MORPH_CLOSE, kernel)
-    estimate = cv2.GaussianBlur(estimate, (0, 0), 1.2)
-    # Replace only the lettering itself (what differs from the estimated backdrop, plus its anti-aliased halo). Every other pixel of the
-    # erased box keeps its true value, so a gradient or a bright patch beside the text is never darkened into a visible rectangle.
-    difference = np.abs(crop.astype(np.int32) - estimate.astype(np.int32)).sum(axis=2)
-    strokes = ((difference > 40) & local).astype(np.uint8)
-    strokes = (cv2.dilate(strokes, np.ones((3, 3), np.uint8), iterations=2) > 0) & local
+    reach = 5                                           # pixels sampled on each side of an erased span
     out = frame.copy()
+    spreads, gaps = [], []
+    fills = []
+    for y in np.unique(ys):
+        cols = np.where(mask[y] > 0)[0]
+        for span in np.split(cols, np.where(np.diff(cols) > 1)[0] + 1):
+            a, b = int(span[0]), int(span[-1])
+            if a - reach - 1 < 0 or b + reach + 1 >= w:
+                return None
+            left = frame[y, a - reach - 1:a - 1].astype(np.float32)
+            right = frame[y, b + 2:b + reach + 2].astype(np.float32)
+            spreads.append(float(max(left.std(axis=0).max(), right.std(axis=0).max())))
+            lv, rv = np.median(left, axis=0), np.median(right, axis=0)
+            gaps.append(float(np.abs(lv - rv).sum()))
+            fills.append((y, a, b, lv, rv))
+    if not fills or float(np.percentile(spreads, 90)) > 9.0 or float(np.percentile(gaps, 90)) > 90.0:
+        return None                                     # not a plain backdrop
+    for y, a, b, lv, rv in fills:
+        t = (np.arange(a, b + 1) - a + 1) / float(b - a + 2)
+        out[y, a:b + 1] = (lv[None, :] * (1 - t)[:, None] + rv[None, :] * t[:, None]).astype(np.uint8)
+    import cv2
+    ys2, xs2 = np.where(mask > 0)
+    y0, y1, x0, x1 = ys2.min(), ys2.max() + 1, xs2.min(), xs2.max() + 1
     region = out[y0:y1, x0:x1]
-    region[strokes] = estimate[strokes]
+    smooth = cv2.blur(region, (1, 5))                   # rows were filled independently: even out any banding
+    local = mask[y0:y1, x0:x1] > 0
+    region[local] = smooth[local]
     return out
 
 
@@ -1263,6 +1268,36 @@ def _reveal_paint_lines(row: dict, ocr_lines: list, matched=None) -> list:
     return _reveal_lines(row) + extra
 
 
+def _box_patch(frame, lines: list):
+    """A small grey thumbnail of the label's box, to notice when what is under the held Hindi no longer looks like the original text."""
+    import cv2
+    x0, y0 = max(0, min(l.x0 for l in lines)), max(0, min(l.y0 for l in lines))
+    x1, y1 = max(l.x1 for l in lines), max(l.y1 for l in lines)
+    crop = frame[y0:y1, x0:x1]
+    if crop.size == 0:
+        return None
+    thumb = cv2.resize(cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY), (48, 16), interpolation=cv2.INTER_AREA).astype(np.float32)
+    return thumb - float(thumb.mean())
+
+
+def _patch_similarity(now, before) -> float:
+    """Normalised correlation of two box thumbnails: ~1 while the same lettering is there (even dimmer), low once it has gone."""
+    scale = float(np.linalg.norm(now) * np.linalg.norm(before))
+    return float(np.sum(now * before) / scale) if scale > 1e-3 else 1.0
+
+
+def _edge_energy(frame, lines: list) -> float:
+    """Mean edge sharpness (absolute Laplacian) inside the label's box. Lettering is sharp; once it has gone this collapses (a measured
+    fade-out went 46 -> 18 -> 3.6) even on a busy backdrop where plain contrast stays high, which is what left faint ghost text."""
+    import cv2
+    x0, y0 = max(0, min(l.x0 for l in lines)), max(0, min(l.y0 for l in lines))
+    x1, y1 = max(l.x1 for l in lines), max(l.y1 for l in lines)
+    crop = frame[y0:y1, x0:x1]
+    if crop.size == 0:
+        return 0.0
+    return float(np.abs(cv2.Laplacian(cv2.cvtColor(crop, cv2.COLOR_BGR2GRAY), cv2.CV_32F)).mean())
+
+
 def _label_contrast(frame, lines: list) -> float:
     """How strongly the lettering stands out from the background inside its own box (falls to ~0 while a label fades out)."""
     x0, y0 = max(0, min(l.x0 for l in lines)), max(0, min(l.y0 for l in lines))
@@ -1496,6 +1531,7 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
     held: dict = {}                                   # row index -> (lines, frame number last seen)
     misses: dict = {}                                 # row index -> consecutive OCR scans that did not find it
     peak: dict = {}                                   # row index -> strongest contrast its lettering has had (to follow fades)
+    reference: dict = {}                              # row index -> thumbnail of its box when OCR last confirmed it
     previous_thumb = None
     frame_number = 0
     try:
@@ -1511,6 +1547,7 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
                 held.clear()
                 misses.clear()
                 peak.clear()
+                reference.clear()
             active = [(i, row) for i, row in enumerate(approved)
                       if float(row.get("start", 0)) - WINDOW_PAD_SECONDS <= second <= float(row.get("end", 1e12)) + WINDOW_PAD_SECONDS]
             if active and (frame_number % every == 0 or cut):
@@ -1522,15 +1559,20 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
                     for index, row in active:
                         if index not in seen and difflib.SequenceMatcher(None, text, row["key"]).ratio() >= MATCH_RATIO:
                             lines = _reveal_paint_lines(row, ocr_lines, block) if row.get("reveal_box") else block.lines
+                            strength = _edge_energy(frame, lines)
+                            if peak.get(index, 0.0) > 0 and strength < FAINT_MATCH_RATIO * peak[index]:
+                                break                     # the lettering has all but faded: not a new sighting
                             held[index] = (lines, frame_number)
-                            peak[index] = max(peak.get(index, 0.0), _label_contrast(frame, lines))
+                            peak[index] = max(peak.get(index, 0.0), strength)
+                            reference[index] = _box_patch(frame, lines)
                             seen.add(index)
                             break
                 for index, row in active:                 # an animated title: any of its letters in place counts
                     if index not in seen and row.get("reveal_box") and any(_fragment_fits(b, row) for b in blocks):
                         lines = _reveal_paint_lines(row, ocr_lines)
                         held[index] = (lines, frame_number)
-                        peak[index] = max(peak.get(index, 0.0), _label_contrast(frame, lines))
+                        peak[index] = max(peak.get(index, 0.0), _edge_energy(frame, lines))
+                        reference[index] = _box_patch(frame, lines)
                         seen.add(index)
                 for index, _row in active:
                     if index in seen:
@@ -1552,11 +1594,17 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
                     continue
                 # While the original lettering fades out its contrast falls; the Hindi fades with it and is dropped once it is gone,
                 # instead of staying behind as a light, blurred ghost.
-                contrast = _label_contrast(frame, lines)
+                contrast = _edge_energy(frame, lines)
                 opacity = min(1.0, contrast / max(FADE_FULL_RATIO * peak.get(index, 0.0), 1.0))
-                if opacity < FADE_DROP_OPACITY and last_seen != frame_number:
+                if opacity < FADE_DROP_OPACITY:                            # the original has all but faded out: so has the Hindi
                     held.pop(index, None)
                     continue
+                if last_seen != frame_number and not row.get("reveal_box"):       # (an animated title's box changes on purpose)
+                    now, before = _box_patch(frame, lines), reference.get(index)
+                    if (now is not None and before is not None and float(np.linalg.norm(before)) > 40.0
+                            and _patch_similarity(now, before) < PATCH_MATCH_DROP):   # what is under the box no longer looks like the text
+                        held.pop(index, None)
+                        continue
                 paint_log.setdefault(frame_number, []).append((index, lines, row["hindi"], opacity))
                 row_hits[index] += 1
             frame_number += 1

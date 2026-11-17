@@ -324,7 +324,7 @@ foreach ($video in $eligible) {
             } else { '' }
             $visualRequested = $env:VIDEO_TEXT_TRANSLATION -eq '1'
             $visualCurrent = $previous.video_text_translation.enabled -eq $true -and
-                $previous.video_text_translation.pipeline_version -ge 8 -and
+                $previous.video_text_translation.pipeline_version -ge 9 -and
                 @('completed', 'completed_needs_review') -contains $previous.video_text_translation.status
             if ((-not $visualRequested -or $visualCurrent) -and
                 $previous.source_video -eq $video.FullName -and $previousMode -eq $desiredAudioMode -and

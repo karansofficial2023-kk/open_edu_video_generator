@@ -32,7 +32,8 @@ import numpy as np
 from .renderer import _tool_path
 from .translation_qa import _formula_tokens, _SCIENCE_TERMS_HI
 
-PIPELINE_VERSION = 8
+PIPELINE_VERSION = 9
+BUSY_BACKDROP_TEXTURE = 2.5     # mean edge energy of the surroundings above which erasing would smear (photo, 3D scene, table grid)
 BRIEF_LABEL_SECONDS = 0.85       # a window shorter than this that was never found is a note, not a review item
 DISCOVERY_STEP_SECONDS = 0.25
 WINDOW_GAP_SECONDS = 0.60
@@ -106,6 +107,9 @@ class Line:
     y1: int = 0
     keep_left: int = 0                    # pixels left of this x belong to a bullet that stays untouched
     erase_only: bool = False              # erased with the label but never used to place or size the Hindi (title fragments)
+    row_pitch: float = 0.0                # table cell: vertical distance to the nearest cell above/below in its column
+    tight: bool = False                   # a table cell: its neighbours are a few pixels away, so Hindi and its box must stay inside it
+    colour: tuple = None                  # RGB of this line's lettering (a yellow table heading is not part of the white rows below it)
 
     def __post_init__(self):
         points = np.array(self.box, dtype=np.int32)
@@ -275,6 +279,19 @@ def group_blocks(lines: list) -> list:
     new block, so two bullets are never merged into one sentence.
     """
     usable = [l for l in lines if len(clean_line_text(l.text)) >= 2 and re.search(r"[A-Za-z]", l.text)]
+    # Text with another text on the SAME row (table columns, a label beside a value) is a table cell: its neighbours above and below
+    # are other rows, not the next line of a paragraph. Only centred lines may still join (a two-line column heading).
+    side_by_side = {id(l) for l in usable if any(
+        o is not l and min(l.y1, o.y1) - max(l.y0, o.y0) >= 0.6 * min(l.height, o.height)
+        and (o.x0 - l.x1 if o.x0 >= l.x1 else l.x0 - o.x1) <= 8 * max(l.height, o.height) for o in lines)}
+    for line in usable:
+        line.tight = id(line) in side_by_side
+        if line.tight:
+            centre = (line.y0 + line.y1) / 2.0
+            gaps = [abs((o.y0 + o.y1) / 2.0 - centre) for o in lines if o is not line
+                    and min(line.x1, o.x1) - max(line.x0, o.x0) >= 0.4 * min(line.x1 - line.x0, o.x1 - o.x0)
+                    and abs((o.y0 + o.y1) / 2.0 - centre) >= 0.4 * line.height]
+            line.row_pitch = min(gaps) if gaps else 0.0
     blocks: list = []
     for line in sorted(usable, key=lambda l: (l.y0, l.x0)):
         for block in blocks:
@@ -291,6 +308,15 @@ def group_blocks(lines: list) -> list:
             else:
                 near = gap <= 0.60 * height
             starts_new_item = bool(_LABEL_START.match(clean_line_text(line.text))) or bool(getattr(line, "keep_left", 0))   # "Label:" or a bullet
+            if line.colour and last.colour and sum(abs(a - b) for a, b in zip(line.colour, last.colour)) > 110:
+                starts_new_item = True                        # a different lettering colour is a different element (heading vs rows)
+            if id(line) in side_by_side or id(last) in side_by_side:
+                # table cells: two lines join only as a wrapped phrase (second line continues in lower case, both genuinely centred, same
+                # lettering colour). Rows whose cells are left-aligned or centred in their column are never one paragraph.
+                left = False
+                continuation = bool(re.match(r"[a-z]", clean_line_text(line.text))) and not re.search(r"[.:;?!]$", clean_line_text(last.text))
+                if not (centred and continuation and abs(line.x0 - last.x0) > 0.5 * height):
+                    starts_new_item = True
             if -0.35 * height <= gap and near and same_size and (left or centred) and not starts_new_item:
                 block.lines.append(line)
                 break
@@ -672,6 +698,10 @@ def _lines_from_found(found, frame, minimum: float) -> list:
             text = text[bullet.end():]
         line = Line(text, box, float(conf))
         line.keep_left = keep_left
+        try:
+            line.colour = _text_colour(frame, (max(0, line.x0), max(0, line.y0), line.x1, line.y1), [line])
+        except Exception:
+            line.colour = None
         lines.append(line)
     return lines
 
@@ -1099,6 +1129,68 @@ def _flat_fill(frame, mask, pad: int, line_h: int = 30, text_rgb=None, protect_l
     return out
 
 
+PAINT_STATS: dict = {}            # how each painted label-frame was erased: flat_fill / stroke_inpaint / inpaint / backing_box
+
+
+def _count_method(name: str) -> None:
+    PAINT_STATS[name] = PAINT_STATS.get(name, 0) + 1
+
+
+def _backdrop_texture(frame, mask, pad: int) -> float:
+    """Mean edge energy of the ring just around the erased area: ~1 on a plain or smoothly shaded backdrop, 5-7 on a photo or 3D scene."""
+    import cv2
+    ys, xs = np.where(mask > 0)
+    if len(ys) == 0:
+        return 0.0
+    h, w = mask.shape
+    margin = max(12, 2 * pad)
+    y0, y1 = max(0, ys.min() - margin), min(h, ys.max() + margin + 1)
+    x0, x1 = max(0, xs.min() - margin), min(w, xs.max() + margin + 1)
+    grey = cv2.GaussianBlur(cv2.cvtColor(frame[y0:y1, x0:x1], cv2.COLOR_BGR2GRAY).astype(np.float32), (0, 0), 1.0)
+    ring = cv2.dilate(mask[y0:y1, x0:x1], np.ones((2 * margin + 1, 2 * margin + 1), np.uint8)) > 0
+    ring &= mask[y0:y1, x0:x1] == 0
+    if ring.sum() < 30:
+        return 0.0
+    return float(np.abs(cv2.Laplacian(grey, cv2.CV_32F))[ring].mean())
+
+
+def _lettering_is_light(frame, lines: list) -> bool:
+    """Light or dark lettering? Counts pixels inside the text box that are clearly brighter / darker than the surroundings. The sampled
+    "text colour" is unreliable here: white lettering with a dark outline over a photo often samples as dark."""
+    h, w = frame.shape[:2]
+    x0, y0 = max(0, min(l.x0 for l in lines)), max(0, min(l.y0 for l in lines))
+    x1, y1 = min(w, max(l.x1 for l in lines)), min(h, max(l.y1 for l in lines))
+    pad = max(6, int(0.5 * (y1 - y0)))
+    X0, Y0, X1, Y1 = max(0, x0 - pad), max(0, y0 - pad), min(w, x1 + pad), min(h, y1 + pad)
+    grey = np.asarray(frame[Y0:Y1, X0:X1], np.float32) @ np.array([0.114, 0.587, 0.299], np.float32)
+    inside = np.zeros(grey.shape, bool)
+    inside[y0 - Y0:y1 - Y0, x0 - X0:x1 - X0] = True
+    if (~inside).sum() < 30 or inside.sum() < 30:
+        return True
+    around = float(np.median(grey[~inside]))
+    bright = int(((grey > around + 55) & inside).sum())
+    dark = int(((grey < around - 55) & inside).sum())
+    return bright >= 0.7 * dark
+
+
+def _backing_colours(frame, mask, pad: int, text_rgb):
+    """(fill, outline) RGB for a backing box: the surroundings' colour pushed towards the opposite of the lettering (dark behind light
+    text, light behind dark text) so the Hindi stays readable and the box still belongs to the picture; the outline is a softened
+    copy of the lettering colour."""
+    import cv2
+    ys, xs = np.where(mask > 0)
+    h, w = mask.shape
+    margin = max(12, 2 * pad)
+    y0, y1 = max(0, ys.min() - margin), min(h, ys.max() + margin + 1)
+    x0, x1 = max(0, xs.min() - margin), min(w, xs.max() + margin + 1)
+    ring = (cv2.dilate(mask[y0:y1, x0:x1], np.ones((2 * margin + 1, 2 * margin + 1), np.uint8)) > 0) & (mask[y0:y1, x0:x1] == 0)
+    around = np.median(frame[y0:y1, x0:x1][ring].astype(np.float32), axis=0)[::-1] if ring.sum() else np.array([40.0, 40.0, 60.0])
+    light_text = (0.299 * text_rgb[0] + 0.587 * text_rgb[1] + 0.114 * text_rgb[2]) > 128
+    fill = around * 0.28 if light_text else 255.0 - (255.0 - around) * 0.22
+    outline = np.array(text_rgb, np.float32) * 0.55 + fill * 0.45
+    return tuple(int(v) for v in np.clip(fill, 0, 255)), tuple(int(v) for v in np.clip(outline, 0, 255))
+
+
 def _stroke_inpaint(frame, mask, line_h: int, text_rgb):
     """For a backdrop that is not plain (a gradient, a scene): find the lettering pixels (what differs from a morphologically estimated
     backdrop) and inpaint ONLY those. Inpainting the whole erased box smeared a dark rectangle into the picture. None when the lettering
@@ -1154,10 +1246,25 @@ def _paint_block(frame, lines: list, hindi: str, alpha: float = 1.0):
         if getattr(line, "keep_left", 0):
             mask[max(0, line.y0 - pad):line.y1 + pad + 1, :line.keep_left] = 0       # a bullet stays exactly as drawn
     cleaned = _flat_fill(frame, mask, pad, line_h, colour, max([getattr(l, "keep_left", 0) for l in erase_lines] + [0]))
+    backing = None
+    if cleaned is not None:
+        _count_method("flat_fill")
     if cleaned is None:
-        cleaned = _stroke_inpaint(frame, mask, line_h, colour)
-    if cleaned is None:
-        cleaned = cv2.inpaint(frame, mask, max(3, pad), cv2.INPAINT_TELEA)
+        if _backdrop_texture(frame, mask, pad) > BUSY_BACKDROP_TEXTURE:
+            # A photo, a 3D scene or a table grid: any erase smears the picture. Leave it untouched and write the Hindi on a
+            # backing box (the way the lesson's own caption pills look) that fully covers the English.
+            cleaned = frame
+            light = _lettering_is_light(frame, lines)
+            colour = (250, 250, 250) if light and (0.299 * colour[0] + 0.587 * colour[1] + 0.114 * colour[2]) < 150 else                      (18, 18, 18) if not light and (0.299 * colour[0] + 0.587 * colour[1] + 0.114 * colour[2]) > 105 else colour
+            backing = _backing_colours(frame, mask, pad, colour)
+            _count_method("backing_box")
+        else:
+            cleaned = _stroke_inpaint(frame, mask, line_h, colour)
+            _count_method("stroke_inpaint")
+            if cleaned is None:
+                cleaned = cv2.inpaint(frame, mask, max(3, pad), cv2.INPAINT_TELEA)
+                PAINT_STATS["stroke_inpaint"] -= 1
+                _count_method("inpaint")
     image = Image.fromarray(cv2.cvtColor(cleaned, cv2.COLOR_BGR2RGB))
     base = image.copy() if alpha < 0.999 else None            # the erased picture, without Hindi, for a fade
     draw = ImageDraw.Draw(image)
@@ -1167,6 +1274,8 @@ def _paint_block(frame, lines: list, hindi: str, alpha: float = 1.0):
     centred = len(lines) == 1 or (x_spread > 0.6 * line_h and c_spread <= 0.5 * line_h)
     if centred and len(lines) == 1 and (lines[0].keep_left or _bullet_before(frame, lines[0])):
         centred = False                              # a list item stays left-aligned beside its bullet
+    tight = any(getattr(l, "tight", False) for l in lines)
+    pitch = min([l.row_pitch for l in lines if getattr(l, "row_pitch", 0.0) > 0] or [0.0]) if tight else 0.0
     widen = False
     if centred and len(lines) == 1 and " " not in hindi.strip():
         probe = font(max(14, int(line_h * 0.88)), True, True)
@@ -1190,7 +1299,8 @@ def _paint_block(frame, lines: list, hindi: str, alpha: float = 1.0):
         rows = wrap_text(draw, hindi, shaped, box_w)
         ascent, descent = shaped.getmetrics()
         step = ascent + descent + max(2, size // 9)
-        if (len(rows) * step <= (y1 - y0) * 1.30 + pad * 2 or size <= 12) and all(text_width(draw, r, shaped) <= box_w + 2 for r in rows):
+        room = (pitch * 0.96 if pitch else (y1 - y0) * 1.08 + 2) if tight else (y1 - y0) * 1.30 + pad * 2
+        if (len(rows) * step <= room or size <= 12) and all(text_width(draw, r, shaped) <= box_w + 2 for r in rows):
             break
         size -= 1
         if size < 11:
@@ -1208,6 +1318,26 @@ def _paint_block(frame, lines: list, hindi: str, alpha: float = 1.0):
                 top = int(round(((lines[0].y0 + lines[0].y1) / 2.0) - (ink[1] + ink[3]) / 2.0 + 2))
         except Exception:
             pass
+    if backing is not None and rows:
+        xs_text = [left_edge + (max(0.0, (box_w - text_width(draw, r, shaped)) / 2) if centred else 0.0) for r in rows]
+        text_x0, text_x1 = min(xs_text), max(x + text_width(draw, r, shaped) for x, r in zip(xs_text, rows))
+        text_y0, text_y1 = top, top + len(rows) * step
+        gap_x = 3 if tight else max(6, int(0.6 * line_h))              # the OCR box can be narrower than big, shadowed lettering
+        gap_y = 1 if tight else max(3, int(0.3 * line_h))
+        bx0 = int(max(0, min(text_x0 - 3, min(l.x0 for l in erase_lines) - gap_x)))
+        by0 = int(max(0, min(text_y0 - 1, min(l.y0 for l in erase_lines) - gap_y)))
+        if pitch:                                                      # never reach into the neighbouring row
+            mid = (y0 + y1) / 2.0
+            by0, by1_limit = int(mid - pitch / 2.0 + 1), int(mid + pitch / 2.0 - 1)
+        bx1 = int(min(width - 1, max(text_x1 + 3, max(l.x1 for l in erase_lines) + gap_x)))
+        by1 = int(min(height - 1, max(text_y1 + 1, max(l.y1 for l in erase_lines) + gap_y)))
+        if pitch:
+            by1 = by1_limit
+        layer = Image.new("RGBA", image.size, (0, 0, 0, 0))
+        ImageDraw.Draw(layer).rounded_rectangle((bx0, by0, bx1, by1), radius=max(4, int(0.28 * (by1 - by0))),
+                                                fill=backing[0] + (252,), outline=backing[1] + (210,), width=max(1, line_h // 14))
+        image = Image.alpha_composite(image.convert("RGBA"), layer).convert("RGB")
+        draw = ImageDraw.Draw(image)
     for index, row in enumerate(rows):
         row_x = left_edge + (max(0.0, (box_w - text_width(draw, row, shaped)) / 2) if centred else 0.0)
         put_text(draw, (row_x, top + index * step), row, shaped, colour, stroke=max(1, size // 22), stroke_fill=outline)
@@ -1806,10 +1936,12 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
              "start_timecode": _timecode(r.get("start")), "end_timecode": _timecode(r.get("end"))} for r in approved]
         report["needs_teacher_review"] = True
         return source, report
+    PAINT_STATS.clear()
     render_started = time.time()
     print(f"VISUAL_TEXT_RENDER_START: painting {sum(len(v) for v in paint_log.values())} label-frames and encoding once", flush=True)
     _replay(source, output, paint_log, fps, (width, height), config, preset="slow", progress=True)
     report["render_seconds"] = round(time.time() - render_started, 1)
+    report["erase_methods"] = dict(PAINT_STATS)
     report["analysis_seconds"] = round(render_started - started_at, 1)
     report["matched_count"] = sum(count > 0 for count in row_hits)
     report["applied_frames"] = sum(row_hits)

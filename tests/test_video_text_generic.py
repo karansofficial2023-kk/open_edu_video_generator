@@ -322,6 +322,45 @@ class BatchReviewFixes(unittest.TestCase):
         self.assertTrue(notes["errors"])
 
 
+class TableCellsAndBackingBox(unittest.TestCase):
+    def line(self, text, x0, y0, x1, y1, colour=(230, 230, 230)):
+        item = v.Line(text, [[x0, y0], [x1, y0], [x1, y1], [x0, y1]], 0.95)
+        item.colour = colour
+        return item
+
+    def test_table_rows_are_separate_cells_and_a_wrapped_heading_stays_together(self):
+        yellow = (224, 240, 79)
+        lines = [self.line("Nature of the", 362, 206, 480, 228, yellow), self.line("functional group", 349, 230, 490, 254, yellow),
+                 self.line("Suffix", 616, 216, 688, 244, yellow),
+                 self.line("Carboxylic group", 349, 258, 500, 284), self.line("Ester group", 349, 284, 481, 311),
+                 self.line("Acid chloride group", 348, 312, 520, 341), self.line("Amine", 348, 345, 422, 370),
+                 self.line("-oic acid", 586, 258, 684, 284), self.line("-oate", 586, 286, 684, 310),
+                 self.line("-oyl chloride", 586, 314, 700, 340), self.line("-amine", 586, 346, 668, 370)]
+        texts = [b.text for b in v.group_blocks(lines)]
+        self.assertIn("Nature of the functional group", texts)
+        for cell in ("Carboxylic group", "Ester group", "Acid chloride group", "Amine"):
+            self.assertIn(cell, texts)
+        self.assertTrue(all("Ester group Acid" not in t for t in texts))
+
+    def test_a_paragraph_without_neighbours_still_merges(self):
+        blocks = v.group_blocks([self.line("Some text that wraps over", 100, 100, 500, 130), self.line("a second line here", 100, 134, 380, 164)])
+        self.assertEqual(len(blocks), 1)
+
+    def test_busy_backdrop_gets_a_backing_box_and_plain_backdrop_does_not(self):
+        import numpy as np
+        rng = np.random.default_rng(3)
+        busy = rng.integers(0, 255, (160, 400, 3), dtype=np.uint8)
+        plain = np.full((160, 400, 3), (90, 10, 40), np.uint8)
+        mask = np.zeros((160, 400), np.uint8)
+        mask[60:100, 80:300] = 255
+        self.assertGreater(v._backdrop_texture(busy, mask, 6), v.BUSY_BACKDROP_TEXTURE)
+        self.assertLess(v._backdrop_texture(plain, mask, 6), v.BUSY_BACKDROP_TEXTURE)
+        fill, outline = v._backing_colours(busy, mask, 6, (250, 250, 250))
+        self.assertLess(sum(fill) / 3, 90)                       # dark box behind light lettering
+        fill, _ = v._backing_colours(busy, mask, 6, (20, 20, 20))
+        self.assertGreater(sum(fill) / 3, 160)                   # light box behind dark lettering
+
+
 class TitleCardsAndEquationHalves(unittest.TestCase):
     def test_subject_name_title_card_is_translated_but_brand_lettering_is_not(self):
         v.load_glossary_packs()

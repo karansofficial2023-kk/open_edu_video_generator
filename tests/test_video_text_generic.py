@@ -280,6 +280,48 @@ class BulletBesideErasedText(unittest.TestCase):
         self.assertTrue((filled[40:60, 20:40] == 255).all())                     # the bullet itself is untouched
 
 
+class BatchReviewFixes(unittest.TestCase):
+    def setUp(self):
+        v.load_glossary_packs()
+
+    def test_formulas_alone_are_not_failed_translations(self):
+        for text in ("PCl3", "H3PO4", "CH4 + 2O2", "CO"):
+            self.assertEqual(v.classify_block(text, []), "formula_only", text)
+        self.assertEqual(v.classify_block("VANILLA ESSENCE", []), "all_caps_label")        # an all-capitals word is not a formula
+
+    def test_signed_number_keeps_its_sign(self):
+        self.assertEqual(v.classify_block("phosphorus exhibits +3 oxidation state", []), "translate")
+        self.assertTrue(v._protected_tokens_ok("phosphorus exhibits +3 oxidation state", "फॉस्फोरस +3 अवस्था"))
+        self.assertFalse(v._protected_tokens_ok("phosphorus exhibits +3 oxidation state", "फॉस्फोरस 3 अवस्था"))
+
+    def test_organic_terms_are_in_the_packs(self):
+        for word in ("alkyne", "ketones", "haloalkanes", "aldehydes"):
+            self.assertIn(word, v._GLOSSARY)
+
+    def test_labels_match_with_or_without_spaces(self):
+        self.assertTrue(v._same_label("dehydratingagent itgivesanunsaturatedalkenecalledethene",
+                                      "dehydrating agent it gives an unsaturated alkene called ethene"))
+        self.assertFalse(v._same_label("steel", "copper"))
+
+    def test_english_words_are_told_from_ocr_junk(self):
+        v.set_vocabulary([])
+        self.assertTrue(v._looks_english("Steel iron carbon"))
+        self.assertFalse(v._looks_english("hrist lhkee"))
+
+    def test_qwen_batches_report_errors_instead_of_failing_silently(self):
+        import os
+        class P:
+            director_model = "none"
+        class C:
+            ollama_url = "http://127.0.0.1:9"                   # nothing listens here
+            production = P()
+        os.environ["OLLAMA_AVAILABLE"] = "1"
+        notes = {}
+        verdicts = v.qwen_judge([("a", "अ")] * 3, C(), notes)
+        self.assertEqual(verdicts, [False, False, False])
+        self.assertTrue(notes["errors"])
+
+
 class TitleCardsAndEquationHalves(unittest.TestCase):
     def test_subject_name_title_card_is_translated_but_brand_lettering_is_not(self):
         v.load_glossary_packs()

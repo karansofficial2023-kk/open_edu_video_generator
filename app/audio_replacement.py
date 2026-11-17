@@ -22,7 +22,7 @@ from .visual_source_qa import (audit_visual_source, load_visual_report,
 MAX_SPEED_UP = 1.50
 HARD_MAX_SPEED_UP = 1.80      # v2: beyond MAX_SPEED_UP only when nothing can be merged; always flagged for review
 MIN_NATURAL_TEMPO = 0.85
-QA_VERSION = 24               # protected two-ASR/OCR evidence is now a final release gate
+QA_VERSION = 25               # protected two-ASR/OCR evidence is now a final release gate
 PIPELINE_VERSION = "v2-deep-dive"
 CUE_SIMILARITY_THRESHOLD = 0.55
 CUE_MIN_HINDI_CHARS = 12
@@ -88,8 +88,28 @@ def _review_resolved_by_terminology_repair(item: dict, current: Segment | None,
     return corrected and known_term
 
 
+_DEVANAGARI_DIGITS = str.maketrans("\u0966\u0967\u0968\u0969\u096a\u096b\u096c\u096d\u096e\u096f", "0123456789")
+
+
+def _numbers_as_words(value: str) -> str:
+    """Digits (Latin or Devanagari) -> Hindi number words, so "23" heard and "तेईस" expected compare equal."""
+    from .spoken_forms import hindi_number
+
+    def spoken(match):
+        try:
+            return " " + hindi_number(match.group().translate(_DEVANAGARI_DIGITS)) + " "
+        except (ValueError, KeyError, IndexError):
+            return match.group()
+    return re.sub(r"[0-9\u0966-\u096f]+(?:\.[0-9\u0966-\u096f]+)?", spoken, value)
+
+
+def _collapse_loops(value: str) -> str:
+    """Whisper sometimes loops on a long Hindi cue ("अन्कों का अन्कों का अन्कों का ..."): keep one copy of a phrase repeated 3+ times."""
+    return re.sub(r"(?<!\S)(\S+(?:\s+\S+){0,3}?)(?:\s+\1(?!\S)){2,}", r"\1", value)
+
+
 def _normalize_speech(value: str) -> str:
-    return re.sub(r"[^\w\u0900-\u097f]+", " ", value.casefold()).strip()
+    return re.sub(r"[^\w\u0900-\u097f]+", " ", _numbers_as_words(value).casefold()).strip()
 
 
 def _coverage(expected: str, heard: str) -> float:
@@ -98,7 +118,7 @@ def _coverage(expected: str, heard: str) -> float:
     Recall (not symmetric similarity) is used because the Hindi ASR also 'hears' the English formula
     spans as extra garbled Devanagari, which must not count against a correct dub.
     """
-    expected, heard = _normalize_speech(expected), _normalize_speech(heard)
+    expected, heard = _normalize_speech(expected), _collapse_loops(_normalize_speech(heard))
     if not expected:
         return 1.0
     matcher = difflib.SequenceMatcher(None, expected, heard, autojunk=False)
@@ -753,6 +773,12 @@ def replace_audio(board: Storyboard, source_video: str | Path, output_dir: str |
                               "detail": f"Approved on-screen label '{label['english']}' at {label['start_timecode']}-{label['end_timecode']} "
                                         "was not found by OCR even after the enlarged-frame repair passes, so it stays English in the "
                                         "picture. Teacher review needed."})
+        for run in video_text_report.get("english_audit", {}).get("remaining", []):
+            if run.get("samples", 0) >= 2:                        # on screen for about 1.5 s or more
+                qa_issues.append({"shot_id": f"video_text@{run['start_timecode']}-{run['end_timecode']}",
+                                  "kind": "video_text_english_remaining", "source": run["text"], "translation": "",
+                                  "detail": f"English text is still visible in the finished picture at {run['start_timecode']}-{run['end_timecode']}"
+                                            " although it is not formula, number, logo or text on an object. Teacher review needed."})
         if len(qa_issues) != report.get("issue_count"):
             report["issues"] = qa_issues
             report["issue_count"] = len(qa_issues)

@@ -32,7 +32,8 @@ import numpy as np
 from .renderer import _tool_path
 from .translation_qa import _formula_tokens, _SCIENCE_TERMS_HI
 
-PIPELINE_VERSION = 7
+PIPELINE_VERSION = 8
+BRIEF_LABEL_SECONDS = 0.85       # a window shorter than this that was never found is a note, not a review item
 DISCOVERY_STEP_SECONDS = 0.25
 WINDOW_GAP_SECONDS = 0.60
 MATCH_RATIO = 0.90
@@ -46,7 +47,7 @@ MISS_TOLERANCE_SCANS = 4         # OCR scans (3 frames each) a held block may be
 WINDOW_PAD_SECONDS = 0.4         # text fades in before its first clear sighting and out after the last (painting still needs an OCR match)
 
 _PROTECTED_UNIT = re.compile(r"\b(?:cm|mm|km|kg|mg|ml|mol|hz|pa)\b|[=+*/×÷^<>≤≥→⇌]", re.I)
-_CANDIDATE = re.compile(r"[A-Za-z0-9][A-Za-z0-9 ,.:;'’\"&()/%!?-]{1,200}")
+_CANDIDATE = re.compile(r"[A-Za-z0-9][A-Za-z0-9 ,.:;'’\"&()/%!?+−-]{1,200}")
 _BULLET = re.compile(r"^[•●○◦▪■□·\-–—*]\s*|^[oO0]\s+(?=[A-Z])")
 
 # ---- vocabulary lives in data packs, never in this code ----------------------------------------------------------------
@@ -356,6 +357,11 @@ def _protected_tokens_ok(english: str, hindi: str) -> bool:
     flat = hindi.translate(str.maketrans("०१२३४५६७८९", "0123456789"))
     if any(number not in flat for number in numbers):
         return False
+    # a sign belongs to its number: "+3 oxidation state" must not become "3 oxidation state"
+    flat_signs = flat.replace("−", "-").replace("–", "-")
+    for signed in re.findall(r"(?<![\w.])[+\-−–]\d+(?:\.\d+)?", english):
+        if signed.replace("−", "-").replace("–", "-") not in flat_signs:
+            return False
     # Symbols that must come back verbatim: pH and chemical-looking tokens such as HCl, NaOH (also the OCR's HCI).
     symbols = set(re.findall(r"\b[a-z]{1,3}[A-Z][A-Za-z]*\b", english)) | {t for t in re.findall(r"\b[A-Z][A-Za-z]?[A-Z][A-Za-z]{0,3}\d*\b", english)
                                                       if len(t) <= 6}
@@ -369,7 +375,7 @@ Rh Pd Ag Cd In Sn Sb Te I Xe Cs Ba La Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu 
 _OPERATOR_TOKENS = {"+", "=", "→", "⇌", "⟶", "->", "-->", "–", "-"}
 _STATE_TOKEN = re.compile(r"^\((?:g|l|s|aq)\)$")
 _FORMULA_TOKEN = re.compile(r"^(?:\d*(?:[A-Z][a-z]?\d*|\([A-Za-z0-9]+\)\d*))+(?:\((?:g|l|s|aq)\))?$")
-_NUMBER_TOKEN = re.compile(r"^\d+(?:\.\d+)?$")
+_NUMBER_TOKEN = re.compile(r"^[+\-\u2212\u2013]?\d+(?:\.\d+)?%?$")
 
 
 def _is_notation(token: str) -> str:
@@ -386,6 +392,15 @@ def _is_notation(token: str) -> str:
         if any(c.isdigit() for c in t) or len(letters) >= 2 or (len(letters) == 1 and letters[0] in _ELEMENT_SYMBOLS and len(t) <= 2):
             return "formula"
     return ""
+
+
+def _is_pure_notation(token: str) -> bool:
+    """A formula (with a digit, or at most three letters: PCl3, H3PO4, CO), a number, a state symbol or an operator. An all-capitals word
+    such as VANILLA also fits the formula pattern, so a real formula needs a digit or to be very short."""
+    kind = _is_notation(token)
+    if kind in ("number", "state", "operator"):
+        return True
+    return kind == "formula" and (any(c.isdigit() for c in token) or len(re.sub(r"[^A-Za-z]", "", token)) <= 3)
 
 
 def mixed_runs(value: str):
@@ -419,7 +434,10 @@ def classify_block(text: str, extra: list) -> str:
     """'translate' or the reason a block must stay English."""
     value = clean_line_text(text)
     if value and mixed_runs(value):
-        return "mixed_prose_formula"                 # words plus formulas: the words are translated, the notation stays
+        return "mixed_prose_formula"
+    tokens = value.split()
+    if tokens and all(_is_pure_notation(t) for t in tokens):
+        return "formula_only"                        # PCl3, H3PO4, CH4 + 2O2: notation, English by design (not a failed translation)                 # words plus formulas: the words are translated, the notation stays
     if not value or not _CANDIDATE.fullmatch(value):
         return "not_plain_english"
     if len(re.findall(r"[A-Za-z]{2,}", value)) == 0:
@@ -429,7 +447,7 @@ def classify_block(text: str, extra: list) -> str:
         return "short_unlisted_word"                 # typed-in / half-faded fragments such as "Bug"
     if has_garbled_token(value):
         return "ocr_garbled_text"                    # glued words the vocabulary cannot repair: leave the English alone
-    if _PROTECTED_UNIT.search(value):
+    if _PROTECTED_UNIT.search(re.sub(r"(?<![\w.])[+\-−–]\d+(?:\.\d+)?", " ", value)):   # (a signed number is not an operator)
         return "contains_unit_or_operator"
     letters = re.sub(r"[^A-Za-z]", "", value)
     if len(letters) >= 4 and letters.isupper() and normalize(value) not in _GLOSSARY:
@@ -505,29 +523,34 @@ def _term_hints(english: str) -> str:
     return "; ".join(parts)
 
 
-def qwen_translate(texts: list, config, hints: list | None = None) -> list | None:
-    """Fallback only: a local Qwen when MADLAD cannot start. Skipped quietly when Ollama is not running."""
+def qwen_translate(texts: list, config, hints: list | None = None, notes: dict | None = None) -> list | None:
+    """Fallback and second opinion: a local Qwen translates in batches of QWEN_BATCH. A batch that fails gives empty strings and is
+    written to notes["errors"]. Skipped quietly (None) when Ollama is switched off."""
     if os.environ.get("OLLAMA_AVAILABLE", "") == "0":
         return None
-    try:
-        import requests
-        schema = {"type": "object", "properties": {"translations": {"type": "array", "items": {"type": "string"}}},
-                  "required": ["translations"]}
-        if hints and any(hints):
-            payload = [{"text": t, "required_terms": h} if h else {"text": t} for t, h in zip(texts, hints)]
+    schema = {"type": "object", "properties": {"translations": {"type": "array", "items": {"type": "string"}}},
+              "required": ["translations"]}
+    out: list = []
+    for start in range(0, len(texts), QWEN_BATCH):
+        chunk = texts[start:start + QWEN_BATCH]
+        chunk_hints = (hints or [])[start:start + QWEN_BATCH]
+        if chunk_hints and any(chunk_hints):
+            payload = [{"text": t, "required_terms": h} if h else {"text": t} for t, h in zip(chunk, chunk_hints)]
             extra = " Where required_terms is given, use exactly those Hindi words for those English words (a school textbook's terms, never a transliteration)."
         else:
-            payload, extra = texts, ""
+            payload, extra = chunk, ""
         prompt = ("Translate each classroom screen text from English to natural, concise Hindi (Devanagari), one output per input, "
                   "same order. Keep numbers, formulas and chemical symbols unchanged." + extra + " Input: " + json.dumps(payload, ensure_ascii=False))
-        reply = requests.post(config.ollama_url.rstrip("/") + "/api/generate", json={
-            "model": config.production.director_model, "prompt": prompt, "stream": False, "format": schema,
-            "options": {"temperature": 0}}, timeout=180)
-        reply.raise_for_status()
-        result = json.loads(reply.json().get("response", "{}")).get("translations")
-        return result if isinstance(result, list) and len(result) == len(texts) else None
-    except Exception:
-        return None
+        try:
+            answer = _ollama_json(config, prompt, schema, 1500).get("translations")
+            if not isinstance(answer, list) or len(answer) != len(chunk):
+                raise ValueError(f"expected {len(chunk)} translations, got {answer!r}")
+            out.extend(str(x) for x in answer)
+        except Exception as error:
+            out.extend([""] * len(chunk))
+            if notes is not None:
+                notes.setdefault("errors", []).append(f"translate batch {start // QWEN_BATCH + 1}: {str(error)[:160]}")
+    return out if any(out) or not texts else None
 
 
 def translate_texts(texts: list, config) -> tuple:
@@ -675,32 +698,50 @@ def _merge_near_duplicates(hits: dict) -> dict:
 _SECOND_CHANCE = ("meaning_not_preserved", "no_hindi_returned", "implausible_length", "entity_mismatch")
 
 
-def qwen_judge(pairs: list, config) -> list | None:
-    """For each (english, hindi): does the Hindi say the same thing as on-screen lesson text? None when Qwen is unavailable."""
+QWEN_BATCH = 8                    # texts per request: a 24-pair judge request timed out at 180 s and silently rescued nothing
+QWEN_TIMEOUT_SECONDS = 300
+
+
+def _ollama_json(config, prompt: str, schema: dict, tokens: int = 1200):
+    """One Ollama request answered as JSON. Thinking is switched off (it made big requests very slow). Raises on any failure."""
+    import requests
+    reply = requests.post(config.ollama_url.rstrip("/") + "/api/generate", json={
+        "model": config.production.director_model, "prompt": prompt, "stream": False, "think": False, "format": schema,
+        "options": {"temperature": 0, "num_predict": tokens}}, timeout=QWEN_TIMEOUT_SECONDS)
+    reply.raise_for_status()
+    return json.loads(reply.json().get("response", "{}"))
+
+
+def qwen_judge(pairs: list, config, notes: dict | None = None) -> list | None:
+    """For each (english, hindi): does the Hindi say the same thing as on-screen lesson text? One boolean per pair (False when a batch
+    failed; the failure is written to notes["errors"]). None when Qwen is switched off."""
     if os.environ.get("OLLAMA_AVAILABLE", "") == "0" or not pairs:
         return None
-    try:
-        import requests
-        schema = {"type": "object", "properties": {"faithful": {"type": "array", "items": {"type": "boolean"}}}, "required": ["faithful"]}
+    schema = {"type": "object", "properties": {"faithful": {"type": "array", "items": {"type": "boolean"}}}, "required": ["faithful"]}
+    verdicts: list = []
+    for start in range(0, len(pairs), QWEN_BATCH):
+        chunk = pairs[start:start + QWEN_BATCH]
         prompt = ("For each pair, answer true only if the Hindi is a correct, natural translation of the English screen text of a school "
                   "lesson: same meaning, nothing added or lost, correct school-science terminology. A synonym is fine; a different meaning "
-                  "is false. One boolean per pair, same order. Pairs: " + json.dumps([{"english": e, "hindi": h} for e, h in pairs], ensure_ascii=False))
-        reply = requests.post(config.ollama_url.rstrip("/") + "/api/generate", json={
-            "model": config.production.director_model, "prompt": prompt, "stream": False, "format": schema,
-            "options": {"temperature": 0}}, timeout=180)
-        reply.raise_for_status()
-        result = json.loads(reply.json().get("response", "{}")).get("faithful")
-        return result if isinstance(result, list) and len(result) == len(pairs) else None
-    except Exception:
-        return None
+                  "is false. One boolean per pair, same order. Pairs: " + json.dumps([{"english": e, "hindi": h} for e, h in chunk], ensure_ascii=False))
+        try:
+            answer = _ollama_json(config, prompt, schema, 300).get("faithful")
+            if not isinstance(answer, list) or len(answer) != len(chunk):
+                raise ValueError(f"expected {len(chunk)} verdicts, got {answer!r}")
+            verdicts.extend(bool(x) for x in answer)
+        except Exception as error:
+            verdicts.extend([False] * len(chunk))
+            if notes is not None:
+                notes.setdefault("errors", []).append(f"judge batch {start // QWEN_BATCH + 1}: {str(error)[:160]}")
+    return verdicts
 
 
-def _second_opinion(rejected_items: list, config) -> dict:
+def _second_opinion(rejected_items: list, config, notes: dict | None = None) -> dict:
     """english -> Hindi for rejected blocks that Qwen can translate AND a separate Qwen check judges faithful. Same hard checks apply."""
     if not rejected_items:
         return {}
     candidates = qwen_translate([clean_line_text(i["english"]) for i in rejected_items], config,
-                                [_term_hints(i["english"]) for i in rejected_items])
+                                [_term_hints(i["english"]) for i in rejected_items], notes)
     if not candidates:
         return {}
     ready = []
@@ -710,7 +751,7 @@ def _second_opinion(rejected_items: list, config) -> dict:
                 and _translation_valid(item["english"], hindi) and _protected_tokens_ok(item["english"], hindi)
                 and len(hindi) <= 4.0 * len(item["english"]) + 12):
             ready.append((item["english"], hindi))
-    verdicts = qwen_judge(ready, config) or []
+    verdicts = qwen_judge(ready, config, notes) or []
     return {english: hindi for (english, hindi), ok in zip(ready, verdicts) if ok is True}
 
 
@@ -800,7 +841,7 @@ def _auto_plan(source: Path, config, report: dict) -> tuple:
     if fps <= 0 or duration <= 0:
         capture.release()
         return plan_path, []
-    ocr, hits = RapidOCR(), {}
+    ocr, hits, glued_cache = RapidOCR(), {}, {}
     frame_height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT) or 0)
     minimum = float(config.production.video_text_translation_min_confidence)
     extra = config.production.video_text_translation_protected_terms
@@ -810,7 +851,8 @@ def _auto_plan(source: Path, config, report: dict) -> tuple:
         if not ok:
             continue
         blocks = group_blocks(_ocr_lines(ocr, frame, minimum))
-        for block in blocks:
+        for position, block in enumerate(blocks):
+            block = blocks[position] = _reread_glued(ocr, frame, block, glued_cache)
             key = normalize(block_text(block))
             if len(key) < 3:
                 continue
@@ -917,7 +959,10 @@ def _auto_plan(source: Path, config, report: dict) -> tuple:
 
     rows, rejected = build({})
     retry = [translatable[k] for k in keys if str(rejected.get(translatable[k]["english"], "")).startswith(_SECOND_CHANCE)]
-    second = _second_opinion(retry, config)
+    second_notes: dict = {}
+    second = _second_opinion(retry, config, second_notes)
+    if second_notes.get("errors"):
+        report["second_opinion_errors"] = second_notes["errors"]
     if second:
         rows, rejected = build(second)
     report["second_opinion_accepted"] = second
@@ -1264,6 +1309,45 @@ def _fragment_fits(block, row: dict, loose: bool = False) -> bool:
     return bx0 >= x0 - 0.2 * width and bx1 <= x1 + 0.2 * width and abs((by0 + by1) - (y0 + y1)) / 2.0 <= 0.5 * height
 
 
+def _same_label(text: str, key: str) -> bool:
+    """OCR text vs a label key: close as written, or close once spaces are ignored (OCR glues or splits words)."""
+    if difflib.SequenceMatcher(None, text, key).ratio() >= MATCH_RATIO:
+        return True
+    a, b = text.replace(" ", ""), key.replace(" ", "")
+    return len(b) >= 8 and difflib.SequenceMatcher(None, a, b).ratio() >= 0.93
+
+
+def _reread_glued(ocr, frame, block, cache: dict):
+    """A line the OCR returned with its spaces missing ("dehydratingagent,itgives...") is read again on an enlarged crop, which restores
+    them. The new reading is accepted only if it is the SAME text (equal once spaces are ignored): a partial or different reading must
+    never replace the block, or the translation would be of cut-off text. Cached by the glued text, so a label that stays on screen is
+    re-read once."""
+    text = block_text(block)
+    if not has_garbled_token(text):
+        return block
+    key = normalize(text)
+    if key in cache:
+        return cache[key] or block
+    x0, y0, x1, y1 = [int(v) for v in block.bbox]
+    pad = max(10, int(0.8 * (y1 - y0)))
+    ox, oy = max(0, x0 - pad), max(0, y0 - pad)
+    crop = np.ascontiguousarray(frame[oy:y1 + pad, ox:x1 + pad])
+    inside = []
+    for l in _rescue_lines(ocr, crop, 2.0, "clahe_unsharp", 1):
+        shifted = Line(l.text, [[p[0] + ox, p[1] + oy] for p in l.box], l.confidence)
+        if shifted.x0 >= x0 - 0.1 * (x1 - x0) and shifted.x1 <= x1 + 0.1 * (x1 - x0) and shifted.y0 >= y0 - 0.2 * (y1 - y0)                 and shifted.y1 <= y1 + 0.2 * (y1 - y0):
+            inside.append(shifted)
+    candidate = Block(sorted(inside, key=lambda l: (l.y0, l.x0))) if inside else None
+    accepted = None
+    if candidate is not None:
+        new_text = block_text(candidate)
+        same = difflib.SequenceMatcher(None, normalize(new_text).replace(" ", ""), key.replace(" ", ""), autojunk=False).ratio()
+        if same >= 0.92 and not has_garbled_token(new_text):
+            accepted = candidate
+    cache[key] = accepted
+    return accepted or block
+
+
 def _reveal_paint_lines(row: dict, ocr_lines: list, matched=None) -> list:
     """The finished word's place (for the Hindi) plus every visible fragment of the animated title (erased, wherever it currently sits).
     Works on the raw OCR lines, so a lone letter ("H") that grouping would drop is erased too."""
@@ -1493,6 +1577,80 @@ def _repair_labels(source: Path, approved: list, paint_log: dict, row_hits: list
     capture.release()
 
 
+ALLOWED_ENGLISH_REASONS = {"scene_object_text", "all_caps_label", "no_words", "formula_only", "short_unlisted_word", "equation_with_graphics",
+                           "contains_unit_or_operator", "half_of_untranslated_equation"}
+
+
+def _looks_english(text: str) -> bool:
+    """Real English words (not OCR junk read from Hindi lettering): at least two thirds of the 3+ letter words are known English."""
+    if re.search(r"[\u0900-\u097f]", text):
+        return False
+    words = [w.lower() for w in re.findall(r"[A-Za-z]{3,}", text)]
+    if not words:
+        return False
+    known = _VOCAB | general_wordlist() | _COMMON
+    return sum(1 for w in words if w in known) / len(words) >= 0.66
+
+
+def _english_audit(video: Path, report: dict, ocr, step: float = 1.0) -> dict:
+    """OCR the FINISHED picture about once a second and list English text that is still on screen and was not meant to stay (formulas,
+    numbers, logos, text on objects). Gives a coverage figure and the timestamps a teacher should look at."""
+    import cv2
+    allowed = {k for k, reason in report.get("blocks_not_translatable", {}).items() if reason in ALLOWED_ENGLISH_REASONS}
+    allowed |= {"embibe", "chemistry"}
+    capture = cv2.VideoCapture(str(video))
+    fps = float(capture.get(cv2.CAP_PROP_FPS) or 25.0)
+    total = int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+    seen = kept = 0
+    remaining: list = []                                  # {"key", "text", "first", "last", "samples"}
+    second = 0.0
+    while second * fps < total - 1:
+        capture.set(cv2.CAP_PROP_POS_FRAMES, int(second * fps))
+        ok, frame = capture.read()
+        if not ok:
+            break
+        for block in group_blocks(_ocr_lines(ocr, frame, 0.75)):
+            text = block_text(block)
+            key = normalize(text)
+            if len(key) < 4 or not _looks_english(text):
+                continue
+            if classify_block(text, []) in ("formula_only", "no_words") or not re.findall(r"[A-Za-z]{4,}", text):
+                continue
+            seen += 1
+            if key in allowed or any(difflib.SequenceMatcher(None, key, a).ratio() >= 0.88 for a in allowed):
+                kept += 1
+                continue
+            for run in remaining:
+                if second - run["last"] <= step * 1.5 and difflib.SequenceMatcher(None, key, run["key"]).ratio() >= 0.85:
+                    run["last"], run["samples"] = second, run["samples"] + 1
+                    break
+            else:
+                remaining.append({"key": key, "text": text[:120], "first": second, "last": second, "samples": 1})
+        second += step
+    capture.release()
+    left = sum(r["samples"] for r in remaining)
+    return {"samples": int(second / step), "english_blocks_seen": seen, "meant_to_stay": kept, "not_meant_to_stay": left,
+            "coverage_percent": round(100.0 * (1.0 - left / seen), 1) if seen else 100.0,
+            "remaining": [{"text": r["text"], "start": round(r["first"], 2), "end": round(r["last"] + step, 2), "samples": r["samples"],
+                           "start_timecode": _timecode(r["first"]), "end_timecode": _timecode(r["last"] + step)} for r in remaining]}
+
+
+def _final_audit(output: Path, report: dict, ocr, config) -> None:
+    report["english_audit_done"] = True
+    if os.environ.get("VIDEO_TEXT_FINAL_AUDIT", "1") == "0" or not Path(output).is_file() or report.get("status") == "words_not_found":
+        return
+    started = time.time()
+    try:
+        report["english_audit"] = _english_audit(Path(output), report, ocr)
+        audit_result = report["english_audit"]
+        audit_result["seconds"] = round(time.time() - started, 1)
+        print(f"VISUAL_TEXT_AUDIT: {audit_result['english_blocks_seen']} English block-sightings in the finished picture, "
+              f"{audit_result['not_meant_to_stay']} not meant to stay ({audit_result['coverage_percent']}% covered), "
+              f"{len(audit_result['remaining'])} stretch(es), {audit_result['seconds']}s", flush=True)
+    except Exception as error:                            # the audit must never lose the finished picture
+        report["english_audit_error"] = str(error)[:300]
+
+
 def translate_video_text(source_video: Path, output_video: Path, config, vocabulary=None) -> tuple:
     """Create an edited silent video stream, or return the source when nothing can be replaced."""
     source, output = Path(source_video).resolve(), Path(output_video).resolve()
@@ -1577,7 +1735,7 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
                 for block in blocks:
                     text = normalize(block_text(block))
                     for index, row in active:
-                        if index not in seen and difflib.SequenceMatcher(None, text, row["key"]).ratio() >= MATCH_RATIO:
+                        if index not in seen and _same_label(text, row["key"]):
                             lines = _reveal_paint_lines(row, ocr_lines, block) if row.get("reveal_box") else block.lines
                             strength = _edge_energy(frame, lines)
                             if peak.get(index, 0.0) > 0 and strength < FAINT_MATCH_RATIO * peak[index]:
@@ -1657,11 +1815,17 @@ def translate_video_text(source_video: Path, output_video: Path, config, vocabul
     report["applied_frames"] = sum(row_hits)
     report["unmatched_replacements"] = [{"english": row["english"], "start": row.get("start"), "end": row.get("end")}
                                         for row, count in zip(approved, row_hits) if not count]
-    unresolved = [{"english": row["english"], "hindi": row["hindi"], "start": row.get("start"), "end": row.get("end"),
-                   "start_timecode": _timecode(row.get("start")), "end_timecode": _timecode(row.get("end"))}
-                  for row, count in zip(approved, row_hits) if not count]
-    report.setdefault("repair", {"enabled": False})["unresolved_labels"] = unresolved
+    missing = [{"english": row["english"], "hindi": row["hindi"], "start": row.get("start"), "end": row.get("end"),
+                "start_timecode": _timecode(row.get("start")), "end_timecode": _timecode(row.get("end"))}
+               for row, count in zip(approved, row_hits) if not count]
+    # a label that was on screen for under BRIEF_LABEL_SECONDS (an animation flash) is only a note: nothing a teacher can act on
+    unresolved = [m for m in missing if float(m["end"] or 0) - float(m["start"] or 0) >= BRIEF_LABEL_SECONDS]
+    repair_block = report.setdefault("repair", {"enabled": False})
+    repair_block["unresolved_labels"] = unresolved
+    repair_block["brief_labels_not_found"] = [m for m in missing if m not in unresolved]
     report["needs_teacher_review"] = bool(unresolved)
     report["status"] = ("completed" if not unresolved
                         else "completed_needs_review" if report["matched_count"] else "words_not_found")
+    if not report.get("english_audit_done"):
+        _final_audit(output, report, ocr, config)
     return output, report
